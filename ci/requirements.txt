@@ -1,3 +1,4 @@
+pytest
 scipy
 matplotlib
 h5py
