@@ -15,7 +15,7 @@ before_script:
      libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
      libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
      libpython3-dev bash swig doxygen python3-dev python3-pip htop
-     libcppunit-dev python3-scipy
+     libcppunit-dev python3-scipy python3-pytest
 
 
 
@@ -40,14 +40,4 @@ build_and_run_examples:
   only:
   - master
   dependencies:
-   - install_siconos  
-  
-
-run_examples:
-  stage: deploy
-  script:
-    - "sh ci/run_examples.sh"
-  only:
-  - master
-  dependencies:
-   - build_and_run_examples
+   - install_siconos
