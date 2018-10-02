@@ -49,10 +49,14 @@ else()
   ENDIF(MSVC)
 
 
+  list(APPEND CMAKE_MODULE_PATH ${SICONOS_INSTALL_DIR}/share/siconos/cmake)
+  # find_package: look for siconosConfig.cmake file in CMAKE_MODULE_PATH
+  # --> this set siconos_ROOT_DIR to the directory where siconos is installed
+  # Remark : we may also use the package registry magic to find siconos:
+  # see https://cmake.org/cmake/help/git-master/manual/cmake-packages.7.html#creating-packages
+  include(SiconosVersion)
   find_package(siconos ${SICONOS_VERSION} REQUIRED)
   
-  
-  message("okoko ${siconos_ROOT_DIR}")
   # --- Search siconos package path ---
   # --> based on path to script siconos
   find_file(SICONOS_SCRIPT
@@ -78,34 +82,28 @@ else()
   endif()
 
   
-  list(APPEND CMAKE_MODULE_PATH ${SICONOS_INSTALL_DIR}/share/siconos/cmake)
-  # find_package: look for siconosConfig.cmake file in CMAKE_MODULE_PATH
-  # --> this set siconos_ROOT_DIR to the directory where siconos is installed
-  # Remark : we may also use the package registry magic to find siconos:
-  # see https://cmake.org/cmake/help/git-master/manual/cmake-packages.7.html#creating-packages
-  include(SiconosVersion)
-  find_package(siconos ${SICONOS_VERSION} REQUIRED)
 
   # Minimal set of examples (i.e. assume at least numerics component)
   set(EXAMPLES_DIRECTORIES
-    Numerics
+    friction_contact_solvers
     )
   
   string(FIND "${installed_targets}" "kernel" kernel_installed )
   string(FIND "${installed_targets}" "control" control_installed )
   string(FIND "${installed_targets}" "io" io_installed )
 
+  
   # Kernel component examples
   if(${kernel_installed} GREATER -1)
     MESSAGE(STATUS "kernel component found")
     set(EXAMPLES_DIRECTORIES
       "${EXAMPLES_DIRECTORIES}"
-      Biology
-      Electronics
-      Mechanics
-      Robotics/HuMAns_pa10
-      Spheres/Lagrangian
-      Spheres/NewtonEuler
+      biology
+      electronics
+      mechanics
+      robotics/HuMAns_pa10
+      #Spheres/Lagrangian
+      #Spheres/NewtonEuler
       )
   endif()
 
@@ -114,7 +112,7 @@ else()
     message(STATUS "control component found")
     set(EXAMPLES_DIRECTORIES
       "${EXAMPLES_DIRECTORIES}"
-      Control
+      control
       )
   endif()
 
@@ -183,7 +181,7 @@ else()
   else()
     list(APPEND NO_TEST_FILES BulletBouncingBox)
   endif()
-  
+
   # Scan each dir in examples_directories and collect source files
   foreach(_D ${EXAMPLES_DIRECTORIES})
     message("Scan example directory ${_D}")
@@ -191,12 +189,13 @@ else()
     get_subdirectories(dirlist ${CMAKE_CURRENT_SOURCE_DIR}/${_D})
     foreach(_dir ${dirlist})
       set(src_dir ${CMAKE_CURRENT_SOURCE_DIR}/${_D}/${_dir})
-	  if(WITH_PYTHON_WRAPPER)
-		file(GLOB EXAMPLES_P ${src_dir}/*.cpp ${src_dir}/*.py)
-	  else()
-		file(GLOB EXAMPLES_P ${src_dir}/*.cpp)
-	  endif()
+      if(WITH_PYTHON_WRAPPER)
+	file(GLOB EXAMPLES_P ${src_dir}/*.cpp ${src_dir}/*.py)
+      else()
+	file(GLOB EXAMPLES_P ${src_dir}/*.cpp)
+      endif()
       file(GLOB EXAMPLES_DATA ${src_dir}/*.ref ${src_dir}/*/*.mat)
+      
       if(EXAMPLES_P)
         foreach(_P ${EXAMPLES_P})
 	  # Full path to current file ...
