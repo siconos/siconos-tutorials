@@ -1,0 +1,30 @@
+build_siconos:
+  stage: build
+  image: ubuntu:17.10
+  script:
+    - "sh ci/build_siconos.sh"
+  artifacts:
+    paths:
+      - install-siconos
+  only:
+  - master
+
+
+build_and_run_examples:
+  stage: build
+  image: ubuntu:17.10
+  script:
+    - "sh ci/build_examples.sh"
+  artifacts:
+    paths:
+      - build-examples
+  only:
+  - master
+
+run_examples:
+  stage: test
+  image: ubuntu:17.10
+  script:
+    - "sh ci/run_examples.sh"
+  only:
+  - master

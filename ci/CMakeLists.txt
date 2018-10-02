@@ -9,7 +9,7 @@ include(OutOfSourcesBuild)
 # Some usefull macros
 include(SiconosTools)
 
-include(WindowsSiconosSetup)
+#include(WindowsSiconosSetup)
 set(tests_timeout 35 CACHE INTERNAL "Limit time for tests (in seconds)")
 
 if(WITH_DOCKER)
@@ -47,24 +47,36 @@ else()
   IF(MSVC)
     SET(NO_TEST_FILES ${NO_TEST_FILES} RockingBlock Pendulum)
   ENDIF(MSVC)
+
+
+  find_package(siconos ${SICONOS_VERSION} REQUIRED)
   
+  
+  message("okoko ${siconos_ROOT_DIR}")
   # --- Search siconos package path ---
   # --> based on path to script siconos
-  find_file(SICONOS_SCRIPT siconos
-    PATHS ENV PATH
-    NO_CMAKE_PATH
-    NO_DEFAULT_PATH)
+  find_file(SICONOS_SCRIPT
+    siconos
+    PATHS ${siconos_ROOT_DIR}/bin
+    )
+   
+
   
-  if(SICONOS_SCRIPT_NOT_FOUND)
+  #  PATHS ENV PATH
+  #  NO_CMAKE_PATH
+  #  NO_DEFAULT_PATH)
+  
+  if(NOT SICONOS_SCRIPT)
     message(FATAL_ERROR "Can not find siconos script. Please set your PATH environment variable properly.")
+  else()
+    message("============================================================================================")
+    message("Found siconos script : ${SICONOS_SCRIPT}")
+    get_filename_component(SICONOS_INSTALL_DIR ${SICONOS_SCRIPT} PATH)
+    get_filename_component(SICONOS_INSTALL_DIR ${SICONOS_INSTALL_DIR} PATH)
+    message("The examples will be run with siconos installed in : ${SICONOS_INSTALL_DIR}")
+    message("============================================================================================")
   endif()
-  
-  message("============================================================================================")
-  message("Found siconos script : ${SICONOS_SCRIPT}")
-  get_filename_component(SICONOS_INSTALL_DIR ${SICONOS_SCRIPT} PATH)
-  get_filename_component(SICONOS_INSTALL_DIR ${SICONOS_INSTALL_DIR} PATH)
-  message("The examples will be run with siconos installed in : ${SICONOS_INSTALL_DIR}")
-  message("============================================================================================")
+
   
   list(APPEND CMAKE_MODULE_PATH ${SICONOS_INSTALL_DIR}/share/siconos/cmake)
   # find_package: look for siconosConfig.cmake file in CMAKE_MODULE_PATH
