@@ -19,7 +19,7 @@ install_siconos:
 
 
 build_and_run_examples:
-  stage: build
+  stage: test
   image: ubuntu:17.10
   script:
     - "sh ci/build_examples.sh"
@@ -33,7 +33,7 @@ build_and_run_examples:
   
 
 run_examples:
-  stage: test
+  stage: deploy
   image: ubuntu:17.10
   script:
     - "sh ci/run_examples.sh"
