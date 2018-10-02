@@ -1,5 +1,5 @@
 #!bin/bash
-#pip3 install -U scipy
+pip3 install -U scipy
 git clone https://github.com/siconos/siconos.git
 mkdir build
 cd build
