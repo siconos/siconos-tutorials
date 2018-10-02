@@ -6,7 +6,7 @@ before_script:
 
 
 
-build_siconos:
+install_siconos:
   stage: build
   image: ubuntu:17.10
   script:
@@ -28,6 +28,9 @@ build_and_run_examples:
       - build-examples
   only:
   - master
+  dependencies:
+   - install_siconos  
+  
 
 run_examples:
   stage: test
@@ -36,3 +39,5 @@ run_examples:
     - "sh ci/run_examples.sh"
   only:
   - master
+  dependencies:
+   - build_and_run_examples
