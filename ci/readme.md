@@ -6,7 +6,7 @@ Steps :
 
 1. Download, build and install siconos 
 
-   Described in build_siconos.sh
+   Described in install_siconos.sh
    
    Keep directory install-siconos (artifacts) for examples
    
