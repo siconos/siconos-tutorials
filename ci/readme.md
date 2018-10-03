@@ -11,16 +11,10 @@ Steps :
    Keep directory install-siconos (artifacts) for examples
    
    
-2. Conf and build for examples
+2. Conf, build and run examples using ctest, with a submission to cdash.
    
-   Described in build_examples.sh
+   Described in build_and_run_examples.sh
    
    Use siconos install from previous step.
    
-   Keep directory build-examples (artifacts) for next step.
-   
-3. Run examples
-
-    Described in run_examples.sh
-    
-    Run test in previous build-examples.
+   Ctest process is described in ci/ctest_driver.cmake.
