@@ -5,6 +5,9 @@ if(NOT SICONOS_INSTALL_DIR)
   set(SICONOS_INSTALL_DIR ../install-siconos/)
 endif()
 
+# Get hash for commit of installed version of Siconos
+file(READ ${SICONOS_INSTALL_DIR}/siconos-commit-number.txt SICO_REF)
+
 
 # Current testing model (Must be one of Experimental, Continuous, or Nightly)
 if(NOT model)
@@ -60,10 +63,18 @@ if(NOT CTEST_BUILD_NAME)
   set(CTEST_BUILD_NAME "Siconos examples")
 endif()
 
-if(ENV{CI_RUNNER_DESCRIPTION})
-  # If on a gitlab-ci runner ...
-  set(hostname "gitlab-ci runner on $ENV{CI_RUNNER_DESCRIPTION}")
+
+# Runner name is too long and useless ...
+# if(ENV{CI_RUNNER_DESCRIPTION})
+#   # If on a gitlab-ci runner ...
+#   set(hostname "gitlab-ci runner on $ENV{CI_RUNNER_DESCRIPTION}")
+# endif()
+string(FIND ${hotname} "runner-" on_ci) 
+if(on_ci GREATER -1)
+  set(hostname "gitlab-ci runner on $ENV{CI_RUNNER_DESCRIPTION}\
+                based on Siconos commit ${SICO_REF}.")
 endif()
+
 # Host description
 if(NOT CTEST_SITE)
   set(CTEST_SITE "${hostname}, ${osname}, ${osrelease}, ${osplatform}")
