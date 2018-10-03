@@ -40,20 +40,30 @@ endif()
 #include(cmake_host_system_information)
 cmake_host_system_information(RESULT NP QUERY NUMBER_OF_LOGICAL_CORES)
 cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
-cmake_host_system_information(RESULT osname QUERY OS_NAME)
-cmake_host_system_information(RESULT osrelease QUERY OS_RELEASE)
-cmake_host_system_information(RESULT osversion QUERY OS_VERSION)
-cmake_host_system_information(RESULT osplatform QUERY OS_PLATFORM)
+cmake_host_system_information(RESULT fqdn QUERY FQDN)
 
+if(${CMAKE_VERSION} VERSION_GREATER "3.10.3") 
+  cmake_host_system_information(RESULT osname QUERY OS_NAME)
+  cmake_host_system_information(RESULT osrelease QUERY OS_RELEASE)
+  cmake_host_system_information(RESULT osversion QUERY OS_VERSION)
+  cmake_host_system_information(RESULT osplatform QUERY OS_PLATFORM)
+else()
+  set(osname ${CMAKE_SYSTEM_NAME})
+  set(osversion ${CMAKE_SYSTEM_VERSION})
+  set(osplatform ${CMAKE_SYSTEM_PROCESSOR})
+endif()
 
-
-message("${NP} ${hostname} ${osname} ${osrelease} ${osversion} ${osplatform}")
+#message("${NP} ${hostname} ${osname} ${osrelease} ${osversion} ${osplatform} ${fqdn}")
 
 # Build name (for cdash)
 if(NOT CTEST_BUILD_NAME)
   set(CTEST_BUILD_NAME "Siconos examples")
 endif()
 
+if(ENV{CI_RUNNER_DESCRIPTION})
+  # If on a gitlab-ci runner ...
+  set(hostname "gitlab-ci runner on $ENV{CI_RUNNER_DESCRIPTION}")
+endif()
 # Host description
 if(NOT CTEST_SITE)
   set(CTEST_SITE "${hostname}, ${osname}, ${osrelease}, ${osplatform}")
@@ -76,8 +86,6 @@ ctest_build(
 # -- Tests --
 
 # check number of cores available on the host
-#include(ProcessorCount)
-#ProcessorCount(NP)
 ctest_test(
  PARALLEL_LEVEL NP
  RETURN_VALUE TEST_RETURN_VAL
