@@ -1,17 +1,70 @@
-# a ctest driver for Experimental,Continuous,Nightly builds
+#-----------------------------------------------
+# Ctest driver for siconos install.
+# Target : continuous integration on gitlab-ci,
+# aims at providing a proper install of siconos
+# to test examples.
+# ----------------------------------------------
 
-# Path to siconos install 
+
+# JOB_NAME:
+# - siconos_install to build and install Siconos.
+#   Assumes 'siconos' git repository is available in ../
+# - examples to build and test examples of the present repository.
+#   Assumes a proper install of Siconos.
+
+if(NOT JOB_NAME)
+  set(JOB_NAME "examples")
+endif()
+
+# Path to siconos install
+#  if JOB_NAME is siconos_install, used as CMAKE_INSTALL_PREFIX
+#  and if JOB_NAME is examples, used to find siconos.
 if(NOT SICONOS_INSTALL_DIR)
   set(SICONOS_INSTALL_DIR ../install-siconos/)
 endif()
 
-# Get hash for commit of installed version of Siconos
-file(READ ${SICONOS_INSTALL_DIR}/siconos-commit-number.txt SICO_REF)
-
-
 # Current testing model (Must be one of Experimental, Continuous, or Nightly)
 if(NOT model)
   set(model Experimental)
+endif()
+
+
+
+if(JOB_NAME STREQUAL "siconos_install")
+  message("--- Start conf for siconos install.")
+  # - Source dir and path to siconos install
+  # We assume CI setup, with build dir in siconos-tutorial repository and
+  # siconos clone is in siconos-tutorial/siconos
+  # The 'cmake' source dir is siconos.
+  if(NOT CTEST_SOURCE_DIRECTORY)
+    set(CTEST_SOURCE_DIRECTORY ../siconos)
+  endif()
+  # Build name (for cdash)
+  if(NOT CTEST_BUILD_NAME)
+    set(CTEST_BUILD_NAME "Siconos install for examples")
+  endif()
+  set(CTEST_CONFIG_OPTIONS "-DUSER_OPTIONS_FILE=$PWD/../ci/siconos_conf.cmake -DCMAKE_INSTALL_PREFIX=${SICONOS_INSTALL_DIR}")
+  set(current_project siconos)
+elseif(JOB_NAME STREQUAL "examples")
+  message("--- Start conf for siconos examples build and tests.")
+
+  # Get hash for commit of installed version of Siconos
+  file(READ ${SICONOS_INSTALL_DIR}/siconos-commit-number.txt SICO_REF)
+  # - Source dir and path to siconos install
+  # We assume CI setup, with build dir in siconos-tutorial repository and
+  # siconos install in siconos-tutorial/install-siconos.
+  # The 'cmake' source dir is examples.
+  if(NOT CTEST_SOURCE_DIRECTORY)
+    set(CTEST_SOURCE_DIRECTORY ../examples)
+  endif()
+  # Build name (for cdash)
+  if(NOT CTEST_BUILD_NAME)
+    set(CTEST_BUILD_NAME "Siconos examples")
+  endif()
+
+  set(CTEST_CONFIG_OPTIONS "-Dsiconos_DIR=${SICONOS_INSTALL_DIR}/share/siconos/cmake/")
+  set(current_project siconos_examples)
+
 endif()
 
 # --- Configure setup ---
@@ -20,18 +73,6 @@ endif()
 # If not specified : current dir.
 if(NOT CTEST_BINARY_DIRECTORY)
   set(CTEST_BINARY_DIRECTORY .)
-endif()
-
-# - Source dir and path to siconos install
-# We assume CI setup, with build dir in siconos-tutorial repository and
-# siconos install in siconos-tutorial/install-siconos.
-# The 'cmake' source dir is examples.
-if(NOT CTEST_SOURCE_DIRECTORY)
-  set(CTEST_SOURCE_DIRECTORY ../examples)
-endif()
-# Path to siconos install 
-if(NOT SICONOS_INSTALL_DIR)
-  set(SICONOS_INSTALL_DIR ../install-siconos/)
 endif()
 
 
@@ -56,12 +97,6 @@ else()
   set(osplatform ${CMAKE_SYSTEM_PROCESSOR})
 endif()
 
-#message("${NP} ${hostname} ${osname} ${osrelease} ${osversion} ${osplatform} ${fqdn}")
-
-# Build name (for cdash)
-if(NOT CTEST_BUILD_NAME)
-  set(CTEST_BUILD_NAME "Siconos examples")
-endif()
 
 
 # Runner name is too long and useless ...
@@ -69,7 +104,7 @@ endif()
 #   # If on a gitlab-ci runner ...
 #   set(hostname "gitlab-ci runner on $ENV{CI_RUNNER_DESCRIPTION}")
 # endif()
-string(FIND ${hotname} "runner-" on_ci) 
+string(FIND ${hostname} "runner-" on_ci) 
 if(on_ci GREATER -1)
   set(hostname "gitlab-ci runner on $ENV{CI_RUNNER_DESCRIPTION}\
                 based on Siconos commit ${SICO_REF}.")
@@ -82,7 +117,7 @@ endif()
 
 ctest_start(${model})
 
-ctest_configure(OPTIONS -Dsiconos_DIR=${SICONOS_INSTALL_DIR}/share/siconos/cmake/)
+ctest_configure(OPTIONS ${CTEST_CONFIG_OPTIONS})
 
 # --- Build ---
 
@@ -91,7 +126,7 @@ if(NOT CTEST_BUILD_CONFIGURATION)
 endif()
 
 ctest_build(
- PROJECT_NAME siconos_examples
+ PROJECT_NAME ${current_project}
  )
 
 # -- Tests --
@@ -113,7 +148,7 @@ if(CTEST_BUILD_CONFIGURATION MATCHES "Profiling")
 endif()
 
 # -- Submission to cdash --
-ctest_submit(RETURN_VALUE SUBMIT_RETURN_VAL)
+#ctest_submit(RETURN_VALUE SUBMIT_RETURN_VAL)
 
 # submit failed? 
 if(NOT SUBMIT_RETURN_VAL EQUAL 0)
