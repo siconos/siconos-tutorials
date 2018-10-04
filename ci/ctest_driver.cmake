@@ -29,6 +29,13 @@ if(NOT model)
 endif()
 
 
+# For CI, we assume :
+# - SICONOS_TUTORIAL_SOURCE_DIR/siconos : siconos git repo
+# - SICONOS_TUTORIAL_SOURCE_DIR/examples : directory which contains examples to be tested.
+
+
+# With SICONOS_TUTORIAL_SOURCE_DIR the path to git repository for siconos tutorial
+get_filename_component(SICONOS_TUTORIAL_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR} DIRECTORY) # path to this (ctest_driver) file
 
 if(JOB_NAME STREQUAL "siconos_install")
   message("--- Start conf for siconos install.")
@@ -43,7 +50,11 @@ if(JOB_NAME STREQUAL "siconos_install")
   if(NOT CTEST_BUILD_NAME)
     set(CTEST_BUILD_NAME "Siconos install for examples")
   endif()
-  set(CTEST_CONFIG_OPTIONS "-DUSER_OPTIONS_FILE=$PWD/../ci/siconos_conf.cmake -DCMAKE_INSTALL_PREFIX=${SICONOS_INSTALL_DIR}")
+  set(SICONOS_CMAKE_OPTIONS -DUSER_OPTIONS_FILE=${SICONOS_TUTORIAL_SOURCE_DIR}/ci/siconos_conf.cmake)
+  list(APPEND SICONOS_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=${SICONOS_INSTALL_DIR})
+  list(APPEND SICONOS_CMAKE_OPTIONS -DCMAKE_CXX_STANDARD=11)
+  list(APPEND SICONOS_CMAKE_OPTIONS -DSICONOS_USE_BOOST_FOR_CXX11=OFF)
+  #set(CTEST_CONFIG_OPTIONS "-DUSER_OPTIONS_FILE=${SICONOS_TUTORIAL_SOURCE_DIR}/ci/siconos_conf.cmake";"-DCMAKE_INSTALL_PREFIX=${SICONOS_INSTALL_DIR}")
   set(current_project siconos)
 elseif(JOB_NAME STREQUAL "examples")
   message("--- Start conf for siconos examples build and tests.")
@@ -62,10 +73,15 @@ elseif(JOB_NAME STREQUAL "examples")
     set(CTEST_BUILD_NAME "Siconos examples")
   endif()
 
-  set(CTEST_CONFIG_OPTIONS "-Dsiconos_DIR=${SICONOS_INSTALL_DIR}/share/siconos/cmake/")
+  set(SICONOS_CMAKE_OPTIONS -Dsiconos_DIR=${SICONOS_INSTALL_DIR}/share/siconos/cmake/)
   set(current_project siconos_examples)
 
 endif()
+
+set(CTEST_CONFIG_OPTIONS)
+foreach(option ${SICONOS_CMAKE_OPTIONS})
+  set(CTEST_CONFIG_OPTIONS "${CTEST_CONFIG_OPTIONS} ${option}")
+endforeach()
 
 # --- Configure setup ---
 
