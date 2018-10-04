@@ -11,7 +11,7 @@ git rev-parse --short HEAD > ../siconos-commit-number.txt
 cd ..
 mkdir build
 cd build
-ctest -S ../ci/ctest_driver.cmake -V -DJOB_NAME=siconos_install
+ctest -S ../ci/ctest_driver.cmake -V -DJOB_NAME=siconos_install -Dmodel=Continuous
 
 #cmake ../siconos -DUSER_OPTIONS_FILE=$PWD/../ci/siconos_conf.cmake -DCMAKE_INSTALL_PREFIX=../install-siconos
 #if  [ -x "$(command -v nproc)" ]; then
