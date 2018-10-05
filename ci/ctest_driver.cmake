@@ -64,6 +64,8 @@ if(JOB_NAME STREQUAL "siconos_install")
   list(APPEND SICONOS_CMAKE_OPTIONS -DCMAKE_CXX_STANDARD=11)
   list(APPEND SICONOS_CMAKE_OPTIONS -DSICONOS_USE_BOOST_FOR_CXX11=OFF)
   set(current_project siconos)
+  set(CTEST_BUILD_FLAGS -j${NP})
+  # Parallel build only for siconos_install. For examples it leads to ‘warning: jobserver unavailable: using -j1. Add `+' to parent make rule.’
 
 elseif(JOB_NAME STREQUAL "examples")
   # -- job : build and test examples -- 
@@ -157,7 +159,6 @@ ctest_configure()
 if(NOT CTEST_BUILD_CONFIGURATION)
   set(CTEST_BUILD_CONFIGURATION "Profiling")
 endif()
-set(CTEST_BUILD_FLAGS -j${NP})
 ctest_build(
  PROJECT_NAME ${current_project}
  )
@@ -183,7 +184,7 @@ if(CTEST_BUILD_CONFIGURATION MATCHES "Profiling")
 endif()
 
 # -- Submission to cdash --
-ctest_submit(RETURN_VALUE SUBMIT_RETURN_VAL)
+#ctest_submit(RETURN_VALUE SUBMIT_RETURN_VAL)
 
 # submit failed? 
 if(NOT SUBMIT_RETURN_VAL EQUAL 0)
