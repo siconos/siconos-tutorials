@@ -133,7 +133,7 @@ if(NOT OSNAME)
   set(OSNAME ${osname}) # Use -DOSNAME=docker_image name on CI
 endif()
 if(NOT CTEST_SITE)
-  set(CTEST_SITE "${OSNAME} ${osrelease}, ${osplatform} on ${hostname}")
+  set(CTEST_SITE "${OSNAME} ${osrelease}, ${osplatform}, ${hostname}")
 endif()
 
 ctest_start(${model})
