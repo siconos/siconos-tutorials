@@ -1,17 +1,19 @@
 #!bin/bash
+# Note : this script takes osname (from docker image in gitlab-ci script) as arg.
+
 #pip3 install -U scipy
 #pip3 install -U pytest
 env
-
+export ref_path=$PWD
 git clone https://github.com/siconos/siconos.git
 # Get last commit id, will be used for buildname on cdash.
 cd siconos
-git rev-parse --short HEAD > ../siconos-commit-number.txt
+git rev-parse --short HEAD > ${ref_path}/siconos-commit-number.txt
 #
 cd ..
 mkdir build
 cd build
-ctest -S ../ci/ctest_driver.cmake -V -DJOB_NAME=siconos_install -Dmodel=Continuous
+ctest -S ${ref_path}/ci/ctest_driver.cmake -V -DJOB_NAME=siconos_install -Dmodel=Continuous -DWITH_TESTS=OFF -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1
 
 #cmake ../siconos -DUSER_OPTIONS_FILE=$PWD/../ci/siconos_conf.cmake -DCMAKE_INSTALL_PREFIX=../install-siconos
 #if  [ -x "$(command -v nproc)" ]; then
@@ -24,4 +26,4 @@ ctest -S ../ci/ctest_driver.cmake -V -DJOB_NAME=siconos_install -Dmodel=Continuo
 
 #make -j ${nbprocs}
 make install
-mv ../siconos-commit-number.txt ../install-siconos/
+mv ${ref_path}/siconos-commit-number.txt ${ref_path}/install-siconos/

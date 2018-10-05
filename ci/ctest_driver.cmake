@@ -15,13 +15,17 @@
 if(NOT JOB_NAME)
   set(JOB_NAME "examples")
 endif()
-
+if(NOT WITH_TESTS)
+  # tests on for examples but off for siconos install. 
+  set(WITH_TESTS ON)
+endif()
 # Path to siconos install
 #  if JOB_NAME is siconos_install, used as CMAKE_INSTALL_PREFIX
 #  and if JOB_NAME is examples, used to find siconos.
 if(NOT SICONOS_INSTALL_DIR)
   set(SICONOS_INSTALL_DIR ../install-siconos/)
 endif()
+
 
 # Current testing model (Must be one of Experimental, Continuous, or Nightly)
 if(NOT model)
@@ -37,7 +41,12 @@ endif()
 # With SICONOS_TUTORIAL_SOURCE_DIR the path to git repository for siconos tutorial
 get_filename_component(SICONOS_TUTORIAL_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR} DIRECTORY) # path to this (ctest_driver) file
 
+# ================= Start config which depends on job's type (siconos_install or examples) ====================
+
+
+# -- job : build and install siconos --
 if(JOB_NAME STREQUAL "siconos_install")
+# -- job : build and install siconos --
   message("--- Start conf for siconos install.")
   # - Source dir and path to siconos install
   # We assume CI setup, with build dir in siconos-tutorial repository and
@@ -54,11 +63,12 @@ if(JOB_NAME STREQUAL "siconos_install")
   list(APPEND SICONOS_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=${SICONOS_INSTALL_DIR})
   list(APPEND SICONOS_CMAKE_OPTIONS -DCMAKE_CXX_STANDARD=11)
   list(APPEND SICONOS_CMAKE_OPTIONS -DSICONOS_USE_BOOST_FOR_CXX11=OFF)
-  #set(CTEST_CONFIG_OPTIONS "-DUSER_OPTIONS_FILE=${SICONOS_TUTORIAL_SOURCE_DIR}/ci/siconos_conf.cmake";"-DCMAKE_INSTALL_PREFIX=${SICONOS_INSTALL_DIR}")
   set(current_project siconos)
-elseif(JOB_NAME STREQUAL "examples")
-  message("--- Start conf for siconos examples build and tests.")
 
+elseif(JOB_NAME STREQUAL "examples")
+  # -- job : build and test examples -- 
+  message("--- Start conf for siconos examples build and tests.")
+  
   # Get hash for commit of installed version of Siconos
   file(READ ${SICONOS_INSTALL_DIR}/siconos-commit-number.txt SICO_REF)
   # - Source dir and path to siconos install
@@ -77,14 +87,9 @@ elseif(JOB_NAME STREQUAL "examples")
   set(current_project siconos_examples)
 
 endif()
-
-set(CTEST_CONFIG_OPTIONS)
-foreach(option ${SICONOS_CMAKE_OPTIONS})
-  set(CTEST_CONFIG_OPTIONS "${CTEST_CONFIG_OPTIONS} ${option}")
-endforeach()
+# ================= End config which depends on job's type (siconos_install or examples) ====================
 
 # --- Configure setup ---
-
 # - Top level build directory -
 # If not specified : current dir.
 if(NOT CTEST_BINARY_DIRECTORY)
@@ -115,43 +120,52 @@ endif()
 
 
 
-# Runner name is too long and useless ...
-# if(ENV{CI_RUNNER_DESCRIPTION})
-#   # If on a gitlab-ci runner ...
-#   set(hostname "gitlab-ci runner on $ENV{CI_RUNNER_DESCRIPTION}")
-# endif()
+# With gitlab-ci, runner name is too long and useless ...
 string(FIND ${hostname} "runner-" on_ci) 
 if(on_ci GREATER -1)
-  set(hostname "gitlab-ci runner on $ENV{CI_RUNNER_DESCRIPTION}\
-                based on Siconos commit ${SICO_REF}.")
+  set(hostname "gitlab-ci runner on $ENV{CI_RUNNER_DESCRIPTION} based on Siconos commit ${SICO_REF}.")
+else()
+  set(hostname "${hostname}, based on Siconos commit ${SICO_REF}")
 endif()
 
 # Host description
+if(NOT OSNAME)
+  set(OSNAME ${osname}) # Use -DOSNAME=docker_image name on CI
+endif()
 if(NOT CTEST_SITE)
-  set(CTEST_SITE "${hostname}, ${osname}, ${osrelease}, ${osplatform}")
+  set(CTEST_SITE "${OSNAME} ${osrelease}, ${osplatform} on ${hostname}")
 endif()
 
 ctest_start(${model})
 
-ctest_configure(OPTIONS ${CTEST_CONFIG_OPTIONS})
+set(CTEST_CONFIGURE_COMMAND ${CMAKE_COMMAND})
+foreach(option ${SICONOS_CMAKE_OPTIONS})
+  set(CTEST_CONFIGURE_COMMAND "${CTEST_CONFIGURE_COMMAND} ${option}")
+endforeach()
+
+set(CTEST_CONFIGURE_COMMAND "${CTEST_CONFIGURE_COMMAND} ${CTEST_SOURCE_DIRECTORY}")
+
+ctest_configure()
 
 # --- Build ---
 
 if(NOT CTEST_BUILD_CONFIGURATION)
   set(CTEST_BUILD_CONFIGURATION "Profiling")
 endif()
-
+set(CTEST_BUILD_FLAGS -j${NP})
 ctest_build(
  PROJECT_NAME ${current_project}
  )
 
-# -- Tests --
 
-# check number of cores available on the host
-ctest_test(
- PARALLEL_LEVEL NP
- RETURN_VALUE TEST_RETURN_VAL
- )
+# -- Tests --
+if(WITH_TESTS)
+
+  ctest_test(
+    PARALLEL_LEVEL NP
+    RETURN_VALUE TEST_RETURN_VAL
+    )
+endif()
 
 # -- memory check --
 if(CTEST_BUILD_CONFIGURATION MATCHES "Profiling")
@@ -164,7 +178,7 @@ if(CTEST_BUILD_CONFIGURATION MATCHES "Profiling")
 endif()
 
 # -- Submission to cdash --
-#ctest_submit(RETURN_VALUE SUBMIT_RETURN_VAL)
+ctest_submit(RETURN_VALUE SUBMIT_RETURN_VAL)
 
 # submit failed? 
 if(NOT SUBMIT_RETURN_VAL EQUAL 0)
@@ -177,13 +191,15 @@ if(NOT TEST_RETURN_VAL EQUAL 0)
 endif()
 
 
-# message(STATUS "Siconos CTest driver")
-# message(STATUS "MODE is: ${MODE}")
-# message(STATUS "CTEST_SOURCE_DIRECTORY is: ${CTEST_SOURCE_DIRECTORY}")
-# message(STATUS "CTEST_BINARY_DIRECTORY is: ${CTEST_BINARY_DIRECTORY}")
-# message(STATUS "CTEST_MODULE_PATH is: ${CTEST_MODULE_PATH}")
-# message(STATUS "CTEST_BUILD_CONFIGURATION is: ${CTEST_BUILD_CONFIGURATION}")
-# #######################################################################
+# ============= Summary =============
+message(STATUS "\n============================================ Summary ============================================")
+message(STATUS "CTest process for ${curren_project} (job name = ${JOB_NAME}) has ended.")
+message(STATUS "Ctest model is: ${model}")
+message(STATUS "Ctest executed on sources directory : ${CTEST_SOURCE_DIRECTORY}")
+message(STATUS "Build name (cdash) : ${CTEST_BUILD_NAME}")
+message(STATUS "Site (cdash) : ${CTEST_SITE}")
+message(STATUS "=================================================================================================\n")
+
 # # this usually fails for some reasons and ctest may returns a fail code.
 # # ctest_empty_binary_directory(${CTEST_BINARY_DIRECTORY}/)
 # # cf discussions here:
