@@ -6,7 +6,7 @@ Some tutorials for Siconos software, http://siconos.gforge.inria.fr
 * A ball bouncing on the ground.
 
 Just click on ipynb file for a read access to the notebook or
-try [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/siconos/siconos-tutorials.git/master)
+try [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/https%3A%2F%2Fgricad-gitlab.univ-grenoble-alpes.fr%2Fnonsmooth%2Fsiconos-tutorial.git/master?filepath=siconos-notebooks)
 to start an interactive session of the tutorials.
 Warning: binder session may take some time to start and won't be persistent.
 
