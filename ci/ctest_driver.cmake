@@ -184,7 +184,7 @@ if(CTEST_BUILD_CONFIGURATION MATCHES "Profiling")
 endif()
 
 # -- Submission to cdash --
-#ctest_submit(RETURN_VALUE SUBMIT_RETURN_VAL)
+ctest_submit(RETURN_VALUE SUBMIT_RETURN_VAL)
 
 # submit failed? 
 if(NOT SUBMIT_RETURN_VAL EQUAL 0)
