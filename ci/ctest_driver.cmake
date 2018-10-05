@@ -64,6 +64,7 @@ if(JOB_NAME STREQUAL "siconos_install")
   list(APPEND SICONOS_CMAKE_OPTIONS -DCMAKE_CXX_STANDARD=11)
   list(APPEND SICONOS_CMAKE_OPTIONS -DSICONOS_USE_BOOST_FOR_CXX11=OFF)
   set(current_project siconos)
+  cmake_host_system_information(RESULT NP QUERY NUMBER_OF_LOGICAL_CORES)
   set(CTEST_BUILD_FLAGS -j${NP})
   # Parallel build only for siconos_install. For examples it leads to ‘warning: jobserver unavailable: using -j1. Add `+' to parent make rule.’
 
@@ -106,7 +107,6 @@ endif()
 
 # -- Query host system information --
 #include(cmake_host_system_information)
-cmake_host_system_information(RESULT NP QUERY NUMBER_OF_LOGICAL_CORES)
 cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
 cmake_host_system_information(RESULT fqdn QUERY FQDN)
 
