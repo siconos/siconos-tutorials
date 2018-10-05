@@ -69,7 +69,7 @@ if(${kernel_installed} GREATER -1)
     biology
     electronics
     mechanics
-    robotics/HuMAns_pa10
+    # robotics/# HuMAns_pa10 outdated
     #Spheres/Lagrangian
     #Spheres/NewtonEuler
     )
