@@ -71,6 +71,7 @@ elseif(JOB_NAME STREQUAL "examples")
   
   # Get hash for commit of installed version of Siconos
   file(READ ${SICONOS_INSTALL_DIR}/siconos-commit-number.txt SICO_REF)
+  string(STRIP ${SICO_REF} SICO_REF)
   # - Source dir and path to siconos install
   # We assume CI setup, with build dir in siconos-tutorial repository and
   # siconos install in siconos-tutorial/install-siconos.
@@ -123,10 +124,13 @@ endif()
 # With gitlab-ci, runner name is too long and useless ...
 string(FIND ${hostname} "runner-" on_ci) 
 if(on_ci GREATER -1)
-  set(hostname "gitlab-ci runner on $ENV{CI_RUNNER_DESCRIPTION} based on Siconos commit ${SICO_REF}.")
-else()
+  set(hostname "gitlab-ci runner on $ENV{CI_RUNNER_DESCRIPTION}")
+endif()
+
+if(JOB_NAME STREQUAL "examples")
   set(hostname "${hostname}, based on Siconos commit ${SICO_REF}")
 endif()
+
 
 # Host description
 if(NOT OSNAME)
@@ -134,6 +138,7 @@ if(NOT OSNAME)
 endif()
 if(NOT CTEST_SITE)
   set(CTEST_SITE "${OSNAME} ${osrelease}, ${osplatform}, ${hostname}")
+  #set(CTEST_SITE "${OSNAME} ${osrelease}, ${osplatform}")#, ${hostname}")
 endif()
 
 ctest_start(${model})
