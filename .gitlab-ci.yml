@@ -1,5 +1,5 @@
 variables:
-  - os: 'ubuntu:18.04'
+  - os: "ubuntu:18.04"
 
 image: $os
 
