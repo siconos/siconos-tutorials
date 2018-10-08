@@ -2,6 +2,8 @@
  git clone https://github.com/siconos/siconos.git
  mkdir build
  cd build
- cmake ../siconos -DUSER_OPTIONS_FILE=/home/jovyan/conf/siconos_notebook.cmake -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so -DCMAKE_INSTALL_PREFIX=/home/jovyan/install
+ cmake ../siconos -DUSER_OPTIONS_FILE=/home/jovyan/binder/siconos_conf/siconos_notebook.cmake -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so -DCMAKE_INSTALL_PREFIX=/home/jovyan/install
  make -j 4
  make install
+
+

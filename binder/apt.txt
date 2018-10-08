@@ -15,4 +15,7 @@ liblpsolve55-dev
 python3-dev
 libpython3-dev
 bash
-swig
+doxygen
+python3-pip
+python3-scipy
+python3-pytest
