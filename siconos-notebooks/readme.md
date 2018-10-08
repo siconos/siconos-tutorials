@@ -1,27 +1,36 @@
 # siconos tutorials notebooks
 
-Some tutorials for Siconos software, http://siconos.gforge.inria.fr
+This directory contains tutorials for [Siconos software](https://nonsmooth.gricad-pages.univ-grenoble-alpes.fr/siconos/index.html)
+written as jupyter notebooks.
 
-* A 4 diodes bridge wave rectifier 
-* A ball bouncing on the ground.
 
-Just click on ipynb file for a read access to the notebook or
-try [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/https%3A%2F%2Fgricad-gitlab.univ-grenoble-alpes.fr%2Fnonsmooth%2Fsiconos-tutorial.git/master?filepath=siconos-notebooks)
-to start an interactive session of the tutorials.
-Warning: binder session may take some time to start and won't be persistent.
+### Try Siconos through jupyter on mybinder 
 
-For more details on binder, just check http://mybinder.org or https://blog.ouseful.info/2015/10/31/running-github-hosted-jupyter-previously-ipython-notebooks-as-online-applications/
+An easy way to try Siconos in your web browser. This step does not require any build or installation.
 
-### Usage and Jupyter notebook reminder
+Try [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/git/https%3A%2F%2Fgricad-gitlab.univ-grenoble-alpes.fr%2Fnonsmooth%2Fsiconos-tutorial.git/b08a0514b22b3927b58bddce3c4018f27ac0fc7d?filepath=siconos-notebooks%2Findex.ipynb)
+ to start an interactive python environment in which you can run siconos and the notebooks of this repository.
 
-* Start siconos-online ('launch binder' badge above) and choose a notebook
-* Edit and execute commands
+*Warning: binder sessions may take some time to start and won't be persistent*
 
-To edit a cell: select cell and hit enter
 
-To execute a cell: select and hit shift+enter
+For details concerning Jupyter, please read [Jupyterlab documentation](https://jupyterlab.readthedocs.io/en/stable/).
 
-More on:
-http://nbviewer.jupyter.org/github/jupyter/notebook/blob/master/docs/source/examples/Notebook/Notebook%20Basics.ipynb
+
+### 'Local' use
+
+clone this repository
+
+```bash
+git clone https://gricad-gitlab.univ-grenoble-alpes.fr/nonsmooth/siconos-tutorial.git
+```
+
+[install Siconos](https://nonsmooth.gricad-pages.univ-grenoble-alpes.fr/siconos/install_guide/index.html) and launch jupyter in siconos-tutorial/siconos-notebooks directory:
+
+```bash
+cd siconos-tutorial/siconos-notebooks
+jupyter lab
+```
+and double click on 'index.ipynb'.
 
 
