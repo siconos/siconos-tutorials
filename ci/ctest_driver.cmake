@@ -32,6 +32,9 @@ if(NOT model)
   set(model Experimental)
 endif()
 
+if(NOT USER_FILE)
+  set(USER_FILE siconos_conf.cmake)
+endif()
 
 # For CI, we assume :
 # - SICONOS_TUTORIAL_SOURCE_DIR/siconos : siconos git repo
@@ -59,7 +62,7 @@ if(JOB_NAME STREQUAL "siconos_install")
   if(NOT CTEST_BUILD_NAME)
     set(CTEST_BUILD_NAME "Siconos install for examples")
   endif()
-  set(SICONOS_CMAKE_OPTIONS -DUSER_OPTIONS_FILE=${SICONOS_TUTORIAL_SOURCE_DIR}/ci/siconos_conf.cmake)
+  set(SICONOS_CMAKE_OPTIONS -DUSER_OPTIONS_FILE=${SICONOS_TUTORIAL_SOURCE_DIR}/ci/${USER_FILE})
   list(APPEND SICONOS_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=${SICONOS_INSTALL_DIR})
   list(APPEND SICONOS_CMAKE_OPTIONS -DCMAKE_CXX_STANDARD=11)
   list(APPEND SICONOS_CMAKE_OPTIONS -DSICONOS_USE_BOOST_FOR_CXX11=OFF)

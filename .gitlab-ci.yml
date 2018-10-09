@@ -41,3 +41,14 @@ build_and_run_examples:
   - master
   dependencies:
    - install_siconos
+
+
+install_siconos_with_mechanisms:
+  stage: test
+  script:
+    - "sh ci/install_siconos_with_mechanisms.sh $os" 
+  artifacts:
+    paths:
+      - install-siconos
+  only:
+  - master
