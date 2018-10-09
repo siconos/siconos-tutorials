@@ -45,13 +45,18 @@ build_and_run_examples:
 
 install_siconos_with_mechanisms:
   stage: test
+  script:
+    - "sh ci/install_siconos_with_mechanisms.sh $os" 
+  only:
+  - master
+
+
+install_siconos:archlinux:
+  stage: test
   image: base/archlinux
   before_script:
-    - ''
+    - 'pacman -Sy && pacman -S ci/arch_linux_packages.txt'
   script:
     - "sh ci/install_siconos_with_mechanisms.sh archlinux" 
-  artifacts:
-    paths:
-      - install-siconos
   only:
   - master
