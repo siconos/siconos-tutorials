@@ -13,3 +13,4 @@ python-scipy
 python3
 git
 cppunit
+bullet
