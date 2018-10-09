@@ -14,3 +14,7 @@ python3
 git
 cppunit
 bullet
+freetype2
+freeglut
+glu
+
