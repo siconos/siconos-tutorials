@@ -55,7 +55,7 @@ install_siconos:archlinux:
   stage: build
   image: base/archlinux
   before_script:
-    - 'pacman -Sy && pacman -S < ci/arch_linux_packages.txt'
+    - 'pacman -Sy && pacman -S - < ci/arch_linux_packages.txt'
   script:
     - "sh ci/install_siconos_with_mechanisms.sh archlinux" 
   only:
