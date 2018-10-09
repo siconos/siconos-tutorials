@@ -1,0 +1,15 @@
+boost
+boost-libs
+gmp
+cmake
+make
+gcc
+gcc-fortran
+swig
+openblas
+lapacke
+cblas
+python-scipy
+python3
+git
+cppunit

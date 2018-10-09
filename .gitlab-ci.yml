@@ -45,8 +45,11 @@ build_and_run_examples:
 
 install_siconos_with_mechanisms:
   stage: test
+  image: base/archlinux
+  before_script:
+    - ''
   script:
-    - "sh ci/install_siconos_with_mechanisms.sh $os" 
+    - "sh ci/install_siconos_with_mechanisms.sh archlinux" 
   artifacts:
     paths:
       - install-siconos
