@@ -1,6 +1,13 @@
 variables:
   os: ubuntu:18.04
 
+stages:
+  - build
+  - test
+  - build-mechanisms
+  - test-mechanisms
+
+
 image: $os
 
 cache:
@@ -22,7 +29,7 @@ before_script:
 
 
 
-install_siconos:
+ubuntu:install_siconos:
   stage: build
   script:
     - "sh ci/install_siconos.sh $os" 
@@ -33,26 +40,40 @@ install_siconos:
   - master
 
 
-build_and_run_examples:
+ubuntu:build_and_run_examples:
   stage: test
   script:
     - "sh ci/build_and_run_examples.sh $os"
   only:
   - master
   dependencies:
-   - install_siconos
+   - ubuntu:install_siconos
+  allow_failure: true
 
-
-install_siconos_with_mechanisms:
-  stage: test
+ubuntu:install_siconos_with_mechanisms:
+  stage: build-mechanisms
   script:
+    - apt install libbullet-dev
     - "sh ci/install_siconos_with_mechanisms.sh $os" 
+  artifacts:
+    paths:
+      - install-siconos
   only:
   - master
-
-
-install_siconos:archlinux:
-  stage: build
+  allow_failure: true
+  
+ubuntu:build_and_run_examples_with_mechanisms:
+  stage: test-mechanisms
+  script:
+    - "sh ci/build_and_run_examples.sh $os"
+  only:
+  - master
+  dependencies:
+   - ubuntu:install_siconos_with_mechanisms
+  allow_failure: true
+  
+archlinux:install_siconos_with_mechanisms
+  stage: build-mechanisms
   image: base/archlinux
   before_script:
     - 'pacman -Sy && pacman --noconfirm -S - < ci/arch_linux_packages.txt'
@@ -60,3 +81,20 @@ install_siconos:archlinux:
     - "sh ci/install_siconos_with_mechanisms.sh archlinux" 
   only:
   - master
+  artifacts:
+    paths:
+      - install-siconos
+  allow_failure: true
+  
+archlinux:build_and_run_examples_with_mechanisms:
+  stage: test-mechanisms
+  image: base/archlinux
+  before_script:
+    - 'pacman -Sy && pacman --noconfirm -S - < ci/arch_linux_packages.txt'
+  script:
+    - "sh ci/build_and_run_examples.sh archlinux"
+  only:
+  - master
+  dependencies:
+   - archlinux:install_siconos_with_mechanisms
+  allow_failure: true
