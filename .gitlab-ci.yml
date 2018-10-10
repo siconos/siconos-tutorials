@@ -72,7 +72,7 @@ ubuntu:build_and_run_examples_with_mechanisms:
    - ubuntu:install_siconos_with_mechanisms
   allow_failure: true
   
-archlinux:install_siconos_with_mechanisms
+archlinux:install_siconos_with_mechanisms:
   stage: build-mechanisms
   image: base/archlinux
   before_script:
