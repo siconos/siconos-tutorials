@@ -1,9 +1,6 @@
 #!bin/bash
 # Note : this script takes osname (from docker image in gitlab-ci script) as arg.
 
-#pip3 install -U scipy
-#pip3 install -U pytest
-env
 export ref_path=$PWD
 git clone https://github.com/siconos/siconos.git
 # Get last commit id, will be used for buildname on cdash.

@@ -9,8 +9,9 @@ swig
 openblas
 lapacke
 cblas
-python-scipy
 python3
+python-pytest
+python-scipy
 git
 cppunit
 bullet

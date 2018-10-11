@@ -12,8 +12,6 @@ fi
 export ref_path=$PWD
 env
 
-
-
 # -- occ/python occ install --
 git clone https://github.com/tpaviot/oce.git
 git clone https://github.com/tpaviot/pythonocc-core.git
@@ -36,7 +34,7 @@ cd siconos
 git rev-parse --short HEAD > ${ref_path}/siconos-commit-number.txt
 #
 cd ${ref_path}/build/siconos
-ctest -S ${ref_path}/ci/ctest_driver.cmake -V -DJOB_NAME=siconos_install -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos_with_mechanisms.cmake -DCTEST_BUILD_NAME="Siconos with mechanisms"
+ctest -S ${ref_path}/ci/ctest_driver.cmake -V -DJOB_NAME=siconos_install -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos_with_mechanisms.cmake -DCTEST_BUILD_NAME="Siconos (mechanisms in) install for examples" -DCTEST_SOURCE_DIRECTORY=${ref_path}/siconos
 
 #make -j ${nbprocs}
 make install

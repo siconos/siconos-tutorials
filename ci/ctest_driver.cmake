@@ -15,10 +15,9 @@
 if(NOT JOB_NAME)
   set(JOB_NAME "examples")
 endif()
-if(NOT WITH_TESTS)
-  # tests on for examples but off for siconos install. 
-  set(WITH_TESTS ON)
-endif()
+
+option(WITH_TESTS "Build and run tests. Default = ON" ON)
+
 # Path to siconos install
 #  if JOB_NAME is siconos_install, used as CMAKE_INSTALL_PREFIX
 #  and if JOB_NAME is examples, used to find siconos.
@@ -66,6 +65,7 @@ if(JOB_NAME STREQUAL "siconos_install")
   list(APPEND SICONOS_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=${SICONOS_INSTALL_DIR})
   list(APPEND SICONOS_CMAKE_OPTIONS -DCMAKE_CXX_STANDARD=11)
   list(APPEND SICONOS_CMAKE_OPTIONS -DSICONOS_USE_BOOST_FOR_CXX11=OFF)
+  list(APPEND SICONOS_CMAKE_OPTIONS -DWITH_TESTING=${WITH_TESTS})
   set(current_project siconos)
   cmake_host_system_information(RESULT NP QUERY NUMBER_OF_LOGICAL_CORES)
   set(CTEST_BUILD_FLAGS -j${NP})
