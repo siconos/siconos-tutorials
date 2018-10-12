@@ -26,7 +26,7 @@ cd ../pythonocc
 cmake ../../pythonocc-core -DCMAKE_BUILD_TYPE=Release
 make install -j $nbprocs
 cd $ref_path
-python -c 'import OCC'
+python3 -c 'import OCC'
 
 git clone https://github.com/siconos/siconos.git
 # Get last commit id, will be used for buildname on cdash.
@@ -34,7 +34,7 @@ cd siconos
 git rev-parse --short HEAD > ${ref_path}/siconos-commit-number.txt
 #
 cd ${ref_path}/build/siconos
-ctest -S ${ref_path}/ci/ctest_driver.cmake -V -DJOB_NAME=siconos_install -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos_with_mechanisms.cmake -DCTEST_BUILD_NAME="Siconos (mechanisms in) install for examples" -DCTEST_SOURCE_DIRECTORY=${ref_path}/siconos
+ctest -S ${ref_path}/ci/ctest_driver.cmake -V -DJOB_NAME=siconos_install -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos_with_mechanisms.cmake -DCTEST_BUILD_NAME="Siconos (with mechanisms) install for examples" -DCTEST_SOURCE_DIRECTORY=${ref_path}/siconos
 
 #make -j ${nbprocs}
 make install
