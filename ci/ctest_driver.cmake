@@ -16,7 +16,9 @@ if(NOT JOB_NAME)
   set(JOB_NAME "examples")
 endif()
 
-option(WITH_TESTS "Build and run tests. Default = ON" ON)
+if(NOT WITH_TESTS)
+  set(WITH_TESTS ON)
+endif()
 
 # Path to siconos install
 #  if JOB_NAME is siconos_install, used as CMAKE_INSTALL_PREFIX
@@ -89,7 +91,9 @@ elseif(JOB_NAME STREQUAL "examples")
   if(NOT CTEST_BUILD_NAME)
     set(CTEST_BUILD_NAME "Siconos examples")
   endif()
-
+  if(HAS_BULLET)
+    set(CTEST_BUILD_NAME "Siconos examples (with mechanisms)")
+  endif()
   set(SICONOS_CMAKE_OPTIONS -Dsiconos_DIR=${SICONOS_INSTALL_DIR}/share/siconos/cmake/)
   set(current_project siconos_examples)
 

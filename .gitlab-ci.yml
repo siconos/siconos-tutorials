@@ -43,7 +43,7 @@ ubuntu:install_siconos:
 ubuntu:build_and_run_examples:
   stage: test
   script:
-    - "sh ci/build_and_run_examples.sh $os "Siconos examples" "
+    - "sh ci/build_and_run_examples.sh $os"
   only:
   - master
   dependencies:
@@ -66,7 +66,7 @@ ubuntu:build_and_run_examples_with_mechanisms:
   stage: test-mechanisms
   script:
     - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev
-    - "sh ci/build_and_run_examples.sh $os "Siconos examples (with mechanisms)""
+    - "sh ci/build_and_run_examples.sh $os"
   only:
   - master
   dependencies:
@@ -93,7 +93,7 @@ archlinux:build_and_run_examples_with_mechanisms:
   before_script:
     - 'pacman -Sy && pacman --noconfirm -S - < ci/arch_linux_packages.txt'
   script:
-    - "sh ci/build_and_run_examples.sh archlinux "Siconos examples (with mechanisms)" "
+    - "sh ci/build_and_run_examples.sh archlinux"
   only:
   - master
   dependencies:
