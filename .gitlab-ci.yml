@@ -1,6 +1,7 @@
 variables:
   os: ubuntu:18.04
-
+  tag: 4.2.0
+  
 stages:
   - build
   - test
@@ -99,3 +100,12 @@ archlinux:build_and_run_examples_with_mechanisms:
   dependencies:
    - archlinux:install_siconos_with_mechanisms
   allow_failure: true
+
+
+ubuntu:siconos_examples_release:
+  stage: test-mechanisms
+  script:
+    - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev
+    - "sh ci/run_all_stages_release.sh $os $tag"
+  only:
+  - master
