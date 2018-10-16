@@ -1,3 +1,4 @@
+
 # ===========================================
 #  Set some predefined compilation flags for
 #  cxx compiler.
@@ -90,18 +91,12 @@ if(DEV_MODE)
   if((NOT WITH_MECHANISMS) AND (NOT WITH_PYTHON_WRAPPER))
     add_cxx_options("-Werror=missing-declarations")
   endif()
-  if(NOT WITH_OCC AND NOT WITH_MECHANISMS AND NOT WITH_SERIALIZATION)
-    add_cxx_options("-Werror=overloaded-virtual")
-  endif()
 
   add_cxx_options("-Wc++11-compat-deprecated-writable-strings")
   # ubuntu (at least) build with those
   add_cxx_options("-Wformat=2")
   add_cxx_options("-Werror=format-security")
 
-  if(NOT WITH_OCC AND NOT WITH_MECHANISMS)
-    add_cxx_options("-Werror=non-virtual-dtor")
-  endif()
 endif()
 
 # add_cxx_options("-static -static-libgcc -static-libstdc++" "GNU;Clang")

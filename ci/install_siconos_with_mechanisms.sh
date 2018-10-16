@@ -19,7 +19,7 @@ mkdir build
 cd build
 mkdir oce-last pythonocc siconos
 cd oce-last
-cmake ../../oce -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+cmake ../../oce -DOCE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 make -j $nbprocs
 make install
 cd ../pythonocc
