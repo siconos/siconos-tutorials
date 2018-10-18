@@ -185,7 +185,7 @@ if(CTEST_BUILD_CONFIGURATION MATCHES "Profiling")
   find_program(CTEST_MEMORYCHECK_COMMAND NAMES valgrind)
   set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "--quiet --leak-check=full --show-leak-kinds=definite,possible --track-origins=yes --error-limit=no --gen-suppressions=all") 
   set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "--quiet --leak-check=full --show-reachable=yes --error-limit=no --gen-suppressions=all") 
-  set(CTEST_MEMORYCHECK_SUPPRESSIONS_FILE ${SICONOS_ROOT_DIR}/share/siconos/cmake/valgrind.supp)
+  set(CTEST_MEMORYCHECK_SUPPRESSIONS_FILE ${siconos_ROOT_DIR}/share/siconos/cmake/valgrind.supp)
   
   ctest_memcheck(PARALLEL_LEVEL NP)
 endif()
@@ -206,7 +206,7 @@ endif()
 
 # ============= Summary =============
 message(STATUS "\n============================================ Summary ============================================")
-message(STATUS "CTest process for ${curren_project} (job name = ${JOB_NAME}) has ended.")
+message(STATUS "CTest process for ${current_project} (job name = ${JOB_NAME}) has ended.")
 message(STATUS "Ctest model is: ${model}")
 message(STATUS "Ctest executed on sources directory : ${CTEST_SOURCE_DIRECTORY}")
 message(STATUS "Build name (cdash) : ${CTEST_BUILD_NAME}")

@@ -44,6 +44,7 @@ if(HAS_PYTHON_WRAPPER)
   set(PYTHON_EXECUTABLE ${SICONOS_PYTHON_EXECUTABLE})
   include(FindPythonModule)
   find_python_module(matplotlib)
+  find_python_module(pyhull)
 endif()
 
 
@@ -124,18 +125,17 @@ set(control_examples
 
 # mechanics
 set(mechanics_examples
-  mechanics/InterestingDynamics
-  mechanics/JointsTests
-  mechanics/RigidBodiesCollection
-  
   )
 
 # mechanics + bullet
 set(mechanics_bullet_examples
   mechanics/BulletBouncingBox
   mechanics/JointsTestsWithContactDetection
+  mechanics/JointsTests
   mechanics/Queries
   mechanics/RockFall
+  mechanics/InterestingDynamics
+  mechanics/RigidBodiesCollection
   )
 
 # mechanics + oce
@@ -143,9 +143,12 @@ set(mechanics_oce_examples
   mechanics/OCC_Examples
   )
 
-# mechanisms
+# mechanisms # Warning : special care for mechanisms
+# Please set explicitely each directory that must be handled.
 set(mechanisms_examples
-  mechanics/Mechanisms
+  mechanics/Mechanisms/ShaftTube
+  mechanics/Mechanisms/SliderCrank
+  mechanics/Mechanisms/Trip_Magnetic
   )
 
 # io
@@ -189,10 +192,6 @@ if(${mechanics_installed} GREATER -1)
   endif()
 endif()
 
-if(${mechanisms_installed} GREATER -1)
-  message(STATUS "mechanisms component found")
-  set(EXAMPLES_DIRECTORIES  "${EXAMPLES_DIRECTORIES}" ${mechanisms_examples})
-endif()
 
 # Exclude some tests if LpSolve has not been found
 if(NOT HAS_ONE_LP_SOLVER)
@@ -262,7 +261,7 @@ if(BUILD_TESTING)
 	    endforeach()
             string(REPLACE "/" "_" target_name ${_dir})
             set(target_name ${target_name}_${EXAMPLE_NAME})
-	    if(ext MATCHES ".py")
+            if(ext MATCHES ".py")
  	      set(target_name ${target_name}_py)
  	    else()
 	      add_custom_target(${target_name}_build ALL ${CMAKE_COMMAND} -E chdir ${bin_dir} ${SICONOS_SCRIPT} --noexec --silent ${_P}
@@ -282,6 +281,25 @@ if(BUILD_TESTING)
       endif()
     endforeach()
   endforeach()
+
+  # separate treatment for mechanisms
+  if(${mechanisms_installed} GREATER -1)
+    message(STATUS "mechanisms component found")
+    foreach(_dir ${mechanisms_examples})
+      file(COPY ${_dir} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/mechanisms_examples)
+      get_filename_component(target_name ${_dir} NAME)
+      set(bin_dir ${CMAKE_CURRENT_BINARY_DIR}/mechanisms_examples/${target_name})
+      
+      add_test(
+        NAME ${target_name}
+        COMMAND ${CMAKE_COMMAND} -E chdir ${bin_dir} ${siconos_ROOT_DIR}/bin/siconos_mechanisms .)
+      # set timeout value
+      set_tests_properties(${target_name} PROPERTIES TIMEOUT ${tests_timeout})
+      
+    endforeach()
+  endif()
+
+  
 endif()  
 
 # The following should work, but isn't ... so I used NO_TEST_FILES -- xhub

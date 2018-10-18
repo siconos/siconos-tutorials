@@ -301,26 +301,31 @@ def plot_durations(timers):
     ax2.set_ylabel('host number')
     return plt
     #fig.tight_layout()
-    
+
+
 if __name__ == "__main__":
 
     # Get results files names from a campaign
-    from simulation_campaigns import campaign_14112017 as campaign09, campaign_16112017 as campaign0
-    freqs = campaign09['freqs']
-    filelist = campaign09['files']
-    dofs = [i for i in range(3, 820)]
-    errors09 = compute_errors(filelist, dofs)
+    try:
+        from simulation_campaigns import campaign_14112017 as campaign09, campaign_16112017 as campaign0
+        freqs = campaign09['freqs']
+        filelist = campaign09['files']
+        dofs = [i for i in range(3, 820)]
+        errors09 = compute_errors(filelist, dofs)
 
-    freqs0 = campaign09['freqs']
-    assert (freqs0 == freqs).all()
-    filelist = campaign0['files']
-    errors0 = compute_errors(filelist, dofs)
+        freqs0 = campaign09['freqs']
+        assert (freqs0 == freqs).all()
+        filelist = campaign0['files']
+        errors0 = compute_errors(filelist, dofs)
+        
+        plt.figure()
+        #plt.plot(np.log10(freqs[:-1]), np.log10(errors), 'o-')
+        for j in range(len(dofs)):
+            plt.loglog(freqs[:-1], errors09[:, j], 'o-')
+            plt.loglog(freqs[:-1], errors0[:, j], 'x-')
+        plt.xlabel("$F_e$(Hz)")
+        plt.ylabel("$L^2$ error")
+        plt.savefig("convergence_study.pdf")
 
-    plt.figure()
-    #plt.plot(np.log10(freqs[:-1]), np.log10(errors), 'o-')
-    for j in range(len(dofs)):
-        plt.loglog(freqs[:-1], errors09[:, j], 'o-')
-        plt.loglog(freqs[:-1], errors0[:, j], 'x-')
-    plt.xlabel("$F_e$(Hz)")
-    plt.ylabel("$L^2$ error")
-    plt.savefig("convergence_study.pdf")
+    except:
+        print("Pass. No results available.")
