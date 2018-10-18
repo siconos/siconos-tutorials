@@ -3,11 +3,6 @@ cmake_minimum_required(VERSION 3.0.2)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-# Force out-of-source build
-include(OutOfSourcesBuild)
-
-# Some usefull macros
-include(SiconosTools)
 
 #include(WindowsSiconosSetup)
 set(tests_timeout 35 CACHE INTERNAL "Limit time for tests (in seconds)")
@@ -17,13 +12,13 @@ project(siconos_examples CXX)
 
 # -- Try to find a proper siconos installation --
 
-# Get siconos current version
-include(SiconosVersion)
+# Get siconos version required to run the examples
+include(SiconosRequiredVersion)
 # find_package: look for siconosConfig.cmake file in CMAKE_MODULE_PATH
 # --> this set siconos_ROOT_DIR to the directory where siconos is installed
 # Remark : we may also use the package registry magic to find siconos:
 # see https://cmake.org/cmake/help/git-master/manual/cmake-packages.7.html#creating-packages
-find_package(siconos ${SICONOS_VERSION} REQUIRED)
+find_package(siconos ${SICONOS_REQUIRED_VERSION} REQUIRED)
   
 # --- Search siconos package path ---
 # --> based on path to script siconos
@@ -36,13 +31,17 @@ if(NOT SICONOS_SCRIPT)
   message(FATAL_ERROR "Can not find siconos script. Please set your PATH environment variable properly.")
 endif()
 
+# Add cmake files from cmake install
+list(APPEND CMAKE_MODULE_PATH ${siconos_ROOT_DIR}/share/siconos/cmake)
+
+# Some usefull macros
+include(SiconosTools)
 
 # -- Python API --
 # Check if python API has been generated and look for
 # some specific packages if required.
 if(HAS_PYTHON_WRAPPER)
   set(PYTHON_EXECUTABLE ${SICONOS_PYTHON_EXECUTABLE})
-  include(FindPackageHandleStandardArgs)
   include(FindPythonModule)
   find_python_module(matplotlib)
 endif()
@@ -94,8 +93,8 @@ set(kernel_examples
   mechancis/CamFollower
   mechanics/ChainsOfBalls
   mechanics/ColumnOfBeads
-  mechanics/Disks
-  mechanics/FEM
+  mechanics/FEM/ImpactingBar
+  mechanics/FEM/exemple_Houari
   mechanics/JointsTestsWithBoundaryConditions
   mechanics/JointsTestsWithInternalForces
   mechanics/Music
@@ -105,6 +104,18 @@ set(kernel_examples
   mechanics/Woodpecker
   mechanics/yoyo
   )
+
+# Check mfem and add this example
+if(HAS_MFEM) # To be done!
+  list(APPEND kernel_examples mechanics/FEM/Punch)
+endif()
+
+
+find_package(QGLVIEWER)
+if(QGLVIEWER_FOUND)
+  list(APPEND kernel_examples mechanics/Disks)
+endif()
+  
 
 # control
 set(control_examples
@@ -138,11 +149,15 @@ set(mechanisms_examples
   )
 
 # io
+
 set(io_examples
-  mechanics/Spheres/Lagrangian
-  mechanics/Spheres/NewtonEuler
-  
   )
+
+if(QGLVIEWER_FOUND)
+  list(APPEND io_examples mechanics/Spheres/NewtonEuler)
+  list(APPEND io_examples mechanics/Spheres/Lagrangian)
+endif()
+
 
 # We assume that numerics, at least, is installed ...
 set(EXAMPLES_DIRECTORIES ${numerics_examples})
@@ -200,10 +215,18 @@ if(BUILD_TESTING)
   foreach(_D ${EXAMPLES_DIRECTORIES})
     message("Scan examples directory ${_D}")
     get_subdirectories(dirlist ${CMAKE_CURRENT_SOURCE_DIR}/${_D})
-    list(TRANSFORM dirlist PREPEND ${_D}/)
+    if(CMAKE_VERSION VERSION_LESS 3.12.3)
+      set(newlist)
+      foreach(f ${dirlist})
+        list(APPEND newlist "${_D}/${f}")
+      endforeach()
+      set(dirlist "${newlist}")
+    else()
+      list(TRANSFORM dirlist PREPEND ${_D}/)
+    endif()
+    
     list(APPEND dirlist ${_D})
     list(FILTER dirlist EXCLUDE REGEX "src")
-    message("MY DIRLIST ${dirlist}")
     foreach(_dir ${dirlist})
       set(src_dir ${CMAKE_CURRENT_SOURCE_DIR}/${_dir})
       if(HAS_PYTHON_WRAPPER)
