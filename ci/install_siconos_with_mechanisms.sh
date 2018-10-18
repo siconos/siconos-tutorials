@@ -28,6 +28,9 @@ make install -j $nbprocs
 cd $ref_path
 python3 -c 'import OCC'
 
+# h5py required for mechanics tests ...
+pip3 install -U -r ./ci/requirements.txt
+
 git clone https://github.com/siconos/siconos.git
 # Get last commit id, will be used for buildname on cdash.
 cd siconos
