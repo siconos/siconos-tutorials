@@ -42,10 +42,10 @@ ctest -S ${ref_path}/ci/ctest_driver.cmake -V -DJOB_NAME=siconos_install -Dmodel
 #make -j ${nbprocs}
 make install
 mv ${ref_path}/siconos-commit-number.txt ${ref_path}/install-siconos/
-
 pip3 install -U -r ./ci/requirements.txt
 cd ${ref_path}/build/
 mkdir examples
 cd examples
 export buildname="Siconos "$tag", examples"
-ctest -S ${ref_path}/ci/ctest_driver.cmake  -V -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -Dmodel=Continuous -DOSNAME=$1 -DCTEST_BUILD_NAME=$buildname
+
+ctest -S ${ref_path}/ci/ctest_driver.cmake  -V -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -Dmodel=Continuous -DOSNAME=$1 -DCTEST_BUILD_NAME=$buildname -DCTEST_SOURCE_DIRECTORY=${ref_path}/siconos/examples
