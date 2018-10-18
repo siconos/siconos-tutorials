@@ -12,6 +12,7 @@ cblas
 python3
 python-pytest
 python-scipy
+python-h5py
 git
 cppunit
 bullet
