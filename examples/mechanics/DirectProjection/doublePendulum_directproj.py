@@ -3,6 +3,7 @@
 #
 # Example of a double pendulum
 #
+# Req : mechanics component with bullet.
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner

@@ -14,17 +14,6 @@ set(tests_timeout 35 CACHE INTERNAL "Limit time for tests (in seconds)")
 
 project(siconos_examples CXX)
 
-#include(CXXCompilerSetup)
-#include(CCompilerSetup)
-
-# -- List of directories to exclude from tests --
-set(NO_TEST_FILES QGL tools)
-
-# sharing a double between an executable and a library is hackisch
-if(MSVC)
-  set(NO_TEST_FILES ${NO_TEST_FILES} RockingBlock Pendulum)
-endif(MSVC)
-
 
 # -- Try to find a proper siconos installation --
 
@@ -43,73 +32,10 @@ find_file(SICONOS_SCRIPT
   PATHS ${siconos_ROOT_DIR}/bin
   )
    
-  
 if(NOT SICONOS_SCRIPT)
   message(FATAL_ERROR "Can not find siconos script. Please set your PATH environment variable properly.")
 endif()
 
-# -- Set the list of examples to be processed --
-# It depends on the components installed on the system
-
-# Minimal set of examples (i.e. assume at least numerics component)
-set(EXAMPLES_DIRECTORIES
-  friction_contact_solvers
-  )
-
-string(FIND "${installed_targets}" "kernel" kernel_installed )
-string(FIND "${installed_targets}" "control" control_installed )
-string(FIND "${installed_targets}" "io" io_installed )
-
-  
-# - Kernel component examples -
-if(${kernel_installed} GREATER -1)
-  MESSAGE(STATUS "kernel component found")
-  set(EXAMPLES_DIRECTORIES
-    "${EXAMPLES_DIRECTORIES}"
-    biology
-    electronics
-    mechanics
-    # robotics/# HuMAns_pa10 outdated
-    #Spheres/Lagrangian
-    #Spheres/NewtonEuler
-    )
-endif()
-
-# - Control component examples -
-if(${control_installed} GREATER -1)
-  message(STATUS "control component found")
-  set(EXAMPLES_DIRECTORIES
-    "${EXAMPLES_DIRECTORIES}"
-    control
-    )
-endif()
-
-  
-# Some examples need mechanics component. Do not include
-# them if mechanics not found.
-# Note FP : we should move all examples that require mechanics component in a specific directory
-string(FIND "${installed_targets}" "mechanics" mechanics_installed )
-
-# set the list of directories of examples based on mechanics component.
-set(mechanics_examples
-  JointsTests
-  RockFall
-  RigidBodiesCollection
-  OCC_Examples
-  InterestingDynamics
-  GranularMaterial
-  GeometricPrimitives
-  DirectProjection
-  Hacks
-  Queries
-  )
-
-if (${mechanics_installed} LESS 0)
-  message("mechanics component not found")
-  foreach(_dir ${mechanics_examples})
-    list(APPEND NO_TEST_FILES ${_dir})
-  endforeach()
-endif()
 
 # -- Python API --
 # Check if python API has been generated and look for
@@ -119,12 +45,138 @@ if(HAS_PYTHON_WRAPPER)
   include(FindPackageHandleStandardArgs)
   include(FindPythonModule)
   find_python_module(matplotlib)
-  find_python_module(h5py)
-  if(NOT h5py_FOUND)
-    list(APPEND NO_TEST_FILES "MechanicsIO")
+endif()
+
+
+# -- Set the list of examples to be processed --
+# It depends on the components installed on the system
+
+# Minimal set of examples (i.e. assume at least numerics component)
+set(EXAMPLES_DIRECTORIES
+  friction_contact_solvers
+  )
+
+
+# -- Check which components are available --
+string(FIND "${installed_targets}" "kernel" kernel_installed )
+string(FIND "${installed_targets}" "control" control_installed )
+string(FIND "${installed_targets}" "mechanics" mechanics_installed )
+# mechanics with bullet? --> SICONOS_HAS_BULLET = ON
+# mechanics or mechanisms with OCE? --> SICONOS_HAS_OCE = ON
+string(FIND "${installed_targets}" "mechanisms" mechanisms_installed )
+string(FIND "${installed_targets}" "io" io_installed )
+
+if(${io_installed} GREATER -1)
+  find_python_module(h5py REQUIRED)
+endif()
+
+
+# --- Sort examples, depending on the minimal component they need ---
+
+# Warning : when a directory is listed in one of the variables below
+# all its subdirectories are also taken into account!
+
+# It's a bit boring to set explicitely all these dirs. We should review examples organisation ...
+
+# numerics only
+set(numerics_examples
+  friction_contact_solvers
+  )
+
+# kernel
+set(kernel_examples
+  biology
+  electronics
+  robotics
+  mechanics/BallOnMovingPlane
+  mechanics/BouncingBall
+  mechanics/BouncingBallEventDriven
+  mechancis/CamFollower
+  mechanics/ChainsOfBalls
+  mechanics/ColumnOfBeads
+  mechanics/Disks
+  mechanics/FEM
+  mechanics/JointsTestsWithBoundaryConditions
+  mechanics/JointsTestsWithInternalForces
+  mechanics/Music
+  mechanics/NewtonEuler
+  mechanics/SliderCrank
+  mechanics/TwoBouncingBalls
+  mechanics/Woodpecker
+  mechanics/yoyo
+  )
+
+# control
+set(control_examples
+  control
+  )
+
+# mechanics
+set(mechanics_examples
+  mechanics/InterestingDynamics
+  mechanics/JointsTests
+  mechanics/RigidBodiesCollection
+  
+  )
+
+# mechanics + bullet
+set(mechanics_bullet_examples
+  mechanics/BulletBouncingBox
+  mechanics/JointsTestsWithContactDetection
+  mechanics/Queries
+  mechanics/RockFall
+  )
+
+# mechanics + oce
+set(mechanics_oce_examples
+  mechanics/OCC_Examples
+  )
+
+# mechanisms
+set(mechanisms_examples
+  mechanics/Mechanisms
+  )
+
+# io
+set(io_examples
+  mechanics/Spheres/Lagrangian
+  mechanics/Spheres/NewtonEuler
+  
+  )
+
+# We assume that numerics, at least, is installed ...
+set(EXAMPLES_DIRECTORIES ${numerics_examples})
+
+if(${kernel_installed} GREATER -1)
+  message(STATUS "kernel component found")
+  set(EXAMPLES_DIRECTORIES  "${EXAMPLES_DIRECTORIES}" ${kernel_examples})
+endif()
+
+if(${control_installed} GREATER -1)
+  message(STATUS "control component found")
+  set(EXAMPLES_DIRECTORIES  "${EXAMPLES_DIRECTORIES}" ${control_examples})
+endif()
+
+if(${mechanics_installed} GREATER -1)
+  message(STATUS "mechanics component found")
+  set(EXAMPLES_DIRECTORIES  "${EXAMPLES_DIRECTORIES}" ${mechanics_examples})
+  if(SICONOS_HAS_BULLET)
+    message(STATUS "add examples requiring bullet")
+    set(EXAMPLES_DIRECTORIES  "${EXAMPLES_DIRECTORIES}" ${mechanics_bullet_examples})
   endif()
-else()
-  list(APPEND NO_TEST_FILES "MechanicsIO")
+  if(SICONOS_HAS_OCE)
+    message(STATUS "add examples requiring oce")
+    set(EXAMPLES_DIRECTORIES  "${EXAMPLES_DIRECTORIES}" ${mechanics_oce_examples})
+  endif()
+  if(${io_installed} GREATER -1)
+    message(STATUS "io component found")
+    set(EXAMPLES_DIRECTORIES  "${EXAMPLES_DIRECTORIES}" ${io_examples})
+  endif()
+endif()
+
+if(${mechanisms_installed} GREATER -1)
+  message(STATUS "mechanisms component found")
+  set(EXAMPLES_DIRECTORIES  "${EXAMPLES_DIRECTORIES}" ${mechanisms_examples})
 endif()
 
 # Exclude some tests if LpSolve has not been found
@@ -132,20 +184,10 @@ if(NOT HAS_ONE_LP_SOLVER)
   set(NO_TEST_FILES ${NO_TEST_FILES} SMCElectroPneumaticItw Twisting)
 endif()
 
-# Bullet examples
-if(HAS_BULLET)
-  list(APPEND EXAMPLES_DIRECTORIES Mechanics/ContactDetection)
-  
-  if(HAS_PYTHON_WRAPPER)
-    if(NOT h5py_FOUND)
-      list(APPEND NO_TEST_FILES "BulletIO")
-    endif()
-  else()
-    list(APPEND NO_TEST_FILES "BulletIO")
-  endif()
-else()
-  list(APPEND NO_TEST_FILES BulletBouncingBox)
-endif()
+# sharing a double between an executable and a library is hackisch
+if(MSVC)
+  set(NO_TEST_FILES ${NO_TEST_FILES} RockingBlock Pendulum)
+endif(MSVC)
 
 #  At this point, two lists are available :
 #  - EXAMPLES_DIRECTORIES : all dirs that shoulb be scanned to find examples sources
@@ -158,58 +200,61 @@ if(BUILD_TESTING)
   foreach(_D ${EXAMPLES_DIRECTORIES})
     message("Scan examples directory ${_D}")
     get_subdirectories(dirlist ${CMAKE_CURRENT_SOURCE_DIR}/${_D})
-    list(APPEND dirlist .)
+    list(TRANSFORM dirlist PREPEND ${_D}/)
+    list(APPEND dirlist ${_D})
+    list(FILTER dirlist EXCLUDE REGEX "src")
+    message("MY DIRLIST ${dirlist}")
     foreach(_dir ${dirlist})
-      set(src_dir ${CMAKE_CURRENT_SOURCE_DIR}/${_D}/${_dir})
+      set(src_dir ${CMAKE_CURRENT_SOURCE_DIR}/${_dir})
       if(HAS_PYTHON_WRAPPER)
         file(GLOB EXAMPLES_P ${src_dir}/*.cpp ${src_dir}/*.py)
       else()
         file(GLOB EXAMPLES_P ${src_dir}/*.cpp)
       endif()
       file(GLOB EXAMPLES_DATA ${src_dir}/*.ref ${src_dir}/*/*.mat)
-      
+      list(FILTER EXAMPLES_P EXCLUDE REGEX "Plugin")
+      list(FILTER EXAMPLES_P EXCLUDE REGEX "plugin")
       if(EXAMPLES_P)
         foreach(_P ${EXAMPLES_P})
 	  # Full path to current file ...
 	  get_filename_component(_RP ${_P} ABSOLUTE)
-	  if(NOT _RP MATCHES Plugin) # To exclude plugins
-	    set(TEST_ME TRUE)
-	    # Exclude 'no test' files
-	    foreach(_NT ${NO_TEST_FILES})
-	      if(_RP MATCHES "${_NT}")
-	        set(TEST_ME FALSE)
-	      endif()
+	  set(TEST_ME TRUE)
+	  # Exclude 'no test' files
+	  foreach(_NT ${NO_TEST_FILES})
+	    if(_RP MATCHES "${_NT}")
+	      set(TEST_ME FALSE)
+	    endif()
+	  endforeach()
+	  if(TEST_ME)
+	    get_filename_component(EXAMPLE_DIR ${_RP} PATH)
+	    get_filename_component(EXAMPLE_NAME ${_RP} NAME_WE)
+	    get_filename_component(ext ${_P} EXT)
+	    message("Add ${_D}/${_dir}/${EXAMPLE_NAME}")
+            
+            set(bin_dir ${CMAKE_CURRENT_BINARY_DIR}/${_D}/${_dir}/${EXAMPLE_NAME})
+	    file(MAKE_DIRECTORY ${bin_dir})
+	    foreach(datafile ${EXAMPLES_DATA})
+	      message(STATUS "configure " ${datafile})
+	      configure_file(${datafile} ${bin_dir} COPYONLY)
 	    endforeach()
-	    if(TEST_ME)
-	      get_filename_component(EXAMPLE_DIR ${_RP} PATH)
-	      get_filename_component(EXAMPLE_NAME ${_RP} NAME_WE)
-	      get_filename_component(ext ${_P} EXT)
-	      message("Add ${_D}/${_dir}/${EXAMPLE_NAME}")
-              
-              set(bin_dir ${CMAKE_CURRENT_BINARY_DIR}/${_D}/${_dir}/${EXAMPLE_NAME})
-	      file(MAKE_DIRECTORY ${bin_dir})
-	      foreach(datafile ${EXAMPLES_DATA})
-	        message(STATUS "configure " ${datafile})
-	        configure_file(${datafile} ${bin_dir})
-	      endforeach()
-	      if(ext MATCHES ".py")
- 	        set(target_name ${_dir}_${EXAMPLE_NAME}_py)
- 	      else()
-	        set(target_name ${_dir}_${EXAMPLE_NAME})
-	        add_custom_target(${target_name}_build ALL ${CMAKE_COMMAND} -E chdir ${bin_dir} ${SICONOS_SCRIPT} --noexec --silent ${_P}
-		  WORKING_DIRECTORY ${bin_dir})
-	      endif()
-              
-              # Create a 'test' for the current example
-              # name : driver file (cpp or py)  name
-              #
- 	      add_test(
-                NAME ${target_name}
-                COMMAND ${CMAKE_COMMAND} -E chdir ${bin_dir} ${SICONOS_SCRIPT} ${_P})
-              # set timeout value
-	      set_tests_properties(${target_name} PROPERTIES TIMEOUT ${tests_timeout})
-            endif()
-	  endif()
+            string(REPLACE "/" "_" target_name ${_dir})
+            set(target_name ${target_name}_${EXAMPLE_NAME})
+	    if(ext MATCHES ".py")
+ 	      set(target_name ${target_name}_py)
+ 	    else()
+	      add_custom_target(${target_name}_build ALL ${CMAKE_COMMAND} -E chdir ${bin_dir} ${SICONOS_SCRIPT} --noexec --silent ${_P}
+		WORKING_DIRECTORY ${bin_dir})
+	    endif()
+            
+            # Create a 'test' for the current example
+            # name : driver file (cpp or py)  name
+            #
+ 	    add_test(
+              NAME ${target_name}
+              COMMAND ${CMAKE_COMMAND} -E chdir ${bin_dir} ${SICONOS_SCRIPT} ${_P})
+            # set timeout value
+	    set_tests_properties(${target_name} PROPERTIES TIMEOUT ${tests_timeout})
+          endif()
         endforeach()
       endif()
     endforeach()
@@ -225,4 +270,5 @@ message("Found siconos script : ${SICONOS_SCRIPT}")
 get_filename_component(SICONOS_INSTALL_DIR ${SICONOS_SCRIPT} PATH)
 get_filename_component(SICONOS_INSTALL_DIR ${SICONOS_INSTALL_DIR} PATH)
 message("The examples will be run with siconos installed in : ${SICONOS_INSTALL_DIR}")
+message("Try ctest -N to get a list of all tests that will be processed.")
 message("============================================================================================")
