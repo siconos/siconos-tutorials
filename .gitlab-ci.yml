@@ -55,7 +55,7 @@ ubuntu:install_siconos_with_mechanisms:
   stage: build-mechanisms
   script:
     - apt install -y libbullet-dev libbullet-dev libfreetype6-dev freeglut3-dev python3-h5py
-    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev oce-draw
+    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev 
     - "sh ci/install_siconos_with_mechanisms.sh $os" 
   artifacts:
     paths:
@@ -68,7 +68,7 @@ ubuntu:build_and_run_examples_with_mechanisms:
   stage: test-mechanisms
   script:
     - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev python3-h5py
-    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev oce-draw
+    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev 
     - "sh ci/build_and_run_examples.sh $os"
   only:
   - master
@@ -108,7 +108,7 @@ ubuntu:siconos_examples_release:
   stage: test-mechanisms
   script:
     - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev python3-h5py
-    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev oce-draw
+    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev
     - "sh ci/run_all_stages_release.sh $os $tag"
   only:
   - master
