@@ -11,8 +11,8 @@ cd siconos
 git rev-parse --short HEAD > ${ref_path}/siconos-commit-number.txt
 #
 cd ..
-mkdir build
-cd build
+mkdir -p build/siconos
+cd build/siconos
 ctest -S ${ref_path}/ci/ctest_driver_install_siconos.cmake -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1
 
 #cmake ../siconos -DUSER_OPTIONS_FILE=$PWD/../ci/siconos_conf.cmake -DCMAKE_INSTALL_PREFIX=../install-siconos

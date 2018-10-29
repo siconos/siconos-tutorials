@@ -22,7 +22,7 @@ fi
 git clone https://github.com/tpaviot/pythonocc-core.git
 mkdir pythonocc
 cd pythonocc
-cmake ../../pythonocc-core -DCMAKE_BUILD_TYPE=Release
+cmake ../pythonocc-core -DCMAKE_BUILD_TYPE=Release
 make install -j $nbprocs
 cd $build__path
 # test ...
