@@ -60,7 +60,7 @@ endif()
 # Build name (for cdash)
 if(NOT CTEST_BUILD_NAME)
   # Get hash for commit of current version of Siconos
-  file(READ ${CTEST_SOURCE_DIRECTORY}/../siconos-commit-number.txt SICO_REF)
+  file(READ ${SICONOS_TUTORIAL_SOURCE_DIR}/siconos-commit-number.txt SICO_REF)
   string(STRIP ${SICO_REF} SICO_REF)
   include(${CTEST_SOURCE_DIRECTORY}/cmake/SiconosVersion.cmake)
   set(CTEST_BUILD_NAME "Siconos install (${SICONOS_VERSION}-devel, ref commit : ${SICO_REF})")

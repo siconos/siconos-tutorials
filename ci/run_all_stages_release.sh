@@ -29,8 +29,8 @@ git clone https://github.com/siconos/siconos.git
 cd siconos
 git clone tags/$2
 git rev-parse --short HEAD > ${ref_path}/siconos-commit-number.txt
-mkdir ${ref_path}/build/siconos
-cd ${ref_path}/build/siconos
+mkdir ${ref_path}/build-siconos
+cd ${ref_path}/build-siconos
 export buildname="Siconos install (release $tag, with OCE)"
 
 ctest -S ${ref_path}/ci/ctest_driver_install_siconos.cmake -V -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos_with_mechanisms.cmake -DCTEST_BUILD_NAME=$buildname
@@ -38,9 +38,7 @@ make install
 mv ${ref_path}/siconos-commit-number.txt ${ref_path}/install-siconos/
 
 pip3 install -U -r ./ci/requirements.txt
-cd ${ref_path}/build/
-mkdir examples
-cd examples
+mkdir ${ref_path}/build-examples
+cd ${ref_path}/build-examples
 export buildname="Siconos (release $tag; with OCE), run all examples"
-
 ctest -S ${ref_path}/ci/ctest_driver_examples.cmake -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -Dmodel=Continuous -DOSNAME=$1 -DCTEST_BUILD_NAME=$buildname -DCTEST_SOURCE_DIRECTORY=${ref_path}/siconos/examples
