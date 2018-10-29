@@ -14,7 +14,7 @@ project(siconos_examples CXX)
 
 # Get siconos version required to run the examples
 include(SiconosRequiredVersion)
-# find_package: look for siconosConfig.cmake file in CMAKE_MODULE_PATH
+# find_package: look for siconosConfig.cmake file
 # --> this set siconos_ROOT_DIR to the directory where siconos is installed
 # Remark : we may also use the package registry magic to find siconos:
 # see https://cmake.org/cmake/help/git-master/manual/cmake-packages.7.html#creating-packages
