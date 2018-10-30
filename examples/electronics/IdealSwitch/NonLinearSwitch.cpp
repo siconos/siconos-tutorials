@@ -177,7 +177,7 @@ int main()
     //        numerics_set_verbose(1);
     //      else if (cmp==151)
     //        numerics_set_verbose(0);
-    cout << "..." << cmp << endl;
+    //cout << "..." << cmp << endl;
     cmp++;
     // solve ...
     aS->computeOneStep();

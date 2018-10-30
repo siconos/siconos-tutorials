@@ -118,7 +118,7 @@ if __name__ == '__main__':
 #                z[0] = 1.0
 #            if z[3] > 1e-7 and z[2] < 1.0 - 1e-7:
 #                z[2] = 1.0
-            print(lambda_)
+            #print(lambda_)
             vi_function(2, signs[k-1, :], xkp1)
             #lambda_[0] = -np.sign(xkp1[0])
             #lambda_[1] = *np.sign(xkp1[1])
@@ -126,11 +126,11 @@ if __name__ == '__main__':
                 lambda_[0] = 0.01
             if np.abs(xk[1]) < 1e-10:
                 lambda_[1] = 0.01
-                print('ok lambda')
-                print(lambda_)
+                #print('ok lambda')
+                #print(lambda_)
             info = SN.variationalInequality_box_newton_QiLSA(vi, lambda_, xkp1, SO)
 #            info = SN.mcp_newton_minFBLSA(mcp, z, w, SO)
-            print('iter {:} ; solver iter = {:} ; prec = {:}'.format(k, SO.iparam[1], SO.dparam[1]))
+            #print('iter {:} ; solver iter = {:} ; prec = {:}'.format(k, SO.iparam[1], SO.dparam[1]))
             if info >0:
                 print('VI solver failed ! info = {:}'.format(info))
                 print(B)

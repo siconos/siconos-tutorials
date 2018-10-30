@@ -34,11 +34,11 @@ public:
   };
   void computeb(double time)
   {
-    printf("computeB\n");
+    //printf("computeB\n");
     double t = sin(50 * time);
     _b->setValue(0,t);
     _b->setValue(1,-t);
-    printf("b[0] = %g, b[1] = %g\n", _b->getValue(0), _b->getValue(1));
+    //printf("b[0] = %g, b[1] = %g\n", _b->getValue(0), _b->getValue(1));
   };
 };
 // main program

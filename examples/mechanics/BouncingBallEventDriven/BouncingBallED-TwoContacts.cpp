@@ -220,12 +220,12 @@ int main(int argc, char* argv[])
 
 
 
-      cout << "========================================" << endl;
-      cout << " time: " << s->startingTime() << endl;
-      cout << "ball position: " << (*q)(0) << endl;
-      cout << "ball velocity: " << (*v)(0) << endl;
-      cout << "gap at contact 1: " << (*y1)(0) << endl;
-      cout << "gap at contact 2: " << (*y2)(0) << endl;
+      // cout << "========================================" << endl;
+      // cout << " time: " << s->startingTime() << endl;
+      // cout << "ball position: " << (*q)(0) << endl;
+      // cout << "ball velocity: " << (*v)(0) << endl;
+      // cout << "gap at contact 1: " << (*y1)(0) << endl;
+      // cout << "gap at contact 2: " << (*y2)(0) << endl;
       //
       k++;
       ++numberOfEvent;

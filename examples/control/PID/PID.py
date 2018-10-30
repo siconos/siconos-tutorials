@@ -89,7 +89,7 @@ if doubleIntegrator.b() is not None:
 # Main loop
 k = 1
 while(s.hasNextEvent()):
-    print("iteration k", k)
+    #print("iteration k", k)
     if (s.eventsManager().nextEvent() == 1):
         s.computeOneStep()
         dataPlot[k, 0] = s.nextTime()

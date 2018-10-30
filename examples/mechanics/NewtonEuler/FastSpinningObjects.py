@@ -256,12 +256,12 @@ k = 1
 
 # time loop
 while(s.hasNextEvent() and k < N):
-    print(' ' )
-    print (
-        '------- k = ',
-        k,
-        '-----------------------------------------')
-    print(' ' )
+    # print(' ' )
+    # print (
+    #     '------- k = ',
+    #     k,
+    #     '-----------------------------------------')
+    # print(' ' )
     s.computeOneStep()
     dataPlot[k, 0] = s.nextTime()    
     dataPlot[k, 1] = q[0]

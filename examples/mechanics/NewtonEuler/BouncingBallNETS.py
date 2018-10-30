@@ -38,7 +38,7 @@ class BouncingBallR(NewtonEulerFrom1DLocalFrameR):
         super(BouncingBallR, self).__init__()
 
     def computeh(self, time, q, y):
-        print(q)
+        #print(q)
         
         vec_q=SiconosVector(q)
         

@@ -91,7 +91,7 @@ set(kernel_examples
   mechanics/BallOnMovingPlane
   mechanics/BouncingBall
   mechanics/BouncingBallEventDriven
-  mechancis/CamFollower
+  mechanics/CamFollower
   mechanics/ChainsOfBalls
   mechanics/ColumnOfBeads
   mechanics/FEM/ImpactingBar
@@ -223,9 +223,11 @@ if(BUILD_TESTING)
     else()
       list(TRANSFORM dirlist PREPEND ${_D}/)
     endif()
-    
+
     list(APPEND dirlist ${_D})
     list(FILTER dirlist EXCLUDE REGEX "src")
+    list(FILTER dirlist EXCLUDE REGEX "Plugin")
+    list(FILTER dirlist EXCLUDE REGEX "plugin")
     foreach(_dir ${dirlist})
       set(src_dir ${CMAKE_CURRENT_SOURCE_DIR}/${_dir})
       if(HAS_PYTHON_WRAPPER)
@@ -251,12 +253,12 @@ if(BUILD_TESTING)
 	    get_filename_component(EXAMPLE_DIR ${_RP} PATH)
 	    get_filename_component(EXAMPLE_NAME ${_RP} NAME_WE)
 	    get_filename_component(ext ${_P} EXT)
-	    message("Add ${_D}/${_dir}/${EXAMPLE_NAME}")
+	    # message("Add ${_D}/${_dir}/${EXAMPLE_NAME}")
             
-            set(bin_dir ${CMAKE_CURRENT_BINARY_DIR}/${_D}/${_dir}/${EXAMPLE_NAME})
+            set(bin_dir ${CMAKE_CURRENT_BINARY_DIR}/${_dir}/${EXAMPLE_NAME})
 	    file(MAKE_DIRECTORY ${bin_dir})
 	    foreach(datafile ${EXAMPLES_DATA})
-	      message(STATUS "configure " ${datafile})
+	      #message(STATUS "configure " ${datafile})
 	      configure_file(${datafile} ${bin_dir} COPYONLY)
 	    endforeach()
             string(REPLACE "/" "_" target_name ${_dir})
