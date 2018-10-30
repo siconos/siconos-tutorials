@@ -123,8 +123,8 @@ Y = scipy.fft(dataPlot[4900:, 3])/n
 k = arange(n)
 T = n*h
 frq = k/T
-frq = frq[list(range(n/2))]
-Y = Y[list(range(n/2))]
+frq = frq[list(range(int(n/2)))]
+Y = Y[list(range(int(n/2)))]
 plot(frq, abs(Y), 'r')
 xlabel(r'freq (Hz)')
 title(r'Frequency spectrum of $\bar{u}^s$')

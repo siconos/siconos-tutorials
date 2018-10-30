@@ -10,7 +10,7 @@ if [ "$#" -eq 1 ] && [ "$1" = "clone_oce" ]; then
     git clone https://github.com/tpaviot/oce.git
     mkdir oce-last
     cd oce-last
-    cmake ../../oce -DOCE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+    cmake ../oce -DOCE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
     make -j $nbprocs
     make install
     cd $build_path

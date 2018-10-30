@@ -1,4 +1,3 @@
-
 #include "SiconosKernel.hpp"
 #include "const.h"
 #include "NonlinearRelation.hpp"
@@ -171,7 +170,7 @@ int main(int argc, char *argv[])
   if (argc==1)
   {
     // Comparison with a reference file
-    double error=0.0, eps=1e-12;
+    double error=0.0, eps=1e-11;
     if ((error=ioMatrix::compareRefFile(dataPlot, "simu.1.6.ref", eps)) >= 0.0
         && error > eps)
       return 1;

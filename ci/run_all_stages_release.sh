@@ -27,7 +27,7 @@ cd $ref_path
 # -- Siconos clone,  build, install --
 git clone https://github.com/siconos/siconos.git
 cd siconos
-git clone tags/$2
+git checkout tags/$2
 git rev-parse --short HEAD > ${ref_path}/siconos-commit-number.txt
 mkdir ${ref_path}/build-siconos
 cd ${ref_path}/build-siconos

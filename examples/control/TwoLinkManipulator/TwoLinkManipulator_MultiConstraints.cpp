@@ -367,7 +367,7 @@ int main(int argc, char* argv[])
     // --- Output files ---
     dataPlot.resize(k,outputSize);
     ioMatrix::write("TwoLinkManipulator_MultiConstraints.dat", "ascii", dataPlot, "noDim");
-    double error=0.0, eps=1e-10;
+    double error=0.0, eps=1e-7;
     if ((error=ioMatrix::compareRefFile(dataPlot, "TwoLinkManipulator_MultiConstraints.ref", eps)) >= 0.0
         && error > eps)
       return 1;

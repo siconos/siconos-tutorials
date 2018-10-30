@@ -60,6 +60,9 @@ endforeach()
 set(CTEST_CONFIGURE_COMMAND "${CTEST_CONFIGURE_COMMAND} ${CTEST_SOURCE_DIRECTORY}")
 
 ctest_configure(CAPTURE_CMAKE_ERROR CONFIGURE_STATUS)
+if(NOT CONFIGURE_STATUS EQUAL 0)
+  message(FATAL_ERROR " *** Configure (cmake) process failed *** ")
+endif()
 
 # --- Build ---
 
