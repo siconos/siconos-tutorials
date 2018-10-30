@@ -26,7 +26,7 @@ before_script:
      libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
      libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
      libpython3-dev bash swig doxygen python3-pip htop
-     libcppunit-dev python3-scipy python3-pytest valgrind
+     libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py
 
 
 
@@ -54,7 +54,7 @@ ubuntu:build_and_run_examples:
 ubuntu:install_siconos_with_mechanisms:
   stage: build-mechanisms
   script:
-    - apt install -y libbullet-dev libbullet-dev libfreetype6-dev freeglut3-dev python3-h5py
+    - apt install -y libbullet-dev libbullet-dev libfreetype6-dev freeglut3-dev
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev 
     - "sh ci/install_siconos_with_mechanisms.sh $os" 
   artifacts:
@@ -67,7 +67,7 @@ ubuntu:install_siconos_with_mechanisms:
 ubuntu:build_and_run_examples_with_mechanisms:
   stage: test-mechanisms
   script:
-    - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev python3-h5py
+    - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev 
     - "sh ci/build_and_run_examples.sh $os"
   only:
@@ -107,7 +107,7 @@ archlinux:build_and_run_examples_with_mechanisms:
 ubuntu:siconos_examples_release:
   stage: test-mechanisms
   script:
-    - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev python3-h5py
+    - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev
     - "sh ci/run_all_stages_release.sh $os $tag"
   only:
