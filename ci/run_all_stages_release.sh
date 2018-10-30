@@ -37,7 +37,7 @@ ctest -S ${ref_path}/ci/ctest_driver_install_siconos.cmake -V -Dmodel=Continuous
 make install
 mv ${ref_path}/siconos-commit-number.txt ${ref_path}/install-siconos/
 
-pip3 install -U -r ./ci/requirements.txt
+pip3 install -U matplotlib
 mkdir ${ref_path}/build-examples
 cd ${ref_path}/build-examples
 export buildname="Siconos (release $tag; with OCE), run all examples"
