@@ -33,7 +33,7 @@ mkdir ${ref_path}/build-siconos
 cd ${ref_path}/build-siconos
 export buildname="Siconos install (release $tag, with OCE)"
 
-ctest -S ${ref_path}/ci/ctest_driver_install_siconos.cmake -V -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos_with_mechanisms.cmake -DCTEST_BUILD_NAME=$buildname
+ctest -S ${ref_path}/ci/ctest_driver_install_siconos.cmake -V -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos4-2-0_with_mechanisms.cmake -DCTEST_BUILD_NAME=$buildname
 make install
 mv ${ref_path}/siconos-commit-number.txt ${ref_path}/install-siconos/
 
