@@ -299,11 +299,13 @@ int withLevel(unsigned int mylevel)
 
   catch (SiconosException e)
   {
-    cout << e.report() << endl;
+    cerr << e.report() << endl;
+    return 1;
   }
   catch (...)
   {
-    cout << "Exception caught in ColumnOfBeadsTS-MoreauJeanGOSI.cpp" << endl;
+    cerr << "Exception caught in ColumnOfBeadsTS-MoreauJeanGOSI.cpp" << endl;
+    return 1;
   }
 
   return 0;

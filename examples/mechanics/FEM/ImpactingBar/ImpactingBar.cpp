@@ -299,11 +299,13 @@ cout << "Error = " << error << endl;
 
   catch(SiconosException e)
   {
-    cout << e.report() << endl;
+    cerr << e.report() << endl;
+    return 1;
   }
   catch(...)
   {
-    cout << "Exception caught in ImpactingBarTS.cpp" << endl;
+    cerr << "Exception caught in ImpactingBarTS.cpp" << endl;
+    return 1;
   }
 
 

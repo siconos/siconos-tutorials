@@ -186,10 +186,12 @@ int main(int argc, char* argv[])
 
   catch (SiconosException e)
   {
-    cout << e.report() << endl;
+    cerr << e.report() << endl;
+    return 1;
   }
   catch (...)
   {
-    cout << "Exception caught in \'sample/CamFollower\'" << endl;
+    cerr << "Exception caught in \'sample/CamFollower\'" << endl;
+    return 1;
   }
 }

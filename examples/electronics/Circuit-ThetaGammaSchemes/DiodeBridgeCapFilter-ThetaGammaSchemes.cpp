@@ -256,7 +256,8 @@ int main(int argc, char* argv[])
   catch (SiconosException e)
   {
     cout << "SiconosException" << endl;
-    cout << e.report() << endl;
+    cerr << e.report() << endl;
+    return 1;
   }
   catch (std::exception& e)
   {
@@ -265,6 +266,7 @@ int main(int argc, char* argv[])
   }
   catch (...)
   {
-    cout << "Exception caught " << endl;
+    cerr << "Exception caught " << endl;
+    return 1;
   }
 }

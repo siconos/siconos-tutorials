@@ -261,11 +261,13 @@ int main(int argc, char* argv[])
   // --- Exceptions handling ---
   catch (SiconosException e)
   {
-    cout << e.report() << endl;
+    cerr << e.report() << endl;
+    return 1;
   }
   catch (...)
   {
-    cout << "Exception caught " << endl;
+    cerr << "Exception caught " << endl;
+    return 1;
   }
   cout << "Computation Time: " << time.elapsed()  << endl;
 }

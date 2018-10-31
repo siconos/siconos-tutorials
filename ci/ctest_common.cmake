@@ -89,7 +89,7 @@ if(CTEST_BUILD_CONFIGURATION MATCHES "Profiling")
   find_program(CTEST_MEMORYCHECK_COMMAND NAMES valgrind)
   set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "--quiet --leak-check=full --show-leak-kinds=definite,possible --track-origins=yes --error-limit=no --gen-suppressions=all") 
   set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "--quiet --leak-check=full --show-reachable=yes --error-limit=no --gen-suppressions=all") 
-  ctest_memcheck(PARALLEL_LEVEL NP)
+  ctest_memcheck(PARALLEL_LEVEL NP QUIET)
 endif()
 
 # -- Submission to cdash --

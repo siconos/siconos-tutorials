@@ -201,12 +201,12 @@ int main(int argc, char* argv[])
 
   catch (SiconosException e)
   {
-    cout << e.report() << endl;
+    cerr << e.report() << endl;
     return 1;
   }
   catch (...)
   {
-    cout << "Exception caught in \'WoodPecker\'" << endl;
+    cerr << "Exception caught in \'WoodPecker\'" << endl;
     return 1;
   }
   cout << "Computation Time " << t.elapsed()  << endl;

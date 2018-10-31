@@ -220,7 +220,8 @@ int main(int argc, char* argv[])
   }
   catch (...)
   {
-    cout << "Exception caught." << endl;
+    cerr << "Exception caught." << endl;
+    return 1;
   }
   cout << "Computation Time: " << time.elapsed()  << endl;
 }

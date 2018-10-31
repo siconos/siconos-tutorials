@@ -216,10 +216,12 @@ int main(int argc, char* argv[])
 
   catch (SiconosException e)
   {
-    cout << e.report() << endl;
+    cerr << e.report() << endl;
+    return 1;
   }
   catch (...)
   {
-    cout << "Exception caught in Fillipov.cpp" << endl;
+    cerr << "Exception caught in Fillipov.cpp" << endl;
+    return 1;
   }
 }

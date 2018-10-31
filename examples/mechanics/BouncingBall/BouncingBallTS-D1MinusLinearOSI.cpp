@@ -198,12 +198,15 @@ int main(int argc, char* argv[])
 
   }
 
-  catch (SiconosException e)
+  catch (SiconosException& e)
   {
-    cout << e.report() << endl;
+    cerr << e.report() << endl;
+    return 1;
   }
   catch (...)
   {
-    cout << "Exception caught in BouncingBallD1MinusLinearOSI.cpp" << endl;
+    cerr << "Exception caught in BouncingBallD1MinusLinearOSI.cpp" << endl;
+    return 1;
   }
 }
+
