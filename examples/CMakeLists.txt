@@ -45,8 +45,10 @@ if(HAS_PYTHON_WRAPPER)
   include(FindPythonModule)
   find_python_module(matplotlib)
   find_python_module(pyhull)
+  if(SICONOS_HAS_OCE)
+    find_python_module(OCC REQUIRED)
+  endif()
 endif()
-
 
 # -- Set the list of examples to be processed --
 # It depends on the components installed on the system

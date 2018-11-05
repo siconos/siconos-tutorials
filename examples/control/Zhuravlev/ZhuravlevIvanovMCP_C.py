@@ -106,7 +106,7 @@ if __name__ == '__main__':
                 z[2] = 1.0
 
             info = SN.mcp_newton_minFBLSA(mcp, z, w, SO)
-            print('iter {:} ; solver iter = {:} ; prec = {:}'.format(k, SO.iparam[1], SO.dparam[1]))
+            #print('iter {:} ; solver iter = {:} ; prec = {:}'.format(k, SO.iparam[1], SO.dparam[1]))
             if info >0:
                 print('MCP solver failed ! info = {:}'.format(info))
                 print(xk)

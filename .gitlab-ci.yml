@@ -68,7 +68,8 @@ ubuntu:build_and_run_examples_with_mechanisms:
   stage: test-mechanisms
   script:
     - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev
-    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev 
+    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev
+    - "sh ci/install_oce.sh"
     - "sh ci/build_and_run_examples.sh $os"
   only:
   - master
@@ -96,7 +97,8 @@ archlinux:build_and_run_examples_with_mechanisms:
   before_script:
     - 'pacman -Sy && pacman --noconfirm -S - < ci/arch_linux_packages.txt'
   script:
-    - "sh ci/build_and_run_examples.sh archlinux clone_oce"
+    - "sh ci/install_oce.sh clone_oce"
+    - "sh ci/build_and_run_examples.sh archlinux"
   only:
   - master
   dependencies:
@@ -109,6 +111,7 @@ ubuntu:siconos_examples_release:
   script:
     - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev
+    - "sh ci/install_oce.sh" 
     - "sh ci/run_all_stages_release.sh $os $tag"
   only:
   - master

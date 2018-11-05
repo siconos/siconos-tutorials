@@ -99,7 +99,7 @@ if __name__ == '__main__':
             # info = SN.variationalInequality_box_newton_QiLSA(vi, lambda_, xkp1, SO)
             info = SN.vi_box_path(vi, lambda_, xkp1, SO)
 #            info = SN.mcp_newton_minFBLSA(mcp, z, w, SO)
-            print('iter {:} ; solver iter = {:} ; prec = {:}'.format(k, SO.iparam[1], SO.dparam[1]))
+            #print('iter {:} ; solver iter = {:} ; prec = {:}'.format(k, SO.iparam[1], SO.dparam[1]))
             if info >0:
                 print('VI solver failed ! info = {:}'.format(info))
                 print(xk)

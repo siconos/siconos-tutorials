@@ -13,6 +13,7 @@ python3
 python-pytest
 python-scipy
 python-h5py
+python-pip
 git
 cppunit
 bullet

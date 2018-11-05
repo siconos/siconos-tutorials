@@ -10,9 +10,9 @@ if [ "$#" -eq 1 ] && [ "$1" = "clone_oce" ]; then
     git clone https://github.com/tpaviot/oce.git
     mkdir oce-last
     cd oce-last
-    cmake ../oce -DOCE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
-    make -j $nbprocs
-    make install
+    cmake ../oce -DOCE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release > /dev/null
+    make -j $nbprocs > /dev/null
+    make install > /dev/null
     cd $build_path
 else
     echo "Use installed version of oce (package?)"
@@ -22,8 +22,8 @@ fi
 git clone https://github.com/tpaviot/pythonocc-core.git
 mkdir pythonocc
 cd pythonocc
-cmake ../pythonocc-core -DCMAKE_BUILD_TYPE=Release
-make install -j $nbprocs
+cmake ../pythonocc-core -DCMAKE_BUILD_TYPE=Release > /dev/null
+make install -j $nbprocs > /dev/null
 cd $build__path
 # test ...
 python3 -c 'import OCC'
