@@ -22,11 +22,12 @@ before_script:
    - export APT_DIR=$CI_PROJECT_DIR/.apt && export APT_STATE_LISTS=$APT_DIR/lists && export APT_CACHE_ARCHIVES=$APT_DIR/archives
    - printf "dir::state::lists    ${APT_STATE_LISTS};\ndir::cache::archives    ${APT_CACHE_ARCHIVES};\n" > /etc/apt/apt.conf
    - mkdir -p "${APT_STATE_LISTS}/partial" && mkdir -p "${APT_CACHE_ARCHIVES}/partial"
-   - apt update -qq && apt install -y -qq cmake git-core wget make
+   - apt update -qq > /dev/null
+   - apt install -y -qq cmake git-core wget make
      libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
      libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
      libpython3-dev bash swig doxygen python3-pip htop
-     libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py
+     libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
 
 
 
@@ -54,12 +55,15 @@ ubuntu:build_and_run_examples:
 ubuntu:install_siconos_with_mechanisms:
   stage: build-mechanisms
   script:
-    - apt install -y libbullet-dev libbullet-dev libfreetype6-dev freeglut3-dev
-    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev 
+    - apt install -y libbullet-dev libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
+    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
+    - export installpath=`python3 -c "import site;print(site.USER_SITE)"`
+    - "sh ci/install_oce.sh"
     - "sh ci/install_siconos_with_mechanisms.sh $os" 
   artifacts:
     paths:
       - install-siconos
+      - $installpath
   only:
   - master
   allow_failure: true
@@ -67,9 +71,8 @@ ubuntu:install_siconos_with_mechanisms:
 ubuntu:build_and_run_examples_with_mechanisms:
   stage: test-mechanisms
   script:
-    - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev
-    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev
-    - "sh ci/install_oce.sh"
+    - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
+    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
     - "sh ci/build_and_run_examples.sh $os"
   only:
   - master
@@ -83,12 +86,16 @@ archlinux:install_siconos_with_mechanisms:
   before_script:
     - 'pacman -Sy && pacman --noconfirm -S - < ci/arch_linux_packages.txt'
   script:
-    - "sh ci/install_siconos_with_mechanisms.sh archlinux clone_oce" 
+    - export installpath=`python3 -c "import site;print(site.USER_SITE)"`
+    - "sh ci/install_oce.sh clone_oce"
+    - "sh ci/install_siconos_with_mechanisms.sh archlinux"
   only:
   - master
   artifacts:
     paths:
       - install-siconos
+      - $installpath
+      - $HOME/install_oce
   allow_failure: true
   
 archlinux:build_and_run_examples_with_mechanisms:
@@ -97,7 +104,6 @@ archlinux:build_and_run_examples_with_mechanisms:
   before_script:
     - 'pacman -Sy && pacman --noconfirm -S - < ci/arch_linux_packages.txt'
   script:
-    - "sh ci/install_oce.sh clone_oce"
     - "sh ci/build_and_run_examples.sh archlinux"
   only:
   - master
@@ -109,8 +115,8 @@ archlinux:build_and_run_examples_with_mechanisms:
 ubuntu:siconos_examples_release:
   stage: test-mechanisms
   script:
-    - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev
-    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev
+    - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
+    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
     - "sh ci/install_oce.sh" 
     - "sh ci/run_all_stages_release.sh $os $tag"
   only:

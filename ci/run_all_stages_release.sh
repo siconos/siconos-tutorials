@@ -6,17 +6,7 @@
 # 
 # Note : this script takes osname (from docker image in gitlab-ci script) and tag value as args.
 # 
-if  [ -x "$(command -v nproc)" ]; then
-   export nbprocs=`nproc --all`  # linux
-elif  [ -x "$(command -v sysctl)" ]; then
-   export nbprocs=`sysctl -n hw.ncpu` # macos
-else
-   export nbprocs=2
-fi
-
 export ref_path=$PWD
-mkdir build
-cd $ref_path
 pip3 install -U matplotlib
 # -- Siconos clone,  build, install --
 git clone https://github.com/siconos/siconos.git
@@ -27,10 +17,11 @@ sed -i 's/bipop/tripop/g' ./CTestConfig.cmake # cdash site has changed since 4.2
 mkdir ${ref_path}/build-siconos
 cd ${ref_path}/build-siconos
 export buildname="Siconos install (release/tag $tag, with OCE)"
-ctest -S ${ref_path}/ci/ctest_driver_install_siconos.cmake -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos4-2-0_with_mechanisms.cmake -DCTEST_BUILD_NAME="$buildname" -DWITH_TESTS=ON
+ctest -S ${ref_path}/ci/ctest_driver_install_siconos.cmake -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos4-2-0_with_mechanisms.cmake -DCTEST_BUILD_NAME="$buildname"
 make install
 mv ${ref_path}/siconos-commit-number.txt ${ref_path}/install-siconos/
 
+# -- build, tests examples --
 mkdir ${ref_path}/build-examples
 cd ${ref_path}/build-examples
 export buildname="Siconos (release $tag; with OCE), run all examples"

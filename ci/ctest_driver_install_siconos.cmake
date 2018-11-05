@@ -32,7 +32,7 @@ if(NOT USER_FILE)
 endif()
 
 if(NOT WITH_TESTS)
-  set(WITH_TESTS OFF)
+  set(WITH_TESTS ON) # always on for examples
 endif()
 
 # To deactivate submission to cdash. Default = submit
