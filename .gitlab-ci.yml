@@ -1,5 +1,7 @@
 variables:
+  # Default os (docker image)
   os: ubuntu:18.04
+  # Default 'reference' tag for siconos
   tag: 4.2.0
   
 stages:
@@ -14,7 +16,7 @@ image: $os
 cache:
     paths:
     - .apt/
-    
+
 
 before_script:
    # Configure apt chaching
@@ -30,7 +32,10 @@ before_script:
      libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
 
 
-
+# This job clone, build and install on default os (ubuntu)
+# siconos software, with the 'standard' config
+# (release, all components, without oce)
+# Installed path is transfered to next job (examples) using artifacts.
 ubuntu:install_siconos:
   stage: build
   script:
@@ -41,7 +46,10 @@ ubuntu:install_siconos:
   only:
   - master
 
-
+# This job clone, build and install siconos examples 
+# (from siconos-tutorials), using Siconos installed in
+# job 'ubuntu:install_siconos'
+# allow_failure is set to true to authorize next stages jobs to run.
 ubuntu:build_and_run_examples:
   stage: test
   script:
@@ -52,27 +60,41 @@ ubuntu:build_and_run_examples:
    - ubuntu:install_siconos
   allow_failure: true
 
+# This job clone, build and install siconos software
+# on default os (ubuntu), with the 'mechanisms' config
+# (release, all components, with oce and pythonocc)
+# OCE is installed using ubuntu packages
+# pythonocc is cloned from github repo, built and installed.
+#
+# Installed paths are transfered to next job (examples) using artifacts.
 ubuntu:install_siconos_with_mechanisms:
   stage: build-mechanisms
   script:
     - apt install -y libbullet-dev libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
-    - export installpath=`python3 -c "import site;print(site.USER_SITE)"`
     - "sh ci/install_oce.sh"
+    - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
     - "sh ci/install_siconos_with_mechanisms.sh $os" 
   artifacts:
     paths:
+      - $CI_PROJECT_DIR/install/
       - install-siconos
-      - $installpath
   only:
   - master
   allow_failure: true
   
+# This job clone, build and install siconos examples 
+# (from siconos-tutorials), using Siconos installed in
+# job 'ubuntu:install_siconos_with_mechanisms' and thus
+# includes all examples based on oce.
+# OCE is installed using ubuntu packages
+# pythonocc comes from artifacts of job ubuntu:install_siconos_with_mechanisms
 ubuntu:build_and_run_examples_with_mechanisms:
   stage: test-mechanisms
   script:
     - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
+    - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
     - "sh ci/build_and_run_examples.sh $os"
   only:
   - master
@@ -80,22 +102,28 @@ ubuntu:build_and_run_examples_with_mechanisms:
    - ubuntu:install_siconos_with_mechanisms
   allow_failure: true
   
+# This job clone, build and install siconos software  
+# on archlinux os, with the 'mechanisms' config
+# (release, all components, with oce and pythonocc)
+# OCE and pythonocc are cloned from github repo, built and installed.
+#
+# Installed paths are transfered to next job (examples) using artifacts.
 archlinux:install_siconos_with_mechanisms:
   stage: build-mechanisms
   image: base/archlinux
   before_script:
     - 'pacman -Sy && pacman --noconfirm -S - < ci/arch_linux_packages.txt'
   script:
-    - export installpath=`python3 -c "import site;print(site.USER_SITE)"`
+    - export pyocc_installpath=`python3 -c "import site;print(site.USER_SITE)"`
     - "sh ci/install_oce.sh clone_oce"
+    - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
     - "sh ci/install_siconos_with_mechanisms.sh archlinux"
   only:
   - master
   artifacts:
     paths:
+      - $CI_PROJECT_DIR/install/
       - install-siconos
-      - $installpath
-      - $HOME/install_oce
   allow_failure: true
   
 archlinux:build_and_run_examples_with_mechanisms:
@@ -104,6 +132,7 @@ archlinux:build_and_run_examples_with_mechanisms:
   before_script:
     - 'pacman -Sy && pacman --noconfirm -S - < ci/arch_linux_packages.txt'
   script:
+    - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
     - "sh ci/build_and_run_examples.sh archlinux"
   only:
   - master
@@ -118,6 +147,7 @@ ubuntu:siconos_examples_release:
     - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
     - "sh ci/install_oce.sh" 
+    - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
     - "sh ci/run_all_stages_release.sh $os $tag"
   only:
   - master
