@@ -95,6 +95,7 @@ ubuntu:build_and_run_examples_with_mechanisms:
     - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
+    - ls $PYTHONPATH
     - "sh ci/build_and_run_examples.sh $os"
   only:
   - master
