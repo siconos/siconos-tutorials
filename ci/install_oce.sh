@@ -54,5 +54,5 @@ cmake ../pythonocc-core -DCMAKE_BUILD_TYPE=Release -Wno-deprecated $oce_option -
 make install -j $nbprocs > /dev/null
 cd $build__path
 # test ...
-export PYTHONPATH=$installpath
+export PYTHONPATH=$pyocc_installpath
 python3 -c 'import OCC; print(OCC.__file__)'
