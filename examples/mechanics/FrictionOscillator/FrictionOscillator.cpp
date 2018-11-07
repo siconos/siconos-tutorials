@@ -3,12 +3,7 @@
 using namespace std;
 
 // main program
-/* Example of a limit cycle in Relay system predicted by the describing function approach
- * see Example 7.9 in "Nonlinear Systems" H. Khalil. Third Edition. Prentice Hall, 2002 ISBN 0-13-067389-7
- *
- * The transfer function of the linear part is $G(s) 1/(s(s+1)(s+2))$ and the describing function is $\Psi(a)=4/(\pi a)$
- * The predicted limit cycle is for the output $y(t) = a \sin (\omega t)$ with $a = 2/(3\pi)$ and $\omega = \sqrt(2)$.
- */
+
 
 
 int main(int argc, char* argv[])
