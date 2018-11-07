@@ -63,18 +63,33 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.6.3")
   ctest_configure(CAPTURE_CMAKE_ERROR CONFIGURE_STATUS)
 else()
   ctest_configure(RETURN_VALUE CONFIGURE_STATUS)
-endif()  
+endif()
+message("------> Configure status : ${CONFIGURE_STATUS}")
 if(NOT CONFIGURE_STATUS EQUAL 0)
   message(FATAL_ERROR " *** Configure (cmake) process failed *** ")
 endif()
+
 # --- Build ---
 
 if(NOT CTEST_BUILD_CONFIGURATION)
   set(CTEST_BUILD_CONFIGURATION "Profiling")
 endif()
-ctest_build(
- PROJECT_NAME ${current_project}
- )
+
+if(${CMAKE_VERSION} VERSION_GREATER "3.6.3") 
+  ctest_build(
+      PROJECT_NAME ${current_project}
+      CAPTURE_CMAKE_ERROR BUILD_STATUS)
+else()
+  ctest_build(
+      PROJECT_NAME ${current_project}
+      RETURN_VALUE BUILD_STATUS)
+endif()
+
+message("------> Build status : ${CONFIGURE_STATUS}")
+if(NOT BUILD_STATUS EQUAL 0)
+  message(FATAL_ERROR " *** Build (cmake) process failed *** ")
+endif()
+
 
 # -- Tests --
 if(WITH_TESTS)

@@ -95,7 +95,7 @@ ubuntu:build_and_run_examples_with_mechanisms:
     - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
-    - ls $PYTHONPATH
+    - export EXTRA_BUILDNAME="With Bullet and OCE."
     - "sh ci/build_and_run_examples.sh $os"
   only:
   - master
@@ -126,6 +126,11 @@ archlinux:install_siconos_with_mechanisms:
       - install-siconos
   allow_failure: true
   
+# This job clone, build and install siconos examples 
+# (from siconos-tutorials), using Siconos installed in
+# job 'archlinux:install_siconos_with_mechanisms' and thus
+# includes all examples based on oce.
+# OCE and pythonocc comes from artifacts of job archlinux:install_siconos_with_mechanisms
 archlinux:build_and_run_examples_with_mechanisms:
   stage: test-mechanisms
   image: base/archlinux
@@ -133,6 +138,7 @@ archlinux:build_and_run_examples_with_mechanisms:
     - 'pacman -Sy && pacman --noconfirm -S - < ci/arch_linux_packages.txt'
   script:
     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
+    - export EXTRA_BUILDNAME="With Bullet and OCE."
     - "sh ci/build_and_run_examples.sh archlinux"
   only:
   - master
@@ -141,6 +147,14 @@ archlinux:build_and_run_examples_with_mechanisms:
   allow_failure: true
 
 
+# This job clone, build and install siconos
+# but for the last tagged release, 4.2.0
+# that was containing examples (before
+# the split siconos/siconos-tutorials).
+# OS is ubuntu.
+# Examples are also built and tested.
+# OCE is installed using ubuntu packages
+# pythonocc is cloned from github repo, built and installed.
 ubuntu:siconos_examples_release:
   stage: test-mechanisms
   script:
@@ -148,6 +162,7 @@ ubuntu:siconos_examples_release:
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
     - "sh ci/install_oce.sh" 
     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
+    - export EXTRA_BUILDNAME="With Bullet and OCE."
     - "sh ci/run_all_stages_release.sh $os $tag"
   only:
   - master

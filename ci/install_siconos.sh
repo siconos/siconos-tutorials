@@ -15,7 +15,7 @@ git rev-parse --short HEAD > ${ref_path}/siconos-commit-number.txt
 cd ${ref_path}
 mkdir build-siconos
 cd build-siconos
-ctest -S ${ref_path}/ci/ctest_driver_install_siconos.cmake -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1 -VV
+ctest -S ${ref_path}/ci/ctest_driver_install_siconos.cmake -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1
 
 make install > /dev/null
 mv ${ref_path}/siconos-commit-number.txt ${ref_path}/install-siconos/
