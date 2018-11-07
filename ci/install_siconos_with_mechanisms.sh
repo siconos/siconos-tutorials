@@ -18,7 +18,7 @@ git rev-parse --short HEAD > ${ref_path}/siconos-commit-number.txt
 cd ${ref_path}
 mkdir build-siconos
 cd build-siconos
-ctest -S ${ref_path}/ci/ctest_driver_install_siconos.cmake -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos_with_mechanisms.cmake -DEXTRA_NAME="With mechanisms/OCE"
+ctest -S ${ref_path}/ci/ctest_driver_install_siconos.cmake -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos_with_mechanisms.cmake -DEXTRA_NAME="With mechanisms/OCE" -VV
 
 make install
 mv ${ref_path}/siconos-commit-number.txt ${ref_path}/install-siconos/

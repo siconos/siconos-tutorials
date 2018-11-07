@@ -37,7 +37,7 @@ option(WITH_UNSTABLE "Enable this to include all 'unstable' sources. Default=OFF
 option(WITH_UNSTABLE_TEST "Enable this to include all 'unstable' test. Default=OFF" OFF)
 option(BUILD_SHARED_LIBS "Building of shared libraries. Default = ON" ON)
 option(WITH_SYSTEM_INFO "Verbose mode to get some system/arch details. Default = OFF." OFF)
-option(WITH_TESTING "Enable 'make test' target" OFF)
+option(WITH_TESTING "Enable 'make test' target" ON)
 option(WITH_GIT "Consider sources are under GIT" OFF)
 
 

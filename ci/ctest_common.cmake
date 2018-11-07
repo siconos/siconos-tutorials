@@ -78,6 +78,8 @@ ctest_build(
 
 # -- Tests --
 if(WITH_TESTS)
+  message("---- Start ctest_ctest process ----")
+  
   ctest_test(
     PARALLEL_LEVEL NP
     RETURN_VALUE TEST_RETURN_VAL
@@ -94,17 +96,22 @@ endif()
 
 # -- Submission to cdash --
 if(DO_SUBMIT)
-  ctest_submit(RETURN_VALUE SUBMIT_RETURN_VAL)
-  # submit failed?
-  if(NOT SUBMIT_RETURN_VAL EQUAL 0)
-    message(WARNING " *** submission failure *** ")
-  endif()
+  ctest_submit(
+    CAPTURE_CMAKE_ERROR  SUBMISSION_STATUS
+    RETRY_COUNT 4 # Retry 4 times, if submission failed ...)
+    RETRY_DELAY 30 # seconds
+    )
 endif()
-
 # tests failed?
 if(WITH_TESTS)
   if(NOT TEST_RETURN_VAL EQUAL 0)
     message(FATAL_ERROR " *** test failure *** ")
+  endif()
+endif()
+# -- Submission failed? --
+if(DO_SUBMIT)
+  if(NOT SUBMISSION_STATUS EQUAL 0)
+    message(WARNING " *** submission failure *** ")
   endif()
 endif()
 
