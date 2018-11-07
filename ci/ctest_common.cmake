@@ -84,6 +84,7 @@ if(WITH_TESTS)
     PARALLEL_LEVEL NP
     RETURN_VALUE TEST_RETURN_VAL
     )
+  message("---- End ctest_ctest process ----")
 endif()
 
 # -- memory check --
@@ -96,11 +97,16 @@ endif()
 
 # -- Submission to cdash --
 if(DO_SUBMIT)
-  ctest_submit(
-    CAPTURE_CMAKE_ERROR  SUBMISSION_STATUS
-    RETRY_COUNT 4 # Retry 4 times, if submission failed ...)
-    RETRY_DELAY 30 # seconds
-    )
+  message("---- Start ctest_submit process ----")
+  set(SUBMISSION_STATUS 1)
+  while(SUBMISSION_STATUS NOT EQUAL 0)
+    ctest_submit(
+      CAPTURE_CMAKE_ERROR  SUBMISSION_STATUS
+      RETRY_COUNT 4 # Retry 4 times, if submission failed ...)
+      RETRY_DELAY 30 # seconds
+      )
+  endwhile()
+  message("---- End ctest_submit process ----")
 endif()
 # tests failed?
 if(WITH_TESTS)

@@ -115,7 +115,6 @@ archlinux:install_siconos_with_mechanisms:
   before_script:
     - 'pacman -Sy && pacman --noconfirm -S - < ci/arch_linux_packages.txt'
   script:
-    - export pyocc_installpath=`python3 -c "import site;print(site.USER_SITE)"`
     - "sh ci/install_oce.sh clone_oce"
     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
     - "sh ci/install_siconos_with_mechanisms.sh archlinux"
