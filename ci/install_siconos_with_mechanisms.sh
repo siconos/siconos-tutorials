@@ -7,18 +7,18 @@
 
 # Note : this script takes osname (from docker image in gitlab-ci script) as arg.
 
-export ref_path=$PWD
-env
+# Check if CI_PROJECT_DIR is set AND not empty
+: ${CI_PROJECT_DIR:?"Please set environment variable CI_PROJECT_DIR with 'siconos-tutorials' repository (absolute) path."}
 # -- siconos download, build, test and install --
 git clone https://github.com/siconos/siconos.git
 # Get last commit id, will be used for buildname on cdash.
 cd siconos
-git rev-parse --short HEAD > ${ref_path}/siconos-commit-number.txt
+git rev-parse --short HEAD > ${CI_PROJECT_DIR}/siconos-commit-number.txt
 #
-cd ${ref_path}
-mkdir build-siconos
+cd ${CI_PROJECT_DIR}
+mkdir -p build-siconos
 cd build-siconos
-ctest -S ${ref_path}/ci/ctest_driver_install_siconos.cmake -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${ref_path}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos_with_mechanisms.cmake -DEXTRA_NAME="With mechanisms/OCE"
+ctest -S ${CI_PROJECT_DIR}/ci/ctest_driver_install_siconos.cmake -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${CI_PROJECT_DIR}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos_with_mechanisms.cmake -DEXTRA_NAME="With mechanisms/OCE"
 
 make install
-mv ${ref_path}/siconos-commit-number.txt ${ref_path}/install-siconos/
+mv ${CI_PROJECT_DIR}/siconos-commit-number.txt ${CI_PROJECT_DIR}/install-siconos/

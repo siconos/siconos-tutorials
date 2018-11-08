@@ -113,14 +113,11 @@ endif()
 # -- Submission to cdash --
 if(DO_SUBMIT)
   message("---- Start ctest_submit process ----")
-  set(SUBMISSION_STATUS 1)
-  while(SUBMISSION_STATUS NOT EQUAL 0)
-    ctest_submit(
-      CAPTURE_CMAKE_ERROR  SUBMISSION_STATUS
-      RETRY_COUNT 4 # Retry 4 times, if submission failed ...)
-      RETRY_DELAY 30 # seconds
-      )
-  endwhile()
+  ctest_submit(
+    CAPTURE_CMAKE_ERROR  SUBMISSION_STATUS
+    RETRY_COUNT 4 # Retry 4 times, if submission failed ...)
+    RETRY_DELAY 30 # seconds
+    )
   message("---- End ctest_submit process ----")
 endif()
 # tests failed?
