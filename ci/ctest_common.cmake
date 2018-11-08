@@ -95,11 +95,22 @@ endif()
 if(WITH_TESTS)
   message("---- Start ctest_ctest process ----")
   
-  ctest_test(
-    PARALLEL_LEVEL NP
-    RETURN_VALUE TEST_RETURN_VAL
-    )
+  if(${CMAKE_VERSION} VERSION_GREATER "3.6.3") 
+    ctest_test(
+      PARALLEL_LEVEL NP
+      CAPTURE_CMAKE_ERROR TEST_STATUS
+      SCHEDULE_RANDOM ON
+      RETURN_VALUE TESTS_RESULTS
+      )
+  else()
+    ctest_test(
+      PARALLEL_LEVEL NP
+      RETURN_VALUE TEST_STATUS
+      SCHEDULE_RANDOM ON
+      )
+  endif()
   message("---- End ctest_ctest process ----")
+  message("------> Tests status : ${TEST_STATUS}")
 endif()
 
 # -- memory check --
@@ -116,21 +127,9 @@ if(DO_SUBMIT)
   ctest_submit(
     CAPTURE_CMAKE_ERROR  SUBMISSION_STATUS
     RETRY_COUNT 4 # Retry 4 times, if submission failed ...)
-    RETRY_DELAY 30 # seconds
+    RETRY_DELAY 5 # seconds
     )
   message("---- End ctest_submit process ----")
-endif()
-# tests failed?
-if(WITH_TESTS)
-  if(NOT TEST_RETURN_VAL EQUAL 0)
-    message(FATAL_ERROR " *** test failure *** ")
-  endif()
-endif()
-# -- Submission failed? --
-if(DO_SUBMIT)
-  if(NOT SUBMISSION_STATUS EQUAL 0)
-    message(WARNING " *** submission failure *** ")
-  endif()
 endif()
 
 # ============= Summary =============
@@ -141,6 +140,20 @@ message(STATUS "Ctest executed on sources directory : ${CTEST_SOURCE_DIRECTORY}"
 message(STATUS "Build name (cdash) : ${CTEST_BUILD_NAME}")
 message(STATUS "Site (cdash) : ${CTEST_SITE}")
 message(STATUS "=================================================================================================\n")
+
+# tests failed?
+if(WITH_TESTS)
+  if(NOT TEST_STATUS EQUAL 0 OR NOT TESTS_RESULTS EQUAL 0)
+    message(FATAL_ERROR " *** test failure *** ")
+  endif()
+endif()
+# -- Submission failed? --
+if(DO_SUBMIT)
+  if(NOT SUBMISSION_STATUS EQUAL 0)
+    message(WARNING " *** submission failure *** ")
+  endif()
+endif()
+
 
 # # this usually fails for some reasons and ctest may returns a fail code.
 # # ctest_empty_binary_directory(${CTEST_BINARY_DIRECTORY}/)
