@@ -10,7 +10,6 @@
 #   Warning : always searched in siconos-tutorials/ci directory.
 # - OSNAME : host system name (used to qualify cdash build). If not set, try to catch info
 #   using common commands (lsb_release ...)
-# - WITH_TESTS : if ON, execute tests
 # ----------------------------------------------
 
 # Assumes :
@@ -29,15 +28,6 @@ endif()
 
 if(NOT USER_FILE)
   set(USER_FILE siconos_default.cmake)
-endif()
-
-if(NOT WITH_TESTS)
-  set(WITH_TESTS ON) # always on for examples
-endif()
-
-# To deactivate submission to cdash. Default = submit
-if(NOT DO_SUBMIT)
-  set(DO_SUBMIT ON)
 endif()
 
 # For CI, we assume :
@@ -74,7 +64,6 @@ set(SICONOS_CMAKE_OPTIONS -DUSER_OPTIONS_FILE=${SICONOS_TUTORIAL_SOURCE_DIR}/ci/
 list(APPEND SICONOS_CMAKE_OPTIONS -DCMAKE_INSTALL_PREFIX=${SICONOS_INSTALL_DIR})
 list(APPEND SICONOS_CMAKE_OPTIONS -DCMAKE_CXX_STANDARD=11)
 list(APPEND SICONOS_CMAKE_OPTIONS -DSICONOS_USE_BOOST_FOR_CXX11=OFF)
-list(APPEND SICONOS_CMAKE_OPTIONS -DWITH_TESTING=${WITH_TESTS})
 if(DEFINED ENV{OCE_INSTALL}) # set if oce has been installed using oce repo, in install_oce.sh
   message("Search oce in $ENV{OCE_INSTALL}.")
   list(APPEND SICONOS_CMAKE_OPTIONS -DOCE_DIR=$ENV{OCE_INSTALL})
