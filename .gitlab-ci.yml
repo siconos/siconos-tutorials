@@ -117,6 +117,7 @@ archlinux:install_siconos_with_mechanisms:
   script:
     - "sh ci/install_oce.sh clone_oce"
     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
+    - export OCE_INSTALL=`grep OCEConfig.cmake $CI_PROJECT_DIR/build/oce-last/install_manifest.txt| sed 's/OCEConfig.cmake//g'`
     - "sh ci/install_siconos_with_mechanisms.sh archlinux"
   only:
   - master

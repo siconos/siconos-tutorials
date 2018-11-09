@@ -69,8 +69,6 @@ if(DEFINED ENV{OCE_INSTALL}) # set if oce has been installed using oce repo, in 
   list(APPEND SICONOS_CMAKE_OPTIONS -DOCE_DIR=$ENV{OCE_INSTALL})
 endif()
 set(current_project siconos_install)
-cmake_host_system_information(RESULT NP QUERY NUMBER_OF_LOGICAL_CORES)
-set(CTEST_BUILD_FLAGS -j${NP})
 # Parallel build only for siconos_install. For examples it leads to: warning: jobserver unavailable: using -j1. Add `+' to parent make rule.
 set(CTEST_MEMORYCHECK_SUPPRESSIONS_FILE ${CTEST_SOURCE_DIRECTORY}/cmake/valgrind.supp)
 
