@@ -14,6 +14,8 @@ cd siconos
 git checkout tags/$2
 git rev-parse --short HEAD > ${ref_path}/siconos-commit-number.txt
 sed -i 's/bipop/tripop/g' ./CTestConfig.cmake # cdash site has changed since 4.2 ...
+sed -i 's/http/https/g' ./CTestConfig.cmake
+cp ./CTestConfig.cmake ./examples/
 mkdir ${ref_path}/build-siconos
 cd ${ref_path}/build-siconos
 export buildname="Siconos install (release/tag $tag, with OCE)"

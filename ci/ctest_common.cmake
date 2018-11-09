@@ -75,6 +75,7 @@ endif()
 message("=============== End of ctest_configure =============== ")
 message("------> Configure status/result : ${CONFIGURE_STATUS}/${CONFIGURE_RESULT}")
 if(NOT CONFIGURE_STATUS EQUAL 0 OR NOT CONFIGURE_RESULT EQUAL 0)
+  ctest_submit(PARTS Configure)
   message(FATAL_ERROR "\n\n *** Configure (cmake) process failed *** \n\n")
 endif()
 
@@ -104,6 +105,7 @@ else()
 message("=============== End of ctest_build =============== ")
 message("------> Build status/result : ${BUILD_STATUS}/${BUILD_RESULT}")
 if(NOT BUILD_STATUS EQUAL 0 OR NOT BUILD_RESULT EQUAL 0)
+  ctest_submit(PARTS Configure Build)
   message(FATAL_ERROR " *** Build (make) process failed *** ")
 endif()
 
@@ -164,6 +166,7 @@ message(STATUS "================================================================
 if(NOT TEST_STATUS EQUAL 0 OR NOT TESTS_RESULT EQUAL 0)
   message(FATAL_ERROR " *** test failure *** ")
 endif()
+
 # -- Submission failed? --
 if(NOT SUBMISSION_STATUS EQUAL 0)
   message(WARNING " *** submission failure *** ")

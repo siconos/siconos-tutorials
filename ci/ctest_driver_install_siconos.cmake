@@ -55,7 +55,7 @@ if(NOT CTEST_BUILD_NAME)
   include(${CTEST_SOURCE_DIRECTORY}/cmake/SiconosVersion.cmake)
   set(CTEST_BUILD_NAME "Siconos install (${SICONOS_VERSION}-devel, ref commit : ${SICO_REF})")
   if(EXTRA_NAME)
-    set(CTEST_BUILD_NAME "${CTEST_BUILD_NAME} - ${EXTRA_NAME}")
+    set(CTEST_BUILD_NAME "${CTEST_BUILD_NAME} - ${EXTRA_NAME}.")
   endif()
 endif()
 
