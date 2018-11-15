@@ -17,11 +17,6 @@ if(NOT SICONOS_INSTALL_DIR)
   set(SICONOS_INSTALL_DIR ../install-siconos/)
 endif()
 
-# Current testing model (Must be one of Experimental, Continuous, or Nightly)
-if(NOT model)
-  set(model Experimental)
-endif()
-
 # For CI, we assume :
 # - SICONOS_TUTORIAL_SOURCE_DIR/siconos : siconos git repo
 # - SICONOS_TUTORIAL_SOURCE_DIR/examples : directory which contains examples to be tested.

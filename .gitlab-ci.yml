@@ -3,6 +3,9 @@ variables:
   os: ubuntu:18.04
   # Default 'reference' tag for siconos
   tag: 4.2.0
+  # Default ctest model. Warning : overwritten if set in schedules variables (as we expect)
+  ctest_build_model: Continuous
+
   
 stages:
   - build
@@ -19,7 +22,8 @@ cache:
 
 
 before_script:
-   # Configure apt chaching
+   - export CTEST_MODEL=$ctest_build_model
+        # Configure apt chaching
    - echo $CI_PROJECT_DIR
    - export APT_DIR=$CI_PROJECT_DIR/.apt && export APT_STATE_LISTS=$APT_DIR/lists && export APT_CACHE_ARCHIVES=$APT_DIR/archives
    - printf "dir::state::lists    ${APT_STATE_LISTS};\ndir::cache::archives    ${APT_CACHE_ARCHIVES};\n" > /etc/apt/apt.conf
@@ -113,6 +117,7 @@ archlinux:install_siconos_with_mechanisms:
   stage: build-mechanisms
   image: base/archlinux
   before_script:
+    - export CTEST_MODEL=$ctest_build_model
     - 'pacman -Sy && pacman --noconfirm -S - < ci/arch_linux_packages.txt'
   script:
     - "sh ci/install_oce.sh clone_oce"
@@ -136,6 +141,7 @@ archlinux:build_and_run_examples_with_mechanisms:
   stage: test-mechanisms
   image: base/archlinux
   before_script:
+    - export CTEST_MODEL=$ctest_build_model
     - 'pacman -Sy && pacman --noconfirm -S - < ci/arch_linux_packages.txt'
   script:
     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
@@ -156,8 +162,12 @@ archlinux:build_and_run_examples_with_mechanisms:
 # Examples are also built and tested.
 # OCE is installed using ubuntu packages
 # pythonocc is cloned from github repo, built and installed.
+#
+# This job is run only for nightly builds, not on every push.
 ubuntu:siconos_examples_release:
   stage: test-mechanisms
+  only:
+    - schedules
   script:
     - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null

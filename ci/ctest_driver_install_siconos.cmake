@@ -21,11 +21,6 @@ if(NOT SICONOS_INSTALL_DIR)
   set(SICONOS_INSTALL_DIR ../install-siconos/)
 endif()
 
-# Current testing model (Must be one of Experimental, Continuous, or Nightly)
-if(NOT model)
-  set(model Experimental)
-endif()
-
 if(NOT USER_FILE)
   set(USER_FILE siconos_default.cmake)
 endif()

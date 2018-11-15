@@ -1,10 +1,10 @@
 # Set minimum version for cmake
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.5)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+#include(WindowsSiconosSetup) Outdated? To be reviewed
 
-#include(WindowsSiconosSetup)
 set(tests_timeout 35 CACHE INTERNAL "Limit time for tests (in seconds)")
 
 project(siconos_examples CXX)
@@ -14,6 +14,7 @@ project(siconos_examples CXX)
 
 # Get siconos version required to run the examples
 include(SiconosRequiredVersion)
+
 # find_package: look for siconosConfig.cmake file
 # --> this set siconos_ROOT_DIR to the directory where siconos is installed
 # Remark : we may also use the package registry magic to find siconos:
@@ -31,23 +32,25 @@ if(NOT SICONOS_SCRIPT)
   message(FATAL_ERROR "Can not find siconos script. Please set your PATH environment variable properly.")
 endif()
 
-# Add cmake files from cmake install
+# Add cmake files from siconos install
 list(APPEND CMAKE_MODULE_PATH ${siconos_ROOT_DIR}/share/siconos/cmake)
 
 # Some usefull macros
 include(SiconosTools)
 
 # -- Python API --
+# 'HAS_PYTHON_WRAPPER' provided by siconosConfig.cmake
 # Check if python API has been generated and look for
 # some specific packages if required.
 if(HAS_PYTHON_WRAPPER)
+  message("Siconos Python API is ON")
   set(PYTHON_EXECUTABLE ${SICONOS_PYTHON_EXECUTABLE})
   include(FindPythonModule)
   find_python_module(matplotlib)
   find_python_module(pyhull)
-  if(SICONOS_HAS_OCE)
-    find_python_module(OCC REQUIRED)
-  endif()
+ if(SICONOS_HAS_OCE)
+   find_python_module(OCC REQUIRED)
+ endif()
 endif()
 
 # -- Set the list of examples to be processed --
@@ -138,6 +141,8 @@ set(mechanics_bullet_examples
   mechanics/RockFall
   mechanics/InterestingDynamics
   mechanics/RigidBodiesCollection
+  mechanics/GeometricsPrimitives
+  mechanics/GranularMaterial
   )
 
 # mechanics + oce

@@ -14,6 +14,14 @@ if(NOT CTEST_BINARY_DIRECTORY)
   set(CTEST_BINARY_DIRECTORY .)
 endif()
 
+# Current testing model. Priority: 
+# Nightly -> set by scheduler on gricad-gitlab
+# Continuous -> set in .gitlab-ci.yml
+# Experimental : default
+if(NOT model)
+  set(model Experimental)
+endif()
+
 if(NOT CTEST_CMAKE_GENERATOR)
   set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
 endif()

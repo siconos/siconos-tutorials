@@ -28,7 +28,7 @@ cp ./CTestConfig.cmake ./examples/
 mkdir ${CI_PROJECT_DIR}/build-siconos
 cd ${CI_PROJECT_DIR}/build-siconos
 export buildname="Siconos install  (release/tag $tag, with OCE)"
-ctest -S ${CI_PROJECT_DIR}/ci/ctest_driver_install_siconos.cmake -Dmodel=Continuous -DSICONOS_INSTALL_DIR=${CI_PROJECT_DIR}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos4-2-0_with_mechanisms.cmake -DCTEST_BUILD_NAME="$buildname" -V
+ctest -S ${CI_PROJECT_DIR}/ci/ctest_driver_install_siconos.cmake -Dmodel=$CTEST_MODEL -DSICONOS_INSTALL_DIR=${CI_PROJECT_DIR}/install-siconos -DOSNAME=$1 -DUSER_FILE=siconos4-2-0_with_mechanisms.cmake -DCTEST_BUILD_NAME="$buildname" -V
 make install -j $nbprocs > /dev/null
 mv ${CI_PROJECT_DIR}/siconos-commit-number.txt ${CI_PROJECT_DIR}/install-siconos/
 
@@ -38,4 +38,4 @@ mkdir ${CI_PROJECT_DIR}/build-examples
 cd ${CI_PROJECT_DIR}/build-examples
 export buildname="Siconos examples (release/tag $tag, with OCE)"
 export PATH=$CI_PROJECT_DIR/install-siconos/bin:$PATH
-ctest -S ${CI_PROJECT_DIR}/ci/ctest_driver_examples.cmake -DSICONOS_INSTALL_DIR=${CI_PROJECT_DIR}/install-siconos -Dmodel=Continuous -DOSNAME=$1 -DCTEST_BUILD_NAME="$buildname" -DCTEST_SOURCE_DIRECTORY=${CI_PROJECT_DIR}/siconos/examples -V
+ctest -S ${CI_PROJECT_DIR}/ci/ctest_driver_examples.cmake -DSICONOS_INSTALL_DIR=${CI_PROJECT_DIR}/install-siconos -Dmodel=$CTEST_MODEL -DOSNAME=$1 -DCTEST_BUILD_NAME="$buildname" -DCTEST_SOURCE_DIRECTORY=${CI_PROJECT_DIR}/siconos/examples -V
