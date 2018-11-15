@@ -165,7 +165,7 @@ message(STATUS "Site (cdash) : ${CTEST_SITE}")
 message(STATUS "=================================================================================================\n")
 
 # tests failed?
-if(NOT TEST_STATUS EQUAL 0 OR NOT TESTS_RESULT EQUAL 0)
+if(NOT TEST_STATUS EQUAL 0 OR NOT TEST_RESULT EQUAL 0)
   message(FATAL_ERROR " *** test failure *** ")
 endif()
 

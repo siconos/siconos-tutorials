@@ -77,14 +77,14 @@ public:
 
 struct ForNdof : public Question<unsigned int>
 {
-  using SiconosVisitor::visit;
-
-  ANSWER_V(Disk, 3);
-  ANSWER_V(Circle, 3);
-  ANSWER_V(SphereLDS, 6);
-  ANSWER_V(SphereNEDS, 6);
-  ANSWER_V(BodyDS, 6);
-  ANSWER_V(NewtonEulerDS, 6);
+  //using SiconosVisitor::visit;
+  
+  ANSWER_V_NOUSING(Disk, 3);
+  ANSWER_V_NOUSING(Circle, 3);
+  ANSWER_V_NOUSING(SphereLDS, 6);
+  ANSWER_V_NOUSING(SphereNEDS, 6);
+  ANSWER_V_NOUSING(BodyDS, 6);
+  ANSWER_V_NOUSING(NewtonEulerDS, 6);
 };
 
 
@@ -92,12 +92,12 @@ struct ForFExt : public Question<SP::SiconosVector>
 {
   using SiconosVisitor::visit;
 
-  ANSWER(Disk, fExt());
-  ANSWER(Circle, fExt());
-  ANSWER(SphereLDS, fExt());
-  ANSWER(SphereNEDS, fExt());
-  ANSWER(BodyDS, fExt());
-  ANSWER(NewtonEulerDS, fExt());
+  ANSWER_NOUSING(Disk, fExt());
+  ANSWER_NOUSING(Circle, fExt());
+  ANSWER_NOUSING(SphereLDS, fExt());
+  ANSWER_NOUSING(SphereNEDS, fExt());
+  ANSWER_NOUSING(BodyDS, fExt());
+  ANSWER_NOUSING(NewtonEulerDS, fExt());
 };
 
 
@@ -105,23 +105,23 @@ struct ForPosition : public Question<SP::SiconosVector>
 {
   using SiconosVisitor::visit;
 
-  ANSWER(Disk, q());
-  ANSWER(Circle, q());
-  ANSWER(SphereLDS, q());
-  ANSWER(SphereNEDS, q());
-  ANSWER(BodyDS, q());
-  ANSWER(NewtonEulerDS, q());
+  ANSWER_NOUSING(Disk, q());
+  ANSWER_NOUSING(Circle, q());
+  ANSWER_NOUSING(SphereLDS, q());
+  ANSWER_NOUSING(SphereNEDS, q());
+  ANSWER_NOUSING(BodyDS, q());
+  ANSWER_NOUSING(NewtonEulerDS, q());
 };
 
 struct ForRadius : public Question<double>
 {
   using SiconosVisitor::visit;
 
-  ANSWER(Disk, getRadius());
-  ANSWER(Circle, getRadius());
-  ANSWER(SphereLDS, getRadius());
-  ANSWER(SphereNEDS, getRadius());
-  ANSWER_V(BodyDS,
+  ANSWER_NOUSING(Disk, getRadius());
+  ANSWER_NOUSING(Circle, getRadius());
+  ANSWER_NOUSING(SphereLDS, getRadius());
+  ANSWER_NOUSING(SphereNEDS, getRadius());
+  ANSWER_V_NOUSING(BodyDS,
            std11::dynamic_pointer_cast<SiconosSphere>(ds.contactors()->at(0)->shape)
            ->radius());
 };
@@ -130,37 +130,37 @@ struct ForMassValue : public Question<double>
 {
   using SiconosVisitor::visit;
 
-  ANSWER(Disk, mass()->getValue(0, 0));
-  ANSWER(Circle, mass()->getValue(0, 0));
-  ANSWER(SphereLDS, mass()->getValue(0, 0));
-  ANSWER(SphereNEDS, scalarMass());
-  ANSWER(BodyDS, scalarMass());
-  ANSWER(NewtonEulerDS, scalarMass());
+  ANSWER_NOUSING(Disk, mass()->getValue(0, 0));
+  ANSWER_NOUSING(Circle, mass()->getValue(0, 0));
+  ANSWER_NOUSING(SphereLDS, mass()->getValue(0, 0));
+  ANSWER_NOUSING(SphereNEDS, scalarMass());
+  ANSWER_NOUSING(BodyDS, scalarMass());
+  ANSWER_NOUSING(NewtonEulerDS, scalarMass());
 };
 
 struct ForJachq : public Question<SP::SiconosMatrix>
 {
   using SiconosVisitor::visit;
 
-  ANSWER(LagrangianR, jachq());
-  ANSWER(NewtonEulerR, jachq());
-  ANSWER(DiskDiskR, jachq());
-  ANSWER(DiskPlanR, jachq());
-  ANSWER(DiskMovingPlanR, jachq());
-  ANSWER(SphereLDSPlanR, jachq());
-  ANSWER(SphereNEDSPlanR, jachq());
-  ANSWER(SphereLDSSphereLDSR, jachq());
-  ANSWER(SphereNEDSSphereNEDSR, jachq());
-  IFBULLET(ANSWER(BulletR, jachq()));
-  ANSWER(ContactR, jachq());
+  ANSWER_NOUSING(LagrangianR, jachq());
+  ANSWER_NOUSING(NewtonEulerR, jachq());
+  ANSWER_NOUSING(DiskDiskR, jachq());
+  ANSWER_NOUSING(DiskPlanR, jachq());
+  ANSWER_NOUSING(DiskMovingPlanR, jachq());
+  ANSWER_NOUSING(SphereLDSPlanR, jachq());
+  ANSWER_NOUSING(SphereNEDSPlanR, jachq());
+  ANSWER_NOUSING(SphereLDSSphereLDSR, jachq());
+  ANSWER_NOUSING(SphereNEDSSphereNEDSR, jachq());
+  IFBULLET(ANSWER_NOUSING(BulletR, jachq()));
+  ANSWER_NOUSING(ContactR, jachq());
 };
 
 struct ForContactForce : public Question<SP::SiconosVector>
 {
   using SiconosVisitor::visit;
 
-  IFBULLET(ANSWER(BulletR, contactForce()));
-  ANSWER(ContactR, contactForce());
+  IFBULLET(ANSWER_NOUSING(BulletR, contactForce()));
+  ANSWER_NOUSING(ContactR, contactForce());
 };
 
 
@@ -201,14 +201,14 @@ struct ForShape : public Question<SHAPE>
 {
   using SiconosVisitor::visit;
 
-  ANSWER_V(Disk, DISK);
-  ANSWER_V(Circle, CIRCLE);
-  ANSWER_V(SphereLDS, SPHERE);
-  ANSWER_V(SphereNEDS, SPHERE);
-  ANSWER_V(BodyDS,
+  ANSWER_V_NOUSING(Disk, DISK);
+  ANSWER_V_NOUSING(Circle, CIRCLE);
+  ANSWER_V_NOUSING(SphereLDS, SPHERE);
+  ANSWER_V_NOUSING(SphereNEDS, SPHERE);
+  ANSWER_V_NOUSING(BodyDS,
            std11::dynamic_pointer_cast<SiconosSphere>(ds.contactors()->at(0)->shape)
            ? SPHERE : UNKNOWN);
-  ANSWER_V(NewtonEulerDS, UNKNOWN);
+  ANSWER_V_NOUSING(NewtonEulerDS, UNKNOWN);
 };
 
 /* dynamical system / figure association */

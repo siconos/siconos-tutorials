@@ -81,9 +81,6 @@ void Spheres::init()
     // ------------
     // --- Init ---
     // ------------
-
-    std::cout << "====> Model loading ..." << std::endl << std::endl;
-
     _plans.reset(new SimpleMatrix("plans.dat", true));
 
     SP::SiconosMatrix Spheres;

@@ -95,7 +95,7 @@ ubuntu:build_and_run_examples_with_mechanisms:
     - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
-    - export EXTRA_BUILDNAME="With Bullet and OCE."
+    - export EXTRA_BUILDNAME="With Bullet and OCE"
     - "sh ci/build_and_run_examples.sh $os"
   only:
   - master
@@ -139,7 +139,7 @@ archlinux:build_and_run_examples_with_mechanisms:
     - 'pacman -Sy && pacman --noconfirm -S - < ci/arch_linux_packages.txt'
   script:
     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
-    - export EXTRA_BUILDNAME="With Bullet and OCE."
+    - export EXTRA_BUILDNAME="With Bullet and OCE"
     - "sh ci/build_and_run_examples.sh archlinux"
   only:
   - master
@@ -163,7 +163,7 @@ ubuntu:siconos_examples_release:
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
     - "sh ci/install_oce.sh" 
     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
-    - export EXTRA_BUILDNAME="With Bullet and OCE."
+    - export EXTRA_BUILDNAME="With Bullet and OCE"
     - "sh ci/run_all_stages_release.sh $os $tag"
   only:
   - master
