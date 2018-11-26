@@ -36,13 +36,13 @@ before_script:
      libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
 
 
-dockerbuild:ubuntu
+docker-build:ubuntu:
   stage: build
-  image: ubuntu:18.04
+  image: docker
   script:
-    - docker build -t $DOCKER_LOGIN/siconos-$image ci/dockerfiles/build-$image 
+    - docker build -t $DOCKER_LOGIN/siconos-ubuntu:18.04 ci/dockerfiles/build-ubuntu-18.04
     - echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
-    - docker push $DOCKER_LOGIN/siconos-$image
+    - docker push $DOCKER_LOGIN/siconos-ubuntu:18.04
   only:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^\[docker-build\].*/i
