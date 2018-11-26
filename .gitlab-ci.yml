@@ -51,6 +51,19 @@ docker-build:ubuntu:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^\[docker-build\].*/i
 
+siconos-build:ubuntu:
+  stage: build
+  image: $DOCKER_LOGIN/siconos-ubuntu:18.04
+  before_script:
+    - echo 'Build siconos from pre-built docker image ...'
+  script:
+    - "sh ci/install_siconos.sh ubuntu:18.04" 
+  artifacts:
+    paths:
+      - install-siconos
+  only:
+  - master
+
 
 
 # This job clone, build and install on default os (ubuntu)
