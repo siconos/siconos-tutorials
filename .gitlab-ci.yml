@@ -36,6 +36,19 @@ before_script:
      libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
 
 
+dockerbuild:ubuntu
+  stage: build
+  image: ubuntu:18.04
+  script:
+    - docker build -t $DOCKER_LOGIN/siconos-$image ci/dockerfiles/build-$image 
+    - echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
+    - docker push $DOCKER_LOGIN/siconos-$image
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /^\[docker-build\].*/i
+
+
+
 # This job clone, build and install on default os (ubuntu)
 # siconos software, with the 'standard' config
 # (release, all components, without oce)

@@ -28,14 +28,6 @@ RUN  apt update && apt install -y -qq \
         liboce-modeling-dev \
         liboce-ocaf-dev \
         liboce-visualization-dev
-RUN mkdir -p /builds
-ENV CI_PROJECT_DIR /builds
-RUN cd $CI_PROJECT_DIR && git clone https://gricad-gitlab.univ-grenoble-alpes.fr/nonsmooth/siconos-tutorials.git
-RUN cd $CI_PROJECT_DIR && git clone https://github.com/siconos/siconos.git
-RUN cd $CI_PROJECT_DIR && mkdir build-siconos
-RUN cd $CI_PROJECT_DIR/build-siconos && cmake -DUSER_OPTIONS_FILE=${CI_PROJECT_DIR}/siconos-tutorials/ci/siconos_with_mechanisms.cmake -DCMAKE_CXX_STANDARD=11 -DSICONOS_USE_BOOST_FOR_CXX11=OFF $CI_PROJECT_DIR/siconos \
-        && make
-RUN cd $CI_PROJECT_DIR/build-siconos && make install
 RUN apt clean
 
 
