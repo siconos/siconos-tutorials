@@ -1,0 +1,12 @@
+FROM siconos/siconos-ubuntu:18.04
+RUN  apt update && apt install -y -qq \
+        liboce-foundation-dev \
+        liboce-modeling-dev \
+        liboce-ocaf-dev \
+        liboce-visualization-dev
+ENV CI_PROJECT_DIR /builds
+RUN git clone https://gricad-gitlab.univ-grenoble-alpes.fr/nonsmooth/siconos-tutorials.git && sh siconos-tutorials/ci/install_oce.sh
+RUN apt clean
+
+
+
