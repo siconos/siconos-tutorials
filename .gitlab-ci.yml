@@ -41,6 +41,8 @@ docker-build:ubuntu:
   image: docker
   before_script:
     - echo 'Build docker image ...'
+  services:
+    - docker:dind
   script:
     - docker build -t $DOCKER_LOGIN/siconos-ubuntu:18.04 ci/dockerfiles/build-ubuntu-18.04
     - echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
