@@ -51,6 +51,22 @@ docker-build:ubuntu:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^\[docker-build\].*/i
 
+docker-build:ubuntu-oce:
+  stage: build
+  image: docker
+  before_script:
+    - echo 'Build docker image ...'
+  services:
+    - docker:dind
+  script:
+    - docker build -t $DOCKER_LOGIN/siconos-ubuntu-oce:18.04 -< ci/dockerfiles/build-ubuntu-18.04/Dockerfile-oce
+    - echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
+    - docker push $DOCKER_LOGIN/siconos-ubuntu-oce:18.04
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /^\[docker-build\].*/i
+
+
 siconos-build:ubuntu:
   stage: build
   image: $DOCKER_LOGIN/siconos-ubuntu:18.04
