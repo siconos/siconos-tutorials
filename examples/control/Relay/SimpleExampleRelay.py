@@ -24,83 +24,71 @@ import matplotlib
 matplotlib.use('Agg')
 from matplotlib.pyplot import subplot, title, plot, grid, savefig, figure
 from numpy import array, eye, empty, zeros, savetxt, loadtxt, linalg
-from siconos.kernel import FirstOrderLinearDS, FirstOrderLinearTIR, RelayNSL,\
+from siconos.kernel import FirstOrderLinearDS,  FirstOrderLinearR, RelayNSL,\
     NonSmoothDynamicalSystem, TimeDiscretisation, TimeStepping, EulerMoreauOSI, \
     Interaction, Relay
 from math import ceil
 
 
-import MyR, MyNonLinearR
-
-
 # variables
 t0 = 0.0   # start time
-T = 0.1     # end time
+T = 1.0     # end time
 h = 1.0e-3   # time step
-numInter = 2
-ninter = 2
+Vinit =1.0
 theta = 0.5
-alpha = .01
 N = int((T-t0)/h)
 
 # matrices
 A = zeros((2,2))
-x0 = array([3.,3.])
-B = 500*array([[alpha,1-alpha],[-(1-alpha),alpha]])
+x0 = array([Vinit,-Vinit])
+B = 2.0*eye(2)
 C = eye(2)
 D = zeros((2,2))
 
 # dynamical systems
 process = FirstOrderLinearDS(x0, A)
-#myProcessRelation = MyR.MyR(C,B)
-myProcessRelation = MyNonLinearR.MyNonLinearR(C,B)
-#myProcessRelation.setDPtr(D)
 
 myNslaw = RelayNSL(2)
-#myNslaw.display()
+myProcessRelation=FirstOrderLinearR(C, B);
+#myProcessRelation.setDPtr(D)
 
 myProcessInteraction = Interaction(myNslaw,
-        myProcessRelation)
+                                   myProcessRelation)
 
-
-
-
-filippov = NonSmoothDynamicalSystem(t0,T)
-filippov.insertDynamicalSystem(process)
-filippov.link(myProcessInteraction,process)
+simplerelay = NonSmoothDynamicalSystem(t0,T)
+simplerelay.insertDynamicalSystem(process)
+simplerelay.link(myProcessInteraction,process)
 
 
 #myProcessRelation.computeJachx(0, x0, x0 , x0, C)
 
 td = TimeDiscretisation(t0, h)
-s = TimeStepping(filippov, td)
-
+s = TimeStepping(simplerelay, td)
 
 myIntegrator = EulerMoreauOSI(theta)
 
 s.insertIntegrator(myIntegrator)
 
-
-#TODO python <- SICONOS_RELAY_LEMKE
-# access dparam
-
 osnspb = Relay()
 s.insertNonSmoothProblem(osnspb)
-s.setComputeResiduY(True)
-s.setComputeResiduR(True)
-
+#s.setComputeResiduY(True)
+#s.setComputeResiduR(True)
 
 # matrix to save data
-dataPlot = empty((N+1,4))
-dataPlot[0, 0] = t0
-dataPlot[0, 1:3] = process.x()
-dataPlot[0, 3] = myProcessInteraction.lambda_(0)[0]
-
+dataPlot = empty((N+1,9))
+k=0
+dataPlot[k, 0] = t0
+dataPlot[k, 1:3] = process.x()
+dataPlot[k, 3] = myProcessInteraction.lambda_(0)[0]
+dataPlot[k, 4] = myProcessInteraction.lambda_(0)[1]
+dataPlot[k, 5] = myProcessInteraction.y(0)[0]
+dataPlot[k, 6] = myProcessInteraction.y(0)[1]
 # time loop
 k = 1
+print('start computation')
 while(s.hasNextEvent()):
-     if (k%10):
-          sys.stdout.write('.')
+     if not (k%50):
+         sys.stdout.write('.')
 
      s.computeOneStep()
      #osnspb.display()
@@ -108,14 +96,17 @@ while(s.hasNextEvent()):
      dataPlot[k, 1] = process.x()[0]
      dataPlot[k, 2] = process.x()[1]
      dataPlot[k, 3] = myProcessInteraction.lambda_(0)[0]
+     dataPlot[k, 4] = myProcessInteraction.lambda_(0)[1]
+     dataPlot[k, 5] = myProcessInteraction.y(0)[0]
+     dataPlot[k, 6] = myProcessInteraction.y(0)[1]
      k += 1
      s.nextStep()
      #print s.nextTime()
 sys.stdout.write('\n')
 # save to disk
-savetxt('Filippov_NL_py.dat', dataPlot)
+savetxt('SimpleExampleRelay_py.dat', dataPlot)
 
-dataRef = loadtxt('Filippov_NL_py.dat')
+dataRef = loadtxt('SimpleExampleRelay_py.ref')
 
 print('Comparison with reference file -  error = ',linalg.norm(dataPlot-dataRef) )
 assert(linalg.norm(dataPlot-dataRef) <= 1e-12)
@@ -123,20 +114,15 @@ assert(linalg.norm(dataPlot-dataRef) <= 1e-12)
 
 # plot interesting stuff
 subplot(311)
-title('position')
+title('x_1')
 plot(dataPlot[:,0], dataPlot[:,1])
 grid()
 subplot(312)
-title('velocity')
+title('x_2')
 plot(dataPlot[:,0], dataPlot[:,2])
 grid()
 subplot(313)
 plot(dataPlot[:,0], dataPlot[:,3])
 title('lambda')
 grid()
-savefig("Filipov_NL1.png")
-
-figure()
-plot(dataPlot[:,1], dataPlot[:,2])
-grid()
-savefig("Filipov_NL2.png")
+savefig("SimpleRelay_py.png")
