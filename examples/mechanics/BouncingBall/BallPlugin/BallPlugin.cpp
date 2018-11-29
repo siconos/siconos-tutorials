@@ -15,17 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
 #include <stdio.h>
 
-const double R = 0.1; // ball radius
 const double m = 1; // ball mass
-const double g = 9.8; // gravity
-const double h = -0.1; // altitude of the plan
+const double g = 9.81; // gravity
 
 extern "C" double FextFunction(double time)
 {
@@ -40,4 +38,3 @@ SICONOS_EXPORT void ballFExt(double time, unsigned int sizeOfq, double *fExt, un
     fExt[i] = 0.0;
   fExt[0] = -m * g + FextFunction(time);
 }
-
