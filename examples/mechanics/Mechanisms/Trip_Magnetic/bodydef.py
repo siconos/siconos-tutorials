@@ -77,15 +77,15 @@ inertialMatrix=numpy.array([((3.891182e+01, -6.015089e+00, -2.8917964e-01),(-6.0
 ])
 ###### STEP Files of bodies ################################################################
 afile=['./CAD/C60/manette.stp',
-                   './CAD/C60/biellette.stp',
-                   './CAD/C60/crochet.stp',
-                   './CAD/C60/platine.stp',
-                   './CAD/C60/portcontact/porte_contact.stp',
-                   './CAD/C60/newFC/Tbarassembly.stp',
-		   './CAD/C60/C8/probe.stp',
-		   './CAD/C60/J1/Aiguille.stp',
-		   #'./CAD/C60/J1/72569701.stp'
-#		   './CAD/C60/J1/couvercle.stp' # porte_contact.stp=> (0,0,0,0,0,1, -69*my_PI/180.0),
+       './CAD/C60/biellette.stp',
+       './CAD/C60/crochet.stp',
+       './CAD/C60/platine.stp',
+       './CAD/C60/portcontact/porte_contact.stp',
+       './CAD/C60/newFC/Tbarassembly.stp',
+       './CAD/C60/C8/probe.stp',
+       './CAD/C60/J1/Aiguille.stp',
+       #'./CAD/C60/J1/72569701.stp'
+       #		   './CAD/C60/J1/couvercle.stp' # porte_contact.stp=> (0,0,0,0,0,1, -69*my_PI/180.0),
 ]
 ###### FORCES and MOMENTS acting on the bodies##################################################
 plugin='plugins.so'

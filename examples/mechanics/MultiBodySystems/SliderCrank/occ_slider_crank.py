@@ -38,6 +38,9 @@ offset = 0.024  # offset for the contacts between the slider and the chamber
 with_clearance_on_rode = True
 with_contact_on_axis_cylinder = False
 
+CAD_directory = '../../Mechanisms/SliderCrank/CAD/'
+
+
 with MechanicsHdf5Runner() as io:
 
     io.add_occ_shape('AxisShape', axis)
@@ -45,31 +48,31 @@ with MechanicsHdf5Runner() as io:
     io.add_plugin_source('plugin', 'SliderCrankPlugin/SliderCrankPlugin.cpp')
 
     io.add_shape_data_from_file('body1',
-                                '../Mechanisms/SliderCrank/CAD/body1.step')
+                                CAD_directory + 'body1.step')
     io.add_shape_data_from_file('body2',
-                                '../Mechanisms/SliderCrank/CAD/body2.step')
+                                CAD_directory + 'body2.step')
     io.add_shape_data_from_file('Slider',
-                                '../Mechanisms/SliderCrank/CAD/Slider.step')
+                                CAD_directory + 'Slider.step')
 
     io.add_shape_data_from_file(
         'Contact_b_cyl',
-        '../Mechanisms/SliderCrank/CAD/contact_b_cyl.step')
+        CAD_directory +'contact_b_cyl.step')
 
     io.add_shape_data_from_file(
         'Contact_h_cyl',
-        '../Mechanisms/SliderCrank/CAD/contact_h_cyl.step')
+        CAD_directory +'contact_h_cyl.step')
 
     io.add_shape_data_from_file('RingBody',
-                                '../Mechanisms/SliderCrank/CAD/RingBody1.stp')
+                                CAD_directory +'RingBody1.stp')
 
     io.add_shape_data_from_file('Chamber',
-                                '../Mechanisms/SliderCrank/CAD/chamber.step')
+                                CAD_directory +'chamber.step')
 
     io.add_shape_data_from_file('AxisBody',
-                                '../Mechanisms/SliderCrank/CAD/AxisBody2.stp')
+                                CAD_directory +'AxisBody2.stp')
 
     io.add_shape_data_from_file('Artefact',
-                                '../Mechanisms/SliderCrank/CAD/artefact2.step')
+                                CAD_directory +'artefact2.step')
 
     io.add_object('Artefact', [Shape(shape_name='Artefact',
                                      instance_name='artefact')],
