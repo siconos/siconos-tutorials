@@ -1,8 +1,7 @@
 Siconos mechanisms examples
 ---------------------------
 
-[![A video of a watch escapment simulation](./MultiBodySystems/WatchEscapment/WatchEscapementMechanism.png)](https://www.youtube.com/watch?v=FhxgG4FdAgQ)
-
+[![A video of a watch escapment simulation](https://gricad-gitlab.univ-grenoble-alpes.fr/nonsmooth/siconos-tutorials/blob/master/examples/mechanics/MultiBodySystems/WatchEscapment/WatchEscapementMechanism.png)](https://www.youtube.com/watch?v=FhxgG4FdAgQ)
 
 
 This directory contains examples of MultiBody Systems using OpenCascade for dealing with B-Rep (CAD step files).
