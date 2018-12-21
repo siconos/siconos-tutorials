@@ -40,7 +40,7 @@ class LinearElacticMaterial
 public:
   LinearElacticMaterial(){};
 
-  
+
   LinearElacticMaterial(double E, double nu, double rho)
   {
     _E = E;
@@ -67,7 +67,7 @@ class PunchLagrangianLinearTIDS : public LagrangianLinearTIDS
 {
 
   LinearElacticMaterial _mat;
-  
+
   SP::SimpleMatrix create_matrix_from_mfem(SparseMatrix A)
   {
     int * Ai  = A.GetI();
@@ -76,9 +76,9 @@ class PunchLagrangianLinearTIDS : public LagrangianLinearTIDS
     int size = A.Size();
 
     int nnz = Ai[size];
-    
+
     SP::SimpleMatrix M(new SimpleMatrix(size,size,Siconos::SPARSE,nnz));
-   
+
     for (int row =0; row < size ; row++)
     {
       for (int k = Ai[row], end = Ai[row+1]; k < end; k++)
@@ -101,7 +101,7 @@ public:
 
 
 
-   
+
     // 2. Read the mesh from the given mesh file. We can handle triangular,
     //    quadrilateral, tetrahedral or hexahedral elements with the same code.
     Mesh *mesh = new Mesh(mesh_file, 1, 1);
@@ -252,7 +252,7 @@ public:
    _mass = create_matrix_from_mfem(M);
 
 
-   
+
   };
 
 

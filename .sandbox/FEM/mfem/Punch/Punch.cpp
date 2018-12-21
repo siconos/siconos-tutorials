@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 #include "UserDefinedParameter.hpp"
 
 
-    
+
     // -- The dynamical system --
     const char *mesh_file = "./data/beam-hex.mesh";
     LinearElacticMaterial *  mat = new LinearElacticMaterial(E, nu, rho);

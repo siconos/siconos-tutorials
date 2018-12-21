@@ -12,7 +12,7 @@ import math
 
 class SiconosFem:
     """ The set of matrices required by Siconos, from a Finite Element Model
-    
+
     """
     def __init__(self):
         self.nbdof = 0
@@ -48,7 +48,7 @@ with_friction = True
 # ===============================
 
 
-# ==== The geometry and the mesh ==== 
+# ==== The geometry and the mesh ====
 dimX = 10.01 ; dimY = 10.01 ; dimZ = 3.01
 stepX = 2.0 ; stepY = 2.0 ; stepZ = 1.5
 alpha = math.atan(dimZ/30.0)
@@ -69,18 +69,18 @@ mfu.set_fem(gf.Fem('FEM_PK(3,1)'))
 mff.set_fem(gf.Fem('FEM_PK_DISCONTINUOUS(3,1,0.01)'))
 # mfu.export_to_vtk("BlockMeshDispl.vtk")
 
-# ==== Set the integration method ==== 
+# ==== Set the integration method ====
 mim = gf.MeshIm(m,gf.Integ('IM_TETRAHEDRON(5)'))
 
-# ==== Summary ==== 
+# ==== Summary ====
 print(' ==================================== \n Mesh details: ')
 print(' Problem dimension:', mfu.qdim(), '\n Number of elements: ', m.nbcvs(), '\n Number of nodes: ', m.nbpts())
 print(' Number of dof: ', mfu.nbdof(), '\n Element type: ', mfu.fem()[0].char())
 print(' ====================================')
 
-# ==== Boundaries detection ==== 
+# ==== Boundaries detection ====
 allPoints = m.pts()
-# Bottom points and faces 
+# Bottom points and faces
 cbot = (abs(allPoints[2,:])  < 1e-6)
 pidbot = np.compress(cbot,list(range(0,m.nbpts())))
 fbot = m.faces_from_pid(pidbot)
@@ -108,7 +108,7 @@ m.set_region(RIGHT,fright)
 # ==== Create getfem models ====
 # We use two identical models, one to get the stiffness matrix and the rhs
 # and the other to get the mass matrix.
-# 
+#
 md = gf.Model('real')
 # The dof (displacements on nodes)
 md.add_fem_variable('u',mfu)
@@ -136,7 +136,7 @@ sico.Stiff=md.tangent_matrix().full()
 #
 # Get right-hand side
 sico.RHS = md.rhs()
-# Get initial state 
+# Get initial state
 sico.initial_displacement = md.variable('u')
 
 # Second model for the mass matrix
@@ -159,9 +159,9 @@ sico.nbdof = mfu.nbdof()
 
 # =======================================
 # Create the siconos Dynamical System
-# 
+#
 # Mass.ddot q + Kq = fExt
-# 
+#
 # q: dof vector (displacements)
 # =======================================
 # Initial displacement and velocity
@@ -178,13 +178,13 @@ print("Start Siconos process ...")
 # A contact is defined for each node at
 # the bottom of the block
 # =======================================
-# Create one relation/interaction for each point 
+# Create one relation/interaction for each point
 # in the bottom surface
-# Each interaction is of size three with a 
-# relation between local coordinates at contact and global coordinates given by: 
+# Each interaction is of size three with a
+# relation between local coordinates at contact and global coordinates given by:
 # y = Hq + b
-# y = [ normal component, first tangent component, second tangent component] 
-# 
+# y = [ normal component, first tangent component, second tangent component]
+#
 # The friction-contact non-smooth law
 
 nslaw = kernel.NewtonImpactFrictionNSL(e,e,mu,3)
@@ -192,7 +192,7 @@ diminter = 3
 b = np.zeros(diminter)
 relation=[]
 inter=[]
-q0 = mfu.basic_dof_nodes() 
+q0 = mfu.basic_dof_nodes()
 # We create an interaction for each point at the bottom of the block
 nbInter = pidbot.shape[0]
 # The list of dof in bottom face
@@ -210,7 +210,7 @@ for i in range(nbInter):
     b[0] = np.dot(hh[0,index:index+3],qRef)
     relation.append(kernel.LagrangianLinearTIR(hh,b))
     inter.append(kernel.Interaction(diminter, nslaw, relation[i]))
-    
+
 
 # Now we treat the top face in the same way
 relationTop =[]
@@ -274,7 +274,7 @@ blockModel.initialize()
 # the number of time steps
 N = (T-t0)/h
 
-# Get the values to be plotted 
+# Get the values to be plotted
 # ->saved in a matrix dataPlot
 
 dataPlot = np.empty((N+1,3))
@@ -289,12 +289,12 @@ while(s.hasNextEvent()):
     s.computeOneStep()
     name = 'extr'+str(k)+'.vtk'
     #dataPlot[k,0]=s.nextTime()
-    #dataPlot[k,1]=block.q()[0]    
-    
+    #dataPlot[k,1]=block.q()[0]
+
     # Post proc for paraview
     md.to_variables(block.q())
     VM=md.compute_isotropic_linearized_Von_Mises_or_Tresca('u','lambda','mu',mff)
-    
+
     #U = fem_model.variable('u')
     sl = gf.Slice(('boundary',),mfu,1)
     sl.export_to_vtk(name, mfu, block.q(),'Displacement', mff, VM, 'Von Mises Stress')
@@ -313,4 +313,3 @@ while(s.hasNextEvent()):
 #subplot(212)
 #title('VM')
 #show()
-

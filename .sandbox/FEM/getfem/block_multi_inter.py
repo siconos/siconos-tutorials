@@ -60,7 +60,7 @@ for i in range(0,dimH,3):
     k+=1
 
 
-    
+
 nbInter=len(inter)
 
 
@@ -112,7 +112,7 @@ blockModel.initialize()
 # the number of time steps
 N = (T-t0)/h
 
-# Get the values to be plotted 
+# Get the values to be plotted
 # ->saved in a matrix dataPlot
 
 dataPlot = np.empty((N+1,9))
@@ -136,7 +136,7 @@ while(s.hasNextEvent()):
     s.computeOneStep()
     name = 'titi'+str(k)+'.vtk'
     dataPlot[k,0]=s.nextTime()
-    #dataPlot[k,1]=block.q()[2]    
+    #dataPlot[k,1]=block.q()[2]
     #dataPlot[k,2]=block.velocity()[2]
     #   dataPlot[k, 2] = block.q()[5]
     #dataPlot[k, 3] = block.q()[8]
@@ -148,7 +148,7 @@ while(s.hasNextEvent()):
     siz = sico.pos.size
     reference_pos = sico.pos
     current_pos = block.q() +  reference_pos
-    dataPlot[k,1]=current_pos[2]    
+    dataPlot[k,1]=current_pos[2]
     #dataPlot[k,2]=block.velocity()[2]
     dataPlot[k, 2] = current_pos[5]
     dataPlot[k, 3] = current_pos[8]
@@ -169,7 +169,7 @@ while(s.hasNextEvent()):
     #new_ref[1:siz:3] = reference_pos[1:siz:3] - trans
     #trans = np.repeat([translatZ],nbNodes)
     #new_ref[2:siz:3] = reference_pos[2:siz:3] - trans
-    
+
     #depl = current_pos - new_ref
     #block.setQPtr(depl)
     #correction = np.dot(sico.H,new_ref)
@@ -184,8 +184,8 @@ while(s.hasNextEvent()):
     #print current_pos[0:3]
     #print new_ref[0:3]
     #print depl[0:3]
-    
-    
+
+
 
     fem_model.to_variables(block.q())
     U = fem_model.variable('u')

@@ -19,4 +19,3 @@ double rho = 7800.0 ; // specific mass
 //rho=1.0;
 double g = 9.81; // Gravity
 g=0.0;
-

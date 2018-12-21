@@ -11,7 +11,7 @@ from matplotlib.pyplot import *
 
 class SiconosFem:
     """ The set of matrices required by Siconos, from a Finite Element Model
-    
+
     """
     def __init__(self):
         self.nbdof = 0
@@ -25,31 +25,31 @@ def fillH(pid,sic,nbdof,BOTTOM):
     nb_contacts = np.size(pid)
     rowH = 3 * nb_contacts
     sic.H = np.zeros((rowH,nbdof))
-    
+
     dofbottom = mfu.basic_dof_on_region(BOTTOM)
     for i in range(0,rowH,3):
         sic.H[i,dofbottom[i]+2] = 1.0
         sic.H[i+1,dofbottom[i]] = 1.0
         sic.H[i+2,dofbottom[i]+1] = 1.0
-              
+
 
 sico = SiconosFem()
 
 # ===============================
 # Model Parameters
 # ===============================
-E = 2.1e11  # Young modulus
+E = 1e3  # Young modulus
 Nu = 0.3 # Poisson coef.
 # Lame coeff.
 Lambda = E*Nu/((1+Nu)*(1-2*Nu))
 Mu = E/(2*(1+Nu))
 # Density
-Rho=7800
+Rho=1.0#7.800
 Gravity = -9.81
 t0 = 0.0      # start time
-T = 0.5    # end time
-h = 0.0005   # time step
-e = 0.0    # restitution coeficient
+T = 10.0    # end time
+h = 0.005   # time step
+e = 0.0   # restitution coeficient
 mu=0.3 # Friction coefficient
 theta = 0.5 # theta scheme
 
@@ -57,7 +57,7 @@ theta = 0.5 # theta scheme
 # Build FEM using getfem
 # ===============================
 
-# ==== The geometry and the mesh ==== 
+# ==== The geometry and the mesh ====
 dimX = 10.01 ; dimY = 10.01 ; dimZ = 3.01
 stepX = 2.0 ; stepY = 2.0 ; stepZ = 1.5
 x=np.arange(0,dimX,stepX)
@@ -77,18 +77,18 @@ mfu.set_fem(gf.Fem('FEM_PK(3,1)'))
 mff.set_fem(gf.Fem('FEM_PK_DISCONTINUOUS(3,1,0.01)'))
 # mfu.export_to_vtk("BlockMeshDispl.vtk")
 
-# ==== Set the integration method ==== 
+# ==== Set the integration method ====
 mim = gf.MeshIm(m,gf.Integ('IM_TETRAHEDRON(5)'))
 
-# ==== Summary ==== 
+# ==== Summary ====
 print(' ==================================== \n Mesh details: ')
 print(' Problem dimension:', mfu.qdim(), '\n Number of elements: ', m.nbcvs(), '\n Number of nodes: ', m.nbpts())
 print(' Number of dof: ', mfu.nbdof(), '\n Element type: ', mfu.fem()[0].char())
 print(' ====================================')
 
-# ==== Boundaries detection ==== 
+# ==== Boundaries detection ====
 allPoints = m.pts()
-# Bottom points and faces 
+# Bottom points and faces
 cbot = (abs(allPoints[2,:])  < 1e-6)
 pidbot = np.compress(cbot,list(range(0,m.nbpts())))
 fbot = m.faces_from_pid(pidbot)
@@ -101,7 +101,7 @@ ftop = m.faces_from_pid(pidtop)
 TOP = 2
 m.set_region(TOP,ftop)
 # Left points and faces
-cleft = (abs(allPoints[0,:]) < 1e-6)
+cleft = (abs(allPoints[1,:]) < 1e-6)
 pidleft = np.compress(cleft,list(range(0,m.nbpts())))
 fleft= m.faces_from_pid(pidleft)
 LEFT = 3
@@ -110,25 +110,21 @@ m.set_region(LEFT,fleft)
 # ==== Create getfem models ====
 # We use two identical models, one to get the stiffness matrix and the rhs
 # and the other to get the mass matrix.
-# 
+#
 md = gf.Model('real')
 # The dof (displacements on nodes)
 md.add_fem_variable('u',mfu)
 # Add model constants
 md.add_initialized_data('lambda',Lambda)
 md.add_initialized_data('mu',Mu)
-md.add_initialized_data('source_term',[0,0,-10])
-md.add_initialized_data('push',[50000000.0,0.0,0.0])
+md.add_initialized_data('source_term',[0,0,-100])
+md.add_initialized_data('push',[0,100,0])
 md.add_initialized_data('rho',Rho)
 md.add_initialized_data('gravity', Gravity)
 md.add_initialized_data('weight',[0,0,Rho*Gravity])
 # Build model (linear elasticity)
 md.add_isotropic_linearized_elasticity_brick(mim,'u','lambda','mu')
-# Add volumic/surfacic source terms
-#md.add_source_term_brick(mim,'u','source_term',TOP)
-md.add_source_term_brick(mim,'u','push',LEFT)
 md.add_source_term_brick(mim,'u','weight')
-
 
 # Assembly
 md.assembly()
@@ -139,7 +135,7 @@ sico.Stiff=md.tangent_matrix().full()
 #
 # Get right-hand side
 sico.RHS = md.rhs()
-# Get initial state 
+# Get initial state
 sico.initial_displacement = md.variable('u')
 
 # Second model for the mass matrix
@@ -162,14 +158,14 @@ sico.mesh=m
 # From getfem, we have Mass, Stiffness and RHS
 # saved in object sico.
 
-# H-Matrix 
+# H-Matrix
 fillH(pidbot,sico,mfu.nbdof(),BOTTOM)
 
 # =======================================
 # Create the siconos Dynamical System
-# 
+#
 # Mass.ddot q + Kq = fExt
-# 
+#
 # q: dof vector (displacements)
 # =======================================
 # Initial displacement and velocity
@@ -184,33 +180,31 @@ block.setKPtr(sico.Stiff)
 # A contact is defined for each node at
 # the bottom of the block
 # =======================================
-# Create one relation/interaction for each point 
+# Create one relation/interaction for each point
 # in the bottom surface
-# Each interaction is of size three with a 
-# relation between local coordinates at contact and global coordinates given by: 
+# Each interaction is of size three with a
+# relation between local coordinates at contact and global coordinates given by:
 # y = Hq + b
-# y = [ normal component, first tangent component, second tangent component] 
-# 
-# The friction-contact non-smooth law
-nslaw = kernel.NewtonImpactFrictionNSL(e,e,mu,3)
-diminter = 3
+# y = [ normal component, first tangent component, second tangent component]
+#
+# The non-smooth law
+nslaw = kernel.NewtonImpactNSL(e)
+diminter = 1
 
 hh = np.zeros((diminter,sico.nbdof))
 b = np.zeros(diminter)
-b[0] = 0.0
+b[0] = 1.0
 k = 0
 relation=[]
 inter=[]
 hh = np.zeros((diminter,sico.nbdof))
 nbInter = pidbot.shape[0]
-
 for i in range(nbInter):
-    # hh is a submatrix of sico.H with 3 rows. 
-    hh[:,:] = sico.H[k:k+3,:]
+    # hh is a submatrix of sico.H with 1 row.
+    hh[:,:]= sico.H[k,:]
     k += 3
     relation.append(kernel.LagrangianLinearTIR(hh,b))
     inter.append(kernel.Interaction(diminter, nslaw, relation[i]))
-    
 
 nbInter=len(inter)
 
@@ -236,8 +230,7 @@ OSI = kernel.Moreau(theta)
 # (2) Time discretisation --
 t = kernel.TimeDiscretisation(t0,h)
 
-# (3) one step non smooth problem
-osnspb = kernel.FrictionContact(3)
+osnspb = kernel.LCP()
 
 # (4) Simulation setup with (1) (2) (3)
 s = kernel.TimeStepping(t)
@@ -251,13 +244,14 @@ blockModel.initialize()
 # the number of time steps
 N = (T-t0)/h
 
-# Get the values to be plotted 
+# Get the values to be plotted
 # ->saved in a matrix dataPlot
 
 dataPlot = np.empty((N+1,9))
 
 dataPlot[0, 0] = t0
 dataPlot[0, 1] = block.q()[2]
+#dataPlot[0, 2] = block.velocity()[2]
 
 nbNodes = sico.mesh.pts().shape[1]
 
@@ -265,19 +259,17 @@ k = 1
 # time loop
 while(s.hasNextEvent()):
     s.computeOneStep()
-    name = 'friction'+str(k)+'.vtk'
+    name = 'bounce'+str(k)+'.vtk'
     dataPlot[k,0]=s.nextTime()
-    dataPlot[k,1]=block.q()[2]    
-    
+    dataPlot[k,1]=block.q()[2]
+    dataPlot[k,2]=block.velocity()[2]
+
     # Post proc for paraview
     md.to_variables(block.q())
     VM=md.compute_isotropic_linearized_Von_Mises_or_Tresca('u','lambda','mu',mff)
-    dataPlot[k, 8] = VM[0]
-    
     #U = fem_model.variable('u')
     sl = gf.Slice(('boundary',),sico.mfu,1)
     sl.export_to_vtk(name, sico.mfu, block.q(),'Displacement', mff, VM, 'Von Mises Stress')
-
     #print s.nextTime()
     k += 1
     s.nextStep()
@@ -287,7 +279,10 @@ while(s.hasNextEvent()):
 #subplot(211)
 #title('position')
 #plot(dataPlot[:,0], dataPlot[:,1])
+
 #grid()
 #subplot(212)
+#title('velocity')
+#plot(dataPlot[:,0], dataPlot[:,2])
+#grid()
 #show()
-

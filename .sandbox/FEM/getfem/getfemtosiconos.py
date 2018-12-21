@@ -5,7 +5,7 @@ import numpy as np
 
 class SiconosFem:
     """ The set of matrices required by Siconos, from a Finite Element Model
-    
+
     """
     def __init__(self):
         self.nbdof = 0
@@ -17,13 +17,13 @@ class SiconosFem:
 
 def import_fem(sico):
     """ Build a mesh object using getfem.
-    
+
     We use getfem++ to build the finite element model and
     to fill in the operators required by siconos:
     - the mass matrix (Mass)
     - the stiffness matrix (Stiff)
     - the matrix that links global coordinates and local coord. at contact points (H)
-    
+
     """
     ############################
     # The geometry and the mesh
@@ -74,7 +74,7 @@ def import_fem(sico):
     # Boundaries detection
     ############################
     allPoints = m.pts()
-    # Bottom points and faces 
+    # Bottom points and faces
     cbot = (abs(allPoints[2,:])  < 1e-6)
     pidbot = np.compress(cbot,list(range(0,m.nbpts())))
     fbot = m.faces_from_pid(pidbot)
@@ -115,7 +115,7 @@ def import_fem(sico):
     #md.add_source_term_brick(mim,'u','push',LEFT)
     md.add_source_term_brick(mim,'u','weight')
     #md.add_Dirichlet_condition_with_multipliers(mim,'u',mfu,BOTTOM)
-    
+
     md.assembly()
     sico.Stiff=md.tangent_matrix()
     sico.RHS = md.rhs()
@@ -138,7 +138,7 @@ def import_fem(sico):
     sico.bot = pidbot
     # running solve...
     #md.solve()
-    
+
     # post-processing
     #VM=md.compute_isotropic_linearized_Von_Mises_or_Tresca('u','lambda','mu',mff)
     # extracted solution
@@ -146,21 +146,21 @@ def import_fem(sico):
     # export U and VM in a pos file
     #sl = gf.Slice(('boundary',),mfu,1)
     #sl.export_to_vtk('toto.vtk', mfu, U, 'Displacement', mff, VM, 'Von Mises Stress')
-    
-    # H-Matrix 
+
+    # H-Matrix
     fillH(pidbot,sico,mfu.nbdof())
 
     return md
 
 def import_fem2(sico):
     """ Build a mesh object using getfem.
-    
+
     We use getfem++ to build the finite element model and
     to fill in the operators required by siconos:
     - the mass matrix (Mass)
     - the stiffness matrix (Stiff)
     - the matrix that links global coordinates and local coord. at contact points (H)
-    
+
     """
     ############################
     # The geometry and the mesh
@@ -210,7 +210,7 @@ def import_fem2(sico):
     # Boundaries detection
     ############################
     allPoints = m.pts()
-    # Bottom points and faces 
+    # Bottom points and faces
     cbot = (abs(allPoints[2,:])  < 1e-6)
     pidbot = np.compress(cbot,list(range(0,m.nbpts())))
     fbot = m.faces_from_pid(pidbot)
@@ -233,7 +233,7 @@ def import_fem2(sico):
     m.set_region(LEFTTOP,flefttop)
     LEFT = 4
     m.set_region(LEFT,fleft)
-    
+
     ############################
     # Assembly
     ############################
@@ -249,11 +249,11 @@ def import_fem2(sico):
 
     sico.nbdof = mfu.nbdof()
     sico.q0 = mfu.basic_dof_from_cvid()
-    
-    sico.bot = pidbot
-    
 
-    # H-Matrix 
+    sico.bot = pidbot
+
+
+    # H-Matrix
     fillH(pidbot,sico,mfu.nbdof())
     return m
 

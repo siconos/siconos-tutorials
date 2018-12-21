@@ -40,7 +40,7 @@ block.setKPtr(sico.Stiff.full())
 
 dist = 3.0
 dimH = sico.H.shape[0]
-    
+
 if(with_friction):
     diminter = dimH
     nslaw = kernel.NewtonImpactFrictionNSL(e,e,mu,3)
@@ -102,7 +102,7 @@ blockModel.initialize()
 # the number of time steps
 N = (T-t0)/h
 
-# Get the values to be plotted 
+# Get the values to be plotted
 # ->saved in a matrix dataPlot
 
 dataPlot = np.empty((N+1,4))
@@ -119,9 +119,9 @@ while(s.hasNextEvent()):
     s.computeOneStep()
     name = 'titi'+str(k)+'.vtk'
     dataPlot[k,0]=s.nextTime()
-    dataPlot[k,1]=block.q()[2]    
+    dataPlot[k,1]=block.q()[2]
     dataPlot[k,2]=block.velocity()[2]
-    dataPlot[k,3]=block.q()[5]    
+    dataPlot[k,3]=block.q()[5]
     k += 1
     s.nextStep()
     fem_model.to_variables(block.q())
@@ -129,7 +129,7 @@ while(s.hasNextEvent()):
     sl = gf.Slice(('boundary',),sico.mfu,1)
     sl.export_to_vtk(name, sico.mfu, U,'Displacement')
     print(s.nextTime())
-    
+
 
 subplot(211)
 title('position')

@@ -17,11 +17,11 @@ RHO = 6e-6;     	% "realistic" density for steel
 T = 0.1;
 DT = 0.001;            % Time step
 
- 
+
 
 %%%%%   discretisation parameters  :                     	      %%%%%
 %MESH_TYPE = 'GT_PK(2,1)';         % linear triangles
-% MESH_TYPE = 'GT_QK(3,2)'; % 	
+% MESH_TYPE = 'GT_QK(3,2)'; %
 %MESH_TYPE = 'GT_PRISM(3,1)';     % 3D prisms
 NX = 10;            	          % space step.
 MESH_NOISE = 0;         % Set to one if you want to "shake" the mesh
@@ -37,7 +37,7 @@ SCHEME = 0; % 0 = theta-method, 1 = Newmark, 2 = midpoint
 	    % 6 = KLR conservative scheme
 	    % 7 = midpoint + velocity modification
             % 8 = Laursen Chawla ? (to be verified).
-	    
+
 THETA = 1.0;
 BETA = 1.0;             % Newmark scheme parameter in [0, 1]
 GAMMA= 1.0;             % Newmark scheme parameter in [1/2, 1]
