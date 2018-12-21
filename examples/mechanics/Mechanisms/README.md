@@ -4,7 +4,9 @@ Siconos mechanisms examples
 [![A video of a circuit breaker simulation](https://img.youtube.com/vi/BvPUsuGX2jo/0.jpg)](https://youtu.be/BvPUsuGX2jo)
 
 
-This directory contains some tests ot the mechanisms toolbox using  CAD files and OpenCascade.
+This directory contains some tests of the mechanisms toolbox using OpenCascade for dealing with B-Rep (CAD step files) and PythonOcc for the visualization.
+
+Warning: This toolbox is longer maintained since release 4.2.0 and has been replaced by a Python API based on Occ. See the examples in (MultiBodySystems)(https://gricad-gitlab.univ-grenoble-alpes.fr/nonsmooth/siconos-tutorials/edit/master/examples/mechanics/MultiBodySystems)
 
 Model Definition
 ----------------
