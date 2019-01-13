@@ -238,8 +238,8 @@ int main(int argc, char* argv[])
     cout << "Comparison with a reference file ..."<< endl;
     SimpleMatrix dataPlotRef(dataPlot);
     dataPlotRef.zero();
-    Index idx(3);
-    for (int i =0 ; i < 7; i++)
+    Index idx(4);
+    for (int i =0 ; i < 4; i++)
       idx.push_back(i);
     double error=0.0, eps=1e-12;
     if ((error=ioMatrix::compareRefFile(dataPlot, "DiodeBridgeCapFilter.ref",

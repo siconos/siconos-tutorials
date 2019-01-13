@@ -228,10 +228,13 @@ int main(int argc, char* argv[])
     // dataPlot (ascii) output
     ioMatrix::write("DiodeBridgeCapFilter.dat", "ascii", dataPlot, "noDim");
 
+    
     // Comparison with a reference file
+    Index idx(4);
+    for (int i =0; i< 4 ; i++) idx.push_back(i);
     double error=0.0, eps=1e-12;
     if (
-      (error=ioMatrix::compareRefFile(dataPlot, "DiodeBridgeCapFilter.ref", eps)) >= 0.0
+      (error=ioMatrix::compareRefFile(dataPlot, "DiodeBridgeCapFilter.ref", eps, idx)) >= 0.0
       && error > eps)
       return 1;
   }

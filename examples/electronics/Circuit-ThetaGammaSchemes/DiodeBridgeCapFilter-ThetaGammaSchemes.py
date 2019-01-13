@@ -227,7 +227,7 @@ from numpy.linalg import norm
 
 ref = getMatrix(SimpleMatrix("DiodeBridgeCapFilter.ref"))
 
-error = norm(dataPlot[:,0:6] - ref[:,0:6])
+error = norm(dataPlot[:,0:4] - ref[:,0:4])
 print("error = " , error)
 
 assert (error < 1e-09)
