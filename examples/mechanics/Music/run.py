@@ -135,8 +135,8 @@ print("Start simulation ...")
 start_time = time.clock()
 pos = 1
 
-while simu.hasNextEvent():
-    if k % 100000 == 0:
+while (simu.hasNextEvent() and k < 200):
+    if k % 100 == 0 :
         print('step = ', k, '---- time = ',
               simu.nextTime(),
               '------------------------')
