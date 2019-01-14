@@ -183,7 +183,6 @@ int main(int argc, char* argv[])
     SP::SiconosVector v = bar->velocity();
     SP::SiconosVector p = bar->p(1);
     SP::SiconosVector Lambda = inter->lambda(1);
-    SP::SiconosVector lambdaminus = inter->lambda(2);
    
     SP::SiconosVector y = inter->y(0);
     int k = 0;
@@ -192,7 +191,7 @@ int main(int argc, char* argv[])
     dataPlot(k,2) = (*v)(0);
     dataPlot(k,3) = (*p)(0);
     dataPlot(k,4) = (*Lambda)(0);
-    dataPlot(k,11) = (*lambdaminus)(0); // lambda1_{k+1}^-
+    dataPlot(k,11) = 0.0 ; /* not yet initialized (*lambdaminus)(0); // lambda1_{k+1}^- */
     dataPlot(k,12) = 0.0;
 
     dataPlot(k,7) = (*q)(nDof-1);
@@ -246,7 +245,7 @@ int main(int argc, char* argv[])
       dataPlot(k,3) = (*p)(0);
       dataPlot(k,4) = (*Lambda)(0);
 
-      dataPlot(k,11) = (*lambdaminus)(0); // lambda1_{k+1}^-
+      dataPlot(k,11) = (*inter->lambda(2))(0); // lambda1_{k+1}^-
       dataPlot(k,12) = lambdaplus(0);;
 
       dataPlot(k,7) = (*q)(nDof-1);
