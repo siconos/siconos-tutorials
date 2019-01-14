@@ -110,10 +110,18 @@ with MechanicsHdf5Runner() as io:
     io.add_object('ground', [Contactor('Ground')],
                   translation=[0, 0, -.25])
 
+test=True
+if test==True:
+    T=1
+    hstep=5e-4
+else:
+    T=10
+    hstep=5e-4
+
 
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
 with MechanicsHdf5Runner(mode='r+') as io:
 
-    io.run()
+    io.run(t0=0, T=T, h=hstep)

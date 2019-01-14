@@ -106,6 +106,19 @@ with MechanicsHdf5Runner() as io:
     # is between contactors of group id 0.
     io.add_Newton_impact_friction_nsl('contact', mu=0.03, e=0.0)
 
+
+
+test=True
+if test==True:
+    T=0.1
+    hstep=1e-3
+else:
+    T=20
+    hstep=1e-3
+
+
+
+    
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
