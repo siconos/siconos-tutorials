@@ -75,7 +75,7 @@ s.insertNonSmoothProblem(osnspb)
 #s.setComputeResiduR(True)
 
 # matrix to save data
-dataPlot = empty((N+1,9))
+dataPlot = empty((N+1,7))
 k=0
 dataPlot[k, 0] = t0
 dataPlot[k, 1:3] = process.x()
@@ -109,6 +109,9 @@ savetxt('SimpleExampleRelay_py.dat', dataPlot)
 dataRef = loadtxt('SimpleExampleRelay_py.ref')
 
 print('Comparison with reference file -  error = ',linalg.norm(dataPlot-dataRef) )
+
+
+
 assert(linalg.norm(dataPlot-dataRef) <= 1e-12)
 
 

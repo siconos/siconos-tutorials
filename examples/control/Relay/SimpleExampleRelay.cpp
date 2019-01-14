@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
     // ================================= Computation =================================
 
     // --- Get the values to be plotted ---
-    unsigned int outputSize = 10; // number of required data
+    unsigned int outputSize = 7; // number of required data
     unsigned int N = ceil((T - t0) / h); // Number of time steps
 
     SimpleMatrix dataPlot(N, outputSize);
@@ -133,10 +133,10 @@ int main(int argc, char* argv[])
     dataPlot(0, 0) = simpleExampleRelay->t0(); // Initial time of the model
     dataPlot(0, 1) = (*xProc)(0);
     dataPlot(0, 2) = (*xProc)(1);
-    dataPlot(0, 5) = (*lambdaProc)(0);
-    dataPlot(0, 6) = (*lambdaProc)(1);
-    dataPlot(0, 7) = (*yProc)(0);
-    dataPlot(0, 8) = (*yProc)(1);
+    dataPlot(0, 3) = (*lambdaProc)(0);
+    dataPlot(0, 4) = (*lambdaProc)(1);
+    dataPlot(0, 5) = (*yProc)(0);
+    dataPlot(0, 6) = (*yProc)(1);
 
 
 
@@ -159,10 +159,10 @@ int main(int argc, char* argv[])
       dataPlot(k, 0) = s->nextTime();
       dataPlot(k, 1) = (*xProc)(0);
       dataPlot(k, 2) = (*xProc)(1);
-      dataPlot(k, 5) = (*lambdaProc)(0);
-      dataPlot(k, 6) = (*lambdaProc)(1);
-      dataPlot(k, 7) = (*yProc)(0);
-      dataPlot(k, 8) = (*yProc)(1);
+      dataPlot(k, 3) = (*lambdaProc)(0);
+      dataPlot(k, 4) = (*lambdaProc)(1);
+      dataPlot(k, 5) = (*yProc)(0);
+      dataPlot(k, 6) = (*yProc)(1);
       s->nextStep();
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
