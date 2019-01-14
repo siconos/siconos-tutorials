@@ -26,6 +26,22 @@ box_width  = 3.430
 
 plane_thickness = 0.2
 
+
+test=True
+if test==True:
+    n_layer=10
+    n_row=2
+    n_col=2
+    step=2000
+    hstep=1e-3
+else:
+    n_layer=200
+    n_row=2
+    n_col=16
+    step=20000
+    hstep=1e-4
+
+
 with MechanicsHdf5Runner(mode='w') as io:
     ch = chute.create_chute(io, box_height = box_height,
                             box_length = box_length,
@@ -33,14 +49,13 @@ with MechanicsHdf5Runner(mode='w') as io:
                             plane_thickness = plane_thickness,
                             scale = 1, trans = [-0.6, -1.8, -1])
 
-    rcs = rocas.create_rocas(io, n_layer=200, n_row=2, n_col=16,
+    rcs = rocas.create_rocas(io, n_layer=n_layer, n_row=n_row, n_col=n_col,
                              x_shift=2.0, roca_size=0.1, top=3,
                              rate=0.02, density=density)
 
     io.add_Newton_impact_friction_nsl('contact', mu=1.0, e=0.01)
 
-step=20000
-hstep=1e-4
+
 itermax=10000
 dump_probability = .02
 theta=1.0
@@ -74,17 +89,31 @@ with MechanicsHdf5Runner(mode='r+', collision_margin=0.01) as io:
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,
     # sizes of small objects may need to be expressed in cm or mm.
-    io.run(gravity_scale=1.0/scale,
-           t0=0,
-           T=step*hstep,
-           h=hstep,
-           multipoints_iterations=True,
-           theta=1.0,
-           Newton_max_iter=1,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=10000,
-           tolerance=1e-3,
-           output_frequency=10,
-           osi=Kernel.MoreauJeanGOSI,
-           friction_contact_trace=True,
-           friction_contact_trace_params=friction_contact_trace_params)
+    if test:
+        io.run(gravity_scale=1.0/scale,
+               t0=0,
+               T=step*hstep,
+               h=hstep,
+               multipoints_iterations=True,
+               theta=1.0,
+               Newton_max_iter=1,
+               solver=Numerics.SICONOS_FRICTION_3D_NSGS,
+               itermax=1000,
+               tolerance=1e-3,
+               output_frequency=10,
+               osi=Kernel.MoreauJeanGOSI)
+    else:
+        io.run(gravity_scale=1.0/scale,
+               t0=0,
+               T=step*hstep,
+               h=hstep,
+               multipoints_iterations=True,
+               theta=1.0,
+               Newton_max_iter=1,
+               solver=Numerics.SICONOS_FRICTION_3D_NSGS,
+               itermax=10000,
+               tolerance=1e-3,
+               output_frequency=10,
+               osi=Kernel.MoreauJeanGOSI,
+               friction_contact_trace=True,
+               friction_contact_trace_params=friction_contact_trace_params)

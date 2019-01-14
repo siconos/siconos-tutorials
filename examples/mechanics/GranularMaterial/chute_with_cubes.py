@@ -243,10 +243,20 @@ with MechanicsHdf5Runner(use_compression=True) as io:
   io.add_object('front_down', [Contactor('Front_down')],
                translation=[0, 0, 0])
 
-
-  n_cube=5
-  n_row=1
-  n_col=1
+  test=True
+  if test==True:
+     n_cube=5
+     n_row=1
+     n_col=1
+     hstep=5e-3
+     step=500
+  else:
+    n_cube=5
+    n_row=1
+    n_col=1
+    hstep=5e-3
+    step=2000
+ 
   cube_size =0.25
   x_shift=3.0
   for i in range(n_row):
@@ -277,10 +287,6 @@ with MechanicsHdf5Runner(use_compression=True) as io:
   f = open('body_collection.dict', 'wb')
   pickle.dump(body_collection,f)
   f.close()
-
-
-step=1000
-hstep=0.005
 
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done

@@ -41,6 +41,21 @@ density=2500
 plane_thickness = 0.2
 cube_size = 0.1
 
+test=True
+if test==True:
+    n_layer=10
+    n_row=2
+    n_col=2
+    T=3.0
+    hstep=1e-3
+else:
+    n_layer=200
+    n_row=2
+    n_col=16
+    T=4
+    hstep=1e-4
+
+
 with MechanicsHdf5Runner(mode='w', io_filename=fn) as io:
     ch = chute.create_chute(io, box_height = box_height,
                             box_length = box_length,
@@ -48,7 +63,7 @@ with MechanicsHdf5Runner(mode='w', io_filename=fn) as io:
                             plane_thickness = plane_thickness,
                             scale = 1, trans = [-0.6, -1.8, -1])
 
-    rcs = rocas.create_rocas(io, n_layer=200, n_row=2, n_col=16,
+    rcs = rocas.create_rocas(io, n_layer=n_layer, n_row=n_row, n_col=n_col,
                              x_shift=2.0, roca_size=0.1, top=3,
                              rate=0.2, density=density)
 
@@ -56,8 +71,8 @@ with MechanicsHdf5Runner(mode='w', io_filename=fn) as io:
 
 with MechanicsHdf5Runner(mode='r+', io_filename=fn) as io:
     io.run(t0=0,
-           T=4,
-           h=1e-4,
+           T=T,
+           h=hstep,
            multipoints_iterations=True,
            theta=1.0,
            Newton_max_iter=1,

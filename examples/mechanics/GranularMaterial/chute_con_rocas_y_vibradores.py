@@ -45,6 +45,21 @@ box_width  = 3.430
 
 plane_thickness = 0.2
 
+test=True
+if test==True:
+    n_layer=10
+    n_row=2
+    n_col=2
+    T=0.5
+    hstep =1e-3
+else:
+    n_layer=200
+    n_row=2
+    n_col=16
+    T=45
+    hstep =1e-3
+
+    
 with MechanicsHdf5Runner(mode='w', io_filename=fn) as io:
 
     io.add_Newton_impact_friction_nsl('contact_rocas', mu=float(mu), e=0.01,collision_group1=0, collision_group2=0)
@@ -59,16 +74,14 @@ with MechanicsHdf5Runner(mode='w', io_filename=fn) as io:
                                            plane_thickness = plane_thickness,
                                            scale = 1, trans = [-0.6, -1.8, -1])
     
-    rcs = rocas.create_rocas(io, n_layer=20, n_row=2, n_col=5,
+    rcs = rocas.create_rocas(io, n_layer=n_layer, n_row=n_row, n_col=n_col,
                              x_shift=1.5, roca_size=0.13, top=3,
                              rate=0.2, density=density,
                              distribution = (dist, 0.12))
 
  
     
-    
 
-hstep =1e-3
 with MechanicsHdf5Runner(mode='r+', io_filename=fn) as io:
     io.run(with_timer=False,
            t0=0,
