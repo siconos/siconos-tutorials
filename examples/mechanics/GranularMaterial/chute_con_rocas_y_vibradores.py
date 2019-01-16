@@ -85,7 +85,7 @@ with MechanicsHdf5Runner(mode='w', io_filename=fn) as io:
 with MechanicsHdf5Runner(mode='r+', io_filename=fn) as io:
     io.run(with_timer=False,
            t0=0,
-           T=45, #100*hstep,
+           T=T,
            h=hstep,
            multipoints_iterations=True,
            theta=0.50001,

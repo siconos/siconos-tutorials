@@ -8,9 +8,26 @@ import siconos.numerics as Numerics
 # with the vview command.
 
 
-nstep=20000
-step=0.0005
-with MechanicsHdf5Runner(mode='r+',io_filename='n_cubes_scene.hdf5') as io:
+import os
+
+
+filename = 'n_cubes_scene.hdf5'
+filename_py = 'n_cubes_scene.py'
+
+if not os.path.isfile(filename):
+    print('creation of the scene that is not existing')
+    exec(compile(open(filename_py, "rb").read(), filename_py, 'exec'))
+    filename = 'n_cubes_simulation.hdf5'
+
+test=True
+if test:
+    nstep=100
+    step=0.0005
+else:
+    nstep=20000
+    step=0.0005
+
+with MechanicsHdf5Runner(mode='r+',io_filename=filename) as io:
 
     # By default earth gravity is applied and the units are those
     # of the International System of Units.

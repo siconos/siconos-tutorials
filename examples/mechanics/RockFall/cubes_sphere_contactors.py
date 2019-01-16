@@ -162,8 +162,13 @@ with MechanicsHdf5Runner(use_compression=True) as io:
   io.add_Newton_impact_friction_nsl('contact', e=0.01, mu=0.9, collision_group1=0, collision_group2=1)
 
 
-step=10000
-hstep=0.0005
+test=True
+if test:
+    step=100
+    hstep=0.0005
+else:
+    step=10000
+    hstep=0.0005
 
 with MechanicsHdf5Runner(mode='r+') as io:
 

@@ -102,9 +102,14 @@ with MechanicsHdf5Runner() as io:
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
 
+test=True
+if test:
+    nstep=100
+    step=0.0005
+else:
+    nstep=100000
+    step=0.0005
 
-nstep=100000
-step=0.0005
 with MechanicsHdf5Runner(mode='r+') as io:
 
     # By default earth gravity is applied and the units are those

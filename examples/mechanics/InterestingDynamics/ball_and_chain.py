@@ -126,8 +126,8 @@ with MechanicsHdf5Runner(mode='r+') as io:
 
     io.run(with_timer=False,
            t0=0,
-           T=20,
-           h=0.001,
+           T=T,
+           h=hstep,
            theta=0.50001,
            Newton_max_iter=1,
            set_external_forces=None,

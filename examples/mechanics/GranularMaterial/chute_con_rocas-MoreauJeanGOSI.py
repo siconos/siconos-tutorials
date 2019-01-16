@@ -32,7 +32,7 @@ if test==True:
     n_layer=10
     n_row=2
     n_col=2
-    step=2000
+    step=500
     hstep=1e-3
 else:
     n_layer=200
