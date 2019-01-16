@@ -719,7 +719,7 @@ contacten=array.array('d',[
 
 ######SIMULATION PARAMETER DESCRIPTIONS#################################################################
 #3D parameters
-with3D=1
+with3D=0
 freqUpdate=100
 freqOutput=2
 stepNumber=20000
