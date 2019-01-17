@@ -16,9 +16,17 @@ with MechanicsHdf5Runner() as io:
 
     io.add_joint('joint1', 'cube1', 'cube2', None, [[0,0,1]], 'PrismaticJointR')
 
+
+    
+test =True
+if test:
+    T=0.1
+else:
+    T=3.
+    
 with MechanicsHdf5Runner(mode='r+') as io:
     io.run(t0=0,
-           T=3,
+           T=T,
            h=0.001,
            theta=0.50001,
            Newton_max_iter=1,

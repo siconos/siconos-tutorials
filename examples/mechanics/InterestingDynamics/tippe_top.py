@@ -68,12 +68,17 @@ with MechanicsHdf5Runner() as io:
                   velocity=[0, 0, 0, .0, .0, 180],
                   mass=m)
 
+test =True
+if test:
+    T=0.2
+else:
+    T=20.
 with MechanicsHdf5Runner(mode='r+') as io:
 
     io.run(with_timer=True,
            options=options,
            t0=0,
-           T=20,
+           T=T,
            h=0.0001,
            Newton_max_iter=20)
 

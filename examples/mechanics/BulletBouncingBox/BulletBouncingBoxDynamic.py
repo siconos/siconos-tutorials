@@ -201,7 +201,10 @@ from numpy.linalg import norm
 ref = getMatrix(SimpleMatrix("result_dynamic.ref"))
 
 print("norm(dataPlot - ref) = {0}".format(norm(dataPlot - ref)))
+
+
 if (norm(dataPlot - ref) > 1e-11):
+    print(dataPlot - ref) 
     print("Warning. The result is rather different from the reference file.")
 
 

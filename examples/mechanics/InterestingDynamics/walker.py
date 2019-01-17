@@ -114,11 +114,16 @@ def my_forces(body):
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
+test =True
+if test:
+    T=1.
+else:
+    T=30.
 with MechanicsHdf5Runner(mode='r+') as io:
 
     io.run(with_timer=False,
            t0=0,
-           T=30,
+           T=T,
            h=0.005,
            multipoints_iterations=True,
            theta=0.50001,

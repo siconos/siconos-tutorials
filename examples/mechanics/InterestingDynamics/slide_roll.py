@@ -7,7 +7,8 @@ from siconos.io.mechanics_run import MechanicsHdf5Runner
 import siconos.numerics as Numerics
 from siconos.mechanics.collision.convexhull import ConvexHull
 
-options = siconos.mechanics.collision.bullet.SiconosBulletOptions()
+from siconos.mechanics.collision.bullet import SiconosBulletOptions
+options = SiconosBulletOptions()
 options.worldScale = 1.0
 
 # Control the number of perturbations applied to generate multipoint
@@ -128,6 +129,11 @@ with MechanicsHdf5Runner() as io:
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
+test =True
+if test:
+    T=1.0
+else:
+    T=20.
 with MechanicsHdf5Runner(mode='r+') as io:
 
     # By default earth gravity is applied and the units are those
@@ -140,7 +146,7 @@ with MechanicsHdf5Runner(mode='r+') as io:
     io.run(with_timer=False,
            options=options,
            t0=0,
-           T=20,
+           T=T,
            h=0.005,
            theta=0.50001,
            Newton_max_iter=1,
