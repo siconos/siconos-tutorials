@@ -70,10 +70,17 @@ with MechanicsHdf5Runner() as io:
     io.add_joint('jnt8','bar4','bar6',None,None,'CouplerJointR',
                 coupled=[[0, 0, 3.0]], references=['jnt6','jnt7','bar5'])
 
+test=True
+if test:
+    T=1.
+else:
+    T=5.
+
+    
 # Load and run the simulation
 with MechanicsHdf5Runner(mode='r+') as io:
     io.run(t0=0,
-           T=5,
+           T=T,
            h=0.001,
            theta=0.5,
            Newton_max_iter=1,

@@ -112,7 +112,7 @@ with MechanicsHdf5Runner() as io:
 
 test=True
 if test==True:
-    T=1
+    T=0.2
     hstep=5e-4
 else:
     T=10
