@@ -1,5 +1,17 @@
 # Example 3 - Shaft and tube assembly for contact detection.
 import math
+
+
+import os
+if not os.path.exists('plugin.so'):
+    print('Plugin has not been compiled')
+    print('Compilation of the C plugin with siconos')
+    from subprocess import call
+    call(['siconos','--noexec','.'], stdout=open(os.devnull, 'wb'))
+else:
+    print('Plugin has been compiled')
+
+
 # REQUIRED number of bodies
 NBBODIES=1
 ## Identifier of the word, an object attached to the referential frame.

@@ -3,6 +3,17 @@
 
 import numpy
 import array
+
+
+import os
+if not os.path.exists('plugin.so'):
+    print('Plugin has not been compiled')
+    print('Compilation of the C plugin with siconos')
+    from subprocess import call
+    call(['siconos','--noexec','.'], stdout=open(os.devnull, 'wb'))
+else:
+    print('Plugin has been compiled')
+
 my_PI=3.14159265
 
 #BODIES DESCRIPTION
@@ -719,11 +730,20 @@ contacten=array.array('d',[
 
 ######SIMULATION PARAMETER DESCRIPTIONS#################################################################
 #3D parameters
-with3D=0
-freqUpdate=100
-freqOutput=2
-stepNumber=20000
-dumpGraphic=1
+
+test=True
+if test:
+    with3D=0
+    freqOutput=20
+    stepNumber=50
+    dumpGraphic=1
+else:
+    with3D=1
+    freqUpdate=100
+    freqOutput=2
+    stepNumber=20000
+    dumpGraphic=1
+    
 drawMode=mbtb.MBTB_ARTEFACT_REACTION+mbtb.MBTB_ARTEFACT_NORMAL+mbtb.MBTB_ARTEFACT_P1P2
 #Simulation parameters
 stepSize=1e-3

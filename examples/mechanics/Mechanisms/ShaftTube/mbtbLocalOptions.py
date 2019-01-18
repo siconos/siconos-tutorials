@@ -50,12 +50,24 @@ freqUpdate=20
 
 apple=0
 
+test=True
+if test:
+    with3D=0
+    freqOutput=20
+    ## Simulation parameters number of steps. Useful if with3D=0.
+    stepNumber=300
+    dumpGraphic=1
+else:
+    with3D=1
+    freqUpdate=100
+    freqOutput=2
+    stepNumber=2000
+    dumpGraphic=1
+    
 
 #Simulation parameters
 ## Simulation parameters time step size.
 stepSize=1e-4
-## Simulation parameters number of steps. Useful if with3D=0.
-stepNumber=2000
 
 TSdeactivateYPosThreshold=1e-1
 TSdeactivateYVelThreshold=0.0
