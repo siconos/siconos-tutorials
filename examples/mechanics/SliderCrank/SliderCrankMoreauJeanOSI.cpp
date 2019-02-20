@@ -28,7 +28,7 @@
   */
 
 #include "SiconosKernel.hpp"
-//#define WITH_FRICTION
+#define WITH_FRICTION
 //#define DISPLAY_INTER
 using namespace std;
 
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
     // ================= Creation of the model =======================
 
     // parameters according to Table 1
-    unsigned int nDof = 3; // degrees of freedom for robot arm
+    unsigned int nDof = 3; // degrees of freedom for the slider crank
     double t0 = 0;         // initial computation time
     double T = 0.2;        // final computation time
     double h = 1e-5;       // time step : do not decrease, because of strong penetrations
@@ -56,10 +56,10 @@ int main(int argc, char* argv[])
     double eN2 = 0.4;
     double eN3 = 0.4;
     double eN4 = 0.4;
-    eN1 = 0.1;
-    eN2 = 0.1;
-    eN3 = 0.1;
-    eN4 = 0.1;
+    // eN1 = 0.1;
+    // eN2 = 0.1;
+    // eN3 = 0.1;
+    // eN4 = 0.1;
 #ifdef WITH_FRICTION
     double eT1 = 0.;
     double eT2 = 0.;
@@ -77,6 +77,7 @@ int main(int argc, char* argv[])
     v0->zero();
     (*v0)(0) = 150.;
     (*v0)(1) = -75.;
+    (*v0)(2) = -.01;
 
     // -------------------------
     // --- Dynamical systems ---
@@ -149,7 +150,7 @@ int main(int argc, char* argv[])
     // ----------------
     // --- Simulation ---
     // ----------------
-    SP::MoreauJeanOSI OSI(new MoreauJeanOSI(0.5, 0.0));
+    SP::MoreauJeanOSI OSI(new MoreauJeanOSI(0.5));
     SP::TimeDiscretisation t(new TimeDiscretisation(t0, h));
 #ifdef WITH_FRICTION
     SP::OneStepNSProblem impact(new FrictionContact(2, SICONOS_FRICTION_2D_ENUM));

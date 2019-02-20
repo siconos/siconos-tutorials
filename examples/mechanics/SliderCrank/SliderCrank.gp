@@ -11,10 +11,10 @@ set xlabel 'time (s)'
 #set yrange [0.0001:10]
 set grid 
 
-#scheme =  "Moreau"
-scheme  = "Moreau-ProjectOnConstraints"
+scheme =  "Moreau"
+#scheme  = "Moreau-ProjectOnConstraints"
 #scheme = "Moreau-CombinedProjection"
-scheme = "D1MinusLinear"
+#scheme = "D1MinusLinear"
 
 timestep= "1e-5"
 model= "-SliderCrank-Lagrangian-"
