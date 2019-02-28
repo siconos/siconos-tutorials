@@ -11,7 +11,9 @@
 ### various configurations inside the scripts
   - pyramid wall
   - wide wall
-  - wide wall with buttresses.
+  - wide wall with buttresses
+  - tall wall
+  - tall wall with buttresses
 
 ### post-processing:
 
@@ -19,4 +21,5 @@
 or
 
 	siconos_vexport --global-filter rock_protection_wall.hdf5
- 
+
+	siconos_vexport --global-filter --gen-para-script=6  rock_protection_wall.hdf5 > par.sh
