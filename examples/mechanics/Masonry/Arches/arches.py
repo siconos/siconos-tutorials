@@ -16,7 +16,9 @@ vertices = list(pickle.load(open( 'vertices.dat', "rb" )))
 def one_brick(io, name, cname, vertices, size, density=1, trans=None, velo=None, tob=None):
 
 
-    
+    estimated_size = max(numpy.array(vertices).max(axis=0)
+                         - numpy.array(vertices).min(axis=0))
+    print(estimated_size)
     # scale = size / max(numpy.array(vertices).max(axis=0)
     #                         - numpy.array(vertices).min(axis=0))
     scale=1.0
