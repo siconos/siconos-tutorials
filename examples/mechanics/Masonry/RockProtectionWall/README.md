@@ -18,8 +18,10 @@
 ### post-processing:
 
 	siconos_vview rock_protection_wall.hdf5
-or
+or for paraview
 
 	siconos_vexport --global-filter rock_protection_wall.hdf5
 
-	siconos_vexport --global-filter --gen-para-script=6  rock_protection_wall.hdf5 > par.sh
+or for paraview in parrallel
+
+	siconos_vexport --global-filter --gen-para-script=6  rock_protection_wall.hdf5 > par.sh; sh par.sh

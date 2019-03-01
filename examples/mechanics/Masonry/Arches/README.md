@@ -20,4 +20,10 @@
 
      siconos_vexport --global-filter arches.hdf5
 
-     siconos_vview --normalcone-ratio=0.01 --cf-scale=0.2 arches.hdf5 
+     siconos_vview --normalcone-ratio=0.01 --cf-scale=0.2 arches.hdf5
+
+
+     siconos_vexport --global-filter --gen-para-script=6  arches.hdf5 > par.sh;
+- to be corrected
+
+  We use convex hull for building the brick. Some of bricks are not convex. 

@@ -18,6 +18,7 @@ configuration = 'tall_wall_with_buttress'
 
 rock_velocity = [-10,0,-35.,0.5,0.1,0.1]
 rock_tob = 0.01
+rock_size = 5.0
 
 def one_rock(io, name, cname, rock_size=0.05, density=1, trans=None, velo=None, tob=None):
     # Definition of an irregular polyhedron as a convex shape
@@ -220,7 +221,7 @@ with MechanicsHdf5Runner() as io:
     
 
     # a big rock
-    one_rock(io, 'rock', 'rock_shape', rock_size = 2.5* width,
+    one_rock(io, 'rock', 'rock_shape', rock_size = rock_size,
              density=2300,
              trans = [30.,0. ,35.],
              velo=rock_velocity, tob=rock_tob)
