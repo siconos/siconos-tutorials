@@ -16,29 +16,50 @@ text = 'DEW=[0.242D+03 -4.320D-06]'
 re_dbl_fort.sub(r'\1e\2', text)
 
 
+def get_next_integer(line_list, current):
+
+    for i in range(current,len(line_list)):
+        try :
+            print(line_list[i])
+            a = int(line_list[i])
+            success =True
+        except:
+            success =False
+        if success:
+            return a , i
+
+def get_next_double(line_list, current):
+
+    for i in range(current,len(line_list)):
+        try :
+            print(line_list[i])
+            a = float(re_dbl_fort.sub(r'\1e\2', line_list[i]))
+            success =True
+        except:
+            success =False
+        if success:
+            return a , i
+
 
 elem = []
 
 l=0
 for line in array:
     if (line[0:5] == 'ELMxx'):
-        print(line)
-        elem_info=array[l+1].split(' ')
-
-        number_elem = int(elem_info[2])
+        number_elem, current = get_next_integer(array[l+1].split(' '), 0) 
+        print('number_elem', number_elem, current)
+        input()
         elem_start= l+3
         elem_end= l+3+number_elem
         print('number_elem', number_elem)
     if (line[0:5] == 'IMMxx'):
         print(line)
-        node_info=array[l+1].split(' ')
-        number_node = int(node_info[2])
+        number_node, current = get_next_integer(array[l+1].split(' '), 0) 
         node_start= l+3
         node_end= l+3+number_node
         print('node_start',node_start)
         print('node_end',node_end)
-        print('number_node', number_node)
-        
+        print('number_node', number_node)      
     l =l+1
 
 input()
@@ -80,37 +101,28 @@ for i in range(node_start,node_end,1):
     
     node_type=node_info[-1][0:5]
     print('node_type',node_type)
-    if (node_type == 'NO2xx'):
-        node_coord.append(int(node_info[-3]))
     n=0
-    for a in node_info:
-        #print(a)
-        #print(re_dbl_fort.sub(r'\1e\2', a))
-        #input()
-        if (node_type == 'NO2xx'):
-            try :
-                node_coord.append(float(re_dbl_fort.sub(r'\1e\2', a)))
-                succeed=True
-            except:
-                succeed = False
-                pass
-            if succeed :
-                n=n+1
-        if (n == 2):
-            #print('good number of nodes')
-            break
 
-            
-   
+    if (node_type == 'NO2xx'):
+        x , current =get_next_double(node_info, 0)
+        y , current =get_next_double(node_info, current+1)
+
+        node_coord.append(x)
+        node_coord.append(y)
+        ii , current =get_next_integer(node_info, current+1)
+        node_coord.append(ii-1)
+        print(x,y, ii-1)
+        
+        print(node_coord)
+        node_current['number']= node_coord[-1]
+        node_current['type'] =node_type
+        node_current['coord']=node_coord[0:2]
+        node.append(node_current)
+        
     #input()
 
-    if (node_type == 'NO2xx'):
-        print(node_coord)
-        node_current['number']= node_coord[0]-1
-        node_current['type'] =node_type
-        node_current['coord']=node_coord[1:3]
-        node.append(node_current)
-        #input()
+
+  
 
 
 print(elem)

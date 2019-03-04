@@ -1,16 +1,19 @@
-# Title
+#  LMGC77 examples created by V. Acary in his PhD Thesis (2001)
 
-  This example uses old inpout files of LMGC77 created by V. Acary in his PhD Thesis (2001)
+  This example uses old input files of LMGC77 created by V. Acary in his PhD Thesis (2001)
 
-# How to
+
+ ![](./Arches/Arches.png)
+
+## HowTo for Arches example
 
 -  To parse the LMGC77 input file, run
 
-       python parser_lmgc77_2D.py
+       python ./lmgc77_utils/parser_lmgc77_2D.py
 
 -  To build 3D brick form 2D Finite element mesh run
 
-     python make_3d_brick.py
+     python ./lmgc77_utils/make_3d_brick.py
 
 - to run the simulation
 
@@ -24,6 +27,7 @@
 
 
      siconos_vexport --global-filter --gen-para-script=6  arches.hdf5 > par.sh;
-- to be corrected
+     
+## Issues to be corrected
 
   We use convex hull for building the brick. Some of bricks are not convex. 

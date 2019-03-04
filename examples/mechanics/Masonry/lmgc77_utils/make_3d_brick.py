@@ -1,5 +1,6 @@
 import pickle
 import numpy as np
+import math
 elem = list(pickle.load(open( 'elem.dat', "rb" )))
 node = list(pickle.load(open( 'node.dat', "rb" )))
 print(elem[0])
@@ -92,8 +93,32 @@ for b in brick:
     #input()
 
 print(new_nodes)       
-print(new_brick)       
+print(new_brick)
 
+max_z = -1e25
+min_z = 1e25
+max_y = -1e25
+min_y = 1e25
+max_x = -1e25
+min_x = 1e25
+
+
+for n in new_nodes:
+
+    [x,y, z] = n['coord'] 
+    max_z = max(z,max_z)
+    min_z = min(z,min_z)
+    max_x = max(x,max_x)
+    min_x = min(x,min_x)
+    max_y = max(y,max_y)
+    min_y = min(y,min_y)
+
+print('max_z', max_z)
+print('min_z', min_z)
+print('max_x', max_x)
+print('min_x', min_x)
+print('max_y', max_y)
+print('min_y', min_y)
 pickle.dump(new_nodes, open( 'vertices.dat', "wb" ))
 pickle.dump(new_brick, open( 'brick.dat', "wb" ))
 

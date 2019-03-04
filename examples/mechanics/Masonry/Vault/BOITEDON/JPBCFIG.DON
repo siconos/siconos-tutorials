@@ -1,0 +1,621 @@
+Fichier_JPBCFIG.(DON_ou_RES)
+ 
+DEBUT_de_paragraphe_formate_____________________________________________
+123456789012345678901234567890123456789012345678901234567890123456789012
+ELMxx_____Elements_finis________________________________________________
+  281     NELM__=_nombre_total_d'elements____________4567890123456789012
+N_elm_IMM1_IMM2_IMM3_IMM4_IMM5_IMM6_____EPAIS________TYELM__SPMAT__SPBDY
+    1    1    2    3                     .00000D+00  T3xxx  GRANI  BODY1
+    2    1    3    4                     .00000D+00  T3xxx  GRANI  BODY1
+    3    1    4    5                     .00000D+00  T3xxx  GRANI  BODY1
+    4    1    5    6                     .00000D+00  T3xxx  GRANI  BODY1
+    5    1    6    7                     .00000D+00  T3xxx  GRANI  BODY1
+    6    1    7    8                     .00000D+00  T3xxx  GRANI  BODY1
+    7    1    8    9                     .00000D+00  T3xxx  GRANI  BODY1
+    8    1    9    2                     .00000D+00  T3xxx  GRANI  BODY1
+    9   10   11   12                     .00000D+00  T3xxx  GRANI  BODY1
+   10   10   12   13                     .00000D+00  T3xxx  GRANI  BODY1
+   11   10   13   14                     .00000D+00  T3xxx  GRANI  BODY1
+   12   10   14   15                     .00000D+00  T3xxx  GRANI  BODY1
+   13   10   15   16                     .00000D+00  T3xxx  GRANI  BODY1
+   14   10   16   17                     .00000D+00  T3xxx  GRANI  BODY1
+   15   10   17   18                     .00000D+00  T3xxx  GRANI  BODY1
+   16   10   18   11                     .00000D+00  T3xxx  GRANI  BODY1
+   17   19   20   21                     .00000D+00  T3xxx  GRANI  BODY1
+   18   19   21   22                     .00000D+00  T3xxx  GRANI  BODY1
+   19   19   22   23                     .00000D+00  T3xxx  GRANI  BODY1
+   20   19   23   24                     .00000D+00  T3xxx  GRANI  BODY1
+   21   19   24   25                     .00000D+00  T3xxx  GRANI  BODY1
+   22   19   25   26                     .00000D+00  T3xxx  GRANI  BODY1
+   23   19   26   27                     .00000D+00  T3xxx  GRANI  BODY1
+   24   19   27   20                     .00000D+00  T3xxx  GRANI  BODY1
+   25   28   29   30                     .00000D+00  T3xxx  GRANI  BODY1
+   26   28   30   31                     .00000D+00  T3xxx  GRANI  BODY1
+   27   28   31   32                     .00000D+00  T3xxx  GRANI  BODY1
+   28   28   32   33                     .00000D+00  T3xxx  GRANI  BODY1
+   29   28   33   34                     .00000D+00  T3xxx  GRANI  BODY1
+   30   28   34   35                     .00000D+00  T3xxx  GRANI  BODY1
+   31   28   35   36                     .00000D+00  T3xxx  GRANI  BODY1
+   32   28   36   29                     .00000D+00  T3xxx  GRANI  BODY1
+   33   37   38   39                     .00000D+00  T3xxx  GRANI  BODY1
+   34   37   39   40                     .00000D+00  T3xxx  GRANI  BODY1
+   35   37   40   41                     .00000D+00  T3xxx  GRANI  BODY1
+   36   37   41   42                     .00000D+00  T3xxx  GRANI  BODY1
+   37   37   42   43                     .00000D+00  T3xxx  GRANI  BODY1
+   38   37   43   44                     .00000D+00  T3xxx  GRANI  BODY1
+   39   37   44   45                     .00000D+00  T3xxx  GRANI  BODY1
+   40   37   45   38                     .00000D+00  T3xxx  GRANI  BODY1
+   41   46   47   48                     .00000D+00  T3xxx  GRANI  BODY1
+   42   46   48   49                     .00000D+00  T3xxx  GRANI  BODY1
+   43   46   49   50                     .00000D+00  T3xxx  GRANI  BODY1
+   44   46   50   51                     .00000D+00  T3xxx  GRANI  BODY1
+   45   46   51   52                     .00000D+00  T3xxx  GRANI  BODY1
+   46   46   52   53                     .00000D+00  T3xxx  GRANI  BODY1
+   47   46   53   54                     .00000D+00  T3xxx  GRANI  BODY1
+   48   46   54   47                     .00000D+00  T3xxx  GRANI  BODY1
+   49   55   56   57                     .00000D+00  T3xxx  GRANI  BODY1
+   50   55   57   58                     .00000D+00  T3xxx  GRANI  BODY1
+   51   55   58   59                     .00000D+00  T3xxx  GRANI  BODY1
+   52   55   59   60                     .00000D+00  T3xxx  GRANI  BODY1
+   53   55   60   61                     .00000D+00  T3xxx  GRANI  BODY1
+   54   55   61   62                     .00000D+00  T3xxx  GRANI  BODY1
+   55   55   62   63                     .00000D+00  T3xxx  GRANI  BODY1
+   56   55   63   56                     .00000D+00  T3xxx  GRANI  BODY1
+   57   64   65   66                     .00000D+00  T3xxx  GRANI  BODY1
+   58   64   66   67                     .00000D+00  T3xxx  GRANI  BODY1
+   59   64   67   68                     .00000D+00  T3xxx  GRANI  BODY1
+   60   64   68   69                     .00000D+00  T3xxx  GRANI  BODY1
+   61   64   69   70                     .00000D+00  T3xxx  GRANI  BODY1
+   62   64   70   71                     .00000D+00  T3xxx  GRANI  BODY1
+   63   64   71   72                     .00000D+00  T3xxx  GRANI  BODY1
+   64   64   72   65                     .00000D+00  T3xxx  GRANI  BODY1
+   65   73   74   75                     .00000D+00  T3xxx  GRANI  BODY1
+   66   73   75   76                     .00000D+00  T3xxx  GRANI  BODY1
+   67   73   76   77                     .00000D+00  T3xxx  GRANI  BODY1
+   68   73   77   78                     .00000D+00  T3xxx  GRANI  BODY1
+   69   73   78   79                     .00000D+00  T3xxx  GRANI  BODY1
+   70   73   79   80                     .00000D+00  T3xxx  GRANI  BODY1
+   71   73   80   81                     .00000D+00  T3xxx  GRANI  BODY1
+   72   73   81   74                     .00000D+00  T3xxx  GRANI  BODY1
+   73   82   83   84                     .00000D+00  T3xxx  GRANI  BODY1
+   74   82   84   85                     .00000D+00  T3xxx  GRANI  BODY1
+   75   82   85   86                     .00000D+00  T3xxx  GRANI  BODY1
+   76   82   86   87                     .00000D+00  T3xxx  GRANI  BODY1
+   77   82   87   88                     .00000D+00  T3xxx  GRANI  BODY1
+   78   82   88   89                     .00000D+00  T3xxx  GRANI  BODY1
+   79   82   89   90                     .00000D+00  T3xxx  GRANI  BODY1
+   80   82   90   83                     .00000D+00  T3xxx  GRANI  BODY1
+   81   91   92   93                     .00000D+00  T3xxx  GRANI  BODY1
+   82   91   93   94                     .00000D+00  T3xxx  GRANI  BODY1
+   83   91   94   95                     .00000D+00  T3xxx  GRANI  BODY1
+   84   91   95   96                     .00000D+00  T3xxx  GRANI  BODY1
+   85   91   96   97                     .00000D+00  T3xxx  GRANI  BODY1
+   86   91   97   98                     .00000D+00  T3xxx  GRANI  BODY1
+   87   91   98   99                     .00000D+00  T3xxx  GRANI  BODY1
+   88   91   99   92                     .00000D+00  T3xxx  GRANI  BODY1
+   89  100  101  102                     .00000D+00  T3xxx  GRANI  BODY1
+   90  100  102  103                     .00000D+00  T3xxx  GRANI  BODY1
+   91  100  103  104                     .00000D+00  T3xxx  GRANI  BODY1
+   92  100  104  105                     .00000D+00  T3xxx  GRANI  BODY1
+   93  100  105  106                     .00000D+00  T3xxx  GRANI  BODY1
+   94  100  106  107                     .00000D+00  T3xxx  GRANI  BODY1
+   95  100  107  108                     .00000D+00  T3xxx  GRANI  BODY1
+   96  100  108  101                     .00000D+00  T3xxx  GRANI  BODY1
+   97  109  110  111                     .00000D+00  T3xxx  GRANI  BODY1
+   98  109  111  112                     .00000D+00  T3xxx  GRANI  BODY1
+   99  109  112  113                     .00000D+00  T3xxx  GRANI  BODY1
+  100  109  113  114                     .00000D+00  T3xxx  GRANI  BODY1
+  101  109  114  115                     .00000D+00  T3xxx  GRANI  BODY1
+  102  109  115  116                     .00000D+00  T3xxx  GRANI  BODY1
+  103  109  116  117                     .00000D+00  T3xxx  GRANI  BODY1
+  104  109  117  110                     .00000D+00  T3xxx  GRANI  BODY1
+  105  118  119  120                     .00000D+00  T3xxx  GRANI  BODY1
+  106  118  120  121                     .00000D+00  T3xxx  GRANI  BODY1
+  107  118  121  122                     .00000D+00  T3xxx  GRANI  BODY1
+  108  118  122  123                     .00000D+00  T3xxx  GRANI  BODY1
+  109  118  123  124                     .00000D+00  T3xxx  GRANI  BODY1
+  110  118  124  125                     .00000D+00  T3xxx  GRANI  BODY1
+  111  118  125  126                     .00000D+00  T3xxx  GRANI  BODY1
+  112  118  126  119                     .00000D+00  T3xxx  GRANI  BODY1
+  113  127  128  129                     .00000D+00  T3xxx  GRANI  BODY1
+  114  127  129  130                     .00000D+00  T3xxx  GRANI  BODY1
+  115  127  130  131                     .00000D+00  T3xxx  GRANI  BODY1
+  116  127  131  132                     .00000D+00  T3xxx  GRANI  BODY1
+  117  127  132  133                     .00000D+00  T3xxx  GRANI  BODY1
+  118  127  133  134                     .00000D+00  T3xxx  GRANI  BODY1
+  119  127  134  135                     .00000D+00  T3xxx  GRANI  BODY1
+  120  127  135  128                     .00000D+00  T3xxx  GRANI  BODY1
+  121  136  137  138                     .00000D+00  T3xxx  GRANI  BODY1
+  122  136  138  139                     .00000D+00  T3xxx  GRANI  BODY1
+  123  136  139  140                     .00000D+00  T3xxx  GRANI  BODY1
+  124  136  140  141                     .00000D+00  T3xxx  GRANI  BODY1
+  125  136  141  142                     .00000D+00  T3xxx  GRANI  BODY1
+  126  136  142  143                     .00000D+00  T3xxx  GRANI  BODY1
+  127  136  143  144                     .00000D+00  T3xxx  GRANI  BODY1
+  128  136  144  137                     .00000D+00  T3xxx  GRANI  BODY1
+  129  145  146  147                     .00000D+00  T3xxx  GRANI  BODY1
+  130  145  147  148                     .00000D+00  T3xxx  GRANI  BODY1
+  131  145  148  149                     .00000D+00  T3xxx  GRANI  BODY1
+  132  145  149  150                     .00000D+00  T3xxx  GRANI  BODY1
+  133  145  150  151                     .00000D+00  T3xxx  GRANI  BODY1
+  134  145  151  152                     .00000D+00  T3xxx  GRANI  BODY1
+  135  145  152  153                     .00000D+00  T3xxx  GRANI  BODY1
+  136  145  153  146                     .00000D+00  T3xxx  GRANI  BODY1
+  137  154  155  156                     .00000D+00  T3xxx  GRANI  BODY1
+  138  154  156  157                     .00000D+00  T3xxx  GRANI  BODY1
+  139  154  157  158                     .00000D+00  T3xxx  GRANI  BODY1
+  140  154  158  159                     .00000D+00  T3xxx  GRANI  BODY1
+  141  154  159  160                     .00000D+00  T3xxx  GRANI  BODY1
+  142  154  160  161                     .00000D+00  T3xxx  GRANI  BODY1
+  143  154  161  162                     .00000D+00  T3xxx  GRANI  BODY1
+  144  154  162  155                     .00000D+00  T3xxx  GRANI  BODY1
+  145  163  164  165                     .00000D+00  T3xxx  GRANI  BODY1
+  146  163  165  166                     .00000D+00  T3xxx  GRANI  BODY1
+  147  163  166  167                     .00000D+00  T3xxx  GRANI  BODY1
+  148  163  167  168                     .00000D+00  T3xxx  GRANI  BODY1
+  149  163  168  169                     .00000D+00  T3xxx  GRANI  BODY1
+  150  163  169  170                     .00000D+00  T3xxx  GRANI  BODY1
+  151  163  170  171                     .00000D+00  T3xxx  GRANI  BODY1
+  152  163  171  164                     .00000D+00  T3xxx  GRANI  BODY1
+  153  172  173  174                     .00000D+00  T3xxx  GRANI  BODY1
+  154  172  174  175                     .00000D+00  T3xxx  GRANI  BODY1
+  155  172  175  176                     .00000D+00  T3xxx  GRANI  BODY1
+  156  172  176  177                     .00000D+00  T3xxx  GRANI  BODY1
+  157  172  177  178                     .00000D+00  T3xxx  GRANI  BODY1
+  158  172  178  179                     .00000D+00  T3xxx  GRANI  BODY1
+  159  172  179  180                     .00000D+00  T3xxx  GRANI  BODY1
+  160  172  180  173                     .00000D+00  T3xxx  GRANI  BODY1
+  161  181  182  183                     .00000D+00  T3xxx  GRANI  BODY1
+  162  181  183  184                     .00000D+00  T3xxx  GRANI  BODY1
+  163  181  184  185                     .00000D+00  T3xxx  GRANI  BODY1
+  164  181  185  186                     .00000D+00  T3xxx  GRANI  BODY1
+  165  181  186  187                     .00000D+00  T3xxx  GRANI  BODY1
+  166  181  187  188                     .00000D+00  T3xxx  GRANI  BODY1
+  167  181  188  189                     .00000D+00  T3xxx  GRANI  BODY1
+  168  181  189  182                     .00000D+00  T3xxx  GRANI  BODY1
+  169  190  191  192                     .00000D+00  T3xxx  GRANI  BODY1
+  170  190  192  193                     .00000D+00  T3xxx  GRANI  BODY1
+  171  190  193  194                     .00000D+00  T3xxx  GRANI  BODY1
+  172  190  194  195                     .00000D+00  T3xxx  GRANI  BODY1
+  173  190  195  196                     .00000D+00  T3xxx  GRANI  BODY1
+  174  190  196  197                     .00000D+00  T3xxx  GRANI  BODY1
+  175  190  197  198                     .00000D+00  T3xxx  GRANI  BODY1
+  176  190  198  191                     .00000D+00  T3xxx  GRANI  BODY1
+  177  199  200  201                     .00000D+00  T3xxx  GRANI  BODY1
+  178  199  201  202                     .00000D+00  T3xxx  GRANI  BODY1
+  179  199  202  203                     .00000D+00  T3xxx  GRANI  BODY1
+  180  199  203  204                     .00000D+00  T3xxx  GRANI  BODY1
+  181  199  204  205                     .00000D+00  T3xxx  GRANI  BODY1
+  182  199  205  206                     .00000D+00  T3xxx  GRANI  BODY1
+  183  199  206  207                     .00000D+00  T3xxx  GRANI  BODY1
+  184  199  207  200                     .00000D+00  T3xxx  GRANI  BODY1
+  185  208  209  210                     .00000D+00  T3xxx  GRANI  BODY1
+  186  208  210  211                     .00000D+00  T3xxx  GRANI  BODY1
+  187  208  211  212                     .00000D+00  T3xxx  GRANI  BODY1
+  188  208  212  213                     .00000D+00  T3xxx  GRANI  BODY1
+  189  208  213  214                     .00000D+00  T3xxx  GRANI  BODY1
+  190  208  214  215                     .00000D+00  T3xxx  GRANI  BODY1
+  191  208  215  216                     .00000D+00  T3xxx  GRANI  BODY1
+  192  208  216  209                     .00000D+00  T3xxx  GRANI  BODY1
+  193  217  218  219                     .00000D+00  T3xxx  GRANI  BODY1
+  194  217  219  220                     .00000D+00  T3xxx  GRANI  BODY1
+  195  217  220  221                     .00000D+00  T3xxx  GRANI  BODY1
+  196  217  221  222                     .00000D+00  T3xxx  GRANI  BODY1
+  197  217  222  223                     .00000D+00  T3xxx  GRANI  BODY1
+  198  217  223  224                     .00000D+00  T3xxx  GRANI  BODY1
+  199  217  224  225                     .00000D+00  T3xxx  GRANI  BODY1
+  200  217  225  218                     .00000D+00  T3xxx  GRANI  BODY1
+  201  226  227  228                     .00000D+00  T3xxx  GRANI  BODY1
+  202  226  228  229                     .00000D+00  T3xxx  GRANI  BODY1
+  203  226  229  230                     .00000D+00  T3xxx  GRANI  BODY1
+  204  226  230  231                     .00000D+00  T3xxx  GRANI  BODY1
+  205  226  231  232                     .00000D+00  T3xxx  GRANI  BODY1
+  206  226  232  233                     .00000D+00  T3xxx  GRANI  BODY1
+  207  226  233  234                     .00000D+00  T3xxx  GRANI  BODY1
+  208  226  234  227                     .00000D+00  T3xxx  GRANI  BODY1
+  209  235  236  237                     .00000D+00  T3xxx  GRANI  BODY1
+  210  235  237  238                     .00000D+00  T3xxx  GRANI  BODY1
+  211  235  238  239                     .00000D+00  T3xxx  GRANI  BODY1
+  212  235  239  240                     .00000D+00  T3xxx  GRANI  BODY1
+  213  235  240  241                     .00000D+00  T3xxx  GRANI  BODY1
+  214  235  241  242                     .00000D+00  T3xxx  GRANI  BODY1
+  215  235  242  243                     .00000D+00  T3xxx  GRANI  BODY1
+  216  235  243  236                     .00000D+00  T3xxx  GRANI  BODY1
+  217  244  245  246                     .00000D+00  T3xxx  GRANI  BODY1
+  218  244  246  247                     .00000D+00  T3xxx  GRANI  BODY1
+  219  244  247  248                     .00000D+00  T3xxx  GRANI  BODY1
+  220  244  248  249                     .00000D+00  T3xxx  GRANI  BODY1
+  221  244  249  250                     .00000D+00  T3xxx  GRANI  BODY1
+  222  244  250  251                     .00000D+00  T3xxx  GRANI  BODY1
+  223  244  251  252                     .00000D+00  T3xxx  GRANI  BODY1
+  224  244  252  245                     .00000D+00  T3xxx  GRANI  BODY1
+  225  253  254  255                     .00000D+00  T3xxx  GRANI  BODY1
+  226  253  255  256                     .00000D+00  T3xxx  GRANI  BODY1
+  227  253  256  257                     .00000D+00  T3xxx  GRANI  BODY1
+  228  253  257  258                     .00000D+00  T3xxx  GRANI  BODY1
+  229  253  258  259                     .00000D+00  T3xxx  GRANI  BODY1
+  230  253  259  260                     .00000D+00  T3xxx  GRANI  BODY1
+  231  253  260  261                     .00000D+00  T3xxx  GRANI  BODY1
+  232  253  261  254                     .00000D+00  T3xxx  GRANI  BODY1
+  233  262  263  264                     .00000D+00  T3xxx  GRANI  BODY1
+  234  262  264  265                     .00000D+00  T3xxx  GRANI  BODY1
+  235  262  265  266                     .00000D+00  T3xxx  GRANI  BODY1
+  236  262  266  267                     .00000D+00  T3xxx  GRANI  BODY1
+  237  262  267  268                     .00000D+00  T3xxx  GRANI  BODY1
+  238  262  268  269                     .00000D+00  T3xxx  GRANI  BODY1
+  239  262  269  270                     .00000D+00  T3xxx  GRANI  BODY1
+  240  262  270  263                     .00000D+00  T3xxx  GRANI  BODY1
+  241  271  272  273                     .00000D+00  T3xxx  GRANI  BODY1
+  242  271  273  274                     .00000D+00  T3xxx  GRANI  BODY1
+  243  271  274  275                     .00000D+00  T3xxx  GRANI  BODY1
+  244  271  275  276                     .00000D+00  T3xxx  GRANI  BODY1
+  245  271  276  277                     .00000D+00  T3xxx  GRANI  BODY1
+  246  271  277  278                     .00000D+00  T3xxx  GRANI  BODY1
+  247  271  278  279                     .00000D+00  T3xxx  GRANI  BODY1
+  248  271  279  272                     .00000D+00  T3xxx  GRANI  BODY1
+  249  280  281  282                     .00000D+00  T3xxx  GRANI  BODY1
+  250  280  282  283                     .00000D+00  T3xxx  GRANI  BODY1
+  251  280  283  284                     .00000D+00  T3xxx  GRANI  BODY1
+  252  280  284  285                     .00000D+00  T3xxx  GRANI  BODY1
+  253  280  285  286                     .00000D+00  T3xxx  GRANI  BODY1
+  254  280  286  287                     .00000D+00  T3xxx  GRANI  BODY1
+  255  280  287  288                     .00000D+00  T3xxx  GRANI  BODY1
+  256  280  288  281                     .00000D+00  T3xxx  GRANI  BODY1
+  257  289  290  291                     .00000D+00  T3xxx  GRANI  BODY1
+  258  289  291  292                     .00000D+00  T3xxx  GRANI  BODY1
+  259  289  292  293                     .00000D+00  T3xxx  GRANI  BODY1
+  260  289  293  294                     .00000D+00  T3xxx  GRANI  BODY1
+  261  289  294  295                     .00000D+00  T3xxx  GRANI  BODY1
+  262  289  295  296                     .00000D+00  T3xxx  GRANI  BODY1
+  263  289  296  297                     .00000D+00  T3xxx  GRANI  BODY1
+  264  289  297  290                     .00000D+00  T3xxx  GRANI  BODY1
+  265  298  299  300                     .00000D+00  T3xxx  GRANI  BODY1
+  266  298  300  301                     .00000D+00  T3xxx  GRANI  BODY1
+  267  298  301  302                     .00000D+00  T3xxx  GRANI  BODY1
+  268  298  302  303                     .00000D+00  T3xxx  GRANI  BODY1
+  269  298  303  304                     .00000D+00  T3xxx  GRANI  BODY1
+  270  298  304  305                     .00000D+00  T3xxx  GRANI  BODY1
+  271  298  305  306                     .00000D+00  T3xxx  GRANI  BODY1
+  272  298  306  299                     .00000D+00  T3xxx  GRANI  BODY1
+  273  307  308  309                     .00000D+00  T3xxx  GRANI  BODY1
+  274  307  309  310                     .00000D+00  T3xxx  GRANI  BODY1
+  275  307  310  311                     .00000D+00  T3xxx  GRANI  BODY1
+  276  307  311  312                     .00000D+00  T3xxx  GRANI  BODY1
+  277  307  312  313                     .00000D+00  T3xxx  GRANI  BODY1
+  278  307  313  314                     .00000D+00  T3xxx  GRANI  BODY1
+  279  307  314  315                     .00000D+00  T3xxx  GRANI  BODY1
+  280  307  315  308                     .00000D+00  T3xxx  GRANI  BODY1
+  281    1                               .60000D-01  JONCx  TDURx  BODY2    
+123456789012345678901234567890123456789012345678901234567890123456789012
+FIN_de_paragraphe_formate_______________________________________________
+ 
+DEBUT_de_paragraphe_formate_____________________________________________
+123456789012345678901234567890123456789012345678901234567890123456789012
+IMMxx_____Immatricules__________________________________________________
+  316     NIMM_=_nombre_total_d'immatricules_______________0123456789012
+C1____________C2____________C3____________C4_________________IMMA__TYIMM
+  .25000D+00    .12500D+00                                      1  NO2xx
+  .00000D+00    .00000D+00                                      2  NO2xx
+  .25000D+00    .00000D+00                                      3  NO2xx
+  .50000D+00    .00000D+00                                      4  NO2xx
+  .50000D+00    .12500D+00                                      5  NO2xx
+  .50000D+00    .25000D+00                                      6  NO2xx
+  .25000D+00    .25000D+00                                      7  NO2xx
+  .00000D+00    .25000D+00                                      8  NO2xx
+  .00000D+00    .12500D+00                                      9  NO2xx
+  .50000D+00    .37500D+00                                     10  NO2xx
+  .25000D+00    .25000D+00                                     11  NO2xx
+  .50000D+00    .25000D+00                                     12  NO2xx
+  .75000D+00    .25000D+00                                     13  NO2xx
+  .76290D+00    .34693D+00                                     14  NO2xx
+  .78010D+00    .44398D+00                                     15  NO2xx
+  .50000D+00    .50000D+00                                     16  NO2xx
+  .25000D+00    .50000D+00                                     17  NO2xx
+  .25000D+00    .37500D+00                                     18  NO2xx
+  .25000D+00    .62500D+00                                     19  NO2xx
+  .00000D+00    .50000D+00                                     20  NO2xx
+  .25000D+00    .50000D+00                                     21  NO2xx
+  .50000D+00    .50000D+00                                     22  NO2xx
+  .50000D+00    .62500D+00                                     23  NO2xx
+  .50000D+00    .75000D+00                                     24  NO2xx
+  .25000D+00    .75000D+00                                     25  NO2xx
+  .00000D+00    .75000D+00                                     26  NO2xx
+  .00000D+00    .62500D+00                                     27  NO2xx
+  .50000D+00    .87500D+00                                     28  NO2xx
+  .25000D+00    .75000D+00                                     29  NO2xx
+  .50000D+00    .75000D+00                                     30  NO2xx
+  .83165D+00    .65050D+00                                     31  NO2xx
+  .86255D+00    .74585D+00                                     32  NO2xx
+  .89805D+00    .84075D+00                                     33  NO2xx
+  .50000D+00    .10000D+01                                     34  NO2xx
+  .25000D+00    .10000D+01                                     35  NO2xx
+  .25000D+00    .87500D+00                                     36  NO2xx
+  .75000D+00    .12500D+00                                     37  NO2xx
+  .50000D+00    .00000D+00                                     38  NO2xx
+  .75000D+00    .00000D+00                                     39  NO2xx
+  .10000D+01    .00000D+00                                     40  NO2xx
+  .10000D+01    .12500D+00                                     41  NO2xx
+  .10000D+01    .25000D+00                                     42  NO2xx
+  .75000D+00    .25000D+00                                     43  NO2xx
+  .50000D+00    .25000D+00                                     44  NO2xx
+  .50000D+00    .12500D+00                                     45  NO2xx
+  .66165D+00    .57340D+00                                     46  NO2xx
+  .50000D+00    .50000D+00                                     47  NO2xx
+  .64005D+00    .47199D+00                                     48  NO2xx
+  .78010D+00    .44398D+00                                     49  NO2xx
+  .80345D+00    .54785D+00                                     50  NO2xx
+  .83165D+00    .65050D+00                                     51  NO2xx
+  .66580D+00    .70025D+00                                     52  NO2xx
+  .50000D+00    .75000D+00                                     53  NO2xx
+  .50000D+00    .62500D+00                                     54  NO2xx
+  .79228D+00    .10475D+01                                     55  NO2xx
+  .50000D+00    .10000D+01                                     56  NO2xx
+  .69905D+00    .92040D+00                                     57  NO2xx
+  .89805D+00    .84075D+00                                     58  NO2xx
+  .95530D+00    .97170D+00                                     59  NO2xx
+  .10211D+01    .10994D+01                                     60  NO2xx
+  .88550D+00    .11747D+01                                     61  NO2xx
+  .75000D+00    .12500D+01                                     62  NO2xx
+  .50000D+00    .12500D+01                                     63  NO2xx
+  .98998D+00    .13019D+01                                     64  NO2xx
+  .75000D+00    .12500D+01                                     65  NO2xx
+  .88550D+00    .11747D+01                                     66  NO2xx
+  .10211D+01    .10994D+01                                     67  NO2xx
+  .11003D+01    .12314D+01                                     68  NO2xx
+  .11889D+01    .13583D+01                                     69  NO2xx
+  .10944D+01    .14291D+01                                     70  NO2xx
+  .10000D+01    .15000D+01                                     71  NO2xx
+  .75000D+00    .15000D+01                                     72  NO2xx
+  .12095D+01    .15523D+01                                     73  NO2xx
+  .10000D+01    .15000D+01                                     74  NO2xx
+  .10944D+01    .14291D+01                                     75  NO2xx
+  .11889D+01    .13583D+01                                     76  NO2xx
+  .12898D+01    .14833D+01                                     77  NO2xx
+  .13992D+01    .16008D+01                                     78  NO2xx
+  .13246D+01    .16754D+01                                     79  NO2xx
+  .12500D+01    .17500D+01                                     80  NO2xx
+  .10000D+01    .17500D+01                                     81  NO2xx
+  .14477D+01    .17905D+01                                     82  NO2xx
+  .12500D+01    .17500D+01                                     83  NO2xx
+  .13246D+01    .16754D+01                                     84  NO2xx
+  .13992D+01    .16008D+01                                     85  NO2xx
+  .15165D+01    .17100D+01                                     86  NO2xx
+  .16417D+01    .18111D+01                                     87  NO2xx
+  .15709D+01    .19056D+01                                     88  NO2xx
+  .15000D+01    .20000D+01                                     89  NO2xx
+  .12500D+01    .20000D+01                                     90  NO2xx
+  .17004D+01    .20100D+01                                     91  NO2xx
+  .15000D+01    .20000D+01                                     92  NO2xx
+  .15709D+01    .19056D+01                                     93  NO2xx
+  .16417D+01    .18111D+01                                     94  NO2xx
+  .17683D+01    .18995D+01                                     95  NO2xx
+  .19006D+01    .19790D+01                                     96  NO2xx
+  .18253D+01    .21145D+01                                     97  NO2xx
+  .17500D+01    .22500D+01                                     98  NO2xx
+  .15000D+01    .22500D+01                                     99  NO2xx
+  .19524D+01    .22077D+01                                    100  NO2xx
+  .17500D+01    .22500D+01                                    101  NO2xx
+  .18253D+01    .21145D+01                                    102  NO2xx
+  .19006D+01    .19790D+01                                    103  NO2xx
+  .20276D+01    .20444D+01                                    104  NO2xx
+  .21593D+01    .21020D+01                                    105  NO2xx
+  .20796D+01    .23009D+01                                    106  NO2xx
+  .20000D+01    .25000D+01                                    107  NO2xx
+  .17500D+01    .25000D+01                                    108  NO2xx
+  .24597D+01    .24795D+01                                    109  NO2xx
+  .22500D+01    .27500D+01                                    110  NO2xx
+  .23272D+01    .24670D+01                                    111  NO2xx
+  .24043D+01    .21841D+01                                    112  NO2xx
+  .25183D+01    .22120D+01                                    113  NO2xx
+  .26344D+01    .22342D+01                                    114  NO2xx
+  .25922D+01    .24920D+01                                    115  NO2xx
+  .25500D+01    .27500D+01                                    116  NO2xx
+  .24000D+01    .27500D+01                                    117  NO2xx
+  .22034D+01    .23840D+01                                    118  NO2xx
+  .20000D+01    .25000D+01                                    119  NO2xx
+  .20796D+01    .23009D+01                                    120  NO2xx
+  .21593D+01    .21020D+01                                    121  NO2xx
+  .22806D+01    .21465D+01                                    122  NO2xx
+  .24043D+01    .21841D+01                                    123  NO2xx
+  .23272D+01    .24670D+01                                    124  NO2xx
+  .22500D+01    .27500D+01                                    125  NO2xx
+  .20000D+01    .27500D+01                                    126  NO2xx
+  .30000D+01    .24487D+01                                    127  NO2xx
+  .28500D+01    .27500D+01                                    128  NO2xx
+  .28664D+01    .24487D+01                                    129  NO2xx
+  .28828D+01    .21474D+01                                    130  NO2xx
+  .30004D+01    .21506D+01                                    131  NO2xx
+  .31172D+01    .21474D+01                                    132  NO2xx
+  .31336D+01    .24487D+01                                    133  NO2xx
+  .31500D+01    .27500D+01                                    134  NO2xx
+  .30000D+01    .27500D+01                                    135  NO2xx
+  .27278D+01    .24987D+01                                    136  NO2xx
+  .25500D+01    .27500D+01                                    137  NO2xx
+  .25922D+01    .24920D+01                                    138  NO2xx
+  .26344D+01    .22342D+01                                    139  NO2xx
+  .27552D+01    .22506D+01                                    140  NO2xx
+  .28767D+01    .22605D+01                                    141  NO2xx
+  .28633D+01    .25053D+01                                    142  NO2xx
+  .28500D+01    .27500D+01                                    143  NO2xx
+  .27000D+01    .27500D+01                                    144  NO2xx
+  .35403D+01    .24771D+01                                    145  NO2xx
+  .35957D+01    .21841D+01                                    146  NO2xx
+  .36728D+01    .24670D+01                                    147  NO2xx
+  .37500D+01    .27500D+01                                    148  NO2xx
+  .36000D+01    .27500D+01                                    149  NO2xx
+  .34500D+01    .27500D+01                                    150  NO2xx
+  .34078D+01    .24920D+01                                    151  NO2xx
+  .33656D+01    .22342D+01                                    152  NO2xx
+  .34813D+01    .22121D+01                                    153  NO2xx
+  .32722D+01    .24987D+01                                    154  NO2xx
+  .33656D+01    .22342D+01                                    155  NO2xx
+  .34078D+01    .24920D+01                                    156  NO2xx
+  .34500D+01    .27500D+01                                    157  NO2xx
+  .33000D+01    .27500D+01                                    158  NO2xx
+  .31500D+01    .27500D+01                                    159  NO2xx
+  .31367D+01    .25053D+01                                    160  NO2xx
+  .31233D+01    .22605D+01                                    161  NO2xx
+  .32448D+01    .22506D+01                                    162  NO2xx
+  .40475D+01    .22077D+01                                    163  NO2xx
+  .40994D+01    .19790D+01                                    164  NO2xx
+  .41747D+01    .21145D+01                                    165  NO2xx
+  .42500D+01    .22500D+01                                    166  NO2xx
+  .42500D+01    .25000D+01                                    167  NO2xx
+  .40000D+01    .25000D+01                                    168  NO2xx
+  .39204D+01    .23009D+01                                    169  NO2xx
+  .38407D+01    .21020D+01                                    170  NO2xx
+  .39720D+01    .20446D+01                                    171  NO2xx
+  .37966D+01    .23833D+01                                    172  NO2xx
+  .38407D+01    .21020D+01                                    173  NO2xx
+  .39204D+01    .23009D+01                                    174  NO2xx
+  .40000D+01    .25000D+01                                    175  NO2xx
+  .40000D+01    .27500D+01                                    176  NO2xx
+  .37500D+01    .27500D+01                                    177  NO2xx
+  .36728D+01    .24670D+01                                    178  NO2xx
+  .35957D+01    .21841D+01                                    179  NO2xx
+  .37194D+01    .21465D+01                                    180  NO2xx
+  .45523D+01    .17905D+01                                    181  NO2xx
+  .46008D+01    .16008D+01                                    182  NO2xx
+  .46754D+01    .16754D+01                                    183  NO2xx
+  .47500D+01    .17500D+01                                    184  NO2xx
+  .47500D+01    .20000D+01                                    185  NO2xx
+  .45000D+01    .20000D+01                                    186  NO2xx
+  .44291D+01    .19056D+01                                    187  NO2xx
+  .43583D+01    .18111D+01                                    188  NO2xx
+  .44830D+01    .17105D+01                                    189  NO2xx
+  .43019D+01    .20100D+01                                    190  NO2xx
+  .43583D+01    .18111D+01                                    191  NO2xx
+  .44291D+01    .19056D+01                                    192  NO2xx
+  .45000D+01    .20000D+01                                    193  NO2xx
+  .45000D+01    .22500D+01                                    194  NO2xx
+  .42500D+01    .22500D+01                                    195  NO2xx
+  .41747D+01    .21145D+01                                    196  NO2xx
+  .40994D+01    .19790D+01                                    197  NO2xx
+  .42317D+01    .18995D+01                                    198  NO2xx
+  .50100D+01    .13019D+01                                    199  NO2xx
+  .49789D+01    .10994D+01                                    200  NO2xx
+  .51145D+01    .11747D+01                                    201  NO2xx
+  .52500D+01    .12500D+01                                    202  NO2xx
+  .52500D+01    .15000D+01                                    203  NO2xx
+  .50000D+01    .15000D+01                                    204  NO2xx
+  .49055D+01    .14291D+01                                    205  NO2xx
+  .48111D+01    .13583D+01                                    206  NO2xx
+  .48994D+01    .12318D+01                                    207  NO2xx
+  .47905D+01    .15522D+01                                    208  NO2xx
+  .48111D+01    .13583D+01                                    209  NO2xx
+  .49055D+01    .14291D+01                                    210  NO2xx
+  .50000D+01    .15000D+01                                    211  NO2xx
+  .50000D+01    .17500D+01                                    212  NO2xx
+  .47500D+01    .17500D+01                                    213  NO2xx
+  .46754D+01    .16754D+01                                    214  NO2xx
+  .46008D+01    .16008D+01                                    215  NO2xx
+  .47100D+01    .14835D+01                                    216  NO2xx
+  .52500D+01    .12500D+00                                    217  NO2xx
+  .50000D+01    .00000D+00                                    218  NO2xx
+  .52500D+01    .00000D+00                                    219  NO2xx
+  .55000D+01    .00000D+00                                    220  NO2xx
+  .55000D+01    .12500D+00                                    221  NO2xx
+  .55000D+01    .25000D+00                                    222  NO2xx
+  .52500D+01    .25000D+00                                    223  NO2xx
+  .50000D+01    .25000D+00                                    224  NO2xx
+  .50000D+01    .12500D+00                                    225  NO2xx
+  .55000D+01    .37500D+00                                    226  NO2xx
+  .52500D+01    .25000D+00                                    227  NO2xx
+  .55000D+01    .25000D+00                                    228  NO2xx
+  .57500D+01    .25000D+00                                    229  NO2xx
+  .57500D+01    .37500D+00                                    230  NO2xx
+  .57500D+01    .50000D+00                                    231  NO2xx
+  .55000D+01    .50000D+00                                    232  NO2xx
+  .52200D+01    .44398D+00                                    233  NO2xx
+  .52390D+01    .34693D+00                                    234  NO2xx
+  .53385D+01    .57340D+00                                    235  NO2xx
+  .52200D+01    .44398D+00                                    236  NO2xx
+  .53600D+01    .47199D+00                                    237  NO2xx
+  .55000D+01    .50000D+00                                    238  NO2xx
+  .55000D+01    .62500D+00                                    239  NO2xx
+  .55000D+01    .75000D+00                                    240  NO2xx
+  .53340D+01    .70025D+00                                    241  NO2xx
+  .51685D+01    .65050D+00                                    242  NO2xx
+  .51965D+01    .54785D+00                                    243  NO2xx
+  .55000D+01    .87500D+00                                    244  NO2xx
+  .51685D+01    .65050D+00                                    245  NO2xx
+  .55000D+01    .75000D+00                                    246  NO2xx
+  .57500D+01    .75000D+00                                    247  NO2xx
+  .57500D+01    .87500D+00                                    248  NO2xx
+  .57500D+01    .10000D+01                                    249  NO2xx
+  .55000D+01    .10000D+01                                    250  NO2xx
+  .51020D+01    .84075D+00                                    251  NO2xx
+  .51375D+01    .74640D+00                                    252  NO2xx
+  .52077D+01    .10475D+01                                    253  NO2xx
+  .51020D+01    .84075D+00                                    254  NO2xx
+  .53010D+01    .92040D+00                                    255  NO2xx
+  .55000D+01    .10000D+01                                    256  NO2xx
+  .55000D+01    .12500D+01                                    257  NO2xx
+  .52500D+01    .12500D+01                                    258  NO2xx
+  .51145D+01    .11747D+01                                    259  NO2xx
+  .49789D+01    .10994D+01                                    260  NO2xx
+  .50445D+01    .97205D+00                                    261  NO2xx
+  .57500D+01    .12500D+00                                    262  NO2xx
+  .55000D+01    .00000D+00                                    263  NO2xx
+  .57500D+01    .00000D+00                                    264  NO2xx
+  .60000D+01    .00000D+00                                    265  NO2xx
+  .60000D+01    .12500D+00                                    266  NO2xx
+  .60000D+01    .25000D+00                                    267  NO2xx
+  .57500D+01    .25000D+00                                    268  NO2xx
+  .55000D+01    .25000D+00                                    269  NO2xx
+  .55000D+01    .12500D+00                                    270  NO2xx
+  .60000D+01    .37500D+00                                    271  NO2xx
+  .57500D+01    .25000D+00                                    272  NO2xx
+  .60000D+01    .25000D+00                                    273  NO2xx
+  .62500D+01    .25000D+00                                    274  NO2xx
+  .62500D+01    .37500D+00                                    275  NO2xx
+  .62500D+01    .50000D+00                                    276  NO2xx
+  .60000D+01    .50000D+00                                    277  NO2xx
+  .57500D+01    .50000D+00                                    278  NO2xx
+  .57500D+01    .37500D+00                                    279  NO2xx
+  .57500D+01    .62500D+00                                    280  NO2xx
+  .55000D+01    .50000D+00                                    281  NO2xx
+  .57500D+01    .50000D+00                                    282  NO2xx
+  .60000D+01    .50000D+00                                    283  NO2xx
+  .60000D+01    .62500D+00                                    284  NO2xx
+  .60000D+01    .75000D+00                                    285  NO2xx
+  .57500D+01    .75000D+00                                    286  NO2xx
+  .55000D+01    .75000D+00                                    287  NO2xx
+  .55000D+01    .62500D+00                                    288  NO2xx
+ -.12500D+00    .12500D+00                                    289  NO2xx
+ -.25000D+00    .00000D+00                                    290  NO2xx
+ -.12500D+00    .00000D+00                                    291  NO2xx
+  .00000D+00    .00000D+00                                    292  NO2xx
+  .00000D+00    .12500D+00                                    293  NO2xx
+  .00000D+00    .25000D+00                                    294  NO2xx
+ -.12500D+00    .25000D+00                                    295  NO2xx
+ -.25000D+00    .25000D+00                                    296  NO2xx
+ -.25000D+00    .12500D+00                                    297  NO2xx
+  .61250D+01    .12500D+00                                    298  NO2xx
+  .60000D+01    .00000D+00                                    299  NO2xx
+  .61250D+01    .00000D+00                                    300  NO2xx
+  .62500D+01    .00000D+00                                    301  NO2xx
+  .62500D+01    .12500D+00                                    302  NO2xx
+  .62500D+01    .25000D+00                                    303  NO2xx
+  .61250D+01    .25000D+00                                    304  NO2xx
+  .60000D+01    .25000D+00                                    305  NO2xx
+  .60000D+01    .12500D+00                                    306  NO2xx
+  .00000D+00    .37500D+00                                    307  NO2xx
+ -.25000D+00    .25000D+00                                    308  NO2xx
+  .00000D+00    .25000D+00                                    309  NO2xx
+  .25000D+00    .25000D+00                                    310  NO2xx
+  .25000D+00    .37500D+00                                    311  NO2xx
+  .25000D+00    .50000D+00                                    312  NO2xx
+  .00000D+00    .50000D+00                                    313  NO2xx
+ -.25000D+00    .50000D+00                                    314  NO2xx
+ -.25000D+00    .37500D+00                                    315  NO2xx
+ 0.00000D+00  -0.12500D+01   0.00000D+00                        1  JONCx
+ 0.10000D+02   0.12500D+01   0.10000D+02  
+123456789012345678901234567890123456789012345678901234567890123456789012
+FIN_de_paragraphe_formate_______________________________________________
+ 
+DEBUT_de_paragraphe_formate_____________________________________________
+123456789012345678901234567890123456789012345678901234567890123456789012
+FIN_DU_FICHIER__________________________________________________________
+123456789012345678901234567890123456789012345678901234567890123456789012
+FIN_de_paragraphe_formate_______________________________________________
