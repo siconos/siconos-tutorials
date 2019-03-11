@@ -25,11 +25,7 @@
   Simulation with a Time-Stepping scheme.
 */
 
-#include <SiconosBodies.hpp>
-#include <SiconosKernel.hpp>
-
-#include <RigidBody2dDS.hpp>
-#include "Contact2dR.hpp"
+#include "SiconosKernel.hpp"
 
 using namespace std;
 
@@ -69,7 +65,7 @@ int main(int argc, char* argv[])
     (*v0)(0) = velocity_init;
 
     // -- The dynamical system --
-    SP::RigidBody2dDS ball(new RigidBody2dDS(q0, v0, Mass));
+    SP::LagrangianLinearTIDS ball(new LagrangianLinearTIDS(q0, v0, Mass));
 
     SP::SiconosVector q01(new SiconosVector(nDof));
     SP::SiconosVector v01(new SiconosVector(nDof));
@@ -78,7 +74,7 @@ int main(int argc, char* argv[])
 
 
 
-    SP::RigidBody2dDS ball1(new RigidBody2dDS(q01, v01, Mass));
+    SP::LagrangianLinearTIDS ball1(new LagrangianLinearTIDS(q01, v01, Mass));
 
     // -- Set external forces (weight) --
     SP::SiconosVector weight(new SiconosVector(nDof));
@@ -100,13 +96,17 @@ int main(int argc, char* argv[])
 
     SP::NonSmoothLaw nslaw(new NewtonImpactNSL(e));
 
-    SP::Contact2dR relation(new Contact2dR());
+    SP::Lagrangian2d1DR relation(new Lagrangian2d1DR());
 
     SP::Interaction inter(new Interaction(nslaw, relation));
 
-    SP::Contact2dR relation1(new Contact2dR());
+    SP::Lagrangian2d1DR relation1(new Lagrangian2d1DR());
 
     SP::Interaction inter1(new Interaction(nslaw, relation1));
+
+
+
+
 
     // -------------
     // --- Model ---
@@ -229,7 +229,7 @@ int main(int argc, char* argv[])
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
-    ioMatrix::write("Ball2D.dat", "ascii", dataPlot, "noDim");
+    ioMatrix::write("Ball_2d_with_kernel_only.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-12;
     if ((error=ioMatrix::compareRefFile(dataPlot, "Ball2D.ref", eps)) >= 0.0
         && error > eps)
