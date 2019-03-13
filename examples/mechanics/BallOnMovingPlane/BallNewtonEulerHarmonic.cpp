@@ -32,9 +32,9 @@
 #define WITH_FC3D
 using namespace std;
 #ifdef WITH_FC3D
-#define R_CLASS NewtonEulerFrom3DLocalFrameR
+#define R_CLASS NewtonEuler3DR
 #else
-#define R_CLASS NewtonEulerFrom1DLocalFrameR
+#define R_CLASS NewtonEuler1DR
 #endif
 
 class my_NewtonEulerR : public R_CLASS

@@ -28,7 +28,7 @@
 #include <SiconosKernel.hpp>
 
 #include <SiconosBulletCollisionManager.hpp>
-#include <BodyDS.hpp>
+#include <RigidBodyDS.hpp>
 
 int main()
 {
@@ -78,7 +78,7 @@ int main()
     (*v0)(2) = velocity_init;
 
     // -- The dynamical system --
-    SP::BodyDS body(std11::make_shared<BodyDS>(q0, v0, 1.0));
+    SP::RigidBodyDS body(std11::make_shared<RigidBodyDS>(q0, v0, 1.0));
 
     // -- add the box to the body's set of contactactors
     // -- by default, the contactor id is 0 with no position offset,

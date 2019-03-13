@@ -31,9 +31,9 @@
 #include <SiconosKernel.hpp>
 
 #include <SiconosBulletCollisionManager.hpp>
-#include <BodyDS.hpp>
+#include <RigidBodyDS.hpp>
 
-SP::BodyDS makeBox(float g, float pos, float vel)
+SP::RigidBodyDS makeBox(float g, float pos, float vel)
 {
   // -- Shape: cube with all dimensions=1.0
   SP::SiconosBox box1(std11::make_shared<SiconosBox>(1.0, 1.0, 1.0));
@@ -49,7 +49,7 @@ SP::BodyDS makeBox(float g, float pos, float vel)
   (*v0)(2) = vel;
 
   // -- The dynamical system --
-  SP::BodyDS body(std11::make_shared<BodyDS>(q0, v0, 1.0));
+  SP::RigidBodyDS body(std11::make_shared<RigidBodyDS>(q0, v0, 1.0));
 
   // -- add the box to the body's set of contactactors
   // -- by default, the contactor id is 0 with no position offset,
@@ -100,7 +100,7 @@ int main()
     SP::NonSmoothDynamicalSystem model(new NonSmoothDynamicalSystem(t0, T));
 
     // -- Moving object --
-    SP::BodyDS body(makeBox(g, position_init, velocity_init));
+    SP::RigidBodyDS body(makeBox(g, position_init, velocity_init));
 
     // -- Add the dynamical system in the non smooth dynamical system
     model->insertDynamicalSystem(body);
@@ -215,7 +215,7 @@ int main()
       // --- Add a dynamic object at step 100 of the simulation ---
       if (k==100)
       {
-        SP::BodyDS ds(makeBox(g, 3.0, 0));
+        SP::RigidBodyDS ds(makeBox(g, 3.0, 0));
         simulation->nonSmoothDynamicalSystem()->insertDynamicalSystem(ds);
         simulation->associate(osi, ds);
       }

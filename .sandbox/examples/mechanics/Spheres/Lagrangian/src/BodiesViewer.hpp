@@ -33,7 +33,7 @@
 #include <SphereNEDSPlanR.hpp>
 #include <SphereNEDSSphereNEDSR.hpp>
 #include <Question.hpp>
-#include <BodyDS.hpp>
+#include <RigidBodyDS.hpp>
 #include <NewtonEulerDS.hpp>
 #include <SiconosContactor.hpp>
 #include <SiconosShape.hpp>
@@ -83,7 +83,7 @@ struct ForNdof : public Question<unsigned int>
   ANSWER_V_NOUSING(Circle, 3);
   ANSWER_V_NOUSING(SphereLDS, 6);
   ANSWER_V_NOUSING(SphereNEDS, 6);
-  ANSWER_V_NOUSING(BodyDS, 6);
+  ANSWER_V_NOUSING(RigidBodyDS, 6);
   ANSWER_V_NOUSING(NewtonEulerDS, 6);
 };
 
@@ -96,7 +96,7 @@ struct ForFExt : public Question<SP::SiconosVector>
   ANSWER_NOUSING(Circle, fExt());
   ANSWER_NOUSING(SphereLDS, fExt());
   ANSWER_NOUSING(SphereNEDS, fExt());
-  ANSWER_NOUSING(BodyDS, fExt());
+  ANSWER_NOUSING(RigidBodyDS, fExt());
   ANSWER_NOUSING(NewtonEulerDS, fExt());
 };
 
@@ -109,7 +109,7 @@ struct ForPosition : public Question<SP::SiconosVector>
   ANSWER_NOUSING(Circle, q());
   ANSWER_NOUSING(SphereLDS, q());
   ANSWER_NOUSING(SphereNEDS, q());
-  ANSWER_NOUSING(BodyDS, q());
+  ANSWER_NOUSING(RigidBodyDS, q());
   ANSWER_NOUSING(NewtonEulerDS, q());
 };
 
@@ -121,7 +121,7 @@ struct ForRadius : public Question<double>
   ANSWER_NOUSING(Circle, getRadius());
   ANSWER_NOUSING(SphereLDS, getRadius());
   ANSWER_NOUSING(SphereNEDS, getRadius());
-  ANSWER_V_NOUSING(BodyDS,
+  ANSWER_V_NOUSING(RigidBodyDS,
            std11::dynamic_pointer_cast<SiconosSphere>(ds.contactors()->at(0)->shape)
            ->radius());
 };
@@ -134,7 +134,7 @@ struct ForMassValue : public Question<double>
   ANSWER_NOUSING(Circle, mass()->getValue(0, 0));
   ANSWER_NOUSING(SphereLDS, mass()->getValue(0, 0));
   ANSWER_NOUSING(SphereNEDS, scalarMass());
-  ANSWER_NOUSING(BodyDS, scalarMass());
+  ANSWER_NOUSING(RigidBodyDS, scalarMass());
   ANSWER_NOUSING(NewtonEulerDS, scalarMass());
 };
 
@@ -205,7 +205,7 @@ struct ForShape : public Question<SHAPE>
   ANSWER_V_NOUSING(Circle, CIRCLE);
   ANSWER_V_NOUSING(SphereLDS, SPHERE);
   ANSWER_V_NOUSING(SphereNEDS, SPHERE);
-  ANSWER_V_NOUSING(BodyDS,
+  ANSWER_V_NOUSING(RigidBodyDS,
            std11::dynamic_pointer_cast<SiconosSphere>(ds.contactors()->at(0)->shape)
            ? SPHERE : UNKNOWN);
   ANSWER_V_NOUSING(NewtonEulerDS, UNKNOWN);
