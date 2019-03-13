@@ -33,7 +33,7 @@
 #include <SphereNEDSPlanR.hpp>
 #include <SphereNEDSSphereNEDSR.hpp>
 #include <Question.hpp>
-#include <BodyDS.hpp>
+#include <RigidBodyDS.hpp>
 #include <NewtonEulerDS.hpp>
 #include <SiconosContactor.hpp>
 #include <SiconosShape.hpp>
@@ -83,7 +83,7 @@ struct ForNdof : public Question<unsigned int>
   ANSWER_V(Circle, 3);
   ANSWER_V(SphereLDS, 6);
   ANSWER_V(SphereNEDS, 6);
-  ANSWER_V(BodyDS, 6);
+  ANSWER_V(RigidBodyDS, 6);
   ANSWER_V(NewtonEulerDS, 6);
 };
 
@@ -96,7 +96,7 @@ struct ForFExt : public Question<SP::SiconosVector>
   ANSWER(Circle, fExt());
   ANSWER(SphereLDS, fExt());
   ANSWER(SphereNEDS, fExt());
-  ANSWER(BodyDS, fExt());
+  ANSWER(RigidBodyDS, fExt());
   ANSWER(NewtonEulerDS, fExt());
 };
 
@@ -109,7 +109,7 @@ struct ForPosition : public Question<SP::SiconosVector>
   ANSWER(Circle, q());
   ANSWER(SphereLDS, q());
   ANSWER(SphereNEDS, q());
-  ANSWER(BodyDS, q());
+  ANSWER(RigidBodyDS, q());
   ANSWER(NewtonEulerDS, q());
 };
 
@@ -121,7 +121,7 @@ struct ForRadius : public Question<double>
   ANSWER(Circle, getRadius());
   ANSWER(SphereLDS, getRadius());
   ANSWER(SphereNEDS, getRadius());
-  ANSWER_V(BodyDS,
+  ANSWER_V(RigidBodyDS,
            std11::dynamic_pointer_cast<SiconosSphere>(ds.contactors()->at(0)->shape)
            ->radius());
 };
@@ -134,7 +134,7 @@ struct ForMassValue : public Question<double>
   ANSWER(Circle, mass()->getValue(0, 0));
   ANSWER(SphereLDS, mass()->getValue(0, 0));
   ANSWER(SphereNEDS, scalarMass());
-  ANSWER(BodyDS, scalarMass());
+  ANSWER(RigidBodyDS, scalarMass());
   ANSWER(NewtonEulerDS, scalarMass());
 };
 
@@ -205,7 +205,7 @@ struct ForShape : public Question<SHAPE>
   ANSWER_V(Circle, CIRCLE);
   ANSWER_V(SphereLDS, SPHERE);
   ANSWER_V(SphereNEDS, SPHERE);
-  ANSWER_V(BodyDS,
+  ANSWER_V(RigidBodyDS,
            std11::dynamic_pointer_cast<SiconosSphere>(ds.contactors()->at(0)->shape)
            ? SPHERE : UNKNOWN);
   ANSWER_V(NewtonEulerDS, UNKNOWN);

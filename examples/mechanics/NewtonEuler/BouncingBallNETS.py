@@ -20,7 +20,7 @@
 #
 
 from siconos.kernel import NewtonEulerDS, NewtonImpactNSL,\
-     NewtonEulerR, NewtonEulerFrom1DLocalFrameR, Interaction,\
+     NewtonEulerR, NewtonEuler1DR, Interaction,\
      MoreauJeanOSI, TimeDiscretisation, LCP, TimeStepping,\
      NonSmoothDynamicalSystem, compareRefFile,\
      SiconosVector
@@ -30,11 +30,11 @@ from numpy import eye, empty, linalg, savetxt, array
 import math, os
 
 
-class BouncingBallR(NewtonEulerFrom1DLocalFrameR):
+class BouncingBallR(NewtonEuler1DR):
 
     def __init__(self, ballRadius):
         self._ballRadius = ballRadius
-        NewtonEulerFrom1DLocalFrameR.__init__(self)
+        NewtonEuler1DR.__init__(self)
         super(BouncingBallR, self).__init__()
 
     def computeh(self, time, q, y):

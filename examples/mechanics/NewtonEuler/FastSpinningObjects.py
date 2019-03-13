@@ -20,7 +20,7 @@
 #
 
 from siconos.kernel import NewtonEulerDS, NewtonImpactNSL,\
-     NewtonEulerR, NewtonEulerFrom1DLocalFrameR, Interaction,\
+     NewtonEulerR, NewtonEuler1DR, Interaction,\
      MoreauJeanOSI, TimeDiscretisation, LCP, TimeStepping,\
      changeFrameAbsToBody,changeFrameBodyToAbs,\
      rotationVectorFromQuaternion, quaternionFromRotationVector,\

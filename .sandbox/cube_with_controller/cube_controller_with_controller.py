@@ -60,7 +60,7 @@ class Controller(object):
             nsl.display()
             nsl.setMu(0.7)
             
-            relation = Kernel.cast_NewtonEulerFrom1DLocalFrameR(inter.relation())
+            relation = Kernel.cast_NewtonEuler1DR(inter.relation())
             relation.display()
             print('normal', relation.nc())
             print('pos C1', relation.pc1())

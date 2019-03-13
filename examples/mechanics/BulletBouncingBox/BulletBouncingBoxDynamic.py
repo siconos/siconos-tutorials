@@ -42,7 +42,7 @@ from siconos.mechanics.collision.bullet import \
      SiconosBulletCollisionManager
 
 from siconos.mechanics.collision import \
-    SiconosBox, SiconosPlane, BodyDS, SiconosContactor, SiconosContactorSet
+    SiconosBox, SiconosPlane, RigidBodyDS, SiconosContactor, SiconosContactorSet
 
 from numpy import zeros
 from numpy.linalg import norm
@@ -65,7 +65,7 @@ def makeBox(pos=position_init, vel=velocity_init):
     box = SiconosBox(1.0, 1.0, 1.0)
 
     # A Bullet Dynamical System : a shape + a mass (1.0) + position and velocity
-    body = BodyDS([0, 0, pos, 1., 0, 0, 0],
+    body = RigidBodyDS([0, 0, pos, 1., 0, 0, 0],
                   [0, 0, vel, 0., 0., 0.],
                   1.0)
 
