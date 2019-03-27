@@ -43,6 +43,7 @@ with MechanicsHdf5Runner() as io:
                                      relative_orientation=[(0,0,1), pi/2])],
                   translation=[0, 0, 11],
                   mass=1)
+    bar1_id =  bar1.attrs['id']
 
     ## Legs
     io.add_object('bar2', [Contactor('Bar1')], translation=[5.5, 5.5, 6],
@@ -90,16 +91,16 @@ with MechanicsHdf5Runner() as io:
     io.add_joint('joint11','bar2', 'bar3', [[0, 0, 0]], [[0, 1, 0]], 'PivotJointR', absolute=False)
     io.add_joint('joint12','bar4', 'bar5', [[0, 0, 0]], [[0, 1, 0]], 'PivotJointR', absolute=False)
 
-    # Harmonic oscillator on Y-axis angular velocity = a+b*cos(omega*time+phi))
-    freq = 2
-    amp = 0.2
-    io.add_boundary_condition('vibration', 'bar1',
-                              indices=[4], # Y-angular axis is index 4 into ds->v
-                              bc_class='HarmonicBC',
-                              a =     [     0.0 ],
-                              b =     [     amp ],
-                              omega = [ pi*freq ],
-                              phi =   [     0.0 ])
+    # # Harmonic oscillator on Y-axis angular velocity = a+b*cos(omega*time+phi))
+    # freq = 2
+    # amp = 0.2
+    # io.add_boundary_condition('vibration', 'bar1',
+    #                           indices=[4], # Y-angular axis is index 4 into ds->v
+    #                           bc_class='HarmonicBC',
+    #                           a =     [     0.0 ],
+    #                           b =     [     amp ],
+    #                           omega = [ pi*freq ],
+    #                           phi =   [     0.0 ])
 
 def my_forces(body):
     g = 9.81
@@ -107,7 +108,7 @@ def my_forces(body):
     twist = numpy.array([0,0,0,0,300,0])
     push = numpy.array([0,0,0,0,0,0])
     force = weight
-    if body.number() == bar1:
+    if body.number() == bar1_id:
         force = weight + push # + twist
     body.setFExtPtr(force)
 
@@ -121,7 +122,7 @@ else:
     T=30.
 with MechanicsHdf5Runner(mode='r+') as io:
 
-    io.run(with_timer=False,
+    io.run(with_timer=True,
            t0=0,
            T=T,
            h=0.005,
@@ -133,4 +134,5 @@ with MechanicsHdf5Runner(mode='r+') as io:
            itermax=1000,
            tolerance=1e-4,
            numerics_verbose=False,
-           output_frequency=None)
+           output_frequency=None,
+           verbose=True)
