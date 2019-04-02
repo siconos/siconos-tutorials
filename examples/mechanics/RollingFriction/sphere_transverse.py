@@ -32,7 +32,7 @@ with MechanicsHdf5Runner() as io:
     # detection and in the simulation.  With no group id specified the
     # Contactor belongs to group 0
     io.add_object('sphere', [Contactor('Sphere')], translation=[0, 0, 3],
-                  velocity=[10, 0, 0, 0, 1, 0],
+                  velocity=[10, 10, 0, 1,10, 0],
                   mass=1)
 
     # the ground object made with the ground shape. As the mass is
@@ -62,6 +62,6 @@ with MechanicsHdf5Runner(mode='r+') as io:
            set_external_forces=None,
            solver=Numerics.SICONOS_FRICTION_3D_NSGS,
            itermax=100000,
-           tolerance=1e-8,
+           tolerance=1e-10,
            numerics_verbose=False,
            output_frequency=None)
