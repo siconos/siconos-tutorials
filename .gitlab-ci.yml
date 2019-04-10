@@ -18,27 +18,6 @@ stages:
 
 image: $os
 
-cache:
-    paths:
-    - .apt/
-
-
-before_script:
-   - export CTEST_MODEL=$ctest_build_model
-        # Configure apt chaching
-   - echo $CI_PROJECT_DIR
-   - export APT_DIR=$CI_PROJECT_DIR/.apt && export APT_STATE_LISTS=$APT_DIR/lists && export APT_CACHE_ARCHIVES=$APT_DIR/archives
-   - printf "dir::state::lists    ${APT_STATE_LISTS};\ndir::cache::archives    ${APT_CACHE_ARCHIVES};\n" > /etc/apt/apt.conf
-   - mkdir -p "${APT_STATE_LISTS}/partial" && mkdir -p "${APT_CACHE_ARCHIVES}/partial"
-   - apt update -qq > /dev/null
-   - apt install -y -qq cmake git-core wget make
-     libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
-     libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
-     libpython3-dev bash swig doxygen python3-pip htop
-     libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
-
-
-
 # -- Template for docker-build jobs --
 # - should build and push a docker image to siconos-tutorials project registries
 #   image name : $CI_REGISTRY_IMAGE/$IMAGE_NAME
@@ -107,7 +86,16 @@ examples:ubuntu18.04:
 # (release, all components, without oce)
 # Installed path is transfered to next job (examples) using artifacts.
 ubuntu:install_siconos:
+  image: ubuntu:18.04
   stage: build
+  before_script:
+    - export CTEST_MODEL=$ctest_build_model
+    - apt update -qq > /dev/null
+    - apt install -y -qq cmake git-core wget make
+      libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
+      libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
+      libpython3-dev bash swig doxygen python3-pip htop
+      libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
   script:
     - "sh ci/install_siconos.sh $os" 
   artifacts:
@@ -121,7 +109,16 @@ ubuntu:install_siconos:
 # job 'ubuntu:install_siconos'
 # allow_failure is set to true to authorize next stages jobs to run.
 ubuntu:build_and_run_examples:
+  image: ubuntu:18.04
   stage: test
+  before_script:
+    - export CTEST_MODEL=$ctest_build_model
+    - apt update -qq > /dev/null
+    - apt install -y -qq cmake git-core wget make
+      libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
+      libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
+      libpython3-dev bash swig doxygen python3-pip htop
+      libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
   script:
     - "sh ci/build_and_run_examples.sh $os"
   only:
@@ -138,10 +135,19 @@ ubuntu:build_and_run_examples:
 #
 # Installed paths are transfered to next job (examples) using artifacts.
 ubuntu:install_siconos_with_mechanisms:
+  image: ubuntu:18.04
   stage: build-mechanisms
-  script:
+  before_script:
+    - export CTEST_MODEL=$ctest_build_model
+    - apt update -qq > /dev/null
+    - apt install -y -qq cmake git-core wget make
+      libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
+      libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
+      libpython3-dev bash swig doxygen python3-pip htop
+      libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
     - apt install -y libbullet-dev libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
+  scripts:
     - "sh ci/install_oce.sh"
     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
     - "sh ci/install_siconos_with_mechanisms.sh $os" 
@@ -161,9 +167,17 @@ ubuntu:install_siconos_with_mechanisms:
 # pythonocc comes from artifacts of job ubuntu:install_siconos_with_mechanisms
 ubuntu:build_and_run_examples_with_mechanisms:
   stage: test-mechanisms
-  script:
+  before_script:
+    - export CTEST_MODEL=$ctest_build_model
+    - apt update -qq > /dev/null
+    - apt install -y -qq cmake git-core wget make
+      libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
+      libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
+      libpython3-dev bash swig doxygen python3-pip htop
+      libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
     - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
+  script:
     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
     - export EXTRA_BUILDNAME="With Bullet and OCE"
     - "sh ci/build_and_run_examples.sh $os"
