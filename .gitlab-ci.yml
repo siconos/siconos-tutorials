@@ -8,6 +8,8 @@ variables:
 
   
 stages:
+
+  - docker-build
   - build
   - test
   - build-mechanisms
@@ -36,52 +38,70 @@ before_script:
      libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
 
 
-docker-build:ubuntu:
-  stage: build
-  image: docker
-  before_script:
-    - echo 'Build docker image ...'
+
+# -- Template for docker-build jobs --
+# - should build and push a docker image to siconos-tutorials project registries
+#   image name : $CI_REGISTRY_IMAGE/$IMAGE_NAME
+# - should be allowed to failed (in order to avoid blocking of last stage jobs)
+# - should run only when commit message contains [docker build]
+# - use Dockerfile from ci_gitlab/dockerfiles/<IMAGE_NAME>
+# - will be tagged <IMAGE_NAME>:<docker_tag>. default tag is latest.
+#
+# Action : configure, build and install siconos on a container pulled
+# from siconos project registry and generate a new image in siconos-tutorial registries.
+.docker-build:
+  image: docker:stable
   services:
     - docker:dind
+  stage: docker-build
   script:
-    - docker build -t $DOCKER_LOGIN/siconos-ubuntu:18.04 ci/dockerfiles/build-ubuntu-18.04
-    - echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
-    - docker push $DOCKER_LOGIN/siconos-ubuntu:18.04
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA $docker_path/$IMAGE_NAME > /dev/null
+    - docker tag $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/$IMAGE_NAME:$docker_tag
+    - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:$docker_tag
+  tags:
+    - docker-build
   only:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /^\[docker-build\].*/i
+    variables: # Run this job only when commit message starts with [docker-build]
+      - $CI_COMMIT_MESSAGE =~ /^\[docker-build\].*/i      
+  allow_failure: true
 
-docker-build:ubuntu-oce:
+
+# -- Template for examples build-test-install jobs --
+# - Pull an image (possibly from siconos-tutorials registry)
+#   named  IMAGE_NAME
+.examples-build:
+  image: $IMAGE_NAME
   stage: build
-  image: docker
-  before_script:
-    - echo 'Build docker image ...'
-  services:
-    - docker:dind
   script:
-    - docker build -t $DOCKER_LOGIN/siconos-ubuntu-oce:18.04 -< ci/dockerfiles/build-ubuntu-18.04/Dockerfile-oce
-    - echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
-    - docker push $DOCKER_LOGIN/siconos-ubuntu-oce:18.04
-  only:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /^\[docker-build\].*/i
+    - "sh ci/build_and_run_examples.sh $os"
+
+  
+#  A standard install of siconos.
+# Based on siconos registry ubuntu18.04.
+siconos-install:siconos-ubuntu18.04:
+  variables:
+    IMAGE_NAME: siconos-ubuntu18.04
+  extends: .docker-build
 
 
-siconos-build:ubuntu:
-  stage: build
-  image: $DOCKER_LOGIN/siconos-ubuntu:18.04
-  before_script:
-    - echo 'Build siconos from pre-built docker image ...'
-  script:
-    - "sh ci/install_siconos.sh ubuntu:18.04" 
-  artifacts:
-    paths:
-      - install-siconos
-  only:
-  - master
+#  An install of siconos with mechanisms,
+# oce/pythonocc based.
+# Based on siconos registry ubuntu18.04-oce.
+siconos-install:siconos-ubuntu18.04-oce:
+  variables:
+    IMAGE_NAME: siconos-ubuntu18.04-oce
+  extends: .docker-build
 
 
-
+# Pull docker image 'siconos ready'
+# and build, run tests examples.
+examples:ubuntu18.04:
+  variables:
+    IMAGE_NAME: siconos-ubuntu18.04
+  extends: .examples-build
+    
+  
 # This job clone, build and install on default os (ubuntu)
 # siconos software, with the 'standard' config
 # (release, all components, without oce)
@@ -199,27 +219,3 @@ archlinux:build_and_run_examples_with_mechanisms:
    - archlinux:install_siconos_with_mechanisms
   allow_failure: true
 
-
-# This job clone, build and install siconos
-# but for the last tagged release, 4.2.0
-# that was containing examples (before
-# the split siconos/siconos-tutorials).
-# OS is ubuntu.
-# Examples are also built and tested.
-# OCE is installed using ubuntu packages
-# pythonocc is cloned from github repo, built and installed.
-#
-# This job is run only for nightly builds, not on every push.
-ubuntu:siconos_examples_release:
-  stage: test-mechanisms
-  only:
-    - schedules
-  script:
-    - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
-    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
-    - "sh ci/install_oce.sh" 
-    - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
-    - export EXTRA_BUILDNAME="With Bullet and OCE"
-    - "sh ci/run_all_stages_release.sh $os $tag"
-  only:
-  - master
