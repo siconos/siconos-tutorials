@@ -50,6 +50,10 @@ image: $os
   allow_failure: true
 
 
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+  
 # -- Template for examples build-test-install jobs --
 # - Pull an image (possibly from siconos-tutorials registry)
 #   named  IMAGE_NAME
