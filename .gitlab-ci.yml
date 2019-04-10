@@ -58,7 +58,7 @@ before_script:
 # - Pull an image (possibly from siconos-tutorials registry)
 #   named  IMAGE_NAME
 .examples-build:
-  image: $IMAGE_NAME
+  image: $CI_REGISTRY_IMAGE/$IMAGE_NAME
   stage: build
   script:
     - "sh ci/build_and_run_examples.sh $os"
