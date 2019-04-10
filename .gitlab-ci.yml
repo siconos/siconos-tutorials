@@ -10,7 +10,12 @@ variables:
   # Default ctest model. Warning : overwritten if set in schedules variables (as we expect)
   ctest_build_model: Continuous
 
-  
+services:
+  - docker:dind
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
 stages:
 
   - docker-build
@@ -50,8 +55,6 @@ image: $os
   allow_failure: true
 
 
-before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
   
 # -- Template for examples build-test-install jobs --
