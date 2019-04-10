@@ -147,7 +147,7 @@ ubuntu:install_siconos_with_mechanisms:
       libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
     - apt install -y libbullet-dev libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
-  scripts:
+  script:
     - "sh ci/install_oce.sh"
     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
     - "sh ci/install_siconos_with_mechanisms.sh $os" 
