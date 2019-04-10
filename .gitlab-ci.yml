@@ -1,4 +1,8 @@
 variables:
+  # Path to dockerfiles (relative to siconos repo)
+  docker_path: ci_gitlab/dockerfiles
+  # Default tag for docker images
+  docker_tag: latest
   # Default os (docker image)
   os: ubuntu:18.04
   # Default 'reference' tag for siconos
@@ -58,26 +62,26 @@ image: $os
   
 #  A standard install of siconos.
 # Based on siconos registry ubuntu18.04.
-siconos-install:siconos-ubuntu18.04:
+siconos-install:siconos-ubuntu-18.04:
   variables:
-    IMAGE_NAME: siconos-ubuntu18.04
+    IMAGE_NAME: siconos-ubuntu-18.04
   extends: .docker-build
 
 
 #  An install of siconos with mechanisms,
 # oce/pythonocc based.
 # Based on siconos registry ubuntu18.04-oce.
-siconos-install:siconos-ubuntu18.04-oce:
+siconos-install:siconos-ubuntu-18.04-oce:
   variables:
-    IMAGE_NAME: siconos-ubuntu18.04-oce
+    IMAGE_NAME: siconos-ubuntu-18.04-oce
   extends: .docker-build
 
 
 # Pull docker image 'siconos ready'
 # and build, run tests examples.
-examples:ubuntu18.04:
+examples:ubuntu-18.04:
   variables:
-    IMAGE_NAME: siconos-ubuntu18.04
+    IMAGE_NAME: siconos-ubuntu-18.04
   extends: .examples-build
     
   
