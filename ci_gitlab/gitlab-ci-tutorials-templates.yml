@@ -79,6 +79,5 @@ stages:
   image: $IMAGE_NAME
   stage: build
   script:
-    - env
     - sh ci_gitlab/build_and_run_examples.sh
 
