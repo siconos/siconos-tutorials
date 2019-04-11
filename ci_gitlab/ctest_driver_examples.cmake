@@ -35,4 +35,4 @@ set(SICONOS_CMAKE_OPTIONS -Dsiconos_DIR=${SICONOS_INSTALL_DIR}/share/siconos/cma
 set(current_project siconos_examples)
 set(CTEST_MEMORYCHECK_SUPPRESSIONS_FILE ${siconos_ROOT_DIR}/share/siconos/cmake/valgrind.supp)
 
-include(ci_gitlab/ctest_common.cmake)
+include(${CTEST_SOURCE_DIRECTORY}/ci_gitlab/ctest_common.cmake)
