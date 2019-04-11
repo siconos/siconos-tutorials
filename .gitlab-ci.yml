@@ -10,14 +10,14 @@ include: ci_gitlab/gitlab-ci-tutorials-templates.yml
 siconos-install:siconos-ubuntu-18.04:
   variables:
     IMAGE_NAME: siconos-ubuntu-18.04
-  extends: .docker-build
+  extends: .siconos-install
 
 # An install of siconos with mechanisms,
 # oce/pythonocc based.
 siconos-install:siconos-ubuntu-18.04-with-mechanisms:
   variables:
     IMAGE_NAME: siconos-ubuntu-18.04-with-mechanisms
-  extends: .docker-build
+  extends: .siconos-install
 
 
 # ---- Examples jobs ----
