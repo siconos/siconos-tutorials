@@ -60,7 +60,7 @@ stages:
     - docker:dind
   tags:
     - priv
-  stage: docker-build
+  stage: siconos-install
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA $docker_path/$IMAGE_NAME > /dev/null
