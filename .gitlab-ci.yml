@@ -1,142 +1,91 @@
-variables:
-  # Path to dockerfiles (relative to siconos repo)
-  docker_path: ci_gitlab/dockerfiles
-  # Default tag for docker images
-  docker_tag: latest
-  # Default os (docker image)
-  os: ubuntu:18.04
-  # Default 'reference' tag for siconos
-  tag: 4.2.0
-  # Default ctest model. Warning : overwritten if set in schedules variables (as we expect)
-  ctest_build_model: Continuous
+# Templates for ci jobs
+include: ci_gitlab/gitlab-ci-tutorials-templates.yml
 
-services:
-  - docker:dind
-
-before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-
-stages:
-
-  - docker-build
-  - build
-  - test
-  - build-mechanisms
-  - test-mechanisms
-
-
-image: $os
-
-# -- Template for docker-build jobs --
-# - should build and push a docker image to siconos-tutorials project registries
-#   image name : $CI_REGISTRY_IMAGE/$IMAGE_NAME
-# - should be allowed to failed (in order to avoid blocking of last stage jobs)
-# - should run only when commit message contains [docker build]
-# - use Dockerfile from ci_gitlab/dockerfiles/<IMAGE_NAME>
-# - will be tagged <IMAGE_NAME>:<docker_tag>. default tag is latest.
-#
-# Action : configure, build and install siconos on a container pulled
-# from siconos project registry and generate a new image in siconos-tutorial registries.
-.docker-build:
-  image: docker:stable
-  services:
-    - docker:dind
-  stage: docker-build
-  script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA $docker_path/$IMAGE_NAME > /dev/null
-    - docker tag $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/$IMAGE_NAME:$docker_tag
-    - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:$docker_tag
-  tags:
-    - docker-build
-  only:
-    variables: # Run this job only when commit message starts with [docker-build]
-      - $CI_COMMIT_MESSAGE =~ /^\[docker-build\].*/i      
-  allow_failure: true
-
-
-
-  
-# -- Template for examples build-test-install jobs --
-# - Pull an image (possibly from siconos-tutorials registry)
-#   named  IMAGE_NAME
-.examples-build:
-  image: $CI_REGISTRY_IMAGE/$IMAGE_NAME
-  stage: build
-  script:
-    - "sh ci/build_and_run_examples.sh $os"
-
-  
-#  A standard install of siconos.
+# ---- Siconos install jobs ----
+# Prepare 'Siconos ready' images
+# and push them to siconos-tutorials repository.
+# 
+# A standard install of siconos.
 # Based on siconos registry ubuntu18.04.
 siconos-install:siconos-ubuntu-18.04:
   variables:
     IMAGE_NAME: siconos-ubuntu-18.04
   extends: .docker-build
 
-
-#  An install of siconos with mechanisms,
+# An install of siconos with mechanisms,
 # oce/pythonocc based.
-# Based on siconos registry ubuntu18.04-oce.
-siconos-install:siconos-ubuntu-18.04-oce:
+siconos-install:siconos-ubuntu-18.04-with-mechanisms:
   variables:
-    IMAGE_NAME: siconos-ubuntu-18.04-oce
+    IMAGE_NAME: siconos-ubuntu-18.04-with-mechanisms
   extends: .docker-build
 
 
+# ---- Examples jobs ----
+# Build and tests examples from tutorials
 # Pull docker image 'siconos ready'
-# and build, run tests examples.
+# then build, run and tests examples.
+
+# examples, on ubuntu-18.04 with standard (default)
+# Siconos installation.
 examples:ubuntu-18.04:
   variables:
-    IMAGE_NAME: siconos-ubuntu-18.04
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconos-ubuntu-18.04
   extends: .examples-build
-    
+
+# examples, on ubuntu-18.04 with standard (default)
+# Siconos installation.
+examples:ubuntu-18.04-with-mechanisms:
+  variables:
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconos-ubuntu-18.04-with-mechanisms
+  extends: .examples-build
+
+ 
   
 # This job clone, build and install on default os (ubuntu)
 # siconos software, with the 'standard' config
 # (release, all components, without oce)
 # Installed path is transfered to next job (examples) using artifacts.
-ubuntu:install_siconos:
-  image: ubuntu:18.04
-  stage: build
-  before_script:
-    - export CTEST_MODEL=$ctest_build_model
-    - apt update -qq > /dev/null
-    - apt install -y -qq cmake git-core wget make
-      libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
-      libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
-      libpython3-dev bash swig doxygen python3-pip htop
-      libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
-  script:
-    - "sh ci/install_siconos.sh $os" 
-  artifacts:
-    paths:
-      - install-siconos
-  only:
-  - master
+# ubuntu:install_siconos:
+#   image: ubuntu:18.04
+#   stage: build
+#   before_script:
+#     - export CTEST_MODEL=$ctest_build_model
+#     - apt update -qq > /dev/null
+#     - apt install -y -qq cmake git-core wget make
+#       libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
+#       libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
+#       libpython3-dev bash swig doxygen python3-pip htop
+#       libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
+#   script:
+#     - "sh ci/install_siconos.sh $os" 
+#   artifacts:
+#     paths:
+#       - install-siconos
+#   only:
+#   - master
 
-# This job clone, build and install siconos examples 
-# (from siconos-tutorials), using Siconos installed in
-# job 'ubuntu:install_siconos'
-# allow_failure is set to true to authorize next stages jobs to run.
-ubuntu:build_and_run_examples:
-  image: ubuntu:18.04
-  stage: test
-  before_script:
-    - export CTEST_MODEL=$ctest_build_model
-    - apt update -qq > /dev/null
-    - apt install -y -qq cmake git-core wget make
-      libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
-      libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
-      libpython3-dev bash swig doxygen python3-pip htop
-      libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
-  script:
-    - "sh ci/build_and_run_examples.sh $os"
-  only:
-  - master
-  dependencies:
-   - ubuntu:install_siconos
-  allow_failure: true
+# # This job clone, build and install siconos examples 
+# # (from siconos-tutorials), using Siconos installed in
+# # job 'ubuntu:install_siconos'
+# # allow_failure is set to true to authorize next stages jobs to run.
+# ubuntu:build_and_run_examples:
+#   image: ubuntu:18.04
+#   stage: test
+#   before_script:
+#     - export CTEST_MODEL=$ctest_build_model
+#     - apt update -qq > /dev/null
+#     - apt install -y -qq cmake git-core wget make
+#       libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
+#       libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
+#       libpython3-dev bash swig doxygen python3-pip htop
+#       libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
+#   script:
+#     - "sh ci/build_and_run_examples.sh $os"
+#   only:
+#   - master
+#   dependencies:
+#    - ubuntu:install_siconos
+#   allow_failure: true
 
 # This job clone, build and install siconos software
 # on default os (ubuntu), with the 'mechanisms' config
@@ -145,30 +94,30 @@ ubuntu:build_and_run_examples:
 # pythonocc is cloned from github repo, built and installed.
 #
 # Installed paths are transfered to next job (examples) using artifacts.
-ubuntu:install_siconos_with_mechanisms:
-  image: ubuntu:18.04
-  stage: build-mechanisms
-  before_script:
-    - export CTEST_MODEL=$ctest_build_model
-    - apt update -qq > /dev/null
-    - apt install -y -qq cmake git-core wget make
-      libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
-      libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
-      libpython3-dev bash swig doxygen python3-pip htop
-      libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
-    - apt install -y libbullet-dev libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
-    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
-  script:
-    - "sh ci/install_oce.sh"
-    - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
-    - "sh ci/install_siconos_with_mechanisms.sh $os" 
-  artifacts:
-    paths:
-      - $CI_PROJECT_DIR/install/
-      - install-siconos
-  only:
-  - master
-  allow_failure: true
+# ubuntu:install_siconos_with_mechanisms:
+#   image: ubuntu:18.04
+#   stage: build-mechanisms
+#   before_script:
+#     - export CTEST_MODEL=$ctest_build_model
+#     - apt update -qq > /dev/null
+#     - apt install -y -qq cmake git-core wget make
+#       libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
+#       libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
+#       libpython3-dev bash swig doxygen python3-pip htop
+#       libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
+#     - apt install -y libbullet-dev libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
+#     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
+#   script:
+#     - "sh ci/install_oce.sh"
+#     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
+#     - "sh ci/install_siconos_with_mechanisms.sh $os" 
+#   artifacts:
+#     paths:
+#       - $CI_PROJECT_DIR/install/
+#       - install-siconos
+#   only:
+#   - master
+#   allow_failure: true
   
 # This job clone, build and install siconos examples 
 # (from siconos-tutorials), using Siconos installed in
@@ -176,27 +125,27 @@ ubuntu:install_siconos_with_mechanisms:
 # includes all examples based on oce.
 # OCE is installed using ubuntu packages
 # pythonocc comes from artifacts of job ubuntu:install_siconos_with_mechanisms
-ubuntu:build_and_run_examples_with_mechanisms:
-  stage: test-mechanisms
-  before_script:
-    - export CTEST_MODEL=$ctest_build_model
-    - apt update -qq > /dev/null
-    - apt install -y -qq cmake git-core wget make
-      libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
-      libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
-      libpython3-dev bash swig doxygen python3-pip htop
-      libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
-    - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
-    - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
-  script:
-    - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
-    - export EXTRA_BUILDNAME="With Bullet and OCE"
-    - "sh ci/build_and_run_examples.sh $os"
-  only:
-  - master
-  dependencies:
-   - ubuntu:install_siconos_with_mechanisms
-  allow_failure: true
+# ubuntu:build_and_run_examples_with_mechanisms:
+#   stage: test-mechanisms
+#   before_script:
+#     - export CTEST_MODEL=$ctest_build_model
+#     - apt update -qq > /dev/null
+#     - apt install -y -qq cmake git-core wget make
+#       libboost-dev libgmp-dev swig gcc gfortran g++ liblapack-dev
+#       libatlas-base-dev lp-solve liblpsolve55-dev python3-dev
+#       libpython3-dev bash swig doxygen python3-pip htop
+#       libcppunit-dev python3-scipy python3-pytest valgrind python3-h5py > /dev/null
+#     - apt install -y libbullet-dev libfreetype6-dev freeglut3-dev > /dev/null
+#     - apt install -y liboce-foundation-dev liboce-modeling-dev liboce-ocaf-dev liboce-visualization-dev > /dev/null
+#   script:
+#     - export PYTHONPATH=$CI_PROJECT_DIR/install/site-packages
+#     - export EXTRA_BUILDNAME="With Bullet and OCE"
+#     - "sh ci/build_and_run_examples.sh $os"
+#   only:
+#   - master
+#   dependencies:
+#    - ubuntu:install_siconos_with_mechanisms
+#   allow_failure: true
   
 # This job clone, build and install siconos software  
 # on archlinux os, with the 'mechanisms' config
