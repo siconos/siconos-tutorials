@@ -8,7 +8,7 @@
 : ${SICONOS_INSTALL_DIR:?"Please set environment variable SICONOS_INSTALL_DIR  with Siconos installation path (absolute)."}
 
 # -- install some extra dependencies --
-pip3 install -U -r ./ci/requirements.txt > /dev/null
+pip3 install -U -r ./ci_gitlab/requirements.txt > /dev/null
 
 # -- Create build dir --
 mkdir -p $CI_PROJECT_DIR/build/examples

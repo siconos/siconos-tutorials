@@ -9,7 +9,10 @@
 # ----------------------------------------------
 
 # Assumes :
-# - a proper install of siconos 
+# - a proper install of siconos in SICONOS_INSTALL_DIR
+# - an environment variable CI_PROJECT_DIR which contains the path
+# - a file siconos-commit-number.txt in $HOME.
+#   to siconos-tutorials repository.
 
 
 # -- job : build and test examples -- 
@@ -17,7 +20,7 @@ message("--- Start conf for siconos examples build and tests.")
 
 # - Source dir and path to siconos-tutorials/examples
 if(NOT CTEST_SOURCE_DIRECTORY)
-  set(CTEST_SOURCE_DIRECTORY $ENV{CI_PROJECT_DIR})
+  set(CTEST_SOURCE_DIRECTORY $ENV{CI_PROJECT_DIR}/examples)
 endif()
 
 # Build name (for cdash)
@@ -35,4 +38,4 @@ set(SICONOS_CMAKE_OPTIONS -Dsiconos_DIR=${SICONOS_INSTALL_DIR}/share/siconos/cma
 set(current_project siconos_examples)
 set(CTEST_MEMORYCHECK_SUPPRESSIONS_FILE ${siconos_ROOT_DIR}/share/siconos/cmake/valgrind.supp)
 
-include(${CTEST_SOURCE_DIRECTORY}/ci_gitlab/ctest_common.cmake)
+include($ENV{CI_PROJECT_DIR}/ci_gitlab/ctest_common.cmake)
