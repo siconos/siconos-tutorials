@@ -5,7 +5,7 @@
 #
 # Usage :
 # add in .gitlab-ci.yml :
-# include: <path-to-this-file>/gitlab-ci-tutorials.yml
+# include: <path-to-this-file>/gitlab-ci-tutorials-templates.yml
 
 variables:
   # Default ctest model. Warning : overwritten if set in schedules variables (as we expect)
