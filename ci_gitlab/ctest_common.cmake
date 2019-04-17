@@ -31,7 +31,7 @@ endif()
 cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
 cmake_host_system_information(RESULT fqdn QUERY FQDN)
 cmake_host_system_information(RESULT NP QUERY NUMBER_OF_LOGICAL_CORES)
-# set(CTEST_BUILD_FLAGS -j${NP}) make -j n leads to warning for examples. Don't know why.
+# set(CTEST_BUILD_FLAGS -j${NP}) make -j n leads to  warning for examples. Don't know why.
 
 if(${CMAKE_VERSION} VERSION_GREATER "3.10.3") 
   cmake_host_system_information(RESULT osname QUERY OS_NAME)
