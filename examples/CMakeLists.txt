@@ -116,13 +116,6 @@ if(HAS_MFEM) # To be done!
   list(APPEND kernel_examples mechanics/FEM/Punch)
 endif()
 
-
-find_package(QGLVIEWER)
-if(QGLVIEWER_FOUND)
-  list(APPEND kernel_examples mechanics/Disks)
-endif()
-  
-
 # control
 set(control_examples
   control
