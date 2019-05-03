@@ -34,7 +34,7 @@ if(NOT CTEST_BUILD_NAME)
   endif()
 endif()
 
-include($ENV{CI_PROJECT_DIR}/examples/cmake/SiconosRequiredVersion)
+include($ENV{CI_PROJECT_DIR}/examples/cmake/SiconosRequiredVersion.cmake)
 set(ConfigPackageLocation lib/cmake/siconos-${SICONOS_REQUIRED_VERSION})
 set(SICONOS_CMAKE_OPTIONS -Dsiconos_DIR=${SICONOS_INSTALL_DIR}/${ConfigPackageLocation})
 set(current_project siconos_examples)
