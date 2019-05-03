@@ -1,5 +1,5 @@
 # Set minimum version for cmake
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.7)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -33,7 +33,7 @@ if(NOT SICONOS_SCRIPT)
 endif()
 
 # Add cmake files from siconos install
-list(APPEND CMAKE_MODULE_PATH ${siconos_ROOT_DIR}/share/siconos/cmake)
+list(APPEND CMAKE_MODULE_PATH ${siconos_ROOT_DIR}/${ConfigPackageLocation})
 
 # Some usefull macros
 include(SiconosTools)
@@ -45,6 +45,7 @@ include(SiconosTools)
 if(HAS_PYTHON_WRAPPER)
   message("Siconos Python API is ON")
   set(PYTHON_EXECUTABLE ${SICONOS_PYTHON_EXECUTABLE})
+  set(PythoN3_EXECUTABLE ${SICONOS_PYTHON_EXECUTABLE})
   include(FindPythonModule)
   find_python_module(matplotlib)
   find_python_module(pyhull)
