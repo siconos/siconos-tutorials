@@ -34,8 +34,11 @@ if(NOT CTEST_BUILD_NAME)
   endif()
 endif()
 
-set(SICONOS_CMAKE_OPTIONS -Dsiconos_DIR=${SICONOS_INSTALL_DIR}/share/siconos/cmake/)
+include($ENV{CI_PROJECT_DIR}/examples/cmake/SiconosRequiredVersion)
+set(ConfigPackageLocation lib/cmake/siconos-${SICONOS_REQUIRED_VERSION})
+set(SICONOS_CMAKE_OPTIONS -Dsiconos_DIR=${SICONOS_INSTALL_DIR}/${ConfigPackageLocation})
 set(current_project siconos_examples)
-set(CTEST_MEMORYCHECK_SUPPRESSIONS_FILE ${siconos_ROOT_DIR}/share/siconos/cmake/valgrind.supp)
-
+set(CTEST_MEMORYCHECK_SUPPRESSIONS_FILE ${SICONOS_INSTALL_DIR}/${ConfigPackageLocation})
 include($ENV{CI_PROJECT_DIR}/ci_gitlab/ctest_common.cmake)
+
+
