@@ -19,14 +19,17 @@ density = 1300
 volume = 2./3. * math.pi * (diameter/2.0)**3
 
 mass = volume*density
+
+margin_ratio=1e-05
+
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
 
     # Definition of a sphere
     io.add_primitive_shape('Sphere', 'Sphere',
                            (diameter/2.0,),
-                           insideMargin=diameter*0.0,
-                           outsideMargin=diameter*0.001)
+                           insideMargin=diameter*margin_ratio,
+                           outsideMargin=diameter*margin_ratio)
 
     # Definition of the ground shape
 
@@ -52,9 +55,7 @@ with MechanicsHdf5Runner() as io:
                 (1*box_x_scale,0*box_y_scale,1*box_z_scale),
                 (1*box_x_scale,1*box_y_scale,1*box_z_scale)]
 
-    io.add_convex_shape('Ground', vertices, outsideMargin=diameter*0.001)
-
-
+    io.add_convex_shape('Ground', vertices, outsideMargin=diameter*margin_ratio)
 
     test=True
     if test==True:
@@ -65,12 +66,10 @@ with MechanicsHdf5Runner() as io:
     delta_tob = math.sqrt(2.0*diameter/9.81)
     print('delta_tob', delta_tob)
     T = (n_spheres*delta_tob)*1.1
-    #T = 10*5e-3
     print('T', T)
     for s in range(n_spheres):
         tob = s*delta_tob
         trans =  [0.5*diameter*random.random(), 0.5*diameter*random.random(), 7*diameter]
-        print(trans)
         io.add_object('sphere_'+str(s), [Contactor('Sphere')],
                       translation=trans,
                       velocity=[0, 0, -0, 0, 0, 0],
@@ -89,7 +88,7 @@ with MechanicsHdf5Runner() as io:
 
     # Definition of a non smooth law. As no group ids are specified it
     # is between contactors of group id 0.
-    io.add_Newton_impact_rolling_friction_nsl('contact_rolling', e= 0.0, mu=0.3, mu_r=.5)
+    io.add_Newton_impact_rolling_friction_nsl('contact_rolling', e= 0.0, mu=0.3, mu_r=1e-03)
     #io.add_Newton_impact_friction_nsl('contact', e= 0.9, mu=0.3)
 
 # Run the simulation from the inputs previously defined and add
@@ -113,6 +112,7 @@ with MechanicsHdf5Runner(mode='r+') as io:
            solver=Numerics.SICONOS_FRICTION_3D_NSGS,
            itermax=1000,
            tolerance=1e-04,
-           violation_verbose=True,
+           violation_verbose=False,
            numerics_verbose=False,
-           output_frequency=None)
+           output_frequency=10,
+           contraint_activation_threshold=1e-08)
