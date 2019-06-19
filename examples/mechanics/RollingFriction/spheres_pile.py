@@ -115,4 +115,4 @@ with MechanicsHdf5Runner(mode='r+') as io:
            violation_verbose=False,
            numerics_verbose=False,
            output_frequency=10,
-           contraint_activation_threshold=1e-08)
+           constraint_activation_threshold=1e-08)
