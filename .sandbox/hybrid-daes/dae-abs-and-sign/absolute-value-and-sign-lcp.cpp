@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 
         double t0       = 0.0;          // initial computation time
         double T        = 0.05;         // final computation time 
-        //double T     = 10.0;            // final computation time 
+        // double T        = 5.0;            // final computation time 
 
         double h        =  0.05;        // time step
 
@@ -236,7 +236,7 @@ int main(int argc, char* argv[])
         // --- Output files ---
         cout << "====> Output file writing ..." << endl;
         dataPlot.resize(k, outputSize);
-        ioMatrix::write("result_absolute-value-and-sign-lcp.dat", "ascii", dataPlot, "noDim");
+        ioMatrix::write("result_Start-CONTINUE_absolute-value-and-sign-lcp.dat", "ascii", dataPlot, "noDim");
     }
 
     catch (SiconosException& e)    
