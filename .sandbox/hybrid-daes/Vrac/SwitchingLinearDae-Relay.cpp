@@ -23,7 +23,6 @@
 */
 
 #include "SiconosKernel.hpp"
-// #include "lcp_cst.h"
 
 using namespace std;
 
@@ -35,39 +34,34 @@ int main(int argc, char* argv[])
         // ================= Creation of the model =======================
 
         // User-defined main parameters
-        unsigned int dimX       = 3;    // Dimension of the system state variables
-        unsigned int dimLambda  = 1;    // Dimension of the system lambda variables
+        unsigned int dimX       = 3;        // Dimension of the system state variables
+        unsigned int dimLambda  = 1;        // Dimension of the system lambda variables
 
-        double t0       = 0.0;          // initial computation time
-        double T        = 0.15;         // final computation time 
-        //double T     = 10.0;            // final computation time 
+        double t0   = 0.0;                  // initial computation time
+        double T    = 1.53;                  // final computation time 
 
-        double h        =  0.05;        // time step
+        double h =  0.0005;                   // time step
 
-        double x1_0     = 0.0;         // initial condition in state variable x1
-        double x2_0     = 1.0;          // initial condition in state variable x2
-        double z_0      = 0;            // initial condition in algebraic variable z
+        double x1_0 = -1.0;                 // initial condition in state variable x1
+        double x2_0 = 0.1;                  // initial condition in state variable x2
+        double z_0  = 0;                    // initial condition in algebraic variable z
 
 
         // -------------------------
         // --- Dynamical systems ---
         // -------------------------
-        cout << "###### DAE with absolute value constraint #####" <<  endl;  
+
         cout << "====> Model definition ..." <<  endl;
 
 
         SP::SiconosVector init(new SiconosVector({x1_0, x2_0, z_0}));
 
         SP::SiconosMatrix A( new SimpleMatrix(dimX,dimX) ); 
-        // *** sliding
-        // double B0 = 0.0;
-        // double B1 = 1.0;
-        // should have slide or jump (multiple solutions)
-        double B0 = -1.0;
-        double B1 = 0.5;
+        double B0 = 0.1;
+        double B1 = 0.9;
         A->setRow(0,SiconosVector({0.0, 0.0, B0}));
         A->setRow(1,SiconosVector({0.0, 0.0, B1}));
-        A->setRow(2,SiconosVector({1.0, -1.0, 0.0}));
+        A->setRow(2,SiconosVector({0.0, -1.0, 0.0}));
 
         cout << "matrix A: " << endl;
         A->display();
@@ -79,7 +73,7 @@ int main(int argc, char* argv[])
         cout << "matrix E: " << endl;
         E->display();
 
-        SP::SiconosVector b(new SiconosVector({1.0, 0.0, 1.0}));
+        SP::SiconosVector b(new SiconosVector({1.0, 0.0, 0.0}));
 
         cout << "vector b: " << endl;
         b->display();
@@ -90,30 +84,31 @@ int main(int argc, char* argv[])
         dyn->setMPtr(E);
 
         // -------------------------
-        // --- LCP Relation ---
+        // --- Relay Relation ---
+        // ---  -y \in N_{[bl,bu]}(lambda) ---
+        // ---  dynamic input: B.dot(lambda)
         // -------------------------
 
-
-        // IDE complains when smartpoint is SP::SiconosMatrix why ? not virtual ?
-        SP::SimpleMatrix C( new SimpleMatrix(dimLambda,dimX) );
-        (*C)(0,0) = 2.0;
-
-        SP::SimpleMatrix D( new SimpleMatrix(dimLambda,dimLambda) );
-        (*D)(0,0) = 1.0;
-
-        SP::SimpleMatrix R( new SimpleMatrix(dimX,dimLambda) );
-        (*R)(2,0) = 1.0;
-
-        //SP::SiconosVector e(new SiconosVector({0.0}));
-
         // Relation LCP lhs
-        SP::FirstOrderR relation(new FirstOrderLinearTIR(C, R) );
-        relation->setDPtr(D);
+        SP::FirstOrderR relation(new FirstOrderNonLinearR() );
 
-        // NonSmooth law: LCP
-        SP::NonSmoothLaw nslaw(new ComplementarityConditionNSL(dimLambda));
+        //Plugin for output function h(x,lambda)
+        relation->setComputehFunction("NLRelation_Plugin","Computeh");
+        //Plugin for output function jacobian wrt x
+        relation->setComputeJachxFunction ("NLRelation_Plugin","ComputeJxh");
+        //Plugin for output function jacobian wrt lambda
+        relation->setComputeJachlambdaFunction("NLRelation_Plugin","ComputeJlh");
+        //Plugin for input function g(x,lambda)
+        relation->setComputegFunction("NLRelation_Plugin","Computeg");
+        //Plugin for input function jacobian wrt x
+        relation->setComputeJacgxFunction ("NLRelation_Plugin","ComputeJxg");
+        //Plugin for input function jacobian wrt lambda
+        relation->setComputeJacglambdaFunction("NLRelation_Plugin","ComputeJlg");
 
-        // interaction 
+        // NonSmooth law: relay on [-1,1] rhs
+        SP::NonSmoothLaw nslaw(new RelayNSL(dimLambda, -1.0, 1.0));
+
+        // interaction -y in relay[-1,1]
         SP::Interaction inter(new Interaction(nslaw, relation));
 
         // -----------------------------
@@ -141,21 +136,21 @@ int main(int argc, char* argv[])
         SP::TimeDiscretisation td(new TimeDiscretisation(t0, h));
 
         // -- (3) one step non smooth problem
-        SP::LCP osnspb(new LCP(SICONOS_LCP_ENUM));
-        // SP::LCP osnspb(new LCP());
-        osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_MULTIPLE_SOLUTIONS] = 1; // 1 for multiple solutions,
-                                                                                         // 0 else .
-        // osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_USE_DGELS] = 0; // 1 if useDGELS 
-        osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_SKIP_TRIVIAL] = SICONOS_LCP_SKIP_TRIVIAL_YES;
-        osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_SEED] = 1; // SEED
+        SP::Relay osnspb(new Relay());
+
         // osnspb->setNumericsVerboseMode(true);
         
-        
+
         // -- (4) Simulation setup with (1) (2) (3)
         SP::TimeStepping s(new TimeStepping(switch_dae, td, osi, osnspb));
-
-        // s->setResetAllLambda(false);
-
+        
+        
+        // Non linear flags set to true
+        // Newton iteration and accuracy increased ...
+        s->setComputeResiduY(true);
+        s->setComputeResiduR(true);
+        s->setNewtonMaxIteration(100);
+        s->setNewtonTolerance(1e-10);
         // =========================== End of model definition ===========================
         cout <<  "====> ... End of Model definition" <<  endl;
         //   // ================================= Computation =================================
@@ -171,12 +166,12 @@ int main(int argc, char* argv[])
         SP::SiconosVector lambda = inter->lambda(0);
 
         dataPlot(0, 0) = switch_dae->t0();
-        dataPlot(0, 1) = (*x)(0);   // x1
-        dataPlot(0, 2) = (*x)(1);   // x2
-        dataPlot(0, 3) = (*x)(2);   // z
+        dataPlot(0, 1) = (*x)(0);
+        dataPlot(0, 2) = (*x)(1);
+        dataPlot(0, 3) = (*x)(2);
         dataPlot(0, 4) = (*lambda)(0);
-        dataPlot(0, 5) = 0.0;       // M[0,0] at t= 0 initialized at 0.0
-        dataPlot(0, 6) = 0.0;       // q[0] at t= 0 initialized at 0.0
+        dataPlot(0, 5) = 0.0;   // M[0,0] at t= 0 initialized at 0.0
+        dataPlot(0, 6) = 0.0;   // q[0] at t= 0 initialized at 0.0
         // --- Time loop ---
         cout << "====> Start computation ... " << endl;
         // ==== Simulation loop - Writing without explicit event handling =====
@@ -189,16 +184,11 @@ int main(int argc, char* argv[])
         double M_00;
          // element q[0] of the vector q (normaly of size 1) s.t. y = M*lambda+q
         double q_0;
-
         while (s->hasNextEvent())
         {
             
             s->computeOneStep();
             // osnspb->display();
-
-            cout << "# of solutions: " 
-                 << osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_NUMBER_OF_SOLUTIONS] << endl; // Number of solutions
-
             M_00 = osnspb->M()->defaultMatrix()->getValue(0,0);
             q_0  = osnspb->q()->getValue(0);
             // --- Get values to be plotted ---
@@ -209,9 +199,6 @@ int main(int argc, char* argv[])
             dataPlot(k, 4) = (*lambda)(0);
             dataPlot(k, 5) = M_00;
             dataPlot(k, 6) = q_0;
-            cout << "sigma = h*z = " << h*dataPlot(k, 3) << endl; // value \sigma_z
-            cout << "x1 = " << dataPlot(k, 1) << endl; // position in x1
-
             s->nextStep();
             ++show_progress;
             k++;
@@ -223,7 +210,7 @@ int main(int argc, char* argv[])
         // --- Output files ---
         cout << "====> Output file writing ..." << endl;
         dataPlot.resize(k, outputSize);
-        ioMatrix::write("result_absolute-value-lcp.dat", "ascii", dataPlot, "noDim");
+        ioMatrix::write("result_SwitchingLinearDae.dat", "ascii", dataPlot, "noDim");
     }
 
     catch (SiconosException& e)    
@@ -234,7 +221,7 @@ int main(int argc, char* argv[])
 
     catch (...) 
     {
-    cerr << "Exception caught in absolute-value-lcp.cpp" << endl;
+    cerr << "Exception caught in SwitchingLinearDae.cpp" << endl;
     return 1;
     }
 

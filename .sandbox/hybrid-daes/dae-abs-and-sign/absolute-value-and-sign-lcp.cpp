@@ -36,23 +36,23 @@ int main(int argc, char* argv[])
 
         // User-defined main parameters
         unsigned int dimX       = 3;    // Dimension of the system state variables
-        unsigned int dimLambda  = 1;    // Dimension of the system lambda variables
+        unsigned int dimLambda  = 3;    // Dimension of the system lambda variables
 
         double t0       = 0.0;          // initial computation time
-        double T        = 0.15;         // final computation time 
+        double T        = 0.05;         // final computation time 
         //double T     = 10.0;            // final computation time 
 
         double h        =  0.05;        // time step
 
-        double x1_0     = 0.0;         // initial condition in state variable x1
-        double x2_0     = 1.0;          // initial condition in state variable x2
+        double x1_0     = -1.0;         // initial condition in state variable x1
+        double x2_0     = 0.0;          // initial condition in state variable x2
         double z_0      = 0;            // initial condition in algebraic variable z
 
 
         // -------------------------
         // --- Dynamical systems ---
         // -------------------------
-        cout << "###### DAE with absolute value constraint #####" <<  endl;  
+        cout << "###### DAE with absolute value and sign in constraint #####" <<  endl;  
         cout << "====> Model definition ..." <<  endl;
 
 
@@ -97,18 +97,23 @@ int main(int argc, char* argv[])
         // IDE complains when smartpoint is SP::SiconosMatrix why ? not virtual ?
         SP::SimpleMatrix C( new SimpleMatrix(dimLambda,dimX) );
         (*C)(0,0) = 2.0;
+        (*C)(1,0) = 1.0;
 
         SP::SimpleMatrix D( new SimpleMatrix(dimLambda,dimLambda) );
         (*D)(0,0) = 1.0;
+        (*D)(1,2) = 1.0;
+        (*D)(2,1) = -1.0;
 
         SP::SimpleMatrix R( new SimpleMatrix(dimX,dimLambda) );
         (*R)(2,0) = 1.0;
+        (*R)(2,1) = -1.0;
 
-        //SP::SiconosVector e(new SiconosVector({0.0}));
+        SP::SiconosVector e(new SiconosVector({0.0, 0.0, 2.0}));
 
         // Relation LCP lhs
-        SP::FirstOrderR relation(new FirstOrderLinearTIR(C, R) );
+        SP::FirstOrderLinearTIR relation(new FirstOrderLinearTIR(C, R) );
         relation->setDPtr(D);
+        relation->setePtr(e);
 
         // NonSmooth law: LCP
         SP::NonSmoothLaw nslaw(new ComplementarityConditionNSL(dimLambda));
@@ -145,9 +150,9 @@ int main(int argc, char* argv[])
         // SP::LCP osnspb(new LCP());
         osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_MULTIPLE_SOLUTIONS] = 1; // 1 for multiple solutions,
                                                                                          // 0 else .
-        // osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_USE_DGELS] = 0; // 1 if useDGELS 
+        osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_USE_DGELS] = 0; // 1 if useDGELS 
         osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_SKIP_TRIVIAL] = SICONOS_LCP_SKIP_TRIVIAL_YES;
-        osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_SEED] = 1; // SEED
+        osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_SEED] = 4; // SEED
         // osnspb->setNumericsVerboseMode(true);
         
         
@@ -175,43 +180,51 @@ int main(int argc, char* argv[])
         dataPlot(0, 2) = (*x)(1);   // x2
         dataPlot(0, 3) = (*x)(2);   // z
         dataPlot(0, 4) = (*lambda)(0);
-        dataPlot(0, 5) = 0.0;       // M[0,0] at t= 0 initialized at 0.0
-        dataPlot(0, 6) = 0.0;       // q[0] at t= 0 initialized at 0.0
+        dataPlot(0, 5) = (*lambda)(1);       // 
+        dataPlot(0, 6) = (*lambda)(2);       // 
         // --- Time loop ---
         cout << "====> Start computation ... " << endl;
+
+        cout << "sigma = h*z = " << h*dataPlot(0, 3) << endl; // value \sigma_z
+        cout << "x1 = " << dataPlot(0, 1) << endl; // position in x1
+
         // ==== Simulation loop - Writing without explicit event handling =====
         int k = 1;
         boost::progress_display show_progress(N);
         boost::timer time;
         time.restart();
 
-        // element M[0,0] of the matrix M (normaly of size 1) s.t. y = M*lambda+q
-        double M_00;
-         // element q[0] of the vector q (normaly of size 1) s.t. y = M*lambda+q
-        double q_0;
+        // // element M[0,0] of the matrix M (normaly of size 1) s.t. y = M*lambda+q
+        // double M_00;
+        //  // element q[0] of the vector q (normaly of size 1) s.t. y = M*lambda+q
+        // double q_0;
 
         while (s->hasNextEvent())
         {
             
             s->computeOneStep();
-            // osnspb->display();
+            osnspb->display();
 
             cout << "# of solutions: " 
                  << osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_NUMBER_OF_SOLUTIONS] << endl; // Number of solutions
-
-            M_00 = osnspb->M()->defaultMatrix()->getValue(0,0);
-            q_0  = osnspb->q()->getValue(0);
+            cout << "Mode of solutions: " 
+                 << osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_CURRENT_ENUM] << endl; // Number of solutions
+            
+            // M_00 = osnspb->M()->defaultMatrix()->getValue(0,0);
+            // q_0  = osnspb->q()->getValue(0);
             // --- Get values to be plotted ---
             dataPlot(k, 0) =  s->nextTime();
             dataPlot(k, 1) = (*x)(0);
             dataPlot(k, 2) = (*x)(1);
             dataPlot(k, 3) = (*x)(2);
             dataPlot(k, 4) = (*lambda)(0);
-            dataPlot(k, 5) = M_00;
-            dataPlot(k, 6) = q_0;
+            dataPlot(k, 5) = (*lambda)(1);
+            dataPlot(k, 6) = (*lambda)(2);
             cout << "sigma = h*z = " << h*dataPlot(k, 3) << endl; // value \sigma_z
             cout << "x1 = " << dataPlot(k, 1) << endl; // position in x1
-
+            SiconosVector temp_res = SiconosVector(outputSize);
+            dataPlot.getRow(k,temp_res);
+            cout << "all results: " << temp_res << endl;
             s->nextStep();
             ++show_progress;
             k++;
@@ -223,7 +236,7 @@ int main(int argc, char* argv[])
         // --- Output files ---
         cout << "====> Output file writing ..." << endl;
         dataPlot.resize(k, outputSize);
-        ioMatrix::write("result_absolute-value-lcp.dat", "ascii", dataPlot, "noDim");
+        ioMatrix::write("result_absolute-value-and-sign-lcp.dat", "ascii", dataPlot, "noDim");
     }
 
     catch (SiconosException& e)    
@@ -234,7 +247,7 @@ int main(int argc, char* argv[])
 
     catch (...) 
     {
-    cerr << "Exception caught in absolute-value-lcp.cpp" << endl;
+    cerr << "Exception caught in absolute-value-and-sign-lcp.cpp" << endl;
     return 1;
     }
 
