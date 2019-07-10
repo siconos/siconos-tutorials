@@ -35,8 +35,14 @@ extern "C" void Rampb(double time, unsigned int sizeOfB, double* b, unsigned int
     else if (phaseRamp < (RampTD + RampTR + RampPW + RampTF)) UPtr[0] = VhighRamp - (SlopeFallRamp*(phaseRamp - (RampTD + RampTR + RampPW)));
     else UPtr[0] = VlowRamp;
 
-    if (time < VrefSettlingTime) UPtr[1] = Vref*time/VrefSettlingTime;
+    /*if (time < VrefSettlingTime) UPtr[1] = Vref*time/VrefSettlingTime;
+      else UPtr[1] = Vref; */
+    if (time < VrefSettlingTime)
+      UPtr[1] = Vref*time/VrefSettlingTime;
+    else if (time > 2.*VrefSettlingTime)
+      UPtr[1] = -Vref*time/VrefSettlingTime +3* Vref ;
     else UPtr[1] = Vref;
+
 
     z[sizeOfZ-2] = UPtr[0];
     z[sizeOfZ-1] = UPtr[1];

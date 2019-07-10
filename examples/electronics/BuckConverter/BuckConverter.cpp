@@ -29,8 +29,8 @@ int main(int argc, char* argv[])
 
   double T = 200E-6;          // Total simulation time
 
-
-  bool test = true ;
+  T = 300E-6;
+  bool test = false ;
   if (test)
   {
     T = 200E-8;
@@ -393,7 +393,7 @@ int main(int argc, char* argv[])
 // output voltage
   dataPlot(k,4)  = (*x)(0);
 
-// gate voltage
+// gate voltage Vcomp = V_G
   dataPlot(k,5)  = SlopeComp * (z_straight[0] - z_straight[1]);
 
 // error voltage
@@ -414,6 +414,7 @@ int main(int argc, char* argv[])
 // // NMOS Ids current
   dataPlot(k,10) =  HalfKN *cblas_ddot( rowsize , fPWLmat_straight , incx , &(z_straight[2+(2*NBHYP)]) , incy );
 // *(++dataPlot) = HalfKN *cblas_ddot( &rowsize , fPWLmat_straight , &incx , &(z_straight[2+(2*NBHYP)]) , &incy );
+
 
 // nb iterations lcp solver
 //    *(++dataPlot) = nbiterlcp;
