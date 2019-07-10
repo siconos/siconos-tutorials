@@ -16,14 +16,13 @@
  * limitations under the License.
 */
 
-/*!\file clutchFrictionEngaging.cpp
+/*!\file absolute-value-and-sign-lcp.cpp
  
-  Engaging of a clutch modeled using a friction coefficient.
-  Simulation with a Time-Stepping scheme.
+  Example of Linear switching DAE with a constraint defined by a multivalued operator
 */
 
 #include "SiconosKernel.hpp"
-// #include "lcp_cst.h"
+#include "lcp_cst.h"
 
 using namespace std;
 
@@ -39,10 +38,9 @@ int main(int argc, char* argv[])
         unsigned int dimLambda  = 3;    // Dimension of the system lambda variables
 
         double t0       = 0.0;          // initial computation time
-        double T        = 0.05;         // final computation time 
-        // double T        = 10.0;            // final computation time 
-
-        double h        =  1.05;        // time step
+        double T        = 10.0;         // final computation time 
+      
+        double h        =  0.05;        // time step
 
         double x1_0     = -1.0;         // initial condition in state variable x1
         double x2_0     = 0.0;          // initial condition in state variable x2
@@ -153,7 +151,8 @@ int main(int argc, char* argv[])
         osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_USE_DGELS] = 0; // 1 if useDGELS 
         osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_SKIP_TRIVIAL] = SICONOS_LCP_SKIP_TRIVIAL_YES;
         osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_SEED] = 4; // SEED
-        // osnspb->setNumericsVerboseMode(true);
+        osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_MIN_NORM_SOLUTION] = 1;
+        osnspb->setNumericsVerboseMode(true);
         
         
         // -- (4) Simulation setup with (1) (2) (3)
