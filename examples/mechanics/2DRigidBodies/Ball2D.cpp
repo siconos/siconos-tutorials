@@ -217,7 +217,7 @@ int main(int argc, char* argv[])
       dataPlot(k, 5) = (*q1)(0);
       dataPlot(k, 6) = (*v1)(0);
       dataPlot(k, 7) = (*p1)(0);
-      dataPlot(0, 9) = (*lambda1)(0);
+      dataPlot(k, 8) = (*lambda1)(0);
       s->nextStep();
       ++show_progress;
       k++;
