@@ -11,7 +11,7 @@ import siconos.numerics as Numerics
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
 
 import numpy as np
-import math
+
 options = SiconosBulletOptions()
 options.worldScale = 1.0
 options.contactBreakingThreshold = 0.04
@@ -19,45 +19,9 @@ options.dimension = 1
 
 density=1000.0
 
-disk_radius =1.
-
-box_height =1.
-box_width =1.
-
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
-
-    # Definition of a sphere
-    io.add_primitive_shape('Disk', 'Disk', (disk_radius,),
-                           insideMargin=0.0, outsideMargin=0.0)
-
-    # The sphere object made with an unique Contactor : the sphere shape.
-    # As a mass is given, it is a dynamic system involved in contact
-    # detection and in the simulation.  With no group id specified the
-    # Contactor belongs to group 0
-
-
-    mass=density*disk_radius**2 * math.pi
-    inertia = 1/2. * mass * disk_radius**2
-    io.add_object('disk', [Contactor('Disk')],
-                  translation=[0, 5.],
-                  velocity=[0, 0, 0.5],
-                  mass=mass , inertia = inertia)
-
-    # Definition of a box
-    io.add_primitive_shape('Box', 'Box2d', (box_height,box_width),
-                           insideMargin=0.0, outsideMargin=0.0)
-
-    mass=density*box_height*box_width
-    inertia = 1/12. * mass * ( box_height**2 + box_width**2)
-    io.add_object('box', [Contactor('Box')],
-                  translation=[0, 7.],
-                  velocity=[0, 0, 0.5],
-                  mass=mass, inertia = inertia)
-
-
     
     #  # Definition of a convex hull
     vertices = np.array([[0., 0.], [2., 0.], [0,2.]])
@@ -71,6 +35,7 @@ with MechanicsHdf5Runner() as io:
     ch2d = ConvexHull2d(vertices)
     cm = ch2d.centroid()
     
+
     
     # computation of inertia and volume
     inertia,area=ch2d.inertia(cm)
@@ -83,6 +48,7 @@ with MechanicsHdf5Runner() as io:
                   translation=[0, 1.],
                   velocity=[0, 0, 0.0],
                   mass=mass, inertia = inertia)
+    
     
     
     # Definition of a second convex hull
