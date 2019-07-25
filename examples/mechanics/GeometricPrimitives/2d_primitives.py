@@ -6,7 +6,7 @@
 #
 from siconos.mechanics.collision.convexhull import ConvexHull2d
 from siconos.mechanics.collision.tools import Contactor
-from mechanics_run import MechanicsHdf5Runner
+from siconos.io.mechanics_run import MechanicsHdf5Runner
 import siconos.numerics as Numerics
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
 
