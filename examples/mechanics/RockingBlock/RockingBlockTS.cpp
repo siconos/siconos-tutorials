@@ -31,8 +31,7 @@ unsigned int maxIter = 20000;
 int main(int argc, char* argv[])
 {
   //---------------------------- calculate the computation time --------------
-  boost::timer time;
-  time.restart();
+  boost::timer::auto_cpu_timer time;
   try
   {
     //=========================================================================
@@ -173,7 +172,7 @@ int main(int argc, char* argv[])
 
       // go to the next time step
       k++;
-      ++show_progress;
+      
       TSscheme->nextStep();
     };
     //----------------------- At the end of the simulation -------------------
@@ -192,5 +191,4 @@ int main(int argc, char* argv[])
     cerr << "Exception caught." << endl;
     return 1;
   }
-  cout << "Computation Time: " << time.elapsed()  << endl;
 }

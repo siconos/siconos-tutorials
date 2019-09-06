@@ -44,6 +44,7 @@
 //
 //-----------------------------------------------------------------------
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 int main(int argc, char* argv[])
@@ -58,8 +59,6 @@ int main(int argc, char* argv[])
   double Vinit = 10.0;    // initial voltage
   string Modeltitle = "DiodeBridge";
 
-  boost::timer time;
-  time.restart();
   try
   {
     // --- Dynamical system specification ---
@@ -191,9 +190,8 @@ int main(int argc, char* argv[])
     dataPlot(k, 9) =  dataPlot(k, 7) +  dataPlot(k, 8);
 
 
-    boost::timer t;
-    t.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
     // --- Time loop  ---
     for (k = 1 ; k < N ; ++k)
     {
@@ -242,7 +240,8 @@ int main(int argc, char* argv[])
 
 
     // --- elapsed time computing ---
-    cout << "time = " << t.elapsed() << endl;
+    cout << "time = " << endl;
+    time.report();
 
     // Number of time iterations
     cout << "Number of iterations done: " << k << endl;
@@ -269,5 +268,4 @@ int main(int argc, char* argv[])
     cerr << "Exception caught " << endl;
     return 1;
   }
-  cout << "Computation Time: " << time.elapsed()  << endl;
 }

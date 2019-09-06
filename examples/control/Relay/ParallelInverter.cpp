@@ -1,5 +1,6 @@
 #include "SiconosKernel.hpp"
 #include <math.h>
+#include <boost/timer/timer.hpp>
 using namespace std;
 static unsigned int ndof = 4;
 /* 02/2010 --> 08/2010*/
@@ -233,9 +234,8 @@ int main(int argc, char* argv[])
     unsigned int k = 0; // Current step
 
     // Simulation loop
-    boost::timer time;
-    time.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
     unsigned int i = 0;
     int j = 0;
     SP::SiconosVector err(new SiconosVector(2));
@@ -291,9 +291,8 @@ int main(int argc, char* argv[])
     cout << "The sliding mode appears at the step number : \n" << N - 1 - j << endl;
 
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("ParallelInverter.dat", "ascii", dataPlot, "noDim");
 

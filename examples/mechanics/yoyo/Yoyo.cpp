@@ -1,6 +1,6 @@
 #include "SiconosKernel.hpp"
 #include "donnee.h"
-
+#include <boost/timer/timer.hpp>
 using namespace std;
 
 
@@ -48,10 +48,9 @@ int main(int argc, char* argv[])
     SP::SiconosVector lambda;
 
 
-    boost::progress_display show_progress(N);
-    boost::timer time;
-    time.restart();
-
+    
+    boost::timer::auto_cpu_timer time;
+    
 
     (*q0)(0) = L / (2 * r); //  vlaeur de  teta( 0 )
     (*q0)(1) = -L + r * (*q0)(0); // y ( 0 )
@@ -163,7 +162,7 @@ int main(int argc, char* argv[])
         if (abs((*v)(0)) <= 0.05) cout << "valeur max de theta est : "  << (*q)(0) << endl;
         k++;
         s->nextStep();
-        ++show_progress;
+        
       }
 
 
@@ -221,7 +220,7 @@ int main(int argc, char* argv[])
           k++;
           if ((*lambda)(0) > 0 && (-r * (*v)(0) + (*v)(1) - (*v)(2)) < 10e-14) break;
           s->nextStep();
-          ++show_progress;
+          
         }
       }
     }
@@ -229,9 +228,8 @@ int main(int argc, char* argv[])
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // écrire les valeur de la matrice dataPlot dans un fichier result.dat
+cout << "Computation Time " << endl;;
+    time.report();    // écrire les valeur de la matrice dataPlot dans un fichier result.dat
 
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");

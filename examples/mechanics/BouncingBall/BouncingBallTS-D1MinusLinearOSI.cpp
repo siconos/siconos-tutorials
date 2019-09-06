@@ -26,6 +26,7 @@
   */
 
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
@@ -122,7 +123,7 @@ int main(int argc, char* argv[])
     // --- Simulation initialization ---
 
     int N = ceil((T - t0) / h); // Number of time steps
-    int Nplot = (int)((T - t0) / hplot); // Number of plot steps
+    // int Nplot = (int)((T - t0) / hplot); // Number of plot steps
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
@@ -148,11 +149,10 @@ int main(int argc, char* argv[])
 
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
     while (s->hasNextEvent())
     {
       s->advanceToEvent();
@@ -176,13 +176,12 @@ int main(int argc, char* argv[])
       }
 
       s->processEvents();
-      ++show_progress;
+      
     }
 
     cout << endl << "End of computation - Number of iterations done: " << N - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result_tdg.dat", "ascii", dataPlot, "noDim");

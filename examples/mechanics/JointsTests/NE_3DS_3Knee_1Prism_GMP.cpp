@@ -309,11 +309,10 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 0;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-    double beamTipTrajectories[6];
+    boost::timer::auto_cpu_timer time;
+        double beamTipTrajectories[6];
 
     for (k = 0; k < N; k++)
     {
@@ -376,13 +375,12 @@ int main(int argc, char* argv[])
       beam3Plot(1,3*k+2) = beamTipTrajectories[5];
 
       s->nextStep();
-      ++show_progress;
+      
     }
 
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    dataPlot.resize(k, outputSize);
+cout << "Computation Time " << endl;;
+    time.report();    dataPlot.resize(k, outputSize);
 
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;

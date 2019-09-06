@@ -205,11 +205,10 @@ int main()
     std::cout << "====> Start computation ... " << std::endl << std::endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
     while (simulation->hasNextEvent())
     {
       // --- Add a dynamic object at step 100 of the simulation ---
@@ -266,13 +265,14 @@ int main()
       }
 
       simulation->nextStep();
-      ++show_progress;
+      
       k++;
     }
 
 
     std::cout << std::endl << "End of computation - Number of iterations done: " << k - 1 << std::endl;
-    std::cout << "Computation Time " << time.elapsed()  << std::endl;
+    std::cout << "Computation Time " << endl;
+    t.report();
 
     // --- Output files ---
     std::cout << "====> Output file writing ..." << std::endl;

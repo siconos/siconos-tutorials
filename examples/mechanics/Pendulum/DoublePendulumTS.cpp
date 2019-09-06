@@ -174,18 +174,17 @@ int main(int argc, char* argv[])
     dataPlot(k, 9) =  l1 * cos((*q)(0)) * ((*v)(0));
     dataPlot(k, 10) = l1 * cos((*q)(0)) * ((*v)(0)) + l2 * cos((*q)(1)) * ((*v)(1));
 
-    boost::timer time;
-    time.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
     // --- Time loop ---
     cout << "Start computation ... " << endl;
 
-    boost::progress_display show_progress(N);
+    
 
     while (s->hasNextEvent())
     {
       k++;
-      ++show_progress;
+      
       //  if (!(div(k,1000).rem))  cout <<"Step number "<< k << "\n";
 
       // Solve problem
@@ -210,9 +209,8 @@ int main(int argc, char* argv[])
     }
 
     cout << "End of computation - Number of iterations done: " << k << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     ioMatrix::write("DoublePendulumResult.dat", "ascii", dataPlot, "noDim");
   }
 

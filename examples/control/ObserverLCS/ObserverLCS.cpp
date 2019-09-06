@@ -1,5 +1,6 @@
 
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
@@ -176,9 +177,8 @@ int main(int argc, char* argv[])
     unsigned int k = 0; // Current step
 
     // Simulation loop
-    boost::timer time;
-    time.restart();
-    while (k < N - 1)
+    boost::timer::auto_cpu_timer time;
+        while (k < N - 1)
     {
       k++;
       //  *z = *(myProcessInteraction->y(0)->getVectorPtr(0));
@@ -196,9 +196,8 @@ int main(int argc, char* argv[])
       s->nextStep();
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("ObserverLCS.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-10;

@@ -9,7 +9,7 @@ using namespace std;
 extern "C" void Rampb(double time, unsigned int sizeOfB, double* b, unsigned int sizeOfZ, double *z)
 {
 
-    double epsitime = 1e-15;
+  //double epsitime = 1e-15;
     double VlowRamp = z[0];
     double VhighRamp = z[1];
     double RampTD = z[2];
@@ -24,7 +24,6 @@ extern "C" void Rampb(double time, unsigned int sizeOfB, double* b, unsigned int
     double Vref = z[7];
     double VrefSettlingTime = z[8];
 
-    double phasePulse;
     double UPtr[2];
 
     phaseRamp = fmod(time,RampPER);

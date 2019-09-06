@@ -28,6 +28,7 @@
   */
 #include "SiconosKernel.hpp"
 #include <boost/numeric/ublas/matrix.hpp>
+#include <boost/timer/timer.hpp>
 using namespace std;
 
 int main(int argc, char* argv[])
@@ -218,11 +219,10 @@ int main(int argc, char* argv[])
 
     // ==== Simulation loop - Writing without explicit event handling =====
     k++;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
 
 //    while ((s->hasNextEvent()) && (k <= 500))
  while ((s->hasNextEvent()))
@@ -290,14 +290,13 @@ int main(int argc, char* argv[])
 
 
       s->processEvents();
-      ++show_progress;
+      
       k++;
     }
 
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");

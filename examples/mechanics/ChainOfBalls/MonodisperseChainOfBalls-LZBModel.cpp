@@ -31,8 +31,7 @@ const double g = 0.0; // Gravity
 using namespace std;
 
 int main(int argc, char* argv[]){
-  boost::timer time;
-  time.restart();
+  boost::timer::auto_cpu_timer time;
   try{
     // ================= Creation of the model =======================
 
@@ -291,16 +290,16 @@ int main(int argc, char* argv[]){
 	      nonSmooth = false;
 	      ++NumberOfNSEvents;
 	      ++NumberOfEvents;
-	      ++show_progress;
+	      
 	      ++k;
 	    }
       // --- Get values to be plotted ---
       ++NumberOfEvents;
-      ++show_progress;
+      
     }
 
-    cout << "\nComputation Time " << time.elapsed()  << endl;
-    // --- Output files ---
+    cout << "\nComputation Time " << endl;
+  time.report();    // --- Output files ---
     cout<<"====> Output file writing ..."<<endl;
     dataPlot.resize(k,outputSize);
     ioMatrix::write("MonodisperseChainOfBalls-LZBModel.dat", "ascii",dataPlot,"noDim");
@@ -319,6 +318,5 @@ int main(int argc, char* argv[]){
     cerr << "Exception caught." << endl;
     return 1;
   }
-  cout << "Computation Time: " << time.elapsed()  << endl;
-}
+  }
 

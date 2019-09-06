@@ -133,9 +133,8 @@ int main(int argc, char* argv[])
     unsigned int k = 0; // Current step
 
     // Simulation loop
-    boost::timer time;
-    time.restart();
-    while (s->hasNextEvent())
+    boost::timer::auto_cpu_timer time;
+        while (s->hasNextEvent())
     {
       k++;
       //  osnspb->setNumericsVerboseMode(1);
@@ -152,9 +151,8 @@ int main(int argc, char* argv[])
     dataPlot->resize(k, dataPlot->size(1));
 
     cout << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("Twisting.dat", "ascii", *dataPlot, "noDim");
 

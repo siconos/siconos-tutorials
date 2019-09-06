@@ -44,6 +44,7 @@
 //-----------------------------------------------------------------------
 
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
@@ -145,9 +146,8 @@ int main(int argc, char* argv[])
 
     dataPlot(k, 5) = (LSCircuitRLCD->getR())(0);
 
-    boost::timer t;
-    t.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
     // --- Time loop  ---
     for (k = 1 ; k < N ; ++k)
     {
@@ -179,7 +179,8 @@ int main(int argc, char* argv[])
     }
     // Number of time iterations
     cout << "Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << t.elapsed()  << endl;
+    cout << "Computation Time " << endl;
+    time.report();
 
     // dataPlot (ascii) output
     ioMatrix::write("CircuitRLCD.dat", "ascii", dataPlot, "noDim");

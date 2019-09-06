@@ -25,6 +25,8 @@
 */
 
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
+
 const double PI = 3.14159265;
 const double g = 9.81; // Gravity
 
@@ -32,8 +34,6 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-  boost::timer time;
-  time.restart();
   try
   {
     // ================= Creation of the model =======================
@@ -264,7 +264,6 @@ int main(int argc, char* argv[])
     // cout << "Number of vectices of DSG0: " << DSG0->size() << endl;
     //
     SP::EventsManager eventsManager = s->eventsManager();
-    boost::progress_display show_progress(Npointsave);
     // ================================= Computation =================================
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
@@ -279,6 +278,7 @@ int main(int argc, char* argv[])
     unsigned int NumberOfNSEvents = 0;
     unsigned int k = 0;
     DynamicalSystemsGraph::VIterator ui, uiend;
+    boost::timer::auto_cpu_timer time;
     //====================================================================
     while ((k < Npointsave) & (s->hasNextEvent()))
     {
@@ -326,16 +326,16 @@ int main(int argc, char* argv[])
         nonSmooth = false;
         ++NumberOfNSEvents;
         ++NumberOfEvents;
-        ++show_progress;
+        
         ++k;
       }
       // --- Get values to be plotted ---
       ++NumberOfEvents;
-      ++show_progress;
+      
     }
 
-    cout << "Computation Time " << time.elapsed()  << endl;
-    // --- Output files ---
+    cout << "Computation Time " << endl;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("BeadColum_LZBModel.dat", "ascii", dataPlot, "noDim");
@@ -355,5 +355,4 @@ int main(int argc, char* argv[])
     cerr << "Exception caught." << endl;
     return 1;
   }
-  cout << "Computation Time: " << time.elapsed()  << endl;
-}
+  }

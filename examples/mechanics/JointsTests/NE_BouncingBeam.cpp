@@ -230,11 +230,10 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 0;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-    SP::SiconosVector yAux(new SiconosVector(3));
+    boost::timer::auto_cpu_timer time;
+        SP::SiconosVector yAux(new SiconosVector(3));
     yAux->setValue(0, 1);
     SP::SimpleMatrix Jaux(new SimpleMatrix(3, 3));
     Index dimIndex(2);
@@ -283,13 +282,12 @@ int main(int argc, char* argv[])
       }
       fprintf(pFile, "\n");
       s->nextStep();
-      ++show_progress;
+      
     }
     fprintf(pFile, "};");
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("NE_BouncingBeam.dat", "ascii", dataPlot, "noDim");
     ioMatrix::write("NE_BouncingBeam_beam.dat", "ascii", bouncingbeamPlot, "noDim");

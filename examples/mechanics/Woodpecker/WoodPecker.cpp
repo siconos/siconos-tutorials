@@ -18,13 +18,13 @@
 
 #include "SiconosKernel.hpp"
 #include "WoodPeckerConsts.h"
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
 int main(int argc, char* argv[])
 {
-  boost::timer t;
-  t.restart();
+  boost::timer::auto_cpu_timer time;
   try
   {
     // ================= Model definition =================
@@ -209,6 +209,5 @@ int main(int argc, char* argv[])
     cerr << "Exception caught in \'WoodPecker\'" << endl;
     return 1;
   }
-  cout << "Computation Time " << t.elapsed()  << endl;
   return 0;
 }

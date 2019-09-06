@@ -16,6 +16,7 @@
  * limitations under the License.
 */
 #include <SiconosKernel.hpp>
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
@@ -38,8 +39,7 @@ int main(int argc, char* argv[])
   //double Vgen = sin(2*M_PI*55000*0)/fabs(sin(2*M_PI*55000*0));
 
   // TIMER
-  boost::timer time;
-  time.restart();
+  boost::timer::auto_cpu_timer time;
 
   try
   {
@@ -190,5 +190,4 @@ int main(int argc, char* argv[])
     return 1;
 
   }
-  cout << "Computation Time " << time.elapsed()  << endl;
 }

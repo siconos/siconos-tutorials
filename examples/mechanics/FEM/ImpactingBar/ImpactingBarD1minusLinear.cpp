@@ -24,6 +24,8 @@
 */
 
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
+
 #define TS_VELOCITY_LEVEL
 using namespace std;
 
@@ -219,11 +221,10 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " <<endl<<endl;
     // ==== Simulation loop - Writing without explicit event handling =====
 
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
 //    while (s->nextTime() < T)
 //    while(k < N)
     // while ((s->hasNextEvent()) && (k <= 505))
@@ -271,13 +272,12 @@ int main(int argc, char* argv[])
 
 
       s->processEvents();
-      ++show_progress;
+      
       k++;
     }
     cout<<endl << "End of computation - Number of iterations done: "<<k-1<<endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout<<"====> Output file writing ..."<<endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("ImpactingBarD1MinusLinear.dat", "ascii", dataPlot,"noDim");

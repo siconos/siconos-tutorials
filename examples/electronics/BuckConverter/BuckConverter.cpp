@@ -1,6 +1,6 @@
 #include "SiconosKernel.hpp"
 #include "NumericsMatrix.h"
-#include "Accelerate.h"
+#include <cblas.h>
 
 #include <stdlib.h>
 #include <math.h>
@@ -10,7 +10,7 @@
 #include <exception>
 #include <sstream>
 
-#include "const.h"
+// #include "const.h"
 
 using namespace std;
 // NBHYP : at least 1

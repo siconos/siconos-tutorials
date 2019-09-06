@@ -26,6 +26,7 @@
 */
 
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
@@ -153,11 +154,10 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
     //while (s->hasNextEvent() && k < 95)
     while (s->hasNextEvent())
     {
@@ -194,12 +194,12 @@ int main(int argc, char* argv[])
       //osnspb->display();
       //osnspb_pos->display();
       //std::cout <<" (*lambda1)(0) "  <<(*lambda1)(0)<< std::endl;
-      ++show_progress;
+      
       k++;
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-    cout << "Max violation " << maxviolation << endl;
+    cout << "Computation Time " << endl;
+  time.report();    cout << "Max violation " << maxviolation << endl;
 
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;

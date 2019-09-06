@@ -27,6 +27,7 @@
   translational clearance joints based on the non-smooth dynamics approach
   */
 
+#include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
 
 //define DISPLAY_INTER
@@ -198,10 +199,7 @@ int main(int argc, char* argv[])
 
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::progress_display show_progress(N);
-
-    boost::timer time;
-    time.restart();
+    boost::timer::auto_cpu_timer time;
 
     while (s->hasNextEvent())
     {
@@ -262,14 +260,13 @@ int main(int argc, char* argv[])
 #endif
 
       s->processEvents();
-      ++show_progress;
+      
       k++;
     }
 
     cout << endl << "Max violation unilateral = " << s->maxViolationUnilateral() << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
