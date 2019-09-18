@@ -99,7 +99,7 @@ endif()
 # --- Build ---
 
 if(NOT CTEST_BUILD_CONFIGURATION)
-  set(CTEST_BUILD_CONFIGURATION "Profiling")
+  set(CTEST_BUILD_CONFIGURATION "Release")
 endif()
 
 message("\n\n=============== Start ctest_build =============== ")

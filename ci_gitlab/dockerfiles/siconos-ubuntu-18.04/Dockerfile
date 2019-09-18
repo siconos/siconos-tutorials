@@ -9,3 +9,5 @@ RUN mkdir -p /home/build
 RUN cd /home/build ; cmake /home/siconos -DCMAKE_INSTALL_PREFIX=/home/install-siconos
 RUN cd /home/build ; make -j 4 ; make install
 ENV SICONOS_INSTALL_DIR /home/install-siconos
+RUN apt update  && apt install -y -qq libboost-timer-dev
+    

@@ -78,6 +78,8 @@ stages:
 .examples-build:
   image: $IMAGE_NAME
   stage: build
+  variables:
+    SICONOS_INSTALL_DIR: /home/install-siconos
   script:
     - sh ci_gitlab/build_and_run_examples.sh
 
