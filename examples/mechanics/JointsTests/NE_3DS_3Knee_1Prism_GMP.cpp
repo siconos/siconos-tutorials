@@ -28,6 +28,7 @@
 #include "KneeJointR.hpp"
 #include "PrismaticJointR.hpp"
 #include <boost/math/quaternion.hpp>
+#include <boost/timer/timer.hpp>
 using namespace std;
 
 /* Given a position of a point in the Inertial Frame and the

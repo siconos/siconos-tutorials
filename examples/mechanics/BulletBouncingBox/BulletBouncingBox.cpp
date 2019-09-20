@@ -29,6 +29,7 @@
 
 #include <SiconosBulletCollisionManager.hpp>
 #include <RigidBodyDS.hpp>
+#include <boost/timer/timer.hpp>
 
 int main()
 {
@@ -252,7 +253,7 @@ int main()
     }
 
     std::cout << std::endl << "End of computation - Number of iterations done: " << k - 1 << std::endl;
-    std::cout << "Computation Time " << endl;
+    std::cout << "Computation Time " << std::endl;
     time.report();
 
     // --- Output files ---

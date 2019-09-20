@@ -26,6 +26,7 @@
 #include "KneeJointR.hpp"
 #include "PrismaticJointR.hpp"
 #include <boost/math/quaternion.hpp>
+#include <boost/timer/timer.hpp>
 #include <math.h>
 using namespace std;
 
