@@ -26,6 +26,7 @@
 // =============================================================================================
 
 #define _USE_MATH_DEFINES
+#include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
 #include <math.h>
 
@@ -36,8 +37,7 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-  boost::timer time;
-  time.restart();
+  boost::timer::auto_cpu_timer time;
   try
   {
 
@@ -247,10 +247,8 @@ int main(int argc, char* argv[])
     dataPlot(k, 13) = (*z)(23);
 
     cout << "====> Start computation ... " << endl << endl;
-    boost::progress_display show_progress(N);
 
-    boost::timer time;
-    time.restart();
+    boost::timer::auto_cpu_timer time;
     while (k < N)
     {
       (*z)(0) = (*q)(0);
@@ -332,10 +330,10 @@ int main(int argc, char* argv[])
         test = 0;
         (*z)(13) = 0;
       }
-      ++show_progress;
     }
     cout << endl << "End of computation - Number of iterations done: " << k << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
+    cout << "Computation Time :" << endl;
+    time.report();
     // --- Output files ---
     // --- Output files ---
     dataPlot.resize(k,outputSize);

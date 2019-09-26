@@ -305,19 +305,18 @@ int main(int argc, char* argv[])
     dataPlot(0, 39) = (*z)(2);
     dataPlot(0, 40) =0.5*(((*v)(0)-6.0*0.75*PI*cos(0.75*PI*h))+ 10.0*((*q)(0)-6.0*sin(0.75*PI*h)))*(((*v)(0)-6.0*0.75*PI*cos(0.75*PI*h))+ 10.0*((*q)(0)-6.0*sin(0.75*PI*h)));
     dataPlot(0, 41) =0.5*((*inter->y(1))(0)*(*inter->y(1))(0));
-    boost::timer time;
-    time.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
     // --- Time loop ---
     cout << "Start computation ... " << endl;
 
-    boost::progress_display show_progress(N);
+    
 	double tt = 0;
 	int kk = 1;
     while (s->hasNextEvent())
     {
       //k++;
-      // ++show_progress;
+      // 
       // if (!(div(k,1000).rem))  cout <<"Step number "<< k << "\n";
       s->advanceToEvent();
       // Solve problem
@@ -443,14 +442,13 @@ int main(int argc, char* argv[])
       //dataPlot(k, 21) = s->cumulatedNewtonNbSteps();
       //dataPlot(k, 22) = s->nbCumulatedProjectionIteration();
       s->processEvents();
-      ++show_progress;
+      
       k++;
     }
 
     cout << "\nEnd of computation - Number of iterations done: " << k << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     dataPlot.resize(kk, outputSize);
     ioMatrix::write(filename, "ascii", dataPlot, "noDim");
     ioMatrix::write("Link1.dat", "ascii", beam1Plot, "noDim");

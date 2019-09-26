@@ -933,8 +933,8 @@ SICONOS_EXPORT void U3(double time, unsigned int sizeOfq, const double *q, const
   double qd2 = 0;
   double qd12 = 0;
   double qd22 = 0;
-  double qd32 = 0;
-  double qd42 = 0;
+  // double qd32 = 0;
+  // double qd42 = 0;
 
   double qr11 = qd11 - gamma2 * (x - qd1);
   double qr12 = -gamma2 * y;
@@ -1667,7 +1667,7 @@ SICONOS_EXPORT void U6(double time, unsigned int sizeOfq, const double *q, const
   double thetad21 = xd2 + (ddT01 + ddT02 - ddT03) / K1;
   double thetad22 = yd2 + (ddT11 + ddT12 - ddT13) / K2;
 
-  double s11 = (velocity[0] - xd1) + gamma2 * (q[0] - xd);
+  // double s11 = (velocity[0] - xd1) + gamma2 * (q[0] - xd);
   double s12 = (velocity[1] - yd1) + gamma2 * (q[1] - yd);
   double s21 = (velocity[2] - thetad11) + gamma2 * (q[2] - thetad1);
   double s22 = (velocity[3] - thetad12) + gamma2 * (q[3] - thetad2);

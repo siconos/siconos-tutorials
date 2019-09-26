@@ -5,6 +5,7 @@
 #include "myDS.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
@@ -120,9 +121,7 @@ int main()
 
   // do simulation while events remains in the "future events" list of events manager.
   cout << " ==== Start of  simulation : " << NBStep << " steps====" << endl;
-  boost::progress_display show_progress(NBStep);
-  boost::timer time;
-  time.restart();
+  boost::timer::auto_cpu_timer time;
   unsigned int k = 0;
   while (aS->hasNextEvent())
   {
@@ -131,7 +130,7 @@ int main()
     // numerics_set_verbose(à);
     //      else if (cmp==151)
     numerics_set_verbose(0);
-    ++show_progress;
+    
 
     cmp++;
 

@@ -28,6 +28,7 @@
   */
 
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
 #define WITH_FRICTION
 //#define DISPLAY_INTER
 using namespace std;
@@ -221,11 +222,10 @@ int main(int argc, char* argv[])
 
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
 
 //    while ((s->hasNextEvent()) && (k<= 3000))
     while ((s->hasNextEvent()))
@@ -290,19 +290,18 @@ int main(int argc, char* argv[])
 #endif
 
       s->processEvents();
-      ++show_progress;
+      
       k++;
     }
 
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
 
-    double error=0.0, eps=1e-11;
+    double error=0.0, eps=1e-10;
     if ((error=ioMatrix::compareRefFile(dataPlot, "SliderCrankMoreauJeanOSI.ref",
                                         eps)) >= 0.0
         && error > eps)

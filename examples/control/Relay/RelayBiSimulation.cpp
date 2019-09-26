@@ -1,4 +1,4 @@
-
+#include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
 
 using namespace std;
@@ -196,9 +196,8 @@ int main(int argc, char* argv[])
     int k = 0; // Current step
     int kcontroller = 0;
     // Simulation loop
-    boost::timer time;
-    time.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
     while (controllerSimulation->hasNextEvent())
     {
       kcontroller ++ ;
@@ -235,9 +234,8 @@ int main(int argc, char* argv[])
       controllerSimulation->nextStep();
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     dataPlotController.resize(kcontroller, outputSize);

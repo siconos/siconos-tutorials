@@ -24,7 +24,6 @@ from siconos.kernel import NewtonEulerDS, NewtonImpactNSL,\
      MoreauJeanOSI, TimeDiscretisation, LCP, TimeStepping,\
      changeFrameAbsToBody,changeFrameBodyToAbs,\
      rotationVectorFromQuaternion, quaternionFromRotationVector,\
-     rotateAbsToBody,\
      SiconosVector, NonSmoothDynamicalSystem
 
 

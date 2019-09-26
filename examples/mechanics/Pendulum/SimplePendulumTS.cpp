@@ -161,9 +161,9 @@ int main(int argc, char* argv[])
     dataPlot(k, 4) = -l1 * cos((*simplependulum->q())(0));
     dataPlot(k, 5) =  l1 * cos((*simplependulum->q())(0)) * ((*simplependulum->velocity())(0));
     // --- Compute elapsed time ---
-    boost::timer tt;
+    boost::timer::auto_cpu_timer tt;
+
     //    EventsManager eventsManager = s->eventsManager();
-    tt.restart();
     // --- Time loop ---
     cout << "Start computation ... " << endl;
     cout << "Number of time step" << N << "\n";
@@ -184,7 +184,8 @@ int main(int argc, char* argv[])
       s->nextStep();
     }
 
-    cout << "time = " << tt.elapsed() << endl;
+    cout << "time = " << endl;
+    tt.report(); 
     cout << "End of computation - Number of iterations done: " << k << endl;
 
     // --- Output files ---

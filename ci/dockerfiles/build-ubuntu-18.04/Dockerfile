@@ -1,9 +1,10 @@
 FROM ubuntu:18.04
-RUN  apt update && apt install -y -qq \
+RUN apt update  && apt install -y -qq \
         cmake \
         git-core \
         make \
         libboost-dev \
+        libboost-log-dev \
         libgmp-dev \
         swig \
         gcc \
@@ -23,12 +24,5 @@ RUN  apt update && apt install -y -qq \
         python3-scipy \
         python3-pytest \
         valgrind \
-        python3-h5py \
-        liboce-foundation-dev \
-        liboce-modeling-dev \
-        liboce-ocaf-dev \
-        liboce-visualization-dev
-RUN apt clean
-
-
-
+        python3-h5py
+RUN apt clean && apt autoremove

@@ -26,6 +26,7 @@
 */
 
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
@@ -195,11 +196,10 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
     while (s->hasNextEvent())
     {
       osnspb->setNumericsVerboseMode(0);
@@ -217,13 +217,12 @@ int main(int argc, char* argv[])
       dataPlot(k, 7) = (*p2)(0);
       //osnspb->display();
       s->nextStep();
-      ++show_progress;
+      
       k++;
     }
     cout  << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");

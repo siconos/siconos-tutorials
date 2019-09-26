@@ -29,7 +29,7 @@
 
 #include "SiconosKernel.hpp"
 #include "CamState.h"
-
+#include <boost/timer/timer.hpp>
 using namespace std;
 
 int main(int argc, char* argv[])
@@ -166,8 +166,7 @@ int main(int argc, char* argv[])
     DataPlot(k, 6) = CamVelocity;
     // Acceleration of the Cam
     DataPlot(k, 7) = CamPosition + (*lds->q())(0);
-    boost::timer tt;
-    tt.restart();
+    boost::timer::auto_cpu_timer time;
     // --- Time loop ---
     cout << "Start computation ... " << endl;
     while (k < N)
@@ -194,7 +193,6 @@ int main(int argc, char* argv[])
     }
     // --- Output files ---
     ioMatrix::write("result.dat", "ascii", DataPlot, "noDim");
-    cout << "time = " << tt.elapsed() << endl;
     cout << "End of computation - Number of iterations done: " << k << endl;
   }
 

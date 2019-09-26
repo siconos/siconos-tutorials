@@ -26,6 +26,7 @@
 */
 //#include "SphereNEDSPlanR.hpp"
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
 
 #define WITH_PROJ
 #define WITH_FC3D
@@ -182,10 +183,8 @@ int main(int argc, char* argv[])
     //     SP::BlockMatrix HT_block(new BlockMatrix(vecMatrix2,1,1));
 
 #ifdef WITH_FC3D
-    int nslawsize = 3;
     SP::NonSmoothLaw nslaw0(new NewtonImpactFrictionNSL(e, e, 0.6, 3));
 #else
-    int nslawsize = 1;
     SP::NonSmoothLaw nslaw0(new NewtonImpactNSL(e));
 #endif
 
@@ -281,11 +280,10 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-    //dataPlot(k, 6) = relation0->contactForce()->norm2();
+    boost::timer::auto_cpu_timer time;
+        //dataPlot(k, 6) = relation0->contactForce()->norm2();
     while (s->hasNextEvent() )
     {
       //      s->computeOneStep();
@@ -317,13 +315,12 @@ int main(int argc, char* argv[])
 
 
       s->nextStep();
-      ++show_progress;
+      
       k++;
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("BallNewtonEuler.dat", "ascii", dataPlot, "noDim");

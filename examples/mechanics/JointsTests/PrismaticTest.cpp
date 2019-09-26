@@ -26,6 +26,7 @@
 #include "KneeJointR.hpp"
 #include "PrismaticJointR.hpp"
 #include <boost/math/quaternion.hpp>
+#include <boost/timer/timer.hpp>
 #include <math.h>
 using namespace std;
 
@@ -152,11 +153,10 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 0;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-    Index dimIndex(2);
+    boost::timer::auto_cpu_timer time;
+        Index dimIndex(2);
     Index startIndex(4);
     int cmp = 0;
     for (cmp = 0; cmp < N; cmp++)
@@ -176,13 +176,12 @@ int main(int argc, char* argv[])
       dataPlot(k, 7) = (*q1)(6);
 
       s->nextStep();
-      ++show_progress;
+      
       k++;
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("PrismaticTest.dat", "ascii", dataPlot, "noDim");
 

@@ -1,5 +1,6 @@
 
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
@@ -131,11 +132,10 @@ int main(int argc, char* argv[])
     dataPlot(k, 7) = (*processObserver->b())(0);
     dataPlot(k, 8) = abs((*processObserver->x())(0) - (*processObserver->x())(2)) ;
     dataPlot(k, 9) = abs((*processObserver->x())(1) - (*processObserver->x())(3))  ;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-    // Simulation loop
+    boost::timer::auto_cpu_timer time;
+        // Simulation loop
     while (s->hasNextEvent())
     {
       k++;
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
       dataPlot(k, 7) = (*processObserver->b())(0);
       dataPlot(k, 8) = abs((*processObserver->x())(0) - (*processObserver->x())(2)) ;
       dataPlot(k, 9) = abs((*processObserver->x())(1) - (*processObserver->x())(3))  ;
-      ++show_progress;
+      
 
       s->nextStep();
     }

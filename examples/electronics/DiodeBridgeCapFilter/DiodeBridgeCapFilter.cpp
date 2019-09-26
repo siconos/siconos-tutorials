@@ -54,6 +54,7 @@
 //-----------------------------------------------------------------------
 
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
@@ -181,9 +182,8 @@ int main(int argc, char* argv[])
     dataPlot(k, 6) = (InterDiodeBridgeCapFilter->getLambda(0))(2);
 
     // --- Compute elapsed time ---
-    boost::timer t;
-    t.restart();
-    // --- Time loop  ---
+    boost::timer::auto_cpu_timer time;
+        // --- Time loop  ---
     while (k < N - 1)
     {
       // get current time step
@@ -220,7 +220,8 @@ int main(int argc, char* argv[])
 
 
     // --- elapsed time computing ---
-    cout << "time = " << t.elapsed() << endl;
+    cout << "time = " << endl;
+    time.report();
 
     // Number of time iterations
     cout << "Number of iterations done: " << k << endl;

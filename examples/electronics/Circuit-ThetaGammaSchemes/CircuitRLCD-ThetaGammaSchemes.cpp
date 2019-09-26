@@ -47,6 +47,7 @@
 //-----------------------------------------------------------------------
 
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
@@ -159,10 +160,8 @@ int main(int argc, char* argv[])
     dataPlot(k, 8) = dataPlot(k, 6) + dataPlot(k, 7)  ;
 
 
-    boost::timer t;
-    t.restart();
-    boost::progress_display show_progress(N);
-    // --- Time loop  ---
+    boost::timer::auto_cpu_timer time;
+        // --- Time loop  ---
     for (k = 1 ; k < N ; ++k)
     {
       // solve ...
@@ -204,12 +203,11 @@ int main(int argc, char* argv[])
 
       // transfer of state i+1 into state i and time incrementation
       StratCircuitRLCD->nextStep();
-      ++show_progress;
-
     }
     // Number of time iterations
     cout << endl << "Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << t.elapsed()  << endl;
+    cout << "Computation Time " << endl;
+    time.report();
 
     // dataPlot (ascii) output
     dataPlot.resize(k, 9);

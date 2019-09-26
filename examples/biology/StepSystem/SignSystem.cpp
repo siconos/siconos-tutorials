@@ -6,6 +6,7 @@
 #include "myDS.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <boost/timer/timer.hpp>
 
 //#define SICONOS_DEBUG
 using namespace std;
@@ -124,12 +125,7 @@ int main(int argc, char *argv[])
   dataPlot(0, 7) = vectorfield->getValue(0);
   dataPlot(0, 8) = vectorfield->getValue(1);
 
-
-  boost::progress_display show_progress(NBStep);
-
-  boost::timer time;
-  time.restart();
-
+  boost::timer::auto_cpu_timer time;
   
   for(int k = 0 ; k < NBStep ; k++)
   {
@@ -157,7 +153,7 @@ int main(int argc, char *argv[])
 
     dataPlot(cmp, 7) = vectorfield->getValue(0);
     dataPlot(cmp, 8) = vectorfield->getValue(1);
-    ++show_progress;
+    
 
     aS->nextStep();
 

@@ -1,5 +1,6 @@
 
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
@@ -147,8 +148,7 @@ int main(int argc, char* argv[])
     int k = 0; // Current step
 
     // Simulation loop
-    boost::timer time;
-    time.restart();
+    boost::timer::auto_cpu_timer time;
     while (k < 800)
     {
       k++;
@@ -166,9 +166,8 @@ int main(int argc, char* argv[])
       s->nextStep();
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("SimpleExampleRelay.dat", "ascii", dataPlot, "noDim");

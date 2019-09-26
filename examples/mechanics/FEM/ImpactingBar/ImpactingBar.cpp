@@ -24,6 +24,7 @@
 */
 
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
 //#define TS_PROJ
 //#define TS_COMBINED
 using namespace std;
@@ -225,11 +226,10 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " <<endl<<endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
 //    while (s->nextTime() < T)
     while(k < N)
     {
@@ -271,13 +271,12 @@ int main(int argc, char* argv[])
 
 
       s->nextStep();
-      ++show_progress;
+      
       k++;
     }
     cout<<endl << "End of computation - Number of iterations done: "<<k-1<<endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout<<"====> Output file writing ..."<<endl;
     ioMatrix::write("ImpactingBar.dat", "ascii", dataPlot,"noDim");
     cout << " Comparison with a reference file" << endl;

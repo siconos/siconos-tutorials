@@ -25,13 +25,12 @@
 */
 
 #include "SiconosKernel.hpp"
-
+#include <boost/timer/timer.hpp>
 using namespace std;
 
 int main(int argc, char* argv[])
 {
-  boost::timer time;
-  time.restart();
+  boost::timer::auto_cpu_timer time;
   try
   {
     // ================= Creation of the model =======================
@@ -162,7 +161,7 @@ int main(int argc, char* argv[])
     unsigned int numberOfEvent = 0 ;
     int k = 0;
     int kns = 0;
-    boost::progress_display show_progress(N);
+    
     while (s->hasNextEvent() && k < N)
     {
       s->advanceToEvent();
@@ -181,7 +180,7 @@ int main(int argc, char* argv[])
         k++;
         kns++;
         nonSmooth = false;
-        ++show_progress;
+        
       }
       dataPlot(k, 0) = s->startingTime();
       dataPlot(k, 1) = (*q)(0);
@@ -190,7 +189,7 @@ int main(int argc, char* argv[])
       dataPlot(k, 4) = (*f)(0);
       ++k;
       ++numberOfEvent;
-      ++show_progress;
+      
     }
 
     // --- Output files ---
@@ -218,5 +217,4 @@ int main(int argc, char* argv[])
     cerr << "Exception caught." << endl;
     return 1;
   }
-  cout << "Computation Time: " << time.elapsed()  << endl;
-}
+  }

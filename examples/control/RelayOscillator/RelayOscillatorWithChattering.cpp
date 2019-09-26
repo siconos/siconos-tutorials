@@ -1,3 +1,4 @@
+#include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
 #include <math.h>
 using namespace std;
@@ -173,9 +174,8 @@ int main(int argc, char* argv[])
 
     // *z = *(myProcessInteraction->y(0)->getVectorPtr(0));
     // Simulation loop
-    boost::timer time;
-    time.restart();
-    while (step < N - 1)
+    boost::timer::auto_cpu_timer time;
+        while (step < N - 1)
     {
       step++;
 
@@ -194,9 +194,8 @@ int main(int argc, char* argv[])
       s->nextStep();
     }
     cout << endl << "End of computation - Number of iterations done: " << step - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("RelayOscillatorWithChattering.dat", "ascii", dataPlot, "noDim");
 

@@ -263,11 +263,10 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-    dataPlot(k, 6) = relation0->contactForce()->norm2();
+    boost::timer::auto_cpu_timer time;
+        dataPlot(k, 6) = relation0->contactForce()->norm2();
     while (s->hasNextEvent())
     {
       //      s->computeOneStep();
@@ -290,13 +289,12 @@ int main(int argc, char* argv[])
       dataPlot(k, 14) = (*v)(1);
       dataPlot(k, 15) = (*v)(2);
       s->nextStep();
-      ++show_progress;
+      
       k++;
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");

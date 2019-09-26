@@ -560,8 +560,8 @@ SICONOS_EXPORT void U1(double time, unsigned int sizeOfq, const double *q, const
   double ydc = -atan2(ki1c, ki3c);
   double xd1c = (qd1 * qd12c - qd2c * qd11) / (qd1 * qd1 + qd2c * qd2c) + ((qd1 * qd11 + qd2c * qd12c) * (l1 * l1 - qd1 * qd1 - qd2c * qd2c - l2 * l2)) / (ki1c * (qd1 * qd1 + qd2c * qd2c));
   double yd1c = 2 * (qd1 * qd11 + qd2c * qd12c) / ki1c;
-  double xd2c = (((qd1 * qd21 + qd11 * qd11 + qd2c * qd22c + qd12c * qd12c) * (l1 * l1 - qd1 * qd1 - qd2c * qd2c - l2 * l2) - 2 * (qd1 * qd11 + qd2c * qd12c) * (qd1 * qd11 + qd2c * qd12c)) * ki1c * (qd1 * qd1 + qd2c * qd2c) - (qd1 * qd11 + qd2c * qd12c) * (l1 * l1 - qd1 * qd1 - qd2c * qd2c - l2 * l2) * (ki1c * 2 * (qd1 * qd11 + qd2c * qd12c) - (qd1 * qd1 + qd2c * qd2c) * 2 * (qd1 * qd11 + qd2c * qd12c) * ki3c / ki1c)) / (ki1c * (qd1 * qd1 + qd2c * qd2c) * ki1c * (qd1 * qd1 + qd2c * qd2c)) + ((qd1 * qd22c - qd2c * qd21) * (qd1 * qd1 + qd2c * qd2c) - (qd1 * qd12c - qd2c * qd11) * 2 * (qd1 * qd11 + qd2c * qd12c)) / ((qd1 * qd1 + qd2c * qd2c) * (qd1 * qd1 + qd2c * qd2c));
-  double yd2c = 2 * ((qd1 * qd21 + qd11 * qd11 + qd2c * qd22c + qd12c * qd12c) * ki1c * ki1c - (qd1 * qd11 + qd2c * qd12c) * 2 * (qd1 * qd11 + qd2c * qd12c) * ki3c) / ki1c * ki1c * ki1c;
+  // double xd2c = (((qd1 * qd21 + qd11 * qd11 + qd2c * qd22c + qd12c * qd12c) * (l1 * l1 - qd1 * qd1 - qd2c * qd2c - l2 * l2) - 2 * (qd1 * qd11 + qd2c * qd12c) * (qd1 * qd11 + qd2c * qd12c)) * ki1c * (qd1 * qd1 + qd2c * qd2c) - (qd1 * qd11 + qd2c * qd12c) * (l1 * l1 - qd1 * qd1 - qd2c * qd2c - l2 * l2) * (ki1c * 2 * (qd1 * qd11 + qd2c * qd12c) - (qd1 * qd1 + qd2c * qd2c) * 2 * (qd1 * qd11 + qd2c * qd12c) * ki3c / ki1c)) / (ki1c * (qd1 * qd1 + qd2c * qd2c) * ki1c * (qd1 * qd1 + qd2c * qd2c)) + ((qd1 * qd22c - qd2c * qd21) * (qd1 * qd1 + qd2c * qd2c) - (qd1 * qd12c - qd2c * qd11) * 2 * (qd1 * qd11 + qd2c * qd12c)) / ((qd1 * qd1 + qd2c * qd2c) * (qd1 * qd1 + qd2c * qd2c));
+  // double yd2c = 2 * ((qd1 * qd21 + qd11 * qd11 + qd2c * qd22c + qd12c * qd12c) * ki1c * ki1c - (qd1 * qd11 + qd2c * qd12c) * 2 * (qd1 * qd11 + qd2c * qd12c) * ki3c) / ki1c * ki1c * ki1c;
 
   double thetad1 = xd + (T01 + T02 - T03) / K1;
   double thetad2 = yd + (T11 + T12 - T13) / K2;
@@ -750,7 +750,7 @@ SICONOS_EXPORT void U2(double time, unsigned int sizeOfq, const double *q, const
   double xd = atan2(qd2, qd1) + atan2(ki1, ki2);
   double yd = -atan2(ki1, ki3);
   double xd1 = (qd1 * qd12 - qd2 * qd11) / (qd1 * qd1 + qd2 * qd2) + ((qd1 * qd11 + qd2 * qd12) * (l1 * l1 - qd1 * qd1 - qd2 * qd2 - l2 * l2)) / (ki1 * (qd1 * qd1 + qd2 * qd2));
-  double yd1 = 2 * (qd1 * qd11 + qd2 * qd12) / ki1;
+  // double yd1 = 2 * (qd1 * qd11 + qd2 * qd12) / ki1;
   double xd2 = (((qd1 * qd21 + qd11 * qd11 + qd2 * qd22 + qd12 * qd12) * (l1 * l1 - qd1 * qd1 - qd2 * qd2 - l2 * l2) - 2 * (qd1 * qd11 + qd2 * qd12) * (qd1 * qd11 + qd2 * qd12)) * ki1 * (qd1 * qd1 + qd2 * qd2) - (qd1 * qd11 + qd2 * qd12) * (l1 * l1 - qd1 * qd1 - qd2 * qd2 - l2 * l2) * (ki1 * 2 * (qd1 * qd11 + qd2 * qd12) - (qd1 * qd1 + qd2 * qd2) * 2 * (qd1 * qd11 + qd2 * qd12) * ki3 / ki1)) / (ki1 * (qd1 * qd1 + qd2 * qd2) * ki1 * (qd1 * qd1 + qd2 * qd2)) + ((qd1 * qd22 - qd2 * qd21) * (qd1 * qd1 + qd2 * qd2) - (qd1 * qd12 - qd2 * qd11) * 2 * (qd1 * qd11 + qd2 * qd12)) / (qd1 * qd1 + qd2 * qd2);
   double yd2 = 2 * ((qd1 * qd21 + qd11 * qd11 + qd2 * qd22 + qd12 * qd12) * ki1 * ki1 - (qd1 * qd11 + qd2 * qd12) * 2 * (qd1 * qd11 + qd2 * qd12) * ki3) / ki1 * ki1 * ki1;
 

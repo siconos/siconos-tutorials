@@ -26,13 +26,13 @@
 
 #include "SiconosKernel.hpp"
 #include <boost/numeric/ublas/matrix.hpp>
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
 int main(int argc, char* argv[])
 {
-  boost::timer time;
-  time.restart();
+  boost::timer::auto_cpu_timer time;
   try
   {
     // ================= Creation of the model =======================
@@ -178,7 +178,7 @@ int main(int argc, char* argv[])
     bool nonSmooth = false;
     unsigned int numberOfEvent = 0 ;
     double k = 1;
-    boost::progress_display show_progress(N);
+    
     s->setPrintStat(true);
     //    s->setTolerance(1e-10);
     while (s->hasNextEvent())
@@ -201,7 +201,7 @@ int main(int argc, char* argv[])
         dataPlot(k,2) = ball->velocityMemory().getSiconosVector(1)(0);
         k++;
         nonSmooth = false;
-        ++show_progress;
+        
         dataPlot(k,4) = 1;
         ++ll;
         //         cout << "========================================" << endl;
@@ -229,7 +229,7 @@ int main(int argc, char* argv[])
       //
       k++;
       ++numberOfEvent;
-      ++show_progress;
+      
     }
 
     // --- Output files ---
@@ -258,5 +258,4 @@ int main(int argc, char* argv[])
     cerr << "Exception caught." << endl;
     return 1;
   }
-  cout << "Computation Time: " << time.elapsed()  << endl;
-}
+  }

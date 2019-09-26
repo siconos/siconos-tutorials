@@ -28,6 +28,7 @@
 
 #define _USE_MATH_DEFINES
 #include "SiconosKernel.hpp"
+#include <boost/timer/timer.hpp>
 #include <math.h>
 
 #define PI 3.14159265
@@ -37,8 +38,6 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-  boost::timer time;
-  time.restart();
   try
   {
 
@@ -213,10 +212,9 @@ int main(int argc, char* argv[])
 
     bool stop = 0;
 
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
+    boost::timer::auto_cpu_timer time;
     while (k < N)
     {
       (*z)(0) = (*q)(0);
@@ -331,11 +329,11 @@ int main(int argc, char* argv[])
       }
 
       if (stop) break;
-      ++show_progress;
+      
     }
     cout << endl << "End of computation - Number of iterations done: " << k << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-    // --- Output files ---
+    cout << "Computation Time " << endl;
+  time.report();    // --- Output files ---
     dataPlot.resize(k,outputSize);
     ioMatrix::write("TwoLinkManipulator_MultiConstraintsFlexible.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-10;

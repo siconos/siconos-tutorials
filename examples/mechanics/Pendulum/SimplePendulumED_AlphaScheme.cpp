@@ -46,8 +46,7 @@ bool IsHandleVelConstraint = false;
 int main(int argc, char* argv[])
 {
   //---------------------------- calculate the computation time --------------------------------------------------
-  boost::timer time;
-  time.restart();
+  boost::timer::auto_cpu_timer time;
   try
   {
     // ================= Creation of the model =======================
@@ -154,7 +153,7 @@ int main(int argc, char* argv[])
     bool NSEvent = false;
     unsigned int NumberNSEvent = 0;
     unsigned int k = 0;
-    boost::progress_display show_progress(N);
+    
     while ((EDscheme->hasNextEvent()) && (k < N))
     {
       //std::cout << "--> k = " << k << std::endl;
@@ -180,7 +179,7 @@ int main(int argc, char* argv[])
         DataPlot(k, 4) = _qdotMemory(1);
         k++;
         ++NumberNSEvent;
-        ++show_progress;
+        
         NSEvent = false;                        // The next event is maybe smooth
       };
       //-------------------- get data at smooth events or at the end of non-smooth events ---------------
@@ -196,7 +195,7 @@ int main(int argc, char* argv[])
       DataPlot(k, 9) = (*_lambda)(0); // Reaction force
       // go to the next time step
       k++;
-      ++show_progress;
+      
     }
     //----------------------- At the end of the simulation --------------------------
     cout << "End of the simulation" << endl;
@@ -222,5 +221,4 @@ int main(int argc, char* argv[])
     return 1;
 
   }
-  cout << "Computation Time: " << time.elapsed()  << endl;
-}
+  }

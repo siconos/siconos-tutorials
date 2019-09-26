@@ -8,7 +8,7 @@
  #include <cmath>
 
 #define restrict __restrict
-#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+// #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #define CHECK(x)
 SICONOS_EXPORT void computeh(double t, unsigned n, double* restrict x, unsigned p, double* restrict lambda, double* restrict h, unsigned sizeZ, double* restrict z)
 {

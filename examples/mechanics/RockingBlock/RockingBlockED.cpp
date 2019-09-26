@@ -31,8 +31,7 @@ unsigned int maxIter = 20000;
 int main(int argc, char* argv[])
 {
   //---------------------------- calculate the computation time --------------------------------------------------
-  boost::timer time;
-  time.restart();
+  boost::timer::auto_cpu_timer time;
   try
   {
     //===========================================================================================================
@@ -172,7 +171,7 @@ int main(int argc, char* argv[])
         //EDscheme->update(1);
         k++;
         ++NumberNSEvent;
-        ++show_progress;
+        
         NSEvent = false;                        // The next event is maybe smooth
       };
       //-------------------- get data at smooth events or at the end of non-smooth events ---------------
@@ -185,7 +184,7 @@ int main(int argc, char* argv[])
       DataPlot(k, 6) = (*VelBlock)(2); // Velocity Vtheta
       // go to the next time step
       k++;
-      ++show_progress;
+      
     };
     //----------------------- At the end of the simulation --------------------------
     cout << "End of the simulation" << endl;
@@ -205,5 +204,4 @@ int main(int argc, char* argv[])
     cerr << "Exception caught." << endl;
     return 1;
   }
-  cout << "Computation Time: " << time.elapsed()  << endl;
 }

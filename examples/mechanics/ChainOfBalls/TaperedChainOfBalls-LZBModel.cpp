@@ -31,8 +31,7 @@ const double g = 0.0; // Gravity
 using namespace std;
 
 int main(int argc, char* argv[]){
-  boost::timer time;
-  time.restart();
+  boost::timer::auto_cpu_timer time;
   try{
     // ================= Creation of the model =======================
 
@@ -293,17 +292,17 @@ int main(int argc, char* argv[]){
 	      nonSmooth = false;
 	      ++NumberOfNSEvents;
 	      ++NumberOfEvents;
-	      ++show_progress;
+	      
 	      ++k;
 	    }
       // --- Get values to be plotted ---
       ++NumberOfEvents;
-      ++show_progress;
+      
     }
 
     dataPlot.resize(k,outputSize);
-    cout << "Computation Time " << time.elapsed()  << endl;
-    // --- Output files ---
+    cout << "Computation Time " << endl;
+  time.report();    // --- Output files ---
     cout<<"====> Output file writing ..."<<endl;
     ioMatrix::write("TaperedChainOfBalls-LZBModel.dat", "ascii",dataPlot,"noDim");
 
@@ -320,5 +319,4 @@ int main(int argc, char* argv[]){
     cerr << "Exception caught." << endl;
     return 1;
   }
-  cout << "Computation Time: " << time.elapsed()  << endl;
-}
+  }

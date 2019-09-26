@@ -29,6 +29,7 @@
 
 #include <SiconosBulletCollisionManager.hpp>
 #include <RigidBodyDS.hpp>
+#include <boost/timer/timer.hpp>
 
 int main()
 {
@@ -194,11 +195,10 @@ int main()
     std::cout << "====> Start computation ... " << std::endl << std::endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
-
+    boost::timer::auto_cpu_timer time;
+    
     while (simulation->hasNextEvent())
     {
       collision_manager->resetStatistics();
@@ -248,12 +248,13 @@ int main()
       }
 
       simulation->nextStep();
-      ++show_progress;
+      
       k++;
     }
 
     std::cout << std::endl << "End of computation - Number of iterations done: " << k - 1 << std::endl;
-    std::cout << "Computation Time " << time.elapsed()  << std::endl;
+    std::cout << "Computation Time " << std::endl;
+    time.report();
 
     // --- Output files ---
     std::cout << "====> Output file writing ..." << std::endl;

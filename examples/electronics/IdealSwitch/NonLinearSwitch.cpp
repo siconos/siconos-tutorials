@@ -43,12 +43,12 @@ int main()
   double* floatWorkingMem = 0;
   int * intWorkingMem = 0;
 
-  int freq = 1000;
-  int Nfreq = 0;
+  // int freq = 1000;
+  // int Nfreq = 0;
   int cmp = 0;
 
-  int NbDataMax = 10000;
-  int NData = 0;
+  // int NbDataMax = 10000;
+  // int NData = 0;
 
   /************************************************************/
   /************************************************************/
@@ -57,10 +57,10 @@ int main()
 
 
   int dimX = 1;
-  SimpleMatrix * M = 0;
-  SimpleMatrix * A = 0;
-  SiconosVector* As = 0;
-  SiconosVector* mti = 0;
+  // SimpleMatrix * M = 0;
+  // SimpleMatrix * A = 0;
+  // SiconosVector* As = 0;
+  // SiconosVector* mti = 0;
 
 
   SP::SiconosVector xti(new SiconosVector(dimX));
@@ -74,9 +74,9 @@ int main()
   aDS.reset(new MyDS(xti));
 
   //******BUILD THE RELATION
-  SimpleMatrix* C = 0;
-  SimpleMatrix* D = 0;
-  SimpleMatrix* B = 0;
+  // SimpleMatrix* C = 0;
+  // SimpleMatrix* D = 0;
+  // SimpleMatrix* B = 0;
   SP::elecRelation aR;
   aR.reset(new elecRelation());
 
@@ -163,7 +163,7 @@ int main()
   fout->precision(10);
   ifstream * fin = new ifstream("NonLinearSwitch.ref");
   fin->precision(10);
-  unsigned int count = 0; // events counter.
+  // unsigned int count = 0; // events counter.
   // do simulation while events remains in the "future events" list of events manager.
   cout << " ==== Start of  simulation : " << NBStep << " steps====" << endl;
 #ifdef CLSC_CIRCUIT
@@ -239,7 +239,6 @@ int main()
     (*fout) << cmp << " " << x->getValue(0) << " " << lambda->getValue(0) << " " << lambda->getValue(1) << " " << lambda->getValue(2) << " " << lambda->getValue(3) << " " << lambda->getValue(4) << " " << lambda->getValue(5) << endl;
     int cmpR;
     double xR;
-    double buffer;
     string sz;
 
     (*fin) >> cmpR >> xR;

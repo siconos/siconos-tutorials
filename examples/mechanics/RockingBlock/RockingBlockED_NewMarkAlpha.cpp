@@ -33,8 +33,7 @@ bool IsHandleVelConstraint = false;
 int main(int argc, char* argv[])
 {
   //---------------------------- calculate the computation time --------------------------------------------------
-  boost::timer time;
-  time.restart();
+  boost::timer::auto_cpu_timer time;
   try
   {
     //===========================================================================================================
@@ -240,7 +239,7 @@ int main(int argc, char* argv[])
         //EDscheme->update(1);
         k++;
         ++NumberNSEvent;
-        ++show_progress;
+        
         NSEvent = false;
         // The next event is maybe smooth
       };
@@ -260,7 +259,7 @@ int main(int argc, char* argv[])
       DataPlot(k, 12) = (*LambdaCon2)(0); // Force at second contact
       // go to the next time step
       k++;
-      ++show_progress;
+      
       // // Display information
       // cout << "********At the end of integation step***************"<< (k - 1) << endl;
       // cout << "Information on Dynamical System" << endl;
@@ -310,5 +309,4 @@ int main(int argc, char* argv[])
     cerr << "Exception caught." << endl;
     return 1;
   }
-  cout << "Computation Time: " << time.elapsed()  << endl;
-}
+  }

@@ -4,7 +4,7 @@
 #include "myDS.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
@@ -126,11 +126,7 @@ int main(int argc, char *argv[])
   dataPlot(0, 7) = vectorfield->getValue(0);
   dataPlot(0, 8) = vectorfield->getValue(1);
 
-
-  boost::progress_display show_progress(NBStep);
-
-  boost::timer time;
-  time.restart();
+  boost::timer::auto_cpu_timer time;
   for(int k = 0 ; k < NBStep ; k++)
 //  while(aS->hasNextEvent())
   {
@@ -156,14 +152,15 @@ int main(int argc, char *argv[])
 
     dataPlot(cmp, 7) = vectorfield->getValue(0);
     dataPlot(cmp, 8) = vectorfield->getValue(1);
-    ++show_progress;
+    
     
     aS->nextStep();
 
     // (*fout)<<cmp<<" "<<x->getValue(0)<<" "<<x->getValue(1)<<" "<<lambda->getValue(0)<<" "<<lambda->getValue(1)<<" "<<lambda->getValue(2)<<" "<<lambda->getValue(3)<<endl;
   }
 
-  cout << "Computational time = "<<  time.elapsed() << endl;
+  cout << "Computational time = "<< endl;
+  time.report();
 
   dataPlot.resize(cmp,outputSize);
   ioMatrix::write(filename, "ascii", dataPlot, "noDim");

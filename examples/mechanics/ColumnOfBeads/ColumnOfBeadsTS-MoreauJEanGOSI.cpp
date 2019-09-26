@@ -23,6 +23,7 @@
 
 #include "SiconosKernel.hpp"
 #include <sstream>
+#include <boost/timer/timer.hpp>
 
 using namespace std;
 
@@ -210,12 +211,11 @@ int withLevel(unsigned int mylevel)
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::progress_display show_progress(N);
+    
 
-    boost::timer time;
-    time.restart();
+    boost::timer::auto_cpu_timer time;
     int ncontact = 0 ;
-    bool isOSNSinitialized = false;
+    //bool isOSNSinitialized = false;
     while (s->hasNextEvent())
     {
       // Rough contact detection
@@ -278,13 +278,12 @@ int withLevel(unsigned int mylevel)
       // }
 
       s->nextStep();
-      ++show_progress;
+      
       k++;
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
-    // --- Output files ---
+cout << "Computation Time " << endl;;
+    time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
 
