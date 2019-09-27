@@ -24,9 +24,10 @@ from siconos.kernel import LagrangianLinearTIDS, NewtonImpactNSL,\
     LagrangianLinearTIR, Interaction, NonSmoothDynamicalSystem, MoreauJeanOSI,\
     TimeDiscretisation, LCP, TimeStepping
 from siconos.kernel import SimpleMatrix, getMatrix
-
-
-from numpy import eye, empty, float64, zeros
+import os
+import matplotlib
+import matplotlib.pyplot as plt
+from numpy import eye, zeros
 
 t0 = 0       # start time
 T = 10       # end time
@@ -49,14 +50,7 @@ mass[2, 2] = 2. / 5 * r * r
 ball = LagrangianLinearTIDS(x, v, mass)
 
 # set external forces with a plugin
-# Compilation of the C plugin with siconos
-import os
-print('Compilation of the C plugin with siconos')
-from subprocess import call
-call(['siconos','--noexec','.'], stdout=open(os.devnull, 'wb'))
-
-
-ball.setComputeFExtFunction('BallPlugin','ballFExt')
+ball.setComputeFExtFunction('BallPlugin', 'ballFExt')
 
 #
 # Interactions
@@ -95,7 +89,7 @@ t = TimeDiscretisation(t0, h)
 osnspb = LCP()
 
 # (4) Simulation setup with (1) (2) (3)
-s = TimeStepping(bouncingBall,t, OSI, osnspb)
+s = TimeStepping(bouncingBall, t, OSI, osnspb)
 
 
 # end of model definition
@@ -158,12 +152,10 @@ if (norm(dataPlot - ref) > 1e-12):
 #
 # plots
 #
-import matplotlib,os
 havedisplay = "DISPLAY" in os.environ
 if not havedisplay:
     matplotlib.use('Agg')
 
-import matplotlib.pyplot as plt
 plt.subplot(411)
 plt.title('position')
 plt.plot(dataPlot[:, 0], dataPlot[:, 1])

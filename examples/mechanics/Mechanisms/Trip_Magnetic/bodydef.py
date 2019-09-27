@@ -1,18 +1,10 @@
-#!/usr/bin/env python
-
-
 import numpy
 import array
+import subprocess
 
-
-import os
-if not os.path.exists('plugin.so'):
-    print('Plugin has not been compiled')
-    print('Compilation of the C plugin with siconos')
-    from subprocess import call
-    call(['siconos','--noexec','.'], stdout=open(os.devnull, 'wb'))
-else:
-    print('Plugin has been compiled')
+# Run siconos to compile plugins.
+command = ['siconos', '--build-plugins']#, '-q']
+subprocess.run(command, check=True)
 
 my_PI=3.14159265
 

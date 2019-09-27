@@ -1,15 +1,11 @@
 # Example 3 - Shaft and tube assembly for contact detection.
+import array
+import subprocess
 import math
+import numpy
 
-
-import os
-if not os.path.exists('plugin.so'):
-    print('Plugin has not been compiled')
-    print('Compilation of the C plugin with siconos')
-    from subprocess import call
-    call(['siconos','--noexec','.'], stdout=open(os.devnull, 'wb'))
-else:
-    print('Plugin has been compiled')
+command = ['siconos', '--build-plugins', '-q']
+subprocess.run(command, check=True)
 
 
 # REQUIRED number of bodies
@@ -39,10 +35,10 @@ afile=['./CAD/tube.stp']
 
 
 ## REQUIRED the library for the pluged forces.
-if apple :
-    plugin='TubePlugin.dylib'
-else :
-    plugin='TubePlugin'    
+# if apple :
+#     plugin='TubePlugin.dylib'
+# else :
+#     plugin='TubePlugin'    
 
 ## REQUIRED the external forces.
 fctfext=numpy.array(['externalForceG'])

@@ -26,7 +26,7 @@
 */
 
 #include <boost/timer/timer.hpp>
-#include "SiconosKernel.hpp"
+#include <SiconosKernel.hpp>
 using namespace std;
 
 int main(int argc, char* argv[])
@@ -158,6 +158,7 @@ int main(int argc, char* argv[])
       k++;
 
     }
+
     cout  << "End of computation - Number of iterations done: " << k - 1 << endl;
     cout << "Computation Time :" << endl;
     time.report();

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 using namespace std;
 
-#include <boost/progress.hpp>
+#include <boost/timer/timer.hpp>
 #define PI 3.14159265
 // parameters according to Table 1
 // geometrical characteristics

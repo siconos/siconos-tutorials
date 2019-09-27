@@ -5,18 +5,11 @@ Check examples manual for details.
 
 import numpy as np
 import array
+import subprocess
 import siconos.mechanisms.mbtb as mbtb
 
-
-import os
-if not os.path.exists('plugin.so'):
-    print('Plugin has not been compiled')
-    print('Compilation of the C plugin with siconos')
-    from subprocess import call
-    call(['siconos','--noexec','.'], stdout=open(os.devnull, 'wb'))
-else:
-    print('Plugin has been compiled')
-
+command = ['siconos', '--build-plugins', '-q']
+subprocess.run(command, check=True)
 
 
 WITH_CLEARANCE_ON_RODE = 1

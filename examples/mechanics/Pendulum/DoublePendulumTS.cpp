@@ -25,11 +25,11 @@
 //
 // =============================================================================================
 
+#include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
 #include <stdlib.h>
 using namespace std;
 
-#include <boost/progress.hpp>
 
 double gravity = 10.0;
 double m1 = 1.0;

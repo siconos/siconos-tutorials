@@ -9,6 +9,7 @@
 # siconos <this file>
 #
 
+from pathlib import Path
 from siconos.mechanics.collision.tools import Contactor, Shape, Volume, Material
 from siconos.io.mechanics_run import MechanicsHdf5Runner
 from OCC.BRepPrimAPI import BRepPrimAPI_MakeCylinder
@@ -26,56 +27,53 @@ steel_mm = Material(density=density*scale)
 restart = False
 if not restart:
     with MechanicsHdf5Runner() as io:
+        step_dir = Path(__file__).resolve().parent
+        step_dir = Path(step_dir, 'step_files')
+        step_file = Path(step_dir, 'BalanceWheel.step').as_posix()
+        io.add_shape_data_from_file('balance_wheel_shp', step_file)
 
-        io.add_shape_data_from_file('balance_wheel_shp',
-                                    './step_files/BalanceWheel.step')
+        step_file = Path(step_dir, 'BalanceWheelBearings.step').as_posix()
+        io.add_shape_data_from_file('balance_wheel_bearings_shp', step_file)
 
-        io.add_shape_data_from_file('balance_wheel_bearings_shp',
-                                    './step_files/BalanceWheelBearings.step')
+        step_file = Path(step_dir, 'BalanceWheelContactor.step').as_posix()
+        io.add_shape_data_from_file('balance_wheel_contactor_shp', step_file)
 
-        io.add_shape_data_from_file('balance_wheel_contactor_shp',
-                                    './step_files/BalanceWheelContactor.step')
+        step_file = Path(step_dir, 'PinLever.step').as_posix()
+        io.add_shape_data_from_file('pin_lever_shp', step_file)
 
-        io.add_shape_data_from_file('pin_lever_shp',
-                                    './step_files/PinLever.step')
-
-        io.add_shape_data_from_file('pin_lever_bearings_shp',
-                                    './step_files/PinLeverBearings.step')
-
+        step_file = Path(step_dir, 'PinLeverBearings.step').as_posix()
+        io.add_shape_data_from_file('pin_lever_bearings_shp', step_file)
 
         # contactors between Pin Lever and Escape Wheel
-        io.add_shape_data_from_file('pin_lever_contactorA_shp',
-                                    './step_files/PinLeverContactorA.step')
+        step_file = Path(step_dir, 'PinLeverContactorA.step').as_posix()
+        io.add_shape_data_from_file('pin_lever_contactorA_shp', step_file)
 
-        io.add_shape_data_from_file('pin_lever_contactorB_shp',
-                                    './step_files/PinLeverContactorB.step')
-
+        step_file = Path(step_dir, 'PinLeverContactorB.step').as_posix()
+        io.add_shape_data_from_file('pin_lever_contactorB_shp', step_file)
 
         # contactors between Pin Lever and back Cover (stops for Pin Lever)
-
-        use_cylinder_as_stops=True
+        use_cylinder_as_stops = True
         if (use_cylinder_as_stops):
-            io.add_shape_data_from_file('pin_lever_stopsA_shp',
-                                        './step_files/PinLeverStopsA.step')
-            io.add_shape_data_from_file('pin_lever_stopsB_shp',
-                                        './step_files/PinLeverStopsB.step')
+            step_file = Path(step_dir, 'PinLeverStopsA.step').as_posix()
+            io.add_shape_data_from_file('pin_lever_stopsA_shp', step_file)
+            step_file = Path(step_dir, 'PinLeverStopsB.step').as_posix()
+            io.add_shape_data_from_file('pin_lever_stopsB_shp', step_file)
         else:
             # back cover step causes issues in vview
             # io.add_shape_data_from_file('back_cover_shp',
             #                             'BackCover.step')
+            step_file = Path(step_dir,
+                             'BackCover_Contactor_face21.step').as_posix()
+            io.add_shape_data_from_file('back_cover_contactorA_shp', step_file)
+            step_file = Path(step_dir,
+                             'BackCover_Contactor_face213.step').as_posix()
+            io.add_shape_data_from_file('back_cover_contactorB_shp', step_file)
 
-            io.add_shape_data_from_file('back_cover_contactorA_shp',
-                                        './step_files/BackCover_Contactor_face212.step')
+        step_file = Path(step_dir, 'EscapeWheel.step').as_posix()
+        io.add_shape_data_from_file('escape_wheel_shp', step_file)
 
-            io.add_shape_data_from_file('back_cover_contactorB_shp',
-                                        './step_files/BackCover_Contactor_face213.step')
-
-
-        io.add_shape_data_from_file('escape_wheel_shp',
-                                    './step_files/EscapeWheel.step')
-
-        io.add_shape_data_from_file('escape_wheel_bearing_shp',
-                                    './step_files/EscapeWheelBearings.step')
+        step_file = Path(step_dir, 'EscapeWheelBearings.step').as_posix()
+        io.add_shape_data_from_file('escape_wheel_bearing_shp', step_file)
 
         ###############
         # Balance Wheel

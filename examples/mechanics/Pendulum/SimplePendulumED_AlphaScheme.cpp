@@ -25,6 +25,7 @@
 //
 // =============================================================================================
 
+#include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
 #include <stdlib.h>
 using namespace std;

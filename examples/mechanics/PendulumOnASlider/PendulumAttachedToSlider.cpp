@@ -21,6 +21,7 @@
  *C++ input file, MoreauJeanOSI-Time-Stepping version
  */
 
+#include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
 #define WITH_FRICTION
 //#define DISPLAY_INTER

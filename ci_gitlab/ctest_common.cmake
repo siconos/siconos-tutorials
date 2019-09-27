@@ -27,6 +27,7 @@ if(NOT CTEST_CMAKE_GENERATOR)
 endif()
 
 # -- Query host system information --
+# --> to set ctest site for cdash.
 #include(cmake_host_system_information)
 cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
 cmake_host_system_information(RESULT fqdn QUERY FQDN)
@@ -108,7 +109,7 @@ ctest_build(
   PROJECT_NAME ${current_project}
   CAPTURE_CMAKE_ERROR BUILD_STATUS
   RETURN_VALUE BUILD_RESULT
-  QUIET
+  #QUIET if quiet, travis failed because of missing outputs during a long time ...
   )
 message("=============== End of ctest_build =============== ")
 message("------> Build status/result : ${BUILD_STATUS}/${BUILD_RESULT}")
@@ -131,6 +132,14 @@ ctest_test(
   )
 message("=============== End of ctest_test =============== ")
 message("------> Test status/result : ${TEST_STATUS}/${TEST_RESULT}")
+
+if(WITH_MEMCHECK AND CTEST_COVERAGE_COMMAND)
+  ctest_coverage()
+endif()
+if(WITH_MEMCHECK AND CTEST_MEMORYCHECK_COMMAND)
+  ctest_memcheck()
+endif()
+
 # error status check later, we try to submit even if tests failed.
 
 # -- memory check -- Skip this to 'enlight' submit process, since cdash inria is overbooked ...

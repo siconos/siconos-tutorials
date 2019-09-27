@@ -24,6 +24,7 @@
   Direct description of the model.
   Simulation with a Time-Stepping scheme.
 */
+#include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
 
 using namespace std;

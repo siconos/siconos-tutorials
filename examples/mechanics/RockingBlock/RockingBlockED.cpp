@@ -1,5 +1,6 @@
 // This is the program to simulate the dynamic of a rocking block by using the Siconos platform
 //==================================================================================================================
+#include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
 #include <stdlib.h>
 using namespace std;
@@ -148,7 +149,6 @@ int main(int argc, char* argv[])
     bool NSEvent = false;
     unsigned int NumberNSEvent = 0;
     unsigned int k = 1;
-    boost::progress_display show_progress(NpointSave);
     while (EDscheme->hasNextEvent() && (k < NpointSave))
     {
       EDscheme->advanceToEvent(); // lead the simulation run from one event to the next
