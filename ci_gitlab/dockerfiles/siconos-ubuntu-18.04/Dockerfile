@@ -10,4 +10,4 @@ RUN cd /home/build ; cmake /home/siconos -DCMAKE_INSTALL_PREFIX=/home/install-si
 RUN cd /home/build ; make -j 4 ; make install
 ENV SICONOS_INSTALL_DIR /home/install-siconos
 RUN apt update  && apt install -y -qq libboost-timer-dev
-    
+RUN apt clean && apt autoremove
