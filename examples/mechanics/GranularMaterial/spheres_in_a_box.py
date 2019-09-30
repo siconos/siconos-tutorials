@@ -16,20 +16,20 @@ import numpy
 import sys
 import mkspheres
 options = SiconosBulletOptions()
-options.worldScale = 1
+options.worldScale = 1000
 options.contactBreakingThreshold = 0.0002
 options.perturbationIterations = 0
 options.minimumPointsPerturbationThreshold = 0
 hstep = 0.001
 theta = 0.50001
 itermax = 1000
-tolerance = 1e-4
+tolerance = 1e-7
 lx = mkspheres.lx
 ly = mkspheres.ly
 lz = mkspheres.lz
 margin_ratio=1.e-5
 wthick = mkspheres.lz/10
-zoffset = -wthick/2 - mkspheres.radius_max*3
+zoffset = -wthick/2
 
 margin_max = margin_ratio*mkspheres.radius_max
 
@@ -102,10 +102,13 @@ with MechanicsHdf5Runner(io_filename='siab-{0}.hdf5'.format(nb_laid_particles)) 
         margin=rad*margin_ratio
         io.add_primitive_shape('Sphere-{0}'.format(i), 'Sphere', (rad,),
                                insideMargin=margin, outsideMargin=margin)
+        mass = (4./3)*pi*(radii[i]**3)*2320
+        I_ = (2./5)*mass*(radii[i]*radii[i])
         io.add_object('sphere-{0}'.format(i), [Contactor('Sphere-{0}'.format(i))],
                       translation=[coors[3*i], coors[3*i+1], coors[3*i+2]],
                       velocity=[0, 0, 0, 0, 0, 0],
-                      mass=4*pi*(radii[i]**3)*2320/3.)
+                      inertia=[I_, I_, I_],
+                      mass=mass)
 
 with MechanicsHdf5Runner(io_filename='siab-{0}.hdf5'.format(nb_laid_particles), mode='r+') as io:
 

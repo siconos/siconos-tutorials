@@ -17,9 +17,9 @@ import sys
 
 radius_min = 0.001
 radius_max = 0.0025
-lx = .2
-ly = .2
-lz = .2
+lx = .02
+ly = .02
+lz = .02
 
 if __name__ == "__main__":
     nbp = int(sys.argv[1])
