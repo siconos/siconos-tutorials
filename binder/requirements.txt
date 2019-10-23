@@ -1,4 +1,0 @@
-lxml
-scipy
-matplotlib
-h5py

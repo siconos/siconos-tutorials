@@ -1,0 +1,12 @@
+name: siconos-environment
+channels:
+  - conda-forge
+dependencies:
+  - python=3.7
+  - jupyterlab
+  - numpy
+  - matplotlib
+  - lxml
+  - scipy
+  - h5py
+  - packaging
