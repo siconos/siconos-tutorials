@@ -17,4 +17,3 @@ try [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/git
  to start an interactive python environment in which you can run siconos.
  
 Back to [Siconos home page](https://nonsmooth.gricad-pages.univ-grenoble-alpes.fr/siconos/index.html)
-
