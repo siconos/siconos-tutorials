@@ -1,0 +1,7 @@
+numpy
+scipy
+pytest
+packaging
+lxml
+h5py
+matplotlib
