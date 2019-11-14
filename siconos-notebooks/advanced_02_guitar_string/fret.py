@@ -40,7 +40,7 @@ class Fret(sk.Interaction):
         super(Fret, self).__init__(nslaw, relation)
 
 
-class Guitar(sk.Model):
+class Guitar(sk.NonSmoothDynamicalSystem):
     """DS (strings) and interaction (frets)
     'assembly' to build a NSDS
     """
@@ -57,10 +57,10 @@ class Guitar(sk.Model):
         self.frets = frets
         self.strings = strings
         for string in strings:
-            self.nonSmoothDynamicalSystem().insertDynamicalSystem(string)
+            self.insertDynamicalSystem(string)
             # link the interaction(s) and the dynamical system(s)
             for fret in frets:
-                self.nonSmoothDynamicalSystem().link(fret, string)
+                self.link(fret, string)
 
         # -- Simulation --
         # (1) OneStepIntegrators
@@ -76,11 +76,9 @@ class Guitar(sk.Model):
         # (3) one step non smooth problem
         osnspb = sk.LCP()
         # (4) Simulation setup with (1) (2) (3)
-        self.simu = sk.TimeStepping(t, osi, osnspb)
+        self.simu = sk.TimeStepping(self, t, osi, osnspb)
 
         # simulation initialization
-        self.setSimulation(self.simu)
-        self.initialize()
         ndof = strings[0].ndof
         self.fret_position = frets[0].contact_index
         self.data = npw.zeros((self.nb_time_steps + 1, 3 + ndof))
@@ -136,7 +134,7 @@ class Guitar(sk.Model):
         plt.plot(x, self.data[0, 3:])
         plt.title('mode, t=0')
         plt.subplot(346)
-        tint = self.nb_time_steps / 5
+        tint = int(self.nb_time_steps / 5)
         plt.plot(x, self.data[tint, 3:])
         plt.title('mode, t1')
         plt.subplot(347)
