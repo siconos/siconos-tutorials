@@ -4,15 +4,15 @@ mkdir -p build/siconos
 cd build/siconos
 export BLAS_ROOT=/srv/conda
 export BLA_VENDOR=OpenBLAS
-cmake $HOME/siconos -DUSER_OPTIONS_FILE=/home/jovyan/binder/siconos_confs/siconos_notebook.cmake -DCMAKE_INSTALL_PREFIX=/hom/jovyan/install
+cmake $HOME/siconos -DUSER_OPTIONS_FILE=/home/jovyan/binder/siconos_confs/siconos_notebook.cmake -DCMAKE_INSTALL_PREFIX=$HOME/install
 make -j 4
 make install
-
 # Now, fenics install, from source
 cd $HOME
 git clone https://github.com/pybind/pybind11.git
 cd pybind11
 git checkout v2.4.3
+cd $HOME
 export FENICS_VERSION=$(python3 -c"import ffc; print(ffc.__version__)")
 git clone --branch=$FENICS_VERSION https://bitbucket.org/fenics-project/dolfin
 git clone https://bitbucket.org/fenics-project/mshr
