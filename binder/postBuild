@@ -7,5 +7,32 @@
  cmake ../siconos -DUSER_OPTIONS_FILE=/home/jovyan/binder/siconos_confs/siconos_notebook.cmake -DCMAKE_INSTALL_PREFIX=/home/jovyan/install
  make -j 4
  make install
+cd ..
 
-
+# Now, fenics install, from source
+cd $HOME
+git clone https://github.com/pybind/pybind11.git
+cd pybind11
+git checkout v2.4.3
+export FENICS_VERSION=$(python3 -c"import ffc; print(ffc.__version__)")
+git clone --branch=$FENICS_VERSION https://bitbucket.org/fenics-project/mshr
+git clone https://bitbucket.org/fenics-project/mshr
+cd mshr/
+git checkout 2019.1.0
+mkdir -p $HOME/build/mshr $HOME/build/dolfin $HOME/build/pybind11
+cd $HOME/build/pybind11
+cmake $HOME/pybind11/ -DPYBIND11_TEST=off  -DCMAKE_INSTALL_PREFIX=$HOME/install/pybind11
+make install -j 4
+export pybind11_DIR=$HOME/install/pybind11/share/cmake/pybind11/
+cd $HOME/build/dolfin
+cmake $HOME/dolfin -DCMAKE_INSTALL_PREFIX=$HOME/install/dolfin
+make install -j 4
+cd $HOME/build/mshr
+source $HOME/install/dolfin/share/dolfin/dolfin.conf
+cmake $HOME/mshr/ -DCMAKE_INSTALL_PREFIX=$HOME/install/mshr
+make install -j 4
+cd $HOME/dolfin/python
+${KERNEL_PYTHON_PREFIX}/bin/pip install . --user
+cd $HOME/mshr/python
+${KERNEL_PYTHON_PREFIX}/bin/pip install . --user
+cd $HOME

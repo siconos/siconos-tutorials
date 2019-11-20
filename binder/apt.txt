@@ -26,3 +26,5 @@ freeglut3-dev
 python3-pip
 valgrind
 wget
+libeigen3-dev
+
