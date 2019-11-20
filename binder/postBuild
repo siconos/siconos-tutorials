@@ -14,7 +14,7 @@ git clone https://github.com/pybind/pybind11.git
 cd pybind11
 git checkout v2.4.3
 export FENICS_VERSION=$(python3 -c"import ffc; print(ffc.__version__)")
-git clone --branch=$FENICS_VERSION https://bitbucket.org/fenics-project/mshr
+git clone --branch=$FENICS_VERSION https://bitbucket.org/fenics-project/dolfin
 git clone https://bitbucket.org/fenics-project/mshr
 cd mshr/
 git checkout 2019.1.0
