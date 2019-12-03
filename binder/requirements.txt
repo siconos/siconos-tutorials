@@ -5,3 +5,4 @@ packaging
 lxml
 h5py
 matplotlib
+fenics-ffc
