@@ -41,6 +41,8 @@ int main(int argc, char* argv[])
         SP::SiconosVector init(new SiconosVector({x1_0, x2_0, z_0}));
 
         SP::SiconosMatrix A( new SimpleMatrix(dimX,dimX) );         
+	
+	// This vector B is specific to the sliding repulsive case
         double B0 = -1.0;
         double B1 = 0.5;
         A->setRow(0,SiconosVector({0.0, 0.0, B0}));
@@ -67,12 +69,12 @@ int main(int argc, char* argv[])
         (*R)(2,1) = -1.0;
 
         SP::SiconosVector e(new SiconosVector({0.0, 0.0, 2.0}));
-        ProblemType type = SLIDING_REPULSIVE;
+        ProblemType type = SLIDING_REPULSIVE; // Specific to sliding repulsive case (not critical for simulation)
         Problem* problem = new Problem( A, R, b, C, D, e, M, init, t0, T, type);
-        vector<double> time_steps({ 0.009, 0.09, 0.9});
+        vector<double> time_steps({ 0.009, 0.09, 0.9}); // Time-steps only needed for constructor
         ConvergenceTest test(problem, time_steps);
         int k;
-        SP::SimpleMatrix results = test.simulate(problem,0.2,&k);
+        SP::SimpleMatrix results = test.simulate(problem,0.2,&k); // Time step used is 0.2 as specifed here
         cout << (*results) << endl;
 
         unsigned int outputSize = 7;
