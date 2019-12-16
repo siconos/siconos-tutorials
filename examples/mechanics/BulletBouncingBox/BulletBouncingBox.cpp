@@ -30,6 +30,7 @@
 #include <SiconosBulletCollisionManager.hpp>
 #include <RigidBodyDS.hpp>
 #include <boost/timer/timer.hpp>
+#include "SolverOptions.h"
 
 int main()
 {
@@ -115,9 +116,9 @@ int main()
 
     // -- Some configuration
 
-    osnspb->numericsSolverOptions()->iparam[0] = 1000; // Max number of
+    osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 1000; // Max number of
     // iterations
-    osnspb->numericsSolverOptions()->dparam[0] = 1e-5; // Tolerance
+    osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-5; // Tolerance
 
 
     osnspb->setMaxSize(16384);                        // max number of

@@ -124,8 +124,7 @@ int main(int argc, char* argv[])
   frictionContact_printInFile(&NumericsProblem, ff);
   fclose(ff);
 
-  SolverOptions *numerics_solver_options  = (SolverOptions *)malloc(sizeof(SolverOptions));
-  fc3d_setDefaultSolverOptions(numerics_solver_options, SICONOS_FRICTION_3D_NSGS);
+  SolverOptions *numerics_solver_options  = solver_options_create(SICONOS_FRICTION_3D_NSGS);
 
   numerics_solver_options->dparam[0] = 1e-16;
 
@@ -150,7 +149,6 @@ int main(int argc, char* argv[])
   fclose(ff);
 
 
-  free(numerics_solver_options);
   free(reaction);
   free(velocity);
   free(MM);

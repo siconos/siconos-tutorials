@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
+import siconos.numerics as sn
+import siconos.kernel as sk
 
 import read_tess
 
@@ -105,6 +106,10 @@ with MechanicsHdf5Runner(mode='w', io_filename=fn) as io:
 hstep=1e-3
 T = hstep*10000
 
+# Create solver options
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-3
 with MechanicsHdf5Runner(mode='r+', io_filename=fn) as io:
     io.run(t0=0,
            T=T,
@@ -112,7 +117,5 @@ with MechanicsHdf5Runner(mode='r+', io_filename=fn) as io:
            multipoints_iterations=True,
            theta=1.0,
            Newton_max_iter=1,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=1000,
-           tolerance=1e-3,
+           solver_options=options,
            output_frequency=1)

@@ -1,5 +1,6 @@
 #include "SiconosKernel.hpp"
 #include <math.h>
+#include "SolverOptions.h" 
 using namespace std;
 
 // main program

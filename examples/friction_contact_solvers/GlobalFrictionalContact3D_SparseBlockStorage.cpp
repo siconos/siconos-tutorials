@@ -147,16 +147,15 @@ int main(int argc, char* argv[])
   int m = 3 * NC;
   int n = Ndof;
 
-  GlobalFrictionContactProblem numericsProblem;
-  globalFrictionContact_null(&numericsProblem);
-  numericsProblem.numberOfContacts = NC;
-  numericsProblem.dimension = 3;
-  numericsProblem.mu = mu;
-  numericsProblem.q = q;
-  numericsProblem.b = b;
+  GlobalFrictionContactProblem * numericsProblem = globalFrictionContactProblem_new();
+  numericsProblem->numberOfContacts = NC;
+  numericsProblem->dimension = 3;
+  numericsProblem->mu = mu;
+  numericsProblem->q = q;
+  numericsProblem->b = b;
 
-  numericsProblem.M = NM_new();
-  NumericsMatrix *MM =  numericsProblem.M;
+  numericsProblem->M = NM_new();
+  NumericsMatrix *MM =  numericsProblem->M;
   MM->storageType = NM_SPARSE_BLOCK;
   MM->size0 = Ndof;
   MM->size1 = Ndof;
@@ -180,8 +179,8 @@ int main(int argc, char* argv[])
   MBlockMatrix->index2_data =  index2_data;
 
 
-  numericsProblem.H = NM_new();
-  NumericsMatrix *HH =  numericsProblem.H;
+  numericsProblem->H = NM_new();
+  NumericsMatrix *HH =  numericsProblem->H;
   HH->storageType = 1;
   HH->size0 = Ndof;
   HH->size1 = 3 * NC;
@@ -205,7 +204,7 @@ int main(int argc, char* argv[])
   HBlockMatrix->index2_data =  hindex2_data;
 
   FILE * foutput = fopen("Example_GlobalFrictionContact_SBM.dat", "w");
-  globalFrictionContact_printInFile(&numericsProblem,  foutput);
+  globalFrictionContact_printInFile(numericsProblem,  foutput);
   fclose(foutput);
 
 
@@ -215,21 +214,15 @@ int main(int argc, char* argv[])
   double *velocity = (double*)calloc(m, sizeof(double));
   double *globalVelocity = (double*)calloc(n, sizeof(double));
   // Solver Options
-  SolverOptions * numerics_solver_options = (SolverOptions *)malloc(sizeof(SolverOptions));
-  //    char solvername[10]= "NSGS";
-
-  /*\warning Must be adpated  for future globalFrictionContact3D_setDefaultSolverOptions*/
-  gfc3d_setDefaultSolverOptions(numerics_solver_options, SICONOS_GLOBAL_FRICTION_3D_NSGS);
+  SolverOptions * numerics_solver_options = solver_options_create(SICONOS_GLOBAL_FRICTION_3D_NSGS);
   numerics_solver_options->dparam[0] = 1e-14;
   numerics_solver_options->iparam[0] = 100000;
 
   //Driver call
-  info = gfc3d_driver(&numericsProblem,
+  info = gfc3d_driver(numericsProblem,
 		      reaction , velocity, globalVelocity,
 		      numerics_solver_options);
   solver_options_delete(numerics_solver_options);
-
-  free(numerics_solver_options);
   // Solver output
   printf("\n");
   for (k = 0 ; k < m; k++) printf("velocity[%i] = %12.8e \t \t reaction[%i] = %12.8e \n ", k, velocity[k], k , reaction[k]);
@@ -240,7 +233,7 @@ int main(int argc, char* argv[])
   free(reaction);
   free(velocity);
   free(globalVelocity);
-
+    
   //     SBM_free(MM->matrix1);
   //     SBM_free(HH->matrix1);
   free(MM->matrix1);
@@ -251,7 +244,6 @@ int main(int argc, char* argv[])
   NM_free(HH);
   free(MM);
   free(HH);
-
 
   /*     while (1) sleep(60); */
 

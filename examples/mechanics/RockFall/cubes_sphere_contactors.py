@@ -4,14 +4,15 @@ import math
 import pickle
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
+import siconos.numerics as sn
+import siconos.kernel as sk
 
 from siconos.mechanics.collision.convexhull import ConvexHull
 
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
-options = SiconosBulletOptions()
-options.worldScale = 1.0
-options.contactBreakingThreshold = 0.01
+bullet_options = SiconosBulletOptions()
+bullet_options.worldScale = 1.0
+bullet_options.contactBreakingThreshold = 0.01
 
 plan_thickness = 0.05
 
@@ -170,6 +171,10 @@ else:
     step=10000
     hstep=0.0005
 
+# Create solver options
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100
+options.iparam[sn.SICONOS_DPARAM_TOL] = 1e-8
 with MechanicsHdf5Runner(mode='r+') as io:
 
 
@@ -181,8 +186,6 @@ with MechanicsHdf5Runner(mode='r+') as io:
          theta=0.50001,
          Newton_max_iter=1,
          set_external_forces=None,
-         solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-         itermax=100,
-         tolerance=1e-8,
+         solver_options=options,
          numerics_verbose=False,
          output_frequency=10)

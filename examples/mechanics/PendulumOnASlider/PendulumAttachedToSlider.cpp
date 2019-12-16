@@ -23,6 +23,7 @@
 
 #include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
+#include "SolverOptions.h"
 #define WITH_FRICTION
 //#define DISPLAY_INTER
 using namespace std;

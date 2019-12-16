@@ -29,6 +29,7 @@
 
 #include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
+#include "SolverOptions.h"
 
 //define DISPLAY_INTER
 

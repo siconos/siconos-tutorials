@@ -25,6 +25,7 @@
 
 #include "SiconosKernel.hpp"
 #include <boost/timer/timer.hpp>
+#include "SiconosAlgebraProd.hpp"
 
 #define TS_VELOCITY_LEVEL
 using namespace std;

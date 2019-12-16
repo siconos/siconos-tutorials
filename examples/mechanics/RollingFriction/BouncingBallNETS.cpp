@@ -27,6 +27,7 @@
 #include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
 
+
 using namespace std;
 #define R_CLASS NewtonEuler5DR
 

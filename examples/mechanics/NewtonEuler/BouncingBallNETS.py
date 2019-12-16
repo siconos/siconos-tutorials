@@ -40,7 +40,8 @@ class BouncingBallR(NewtonEuler1DR):
     def computeh(self, time, q, y):
         #print(q)
         
-        vec_q=SiconosVector(q)
+        vec_q = SiconosVector()
+        vec_q.initFromBlock(q)
         
       
         height = vec_q[0] - self._ballRadius

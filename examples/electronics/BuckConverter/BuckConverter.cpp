@@ -290,7 +290,7 @@ int main(int argc, char* argv[])
   LTIRBuckConverter_buck->setDPtr(Int_D_buck);
   LTIRBuckConverter_buck->setePtr(Int_e_buck);
   LTIRBuckConverter_buck->setFPtr(Int_F0_buck);
-
+  
   SP::Interaction InterBuckConverter_buck ( new Interaction(nslaw_buck,LTIRBuckConverter_buck));
 
   InterBuckConverter_buck->display();

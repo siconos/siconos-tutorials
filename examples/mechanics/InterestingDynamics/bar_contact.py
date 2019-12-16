@@ -9,8 +9,9 @@ import random
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
 #sys.path.append('../..')
-import siconos.numerics as Numerics
-import siconos.kernel as Kernel
+import siconos.numerics as sn
+import siconos.kernel as sk
+
 # WARNING : in 3D by default z-axis is upward
 # this is very important to direct PLANx objects
 
@@ -69,7 +70,7 @@ with MechanicsHdf5Runner() as io:
   trans=[0,0,4.0*scale]
   ori = [math.cos(angle/2.0),0.0,math.sin(angle/2.0),0]
   axis = numpy.zeros(3)
-  angle_test = Kernel.axisAngleFromQuaternion(trans+ori, axis)
+  angle_test = sk.axisAngleFromQuaternion(trans+ori, axis)
   print(angle_test,axis)
   print('ori initial', ori)
   io.add_object('bar', [Contactor('Bar')],
@@ -114,6 +115,10 @@ def apply_forces(body):
   body.setFExtPtr(weight)
 
 
+# Create solver options
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
+options.iparam[sn.SICONOS_DPARAM_TOL] = 1e-12
 
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
@@ -138,9 +143,7 @@ with MechanicsHdf5Runner(mode='r+', collision_margin=0.01) as io:
          theta=1.0,
          Newton_max_iter=10,
          set_external_forces=apply_forces,
-         solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-         itermax=1000,
-         tolerance=1e-12,
+         solver_options=options,
          numerics_verbose=False,
          violation_verbose=True,
          output_frequency=10)

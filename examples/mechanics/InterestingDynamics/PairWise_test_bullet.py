@@ -9,7 +9,8 @@ from siconos.mechanics.collision.tools import Contactor
 
 from siconos.io.mechanics_run import MechanicsHdf5Runner
 
-import siconos.numerics as Numerics
+import siconos.numerics as sn
+import siconos.kernel as sk
 
 
 edge_length = 0.1
@@ -90,6 +91,11 @@ with MechanicsHdf5Runner() as io:
 step = 20000
 hstep = 0.001
 
+# Create solver options
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100
+options.iparam[sn.SICONOS_DPARAM_TOL] = 1e-4
+
 with MechanicsHdf5Runner(mode='r+', collision_margin=0.05) as io:
 
     # By default earth gravity is applied and the units are those
@@ -111,9 +117,7 @@ with MechanicsHdf5Runner(mode='r+', collision_margin=0.05) as io:
            theta=0.50001,
            Newton_max_iter=1,
            set_external_forces=None,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=100,
-           tolerance=1e-4,
+           solver_options=options,
            numerics_verbose=False,
            output_frequency=1,
            violation_verbose=True)

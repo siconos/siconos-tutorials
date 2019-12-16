@@ -45,6 +45,7 @@
 //-----------------------------------------------------------------------
 #include "SiconosKernel.hpp"
 #include <boost/timer/timer.hpp>
+#include "SiconosAlgebraProd.hpp"
 
 using namespace std;
 int main(int argc, char* argv[])

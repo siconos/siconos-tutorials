@@ -3,6 +3,7 @@
 #include "const.h"
 #include "NonlinearRelationWithSign.hpp"
 #include "NonlinearRelationWithSignInversed.hpp"
+#include "SolverOptions.h"
 #include "myDS.h"
 #include <stdio.h>
 #include <stdlib.h>

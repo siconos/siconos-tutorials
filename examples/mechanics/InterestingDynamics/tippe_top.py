@@ -37,9 +37,9 @@ I3 = 7*1e-3    # kg . cm^2
 
 # Bullet: do not generate extra contact points for convex pairs by
 # rotational purterbation method.
-options = SiconosBulletOptions()
-options.perturbationIterations = 0
-options.minimumPointsPerturbationThreshold = 0
+bullet_options = SiconosBulletOptions()
+bullet_options.perturbationIterations = 0
+bullet_options.minimumPointsPerturbationThreshold = 0
 
 with MechanicsHdf5Runner() as io:
 
@@ -73,10 +73,11 @@ if test:
     T=0.2
 else:
     T=20.
+
 with MechanicsHdf5Runner(mode='r+') as io:
 
     io.run(with_timer=True,
-           options=options,
+           bullet_options=bullet_options,
            t0=0,
            T=T,
            h=0.0001,

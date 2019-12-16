@@ -6,7 +6,8 @@
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
+import siconos.numerics as sn
+import siconos.kernel as sk
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
@@ -42,6 +43,11 @@ with MechanicsHdf5Runner() as io:
                   translation=[0, 49, 0])
 
 
+# Create solver options
+options = sk.solver_options_create(sn.SICONOS_ROLLING_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-10
+
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
@@ -60,8 +66,6 @@ with MechanicsHdf5Runner(mode='r+') as io:
            theta=0.50001,
            Newton_max_iter=20,
            set_external_forces=None,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=100000,
-           tolerance=1e-10,
+           solver_options=options,
            numerics_verbose=False,
            output_frequency=None)

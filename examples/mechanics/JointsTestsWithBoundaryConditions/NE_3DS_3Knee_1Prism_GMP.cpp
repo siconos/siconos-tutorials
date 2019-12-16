@@ -29,6 +29,8 @@
 #include "PrismaticJointR.hpp"
 #include <boost/math/quaternion.hpp>
 #include <boost/timer/timer.hpp>
+#include "SolverOptions.h"
+
 using namespace std;
 
 /* Given a position of a point in the Inertial Frame and the configuration vector q of a solid

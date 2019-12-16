@@ -4,17 +4,19 @@
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
 from siconos.mechanics.collision.convexhull import ConvexHull
 
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
-options = SiconosBulletOptions()
-options.worldScale = 1.0
+import siconos.numerics as sn
+import siconos.kernel as sk
+
+bullet_options = SiconosBulletOptions()
+bullet_options.worldScale = 1.0
 
 # Control the number of perturbations applied to generate multipoint
 # surface-surface contact manifolds.  Default is 5 and 5.
-options.perturbationIterations = 5
-options.minimumPointsPerturbationThreshold = 5
+bullet_options.perturbationIterations = 5
+bullet_options.minimumPointsPerturbationThreshold = 5
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
@@ -134,6 +136,12 @@ if test:
     T=1.0
 else:
     T=20.
+
+# Create solver options
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 10000
+options.iparam[sn.SICONOS_DPARAM_TOL] = 1e-8
+
 with MechanicsHdf5Runner(mode='r+') as io:
 
     # By default earth gravity is applied and the units are those
@@ -144,15 +152,13 @@ with MechanicsHdf5Runner(mode='r+') as io:
     # print(pydoc.render_doc(io.run, "Help on %s"))
 
     io.run(with_timer=False,
-           options=options,
+           bullet_options=bullet_options,
            t0=0,
            T=T,
            h=0.005,
            theta=0.50001,
            Newton_max_iter=1,
            set_external_forces=None,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=10000,
-           tolerance=1e-8,
+           solver_options=options,
            numerics_verbose=False,
            output_frequency=None)

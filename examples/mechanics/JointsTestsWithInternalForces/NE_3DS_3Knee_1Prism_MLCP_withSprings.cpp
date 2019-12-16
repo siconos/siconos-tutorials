@@ -29,6 +29,7 @@
 #include "PrismaticJointR.hpp"
 #include <boost/math/quaternion.hpp>
 #include <boost/timer/timer.hpp>
+#include "SolverOptions.h"
 using namespace std;
 
 /* Given a position of a point in the Inertial Frame and the configuration vector q of a solid
@@ -311,7 +312,7 @@ int main(int argc, char* argv[])
 
     // -- (3) one step non smooth problem
     SP::OneStepNSProblem osnspb(new MLCP());
-    osnspb->numericsSolverOptions()->dparam[0]=1e-10;
+    osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL]=1e-10;
 
     // -- (4) Simulation setup with (1) (2) (3)
     SP::TimeStepping s(new TimeStepping(myModel, t, OSI1, osnspb));

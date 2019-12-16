@@ -7,7 +7,8 @@
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
+import siconos.numerics as sn
+import siconos.kernel as sk
 
 import random
 import math
@@ -110,6 +111,11 @@ else:
     nstep=100000
     step=0.0005
 
+
+# Create solver options
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100
+options.iparam[sn.SICONOS_DPARAM_TOL] = 1e-4
 with MechanicsHdf5Runner(mode='r+') as io:
 
     # By default earth gravity is applied and the units are those
@@ -124,9 +130,6 @@ with MechanicsHdf5Runner(mode='r+') as io:
            multipoints_iterations=True,
            theta=0.50001,
            Newton_max_iter=1,
-           set_external_forces=None,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=100,
-           tolerance=1e-4,
+           solver_options=options,
            numerics_verbose=False,
            output_frequency=100)

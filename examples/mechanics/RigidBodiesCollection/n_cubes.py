@@ -7,15 +7,16 @@
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
+import siconos.numerics as sn
+import siconos.kernel as sk
 
 import random
 
 import siconos
-options = siconos.mechanics.collision.bullet.SiconosBulletOptions()
-options.worldScale = 1.0
-options.perturbationIterations = 7
-options.minimumPointsPerturbationThreshold = 7
+bullet_options = siconos.mechanics.collision.bullet.SiconosBulletOptions()
+bullet_options.worldScale = 1.0
+bullet_options.perturbationIterations = 7
+bullet_options.minimumPointsPerturbationThreshold = 7
 
 n_cube=3
 n_row=2
@@ -101,6 +102,12 @@ else:
     nstep=20000
     step=0.0005
 
+# Create solver options
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100
+options.iparam[sn.SICONOS_DPARAM_TOL] = 1e-4
+
+    
 with MechanicsHdf5Runner(mode='r+') as io:
 
     # By default earth gravity is applied and the units are those
@@ -109,15 +116,13 @@ with MechanicsHdf5Runner(mode='r+') as io:
     # sizes of small objects may need to be expressed in cm or mm.
     io.run(with_timer=False,
            gravity_scale=1,
-           options = options,
+           bullet_options = bullet_options,
            t0=0,
            T=nstep*step,
            h=step,
            theta=0.50001,
            Newton_max_iter=1,
            set_external_forces=None,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=100,
-           tolerance=1e-4,
+           solver_options=options,
            numerics_verbose=False,
            output_frequency=100)

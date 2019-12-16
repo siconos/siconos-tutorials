@@ -2,10 +2,9 @@
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
-import siconos.kernel as Kernel
-from siconos.mechanics.collision.bullet import SiconosBulletOptions
-import numpy as np
+import siconos.numerics as sn
+import siconos.kernel as sk
+
 
 with MechanicsHdf5Runner() as io:
     io.add_primitive_shape('BigBox', 'Box', (1, 1, 1))
@@ -33,13 +32,15 @@ with MechanicsHdf5Runner() as io:
     io.add_joint('joint1', 'big', None, None, [[0,0,1]], 'PrismaticJointR',
                  friction='friction')
 
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-4
+ 
 with MechanicsHdf5Runner(mode='r+') as io:
     io.run(t0=0,
            T=8,
            h=0.001,
            theta=0.50001,
            Newton_max_iter=2,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=1000,
-           tolerance=1e-4,
-    )
+           solver_options=options,
+           )

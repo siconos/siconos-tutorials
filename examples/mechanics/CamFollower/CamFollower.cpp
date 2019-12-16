@@ -23,6 +23,8 @@
 #include "SiconosKernel.hpp"
 #include "CamState.h"
 #include <boost/timer/timer.hpp>
+#include "SolverOptions.h"
+
 using namespace std;
 
 int main(int argc, char* argv[])

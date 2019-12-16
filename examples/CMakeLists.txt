@@ -26,7 +26,7 @@ include(SiconosRequiredVersion)
 # Remark : we may also use the package registry magic to find siconos:
 # see https://cmake.org/cmake/help/git-master/manual/cmake-packages.7.html#creating-packages
 find_package(siconos ${SICONOS_REQUIRED_VERSION} REQUIRED)
-  
+
 # --- Search siconos package path ---
 # --> based on path to script siconos
 find_file(SICONOS_SCRIPT
@@ -37,9 +37,6 @@ find_file(SICONOS_SCRIPT
 if(NOT SICONOS_SCRIPT)
   message(FATAL_ERROR "Can not find siconos script. Please set your PATH environment variable properly.")
 endif()
-
-# Add cmake files from siconos install
-list(APPEND CMAKE_MODULE_PATH ${siconos_ROOT}/${ConfigPackageLocation})
 
 # Some usefull macros
 include(SiconosTools)

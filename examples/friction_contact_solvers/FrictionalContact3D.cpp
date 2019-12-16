@@ -107,9 +107,7 @@ int main(int argc, char* argv[])
   // Numerics and Solver Options
 
 
-  SolverOptions *numerics_solver_options = (SolverOptions *)malloc(sizeof(SolverOptions));
-
-  fc3d_setDefaultSolverOptions(numerics_solver_options, SICONOS_FRICTION_3D_NSGS);
+  SolverOptions *numerics_solver_options = solver_options_create(SICONOS_FRICTION_3D_NSGS);
 
   numerics_solver_options->dparam[0] = 100*DBL_EPSILON;
 
@@ -127,7 +125,6 @@ int main(int argc, char* argv[])
   for (k = 0 ; k < 3 * NC; k++) printf("Velocity[%i] = %12.8e \t \t Reaction[%i] = %12.8e \n ", k, velocity[k], k , reaction[k]);
   printf("\n");
 
-  free(numerics_solver_options);
   free(reaction);
   free(velocity);
   free(MM);

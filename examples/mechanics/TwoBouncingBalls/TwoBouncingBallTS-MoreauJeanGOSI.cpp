@@ -27,6 +27,7 @@
 
 #include "SiconosKernel.hpp"
 #include <boost/timer/timer.hpp>
+#include "SolverOptions.h"
 
 using namespace std;
 
@@ -158,7 +159,7 @@ int main(int argc, char* argv[])
     assert(osnspb->numericsSolverOptions());
     SolverOptions * options = osnspb->numericsSolverOptions().get();
     //solver_options_print(options);
-    options->internalSolvers->dparam[0] = 1e-10;
+    options->internalSolvers[0]->dparam[SICONOS_DPARAM_TOL] = 1e-10;
     // -- (4) Simulation setup with (1) (2) (3)
     SP::TimeStepping s(new TimeStepping(bouncingBall, t, OSI, osnspb));
  

@@ -27,6 +27,7 @@
 
 #include "SiconosKernel.hpp"
 #include <boost/timer/timer.hpp>
+#include "SolverOptions.h"
 
 using namespace std;
 

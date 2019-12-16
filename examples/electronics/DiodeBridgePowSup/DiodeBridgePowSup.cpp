@@ -30,6 +30,7 @@
 
 #include "SiconosKernel.hpp"
 #include <boost/timer/timer.hpp>
+#include "SiconosAlgebraProd.hpp" // for prod
 
 using namespace std;
 

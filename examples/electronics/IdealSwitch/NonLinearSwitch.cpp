@@ -137,15 +137,6 @@ int main()
 
   //  aS->insertNonSmoothProblem(aMLCP);
   SP::SolverOptions numSolOptions = aMLCP->numericsSolverOptions();
-  //  Alloc working mem for the solver
-  int aux = mlcp_driver_get_iwork(aMLCP->getNumericsMLCP().get(), &*numSolOptions);
-  intWorkingMem = (int*)malloc(aux * sizeof(int));
-  numSolOptions->iWork = intWorkingMem;
-  aux = mlcp_driver_get_dwork(aMLCP->getNumericsMLCP().get(), &*numSolOptions);
-  floatWorkingMem = (double*)malloc(aux * sizeof(double));
-  numSolOptions->dWork = floatWorkingMem;
-  //  numSolOptions->dparams[0]=1e-12;
-
   mlcp_driver_init(aMLCP->getNumericsMLCP().get(), &*numSolOptions);
 
   //*****BUILD THE STEP INTEGRATOR

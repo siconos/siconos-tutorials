@@ -28,6 +28,7 @@
   */
 #include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
+#include "SolverOptions.h"
 
 using namespace std;
 
@@ -124,8 +125,8 @@ int main(int argc, char* argv[])
     SP::MoreauJeanCombinedProjectionOSI OSI(new MoreauJeanCombinedProjectionOSI(0.5));
     SP::TimeDiscretisation t(new TimeDiscretisation(t0, h));
     SP::OneStepNSProblem impact(new FrictionContact(2, SICONOS_FRICTION_2D_ENUM));
-    impact->numericsSolverOptions()->dparam[0] = 1e-08;
-    impact->numericsSolverOptions()->iparam[0] = 100;
+    impact->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-08;
+    impact->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 100;
     impact->numericsSolverOptions()->iparam[2] = 1; // random
     SP::OneStepNSProblem position(new MLCPProjectOnConstraints());
 
