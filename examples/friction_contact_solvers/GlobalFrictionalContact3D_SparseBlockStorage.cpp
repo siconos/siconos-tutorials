@@ -240,8 +240,8 @@ int main(int argc, char* argv[])
   MM->matrix1 = NULL;
   free(HH->matrix1);
   HH->matrix1 = NULL;
-  NM_free(MM);
-  NM_free(HH);
+  NM_clear(MM);
+  NM_clear(HH);
   free(MM);
   free(HH);
 
