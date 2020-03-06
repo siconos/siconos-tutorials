@@ -24,7 +24,7 @@
   Direct description of the model.
   Simulation with a Time-Stepping scheme.
 */
-
+#include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
 
 using namespace std;
@@ -174,10 +174,7 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::progress_display show_progress(N);
-
-    boost::timer time;
-    time.restart();
+    boost::timer::auto_cpu_timer time;
     SP::SiconosVector rpc = relation->relPc1();
     SP::SiconosVector nnc = relation->relNc();
 
@@ -219,13 +216,13 @@ int main(int argc, char* argv[])
       dataPlot(k, 7) = (*p1)(0);
       dataPlot(k, 8) = (*lambda1)(0);
       s->nextStep();
-      ++show_progress;
+      
       k++;
 
     }
     cout  << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << time.elapsed()  << endl;
-
+    cout << "Computation Time :"  << endl;
+    time.report();
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
