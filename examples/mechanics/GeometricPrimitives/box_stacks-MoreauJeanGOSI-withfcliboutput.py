@@ -4,8 +4,12 @@ import os
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
-import siconos.kernel as Kernel
+
+
+
+import siconos.numerics as sn
+import siconos.kernel as sk
+
 from siconos.io.FrictionContactTrace import FrictionContactTraceParams
 
 # A collection of box stacks for stress-testing Siconos solver with
@@ -59,7 +63,10 @@ with MechanicsHdf5Runner() as io:
     # Definition of a non smooth law. As no group ids are specified it
     # is between contactors of group id 0.
     io.add_Newton_impact_friction_nsl('contact', mu=0.3)
-solver = Numerics.SICONOS_GLOBAL_FRICTION_3D_ADMM
+
+
+    
+solver = sn.SICONOS_GLOBAL_FRICTION_3D_ADMM
 
 step = 125
 hstep = 1e-2
@@ -77,7 +84,7 @@ description = """
 Box stacks with Bullet collision detection
 Moreau TimeStepping: h={0}, theta = {1}
 One Step non smooth problem: {2}, maxiter={3}, tol={4}
-""".format(hstep, theta, Numerics.solver_options_id_to_name(solver),
+""".format(hstep, theta, sn.solver_options_id_to_name(solver),
            itermax,
            tolerance)
 
@@ -88,6 +95,9 @@ friction_contact_trace_params = FrictionContactTraceParams(
     fileName=fileName, title=title,
     description=description, mathInfo=mathInfo)
 
+options = sk.solver_options_create(solver)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = itermax
+options.dparam[sn.SICONOS_DPARAM_TOL] = tolerance
     
 # Load and run the simulation
 with MechanicsHdf5Runner(mode='r+') as io:
@@ -96,10 +106,7 @@ with MechanicsHdf5Runner(mode='r+') as io:
            h=hstep,
            theta=theta,
            Newton_max_iter=1,
-           solver=Numerics.SICONOS_GLOBAL_FRICTION_3D_ADMM,
-           itermax=itermax,
-           tolerance=tolerance,
+           solver_options=options,
            output_frequency=1,
-           osi=Kernel.MoreauJeanGOSI,
-           friction_contact_trace=True,
+           osi=sk.MoreauJeanGOSI,
            friction_contact_trace_params=friction_contact_trace_params)

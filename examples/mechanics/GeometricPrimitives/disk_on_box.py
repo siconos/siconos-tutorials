@@ -8,6 +8,7 @@
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
+
 import siconos.numerics as sn
 import siconos.kernel as sk
 # Creation of the hdf5 file for input/output

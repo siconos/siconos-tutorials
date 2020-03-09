@@ -6,7 +6,10 @@
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
+
+import siconos.numerics as sn
+import siconos.kernel as sk
+
 import numpy as np
 
 # Creation of the hdf5 file for input/output
@@ -64,6 +67,10 @@ with MechanicsHdf5Runner() as io:
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-5
+
 with MechanicsHdf5Runner(mode='r+') as io:
 
     # By default earth gravity is applied and the units are those
@@ -79,8 +86,6 @@ with MechanicsHdf5Runner(mode='r+') as io:
            h=0.01,
            theta=0.50001,
            Newton_max_iter=1,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=1000,
-           tolerance=1e-5,
+           solver_options=options,
            numerics_verbose=False,
            output_frequency=None)

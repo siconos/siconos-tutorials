@@ -8,7 +8,9 @@ from siconos.mechanics.collision.tools import Contactor
 from siconos.mechanics.collision.convexhull import ConvexHull
 
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
+
+import siconos.numerics as sn
+import siconos.kernel as sk
 
 unscaled_polyhedron_size = 0.5
 unscaled_density = 2500
@@ -110,6 +112,10 @@ hstep = 1e-4
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
+
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-4
 with MechanicsHdf5Runner(mode='r+', collision_margin=0.01) as io:
 
     # By default earth gravity is applied and the units are those
@@ -125,9 +131,7 @@ with MechanicsHdf5Runner(mode='r+', collision_margin=0.01) as io:
            theta=0.50001,
            Newton_max_iter=10,
            set_external_forces=None,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=1000,
-           tolerance=1e-4,
+           solver_options=options,
            numerics_verbose=False,
            violation_verbose=True,
            output_frequency=100)

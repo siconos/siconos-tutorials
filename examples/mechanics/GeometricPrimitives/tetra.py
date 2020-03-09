@@ -7,16 +7,12 @@
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
-from siconos.mechanics.collision.convexhull import ConvexHull
-from siconos.mechanics.collision.bullet import SiconosBulletOptions
 
-# Control the number of perturbations applied to generate multipoint
-# surface-surface contact manifolds.  Default is 5 and 5, this is
-# just demonstrating how to change them.
-options = SiconosBulletOptions()
-options.perturbationIterations = 4
-options.minimumPointsPerturbationThreshold = 4
+import siconos.numerics as sn
+import siconos.kernel as sk
+
+from siconos.mechanics.collision.convexhull import ConvexHull
+
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
@@ -62,6 +58,21 @@ with MechanicsHdf5Runner() as io:
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
+
+from siconos.mechanics.collision.bullet import SiconosBulletOptions
+
+# Control the number of perturbations applied to generate multipoint
+# surface-surface contact manifolds.  Default is 5 and 5, this is
+# just demonstrating how to change them.
+bullet_options = SiconosBulletOptions()
+bullet_options.perturbationIterations = 4
+bullet_options.minimumPointsPerturbationThreshold = 4
+
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-8
+
+
 with MechanicsHdf5Runner(mode='r+') as io:
 
     # By default earth gravity is applied and the units are those
@@ -72,15 +83,13 @@ with MechanicsHdf5Runner(mode='r+') as io:
     # print(pydoc.render_doc(io.run, "Help on %s"))
 
     io.run(with_timer=False,
-           options=options,
+           bullet_options=bullet_options,
            t0=0,
            T=20,
            h=0.005,
            theta=0.50001,
            Newton_max_iter=1,
            set_external_forces=None,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=100000,
-           tolerance=1e-8,
+           solver_options=options,
            numerics_verbose=False,
            output_frequency=None)

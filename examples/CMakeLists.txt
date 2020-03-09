@@ -4,7 +4,7 @@ if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.12")
   cmake_policy(SET CMP0074 NEW)
 endif()
 
-project(siconos_examples CXX)
+project(siconos_examples CXX C)
 
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -87,7 +87,8 @@ if(${kernel_installed} GREATER -1)
     electronics/Circuit-ThetaGammaSchemes
     electronics/ColpittsOscillator
     electronics/DiodeBridgeCapFilter
-    electronics/IdealSwitch  
+    electronics/IdealSwitch
+    mechanics/2DRigidBodies
     mechanics/BallOnMovingPlane
     mechanics/BouncingBall
     mechanics/BouncingBallEventDriven
@@ -95,10 +96,8 @@ if(${kernel_installed} GREATER -1)
     mechanics/ChainsOfBalls
     mechanics/ColumnOfBeads
     mechanics/FEM/ImpactingBar
-    mechanics/FEM/exemple_Houari
     mechanics/FourBarLinkageWith3clearance
     mechanics/FrictionOscillator
-    mechanics/GranularMaterials
     mechanics/Music
     mechanics/NewtonEuler
     mechanics/Pendulum
@@ -109,6 +108,7 @@ if(${kernel_installed} GREATER -1)
     mechanics/TwoBouncingBalls
     mechanics/Woodpecker
     mechanics/yoyo
+
     )
   # Check mfem and add this example
   if(HAS_MFEM) # To be done!
@@ -161,7 +161,7 @@ if(${mechanics_installed} GREATER -1)
     set(mechanics_bullet_examples
       mechanics/BulletBouncingBox
       mechanics/DirectProjection
-      mechanics/GeometricsPrimitives
+      mechanics/GeometricPrimitives
       mechanics/GranularMaterial
       mechanics/JointsTestsWithContactDetection
       mechanics/InterestingDynamics

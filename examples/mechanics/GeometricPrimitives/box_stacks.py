@@ -2,8 +2,9 @@
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
 
+import siconos.numerics as sn
+import siconos.kernel as sk
 # A collection of box stacks for stress-testing Siconos solver with
 # chains of contacts.
 
@@ -56,6 +57,9 @@ with MechanicsHdf5Runner() as io:
     # is between contactors of group id 0.
     io.add_Newton_impact_friction_nsl('contact', mu=0.3)
 
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-8
 # Load and run the simulation
 with MechanicsHdf5Runner(mode='r+') as io:
     io.run(t0=0,
@@ -63,7 +67,5 @@ with MechanicsHdf5Runner(mode='r+') as io:
            h=0.01,
            theta=0.5,
            Newton_max_iter=1,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=1000,
-           tolerance=1e-12,
+           solver_options=options,
            output_frequency=1)
