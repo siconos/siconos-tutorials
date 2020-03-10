@@ -11,6 +11,9 @@ from siconos.mechanics.joints import cast_PivotJointR
 from siconos.io.mechanics_run import MechanicsHdf5Runner
 from siconos.kernel import SiconosVector, BlockVector, changeFrameAbsToBody
 
+import siconos.numerics as sn
+import siconos.kernel as sk
+
 # An example of applying force to the axis of a joint, and applying
 # spring and virtual damping by measuring position and velocity along
 # the same axis.
@@ -90,7 +93,11 @@ class Ctrl(object):
 
         self.ds1.setMExtPtr(torque1)
         self.ds2.setMExtPtr(torque2)
-
+        
+options = sk.solver_options_create(sn.SICONOS_GENERIC_MECHANICAL_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-12
+        
 # Load and run the simulation
 with MechanicsHdf5Runner(mode='r+') as io:
     io.run(t0=0,
@@ -99,6 +106,5 @@ with MechanicsHdf5Runner(mode='r+') as io:
            theta=0.5,
            Newton_max_iter=1,
            controller=Ctrl(),
-           itermax=1000,
-           tolerance=1e-12,
+           solver_options=options,
            output_frequency=1)

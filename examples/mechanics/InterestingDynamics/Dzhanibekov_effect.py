@@ -7,8 +7,8 @@ import siconos
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
 
-options = siconos.mechanics.collision.bullet.SiconosBulletOptions()
-options.worldScale = 0.01
+bullet_options = siconos.mechanics.collision.bullet.SiconosBulletOptions()
+bullet_options.worldScale = 0.01
 
 with MechanicsHdf5Runner() as io:
 
@@ -24,13 +24,18 @@ with MechanicsHdf5Runner() as io:
                   velocity=[0, 0, 0, 0, 2, 0.0001],
                   mass=1,
                   inertia=[1, 10, 11])
-
+test=True
+if test:
+    T=10
+else:
+    T=90
+    
 with MechanicsHdf5Runner(mode='r+') as io:
 
     io.run(with_timer=True,
-           options=options,
+           bullet_options=bullet_options,
            t0=0,
-           T=90,
+           T=T,
            h=0.005,
            Newton_max_iter=1,
            set_external_forces=lambda x: None)

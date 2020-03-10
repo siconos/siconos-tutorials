@@ -4,6 +4,9 @@ from siconos.io.mechanics_run import MechanicsHdf5Runner
 import siconos.kernel as Kernel
 import numpy as np
 
+import siconos.numerics as sn
+import siconos.kernel as sk
+
 # A demonstration of how to couple the two free axes of a
 # CylindricalJointR in order to construct a screw relation. (Coupled
 # rotational and translational motion.)
@@ -76,7 +79,11 @@ if test:
 else:
     T=5.
 
-    
+            
+options = sk.solver_options_create(sn.SICONOS_GENERIC_MECHANICAL_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-12
+
 # Load and run the simulation
 with MechanicsHdf5Runner(mode='r+') as io:
     io.run(t0=0,
@@ -84,8 +91,7 @@ with MechanicsHdf5Runner(mode='r+') as io:
            h=0.001,
            theta=0.5,
            Newton_max_iter=1,
-           itermax=1000,
-           tolerance=1e-12,
+           solver_options=options,
            projection_itermax=3,
            projection_tolerance=1e-5,
            projection_tolerance_unilateral=1e-5,

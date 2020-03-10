@@ -69,9 +69,6 @@ with MechanicsHdf5Runner() as io:
   angle= math.pi/8.0
   trans=[0,0,4.0*scale]
   ori = [math.cos(angle/2.0),0.0,math.sin(angle/2.0),0]
-  axis = numpy.zeros(3)
-  angle_test = sk.axisAngleFromQuaternion(trans+ori, axis)
-  print(angle_test,axis)
   print('ori initial', ori)
   io.add_object('bar', [Contactor('Bar')],
                translation=trans,
