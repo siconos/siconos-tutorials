@@ -4,8 +4,8 @@ from __future__ import print_function
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
-import siconos.kernel as Kernel
+import siconos.numerics as sn
+import siconos.kernel as sk
 import siconos.mechanics as Mechanics
 import numpy as np
 
@@ -88,17 +88,21 @@ class Ctrl(object):
             self.joint1_inter.relation())
         self.bar = self.topo.getDynamicalSystem('bar')
         self.post = self.topo.getDynamicalSystem('post')
-        self.y = Kernel.SiconosVector(5)
-        self.yDoF = Kernel.SiconosVector(2)
-        self.jachq = Kernel.SimpleMatrix(1,14)
+        self.y = sk.SiconosVector(5)
+        self.yDoF = sk.SiconosVector(2)
+        self.jachq = sk.SimpleMatrix(1,14)
 
     def step(self):
-        q0 = Kernel.BlockVector(self.bar.q(), self.post.q())
+        q0 = sk.BlockVector(self.bar.q(), self.post.q())
         self.joint1.computeh(0, q0, self.y)
         self.joint1.computehDoF(0, q0, self.yDoF)
         self.joint1.computeJachqDoF(0, self.joint1_inter, q0, self.jachq, 0)
         print('joint linear position, %f, angle, %f'%tuple(self.yDoF))
 
+options = sk.solver_options_create(sn.SICONOS_GENERIC_MECHANICAL_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-10
+sk.solver_options_update_internal(options, 1, sn.SICONOS_FRICTION_3D_ONECONTACT_NSN) 
 # Run the simulation
 with MechanicsHdf5Runner(mode='r+') as io:
     io.run(t0=0,
@@ -106,14 +110,12 @@ with MechanicsHdf5Runner(mode='r+') as io:
            h=0.01,
            theta=0.50001,
            Newton_max_iter=1,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=100000,
-           tolerance=1e-10,
+           solver_options=options,
            controller=Ctrl(),
            set_external_forces=lambda x: None, # no gravity
            projection_itermax=3,
            projection_tolerance=1e-5,
            projection_tolerance_unilateral=1e-5,
-           time_stepping=Kernel.TimeSteppingDirectProjection,
-           osi=Kernel.MoreauJeanDirectProjectionOSI,
+           time_stepping=sk.TimeSteppingDirectProjection,
+           osi=sk.MoreauJeanDirectProjectionOSI,
     )
