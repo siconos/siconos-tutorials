@@ -14,7 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 /*!\file BouncingBallNETS.cpp
   \brief \ref EMBouncingBall - C++ input file, Time-Stepping version -
@@ -204,21 +204,21 @@ int main(int argc, char* argv[])
     dataPlot(0, 5) = (*q)(4);
     dataPlot(0, 6) = (*q)(5);
     dataPlot(0, 7) = (*q)(6);
-    
+
     dataPlot(0, 8) = (*v)(0);
     dataPlot(0, 9) = (*v)(1);
     dataPlot(0, 10) = (*v)(2);
     dataPlot(0, 11) = (*v)(3);
     dataPlot(0, 12) = (*v)(4);
     dataPlot(0, 13) = (*v)(5);
-    
+
     dataPlot(0, 14) = (*p)(0);
     dataPlot(0, 15) = (*p)(1);
     dataPlot(0, 16) = (*p)(2);
     dataPlot(0, 17) = (*p)(3);
     dataPlot(0, 18) = (*p)(4);
     dataPlot(0, 19) = (*p)(5);
-    
+
 
 
     dataPlot(0, 20) = (*lambda)(0);
@@ -226,7 +226,7 @@ int main(int argc, char* argv[])
     dataPlot(0, 22) = (*lambda)(2);
     dataPlot(0, 23) = (*lambda)(3);
     dataPlot(0, 24) = (*lambda)(4);
-   
+
 
     dataPlot(0, 25) = acos((*q)(3));
     dataPlot(0, 26) = relation0->contactForce()->norm2();
@@ -235,16 +235,16 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    
+
 
     boost::timer::auto_cpu_timer time;
-        dataPlot(k, 6) = relation0->contactForce()->norm2();
+    dataPlot(k, 6) = relation0->contactForce()->norm2();
     while (s->hasNextEvent() and k<=100000 )
     {
       //      s->computeOneStep();
       s->advanceToEvent();
-      osnspb->setNumericsVerboseMode(true);
-      osnspb->display();
+      // osnspb->setNumericsVerboseMode(true);
+      // osnspb->display();
       // --- Get values to be plotted ---
       dataPlot(k, 0) = s->nextTime();
 
@@ -255,21 +255,21 @@ int main(int argc, char* argv[])
       dataPlot(k, 5) = (*q)(4);
       dataPlot(k, 6) = (*q)(5);
       dataPlot(k, 7) = (*q)(6);
-    
+
       dataPlot(k, 8) = (*v)(0);
       dataPlot(k, 9) = (*v)(1);
       dataPlot(k, 10) = (*v)(2);
       dataPlot(k, 11) = (*v)(3);
       dataPlot(k, 12) = (*v)(4);
       dataPlot(k, 13) = (*v)(5);
-    
+
       dataPlot(k, 14) = (*p)(0);
       dataPlot(k, 15) = (*p)(1);
       dataPlot(k, 16) = (*p)(2);
       dataPlot(k, 17) = (*p)(3);
       dataPlot(k, 18) = (*p)(4);
       dataPlot(k, 19) = (*p)(5);
-    
+
 
 
       dataPlot(k, 20) = (*lambda)(0);
@@ -277,16 +277,16 @@ int main(int argc, char* argv[])
       dataPlot(k, 22) = (*lambda)(2);
       dataPlot(k, 23) = (*lambda)(3);
       dataPlot(k, 24) = (*lambda)(4);
-      std::cout << "angle " << (*q)(3) <<  " " <<  2.0*acos((*q)(3)) << std::endl;
+      // std::cout << "angle " << (*q)(3) <<  " " <<  2.0*acos((*q)(3)) << std::endl;
       dataPlot(k, 25) = 2.0*acos((*q)(3));
       dataPlot(k, 26) = relation0->contactForce()->norm2();
 
       s->nextStep();
-      
+
       k++;
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
+    cout << "Computation Time " << endl;;
     time.report();    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
