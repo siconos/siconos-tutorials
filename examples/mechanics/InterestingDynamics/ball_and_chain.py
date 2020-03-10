@@ -4,10 +4,11 @@
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
 from siconos.mechanics.collision.convexhull import ConvexHull
 import numpy as np
 
+import siconos.numerics as sn
+import siconos.kernel as sk
 # Shape parameters of a single link
 num_parts = 8
 radius = 0.1
@@ -74,11 +75,16 @@ with MechanicsHdf5Runner() as io:
     initvel = 0.0
     inertia = link_inertia
     for i in range(num_links):
-        io.add_object('link%02d' % (i*2+0), chainlink,
-                      translation=[0, 0, 10+(i*2+0)*length*2],
-                      orientation=[(1, 0, 0), np.pi/2],
-                      velocity=[0, 0, 0, 0, 0, 0],
-                      mass=mass*(i > 0), inertia=inertia)
+        if i>0:
+            io.add_object('link%02d' % (i*2+0), chainlink,
+                          translation=[0, 0, 10+(i*2+0)*length*2],
+                          orientation=[(1, 0, 0), np.pi/2],
+                          velocity=[0, 0, 0, 0, 0, 0],
+                          mass=mass, inertia=inertia)
+        else:
+            io.add_object('link%02d' % (i*2+0), chainlink,
+                          translation=[0, 0, 10+(i*2+0)*length*2],
+                          orientation=[(1, 0, 0), np.pi/2])
         # Last link has the ball
         if (i+1) == num_links:
             # Ball is 10x heavier, and give slide sideways initial
@@ -108,7 +114,7 @@ with MechanicsHdf5Runner() as io:
 
 
 
-test=True
+test=False
 if test==True:
     T=0.1
     hstep=1e-3
@@ -122,6 +128,12 @@ else:
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
+
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 10000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-8
+
+
 with MechanicsHdf5Runner(mode='r+') as io:
 
     io.run(with_timer=False,
@@ -131,8 +143,6 @@ with MechanicsHdf5Runner(mode='r+') as io:
            theta=0.50001,
            Newton_max_iter=1,
            set_external_forces=None,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=10000,
-           tolerance=1e-8,
+           solver_options=options,
            numerics_verbose=False,
            output_frequency=None)
