@@ -7,8 +7,9 @@
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.kernel as Kernel
 
+import siconos.numerics as sn
+import siconos.kernel as sk
 from math import pi
 
 # length of first branch
@@ -116,14 +117,18 @@ with MechanicsHdf5Runner() as io:
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
+options = sk.solver_options_create(sn.SICONOS_GENERIC_MECHANICAL_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 10000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-8
+
 with MechanicsHdf5Runner(mode='r+') as io:
 
     io.run(h=0.01,
            T=20,
-           tolerance=1e-8,
-           itermax=1000,
-           time_stepping=Kernel.TimeSteppingDirectProjection,
-           osi=Kernel.MoreauJeanDirectProjectionOSI,
+           solver_options=options,
+           time_stepping=sk.TimeSteppingDirectProjection,
+           osi=sk.MoreauJeanDirectProjectionOSI,
            projection_itermax=3,
            projection_tolerance=1e-5,
-           projection_tolerance_unilateral=1e-5)
+           projection_tolerance_unilateral=1e-5
+    )

@@ -7,16 +7,17 @@
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
-import siconos.kernel as Kernel
+
+import siconos.numerics as sn
+import siconos.kernel as sk
 
 import random
 
 import siconos
-options = siconos.mechanics.collision.bullet.SiconosBulletOptions()
-options.worldScale = 1.0
-options.perturbationIterations = 7
-options.minimumPointsPerturbationThreshold = 7
+bullet_options = siconos.mechanics.collision.bullet.SiconosBulletOptions()
+bullet_options.worldScale = 1.0
+bullet_options.perturbationIterations = 7
+bullet_options.minimumPointsPerturbationThreshold = 7
 
 n_cube = 3
 n_row = 2
@@ -95,6 +96,11 @@ with MechanicsHdf5Runner() as io:
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
 
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-4
+
+
 nstep = 2000
 step = 0.005
 with MechanicsHdf5Runner(mode='r+') as io:
@@ -104,23 +110,21 @@ with MechanicsHdf5Runner(mode='r+') as io:
     # Because of fixed collision margins used in the collision detection,
     # sizes of small objects may need to be expressed in cm or mm.
     io.run(with_timer=False,
-           time_stepping=Kernel.TimeSteppingDirectProjection,
-           osi=Kernel.MoreauJeanDirectProjectionOSI,
+           time_stepping=sk.TimeSteppingDirectProjection,
+           osi=sk.MoreauJeanDirectProjectionOSI,
            body_class=None,
            shape_class=None,
            face_class=None,
            edge_class=None,
            gravity_scale=1,
-           options=options,
+           bullet_options=bullet_options,
            t0=0,
            T=nstep*step,
            h=step,
            theta=0.50001,
            Newton_max_iter=1,
            set_external_forces=None,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=100,
-           tolerance=1e-4,
+           solver_options=options,
            numerics_verbose=False,
            output_frequency=1,
            projection_itermax=5,
