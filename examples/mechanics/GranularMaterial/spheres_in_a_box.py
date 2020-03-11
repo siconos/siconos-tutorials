@@ -9,17 +9,20 @@
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
 from siconos.io.FrictionContactTrace import FrictionContactTraceParams
-import siconos.numerics as Numerics
+
+import siconos.numerics as sn
+import siconos.kernel as sk
+
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
 from math import pi
 import numpy
 import sys
 import mkspheres
-options = SiconosBulletOptions()
-options.worldScale = 1000
-options.contactBreakingThreshold = 0.0002
-options.perturbationIterations = 0
-options.minimumPointsPerturbationThreshold = 0
+bullet_options = SiconosBulletOptions()
+bullet_options.worldScale = 1000
+bullet_options.contactBreakingThreshold = 0.0002
+bullet_options.perturbationIterations = 0
+bullet_options.minimumPointsPerturbationThreshold = 0
 hstep = 0.001
 theta = 0.50001
 itermax = 1000
@@ -32,13 +35,16 @@ wthick = mkspheres.lz/10
 zoffset = -wthick/2
 
 margin_max = margin_ratio*mkspheres.radius_max
-
-coors_filename=sys.argv[1]
-radii_filename=sys.argv[2]
+if (len(sys.argv)>1):
+    coors_filename=sys.argv[1]
+    radii_filename=sys.argv[2]
+else:
+    coors_filename='coors-18.txt'
+    radii_filename='radii-18.txt'
 
 coors = numpy.loadtxt(coors_filename)
 radii = numpy.loadtxt(radii_filename)
-
+   
 if len(radii.shape) == 0:
     radii=[radii]
 
@@ -46,7 +52,7 @@ nb_laid_particles=len(radii)
 
 print(nb_laid_particles)
 
-solver=Numerics.SICONOS_FRICTION_3D_NSGS
+solver=sn.SICONOS_FRICTION_3D_NSGS
 fileName = "spheres-in-a-box-{0}".format(nb_laid_particles)
 title = "SpheresBox"
 description = """
@@ -63,7 +69,7 @@ One Step non smooth problem: {8}, maxiter={9}, tol={10}
            mkspheres.radius_min,
            mkspheres.radius_max,
            lx, ly, lz,
-           hstep, theta, Numerics.solver_options_id_to_name(solver),
+           hstep, theta, sn.solver_options_id_to_name(solver),
            itermax,
            tolerance)
 
@@ -73,6 +79,11 @@ friction_contact_trace_params = FrictionContactTraceParams(
     dump_itermax=10000, dump_probability=None,
     fileName=fileName, title=title,
     description=description, mathInfo=mathInfo)
+
+# Create solver options
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = itermax
+options.dparam[sn.SICONOS_DPARAM_TOL] = tolerance
 
 with MechanicsHdf5Runner(io_filename='siab-{0}.hdf5'.format(nb_laid_particles)) as io:
     # Definition of the ground shape
@@ -110,12 +121,14 @@ with MechanicsHdf5Runner(io_filename='siab-{0}.hdf5'.format(nb_laid_particles)) 
                       inertia=[I_, I_, I_],
                       mass=mass)
 
+
+        
 with MechanicsHdf5Runner(io_filename='siab-{0}.hdf5'.format(nb_laid_particles), mode='r+') as io:
 
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     io.run(with_timer=True,
-           options=options,
+           bullet_options=bullet_options,
            face_class=None,
            edge_class=None,
            t0=0,
@@ -125,12 +138,9 @@ with MechanicsHdf5Runner(io_filename='siab-{0}.hdf5'.format(nb_laid_particles), 
            theta=theta,
            Newton_max_iter=1,
            set_external_forces=None,
-           friction_contact_trace=True,
            friction_contact_trace_params=friction_contact_trace_params,
            constraint_activation_threshold=0.00001,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=itermax,
-           tolerance=tolerance,
+           solver_options=options,
            numerics_verbose=False,
            explode_Newton_solve=True,
            output_frequency=None)

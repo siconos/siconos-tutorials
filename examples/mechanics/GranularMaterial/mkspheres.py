@@ -21,9 +21,14 @@ lx = .02
 ly = .02
 lz = .02
 
+print(sys.argv)
+
+
 if __name__ == "__main__":
-    nbp = int(sys.argv[1])
-    
+    if (len(sys.argv) >1):
+        nbp = int(sys.argv[1])
+    else:
+        nbp = 20
     radii = pre.granulo_Random(nbp, radius_min, radius_max)
     [nbpl, coors] = pre.depositInBox3D(radii, lx, ly, lz)
 

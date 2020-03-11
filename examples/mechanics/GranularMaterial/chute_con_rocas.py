@@ -55,8 +55,8 @@ else:
 
 # Create solver options
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
-options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100
-
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-3
 with MechanicsHdf5Runner(mode='w', io_filename=fn) as io:
     ch = chute.create_chute(io, box_height=box_height,
                             box_length=box_length,
@@ -78,6 +78,4 @@ with MechanicsHdf5Runner(mode='r+', io_filename=fn) as io:
            theta=1.0,
            Newton_max_iter=1,
            solver_options=options,
-           itermax=1000,
-           tolerance=1e-3,
            output_frequency=10)

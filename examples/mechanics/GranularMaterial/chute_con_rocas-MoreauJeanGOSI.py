@@ -63,8 +63,8 @@ if not os.path.exists('Chute'):
     os.mkdir('Chute')
 
 options = sk.solver_options_create(sn.SICONOS_GLOBAL_FRICTION_3D_ADMM)
-options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100
-
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = itermax
+options.dparam[sn.SICONOS_DPARAM_TOL] = tolerance
 fileName = "./Chute/Chute"
 title = "Chute"
 description = """
@@ -94,8 +94,6 @@ with MechanicsHdf5Runner(mode='r+', collision_margin=0.01) as io:
                multipoints_iterations=True,
                theta=1.0,
                Newton_max_iter=1,
-               itermax=1000,
-               tolerance=1e-3,
                output_frequency=10,
                osi=sk.MoreauJeanGOSI,
                solver_options=options)
@@ -107,8 +105,6 @@ with MechanicsHdf5Runner(mode='r+', collision_margin=0.01) as io:
                multipoints_iterations=True,
                theta=1.0,
                Newton_max_iter=1,
-               itermax=10000,
-               tolerance=1e-3,
                output_frequency=10,
                osi=sk.MoreauJeanGOSI,
                solver_options=options,
