@@ -154,12 +154,14 @@ int main(int argc, char* argv[])
 
     // -- (3) one step non smooth problem
     SP::OneStepNSProblem osnspb(new GlobalFrictionContact(3,SICONOS_GLOBAL_FRICTION_3D_NSGS_WR));
+    //SP::OneStepNSProblem osnspb(new GlobalFrictionContact(3,SICONOS_GLOBAL_FRICTION_3D_ADMM));
+
     //SP::OneStepNSProblem osnspb(new GlobalFrictionContact(3,SICONOS_GLOBAL_FRICTION_3D_NSN_AC));
     //SP::OneStepNSProblem osnspb(new GlobalFrictionContact(3));
     assert(osnspb->numericsSolverOptions());
     SolverOptions * options = osnspb->numericsSolverOptions().get();
     //solver_options_print(options);
-    options->internalSolvers[0]->dparam[SICONOS_DPARAM_TOL] = 1e-10;
+    options->dparam[SICONOS_DPARAM_TOL] = 1e-13;
     // -- (4) Simulation setup with (1) (2) (3)
     SP::TimeStepping s(new TimeStepping(bouncingBall, t, OSI, osnspb));
  
@@ -228,7 +230,7 @@ cout << "Computation Time " << endl;;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
 
-    double error=0.0, eps=1e-12;
+    double error=0.0, eps=1e-10;
     if ((error=ioMatrix::compareRefFile(dataPlot,
                                         "TwoBouncingBallTS-MoreauJeanGOSI.ref",
                                         eps)) >= 0.0
