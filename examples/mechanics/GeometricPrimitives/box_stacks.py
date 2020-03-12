@@ -60,10 +60,20 @@ with MechanicsHdf5Runner() as io:
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100000
 options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-8
+
+
+
+test=True
+if test:
+    T=1.0
+    options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
+    options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-3
+else:
+    T=10.0
 # Load and run the simulation
 with MechanicsHdf5Runner(mode='r+') as io:
     io.run(t0=0,
-           T=10,
+           T=T,
            h=0.01,
            theta=0.5,
            Newton_max_iter=1,

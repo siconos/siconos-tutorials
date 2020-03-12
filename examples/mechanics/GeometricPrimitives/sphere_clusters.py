@@ -101,6 +101,16 @@ bullet_options.contactBreakingThreshold = 0.04
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100000
 options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-8
+
+test=True
+if test:
+    T=3.0
+    options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
+    options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-3
+else:
+    T=10.0
+
+
 with MechanicsHdf5Runner(mode='r+') as io:
 
     # By default earth gravity is applied and the units are those
@@ -108,7 +118,7 @@ with MechanicsHdf5Runner(mode='r+') as io:
     io.run(with_timer=False,
            bullet_options=bullet_options,
            t0=0,
-           T=10,
+           T=T,
            h=0.005,
            theta=0.50001,
            Newton_max_iter=20,

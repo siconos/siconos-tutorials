@@ -70,7 +70,12 @@ with MechanicsHdf5Runner() as io:
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
 options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-5
-
+test=True
+if test:
+    T=5.0
+else:
+    T=20.0
+    
 with MechanicsHdf5Runner(mode='r+') as io:
 
     # By default earth gravity is applied and the units are those
@@ -82,7 +87,7 @@ with MechanicsHdf5Runner(mode='r+') as io:
     # individual contacts here.
     io.run(with_timer=False,
            t0=0,
-           T=20,
+           T=T,
            h=0.01,
            theta=0.50001,
            Newton_max_iter=1,
