@@ -250,7 +250,7 @@ int main(int argc, char* argv[])
     dataPlot.resize(k, outputSize);
     ioMatrix::write("test_2d_rolling_friction.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "test_2d_rolling_friction.dat", eps)) >= 0.0
+    if ((error=ioMatrix::compareRefFile(dataPlot, "test_2d_rolling_friction.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 
