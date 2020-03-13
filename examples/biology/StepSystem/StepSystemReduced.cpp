@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 
   //SP::Relay osnspb(new Relay(SICONOS_RELAY_ENUM));
   //osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_MULTIPLE_SOLUTIONS]=0;  // Multiple solutions 0 or 1
-  //osnspb->numericsSolverOptions()->iparam[3]=48;
+  //osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_SEED]=48;
 
   osnspb->setNumericsVerboseMode(0);
 
