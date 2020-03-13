@@ -13,14 +13,9 @@ double l1 = 1.0;
 double l2 = 4.0;
 double l3 = 2.5;
 double l0 = 3.0;
-extern double r1;
 double r2 = 0.06;
-extern double r3;
 double r4 = 0.06;
-extern double r5;
 double r6 = 0.06;
-extern double Kp;
-extern double lmd;
 // inertial properties
 double m1 = 1.0;
 double m2 = 1.0;
@@ -28,6 +23,10 @@ double m3 = 1.0;
 double J1 = m1*l1*l1/12.0;
 double J2 = m2*l2*l2/12.0;
 double J3 = m3*l3*l3/12.0;
+
+// In the plugin functions, we use 'z' variable to save user-defined parameters, with:
+// z = [r1, r3, r5, Kp, lmd]
+// z values are supposed to be initialized in main driver file.
 
 double fcnExpression1(const double *q)
 {
@@ -773,6 +772,8 @@ double ga1 = Fdag(q);
 double gp1 = Fdpg(q);
 double mass11 = MASS1(q);
 double nonnl11 = NonNL1(q,velocity);
+double Kp = z[3];
+double lmd = z[4];
 
   fInt[0] = (0.5 * m1) * gravity * l1 * cos(q[0])-(2*(Jx1 + (Jx2*s11*s11) + (Jx3*s21*s21) + (P1*c11*s11))*(-6.0*0.75*0.75*PI*PI*sin(0.75*PI*time) - lmd*(velocity[0] - 0.75*PI*6.0*cos(0.75*PI*time)))) -((2*Jx2*s11*T11 + 2*J3*s21*T13 + P1*(c11*T11 + s11*(T7 + s11*T8)))*velocity[0])*(velocity[0]-lmd*(q[0]-6.0*sin(0.75*PI*time))) + Kp*(velocity[0] - 0.75*PI*6.0*cos(0.75*PI*time)) + Kp*lmd*(q[0]-6.0*sin(0.75*PI*time)) - (-gt1 - s11*ga1 - s21*gp1);
 
@@ -911,6 +912,8 @@ extern "C" void jacobianFIntqDot(double time, unsigned int sizeOfq, const double
 extern "C" void g1(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, double* g, unsigned int sizeZ, double* z)
 {
   double v1 = fcnExpression1(q);
+  double r1 = z[0];
+ 
   g[0] = (r2-r1) - v1;
   g[1] =0.0;
 
@@ -919,6 +922,7 @@ extern "C" void g1(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, 
 extern "C" void W1(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, double* W, unsigned int sizeZ, double* z)
 {
   double v1 = fcnExpression1(q);
+  double r1 = z[0];
   W[0] = (-q[3]*l1*sin(q[0]) + 0.5*l1*l2*sin(q[0]-q[1])  + q[4]*l1*cos(q[0]))/v1;
   W[1] = ((q[3]*l1*cos(q[0]) - 0.5*l1*l2*cos(q[0]-q[1]) + q[4]*l1*sin(q[0]) - l1*l1 )/v1) - r1;
 
@@ -944,6 +948,7 @@ extern "C" void W1(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, 
 extern "C" void g2(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, double* g, unsigned int sizeZ, double* z)
 {
   double v2 = fcnExpression2(q);
+  double r3 = z[1];
   g[0] = (r4-r3) - v2;
   g[1] =0.0;
 }
@@ -951,6 +956,8 @@ extern "C" void g2(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, 
 extern "C" void W2(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, double* W, unsigned int sizeZ, double* z)
 {
   double v2 = fcnExpression2(q);
+  double r3 = z[1];
+
   W[0] = 0.0;
   W[1] = 0.0;
 
@@ -976,6 +983,7 @@ extern "C" void W2(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, 
 extern "C" void g3(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, double* g, unsigned int sizeZ, double* z)
 {
   double v3 = fcnExpression3(q);
+  double r5 = z[2];
   g[0] = (r6-r5)-v3;
   g[1] =0.0;
 }
@@ -983,6 +991,8 @@ extern "C" void g3(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, 
 extern "C" void W3(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, double* W, unsigned int sizeZ, double* z)
 {
   double v3 = fcnExpression3(q);
+  double r5 = z[2];
+
   W[0] = 0.0;
   W[1] = 0.0;
 

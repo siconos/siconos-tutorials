@@ -2,6 +2,7 @@
 //==================================================================================================================
 #include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
+#include <SolverOptions.h>
 #include <stdlib.h>
 using namespace std;
 #define PI 3.141592653589793
@@ -78,6 +79,10 @@ int main(int argc, char* argv[])
     SP::SiconosVector ForceExtern(new SiconosVector(Nfreedom));
     (*ForceExtern)(1) = -MassBlock * GGearth;
     RockingBlock->setFExtPtr(ForceExtern);
+    std::vector<double> zparams = {LengthBlock, HeightBlock};
+    SP::SiconosVector zz(new SiconosVector(zparams));
+    RockingBlock->setzPtr(zz);
+
     //
     //----------------------------- Display variables of the dynamical system---------------------------------------
     cout << "Initial position of the rocking block:" << endl;

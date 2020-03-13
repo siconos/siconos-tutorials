@@ -2,6 +2,7 @@
 //==================================================================================================================
 #include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
+#include "SiconosAlgebraProd.hpp"
 #include <stdlib.h>
 using namespace std;
 #define PI 3.14159

@@ -1,16 +1,21 @@
 #include "SiconosKernel.hpp"
+#include "SolverOptions.h"
 #include <stdlib.h>
 using namespace std;
 
 #include <boost/timer/timer.hpp>
 #define PI 3.14159265
+
 // parameters according to Table 1
 // geometrical characteristics
+
 double l1 = 1.0;
 double l2 = 4.0;
 double l3 = 2.5;
 double l0 = 3.0;
+
 double r1 = 0.0;
+
 double r3 = 0.0;
 double r5 = 0.0;
 double Kp = 0.0;
@@ -121,7 +126,9 @@ int main(int argc, char* argv[])
     SP::SiconosVector z(new SiconosVector(3));
 
     SP::LagrangianDS fourbar(new LagrangianDS(q0, v0, "FourBarClearancePlugin:mass"));
-
+    std::vector<double> zparams = {r1, r3, r5, Kp, lmd};
+    SP::SiconosVector zz(new SiconosVector(zparams));
+    fourbar->setzPtr(zz); // for r1, r3, r5, Kp and lmd
     // external plug-in
     fourbar->setComputeFGyrFunction("FourBarClearancePlugin.so", "FGyr");
     fourbar->setComputeJacobianFGyrqFunction("FourBarClearancePlugin.so", "jacobianFGyrq");
@@ -194,7 +201,7 @@ int main(int argc, char* argv[])
     SP::MoreauJeanCombinedProjectionOSI OSI(new MoreauJeanCombinedProjectionOSI(0.5));
     // -- set the integrator for the four bar linkage --
 
-    SP::OneStepNSProblem impact(new FrictionContact(2,SICONOS_FRICTION_2D_PGS)); /*,SICONOS_FRICTION_2D_ENUM
+    SP::OneStepNSProblem impact(new FrictionContact(2,SICONOS_FRICTION_2D_NSGS)); /*,SICONOS_FRICTION_2D_ENUM
                                                                                    SICONOS_FRICTION_2D_LEMKE notworking //
                                                                                    SICONOS_FRICTION_2D_PGS=>working 0.75PI */
     impact->numericsSolverOptions()->dparam[0] = 1e-6;
