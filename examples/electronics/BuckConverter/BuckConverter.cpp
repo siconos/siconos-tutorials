@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
   double T = 200E-6;          // Total simulation time
 
   T = 300E-6;
-  bool test = false ;
+  bool test = true ;
   if (test)
   {
     T = 200E-8;
