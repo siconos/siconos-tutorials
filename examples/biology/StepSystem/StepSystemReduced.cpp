@@ -90,8 +90,10 @@ int main(int argc, char *argv[])
 // -- (3) Non smooth problem
   SP::Relay osnspb(new Relay(SICONOS_RELAY_LEMKE));
   osnspb->numericsSolverOptions()->dparam[0]=1e-08;
-  osnspb->numericsSolverOptions()->iparam[0]=0;  // Multiple solutions 0 or 1
-//  osnspb->numericsSolverOptions()->iparam[3]=48;
+
+  //SP::Relay osnspb(new Relay(SICONOS_RELAY_ENUM));
+  //osnspb->numericsSolverOptions()->iparam[SICONOS_LCP_IPARAM_ENUM_MULTIPLE_SOLUTIONS]=0;  // Multiple solutions 0 or 1
+  //osnspb->numericsSolverOptions()->iparam[3]=48;
 
   osnspb->setNumericsVerboseMode(0);
 
