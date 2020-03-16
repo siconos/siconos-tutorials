@@ -74,6 +74,9 @@ int main(int argc, char* argv[])
     (*Mass)(0, 0) = m;
     (*Mass)(1, 1) = m;
     SP::LagrangianDS simplependulum(new LagrangianLinearTIDS(q0, v0, Mass));
+    std::vector<double> zparams = {L};
+    SP::SiconosVector zz(new SiconosVector(zparams));
+    simplependulum->setzPtr(zz);
 
 
     SP::SiconosVector ForceExtern(new SiconosVector(nDof));

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as Numerics
-import siconos.kernel as Kernel
+import siconos.numerics as sn
+import siconos.kernel as sk
 
 with MechanicsHdf5Runner() as io:
     io.add_primitive_shape('Cube', 'Box', (1, 1, 1))
@@ -24,12 +24,15 @@ if test:
 else:
     T=3.
     
+options = sk.solver_options_create(sn.SICONOS_GENERIC_MECHANICAL_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 10000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-4
+
 with MechanicsHdf5Runner(mode='r+') as io:
     io.run(t0=0,
            T=T,
            h=0.001,
            theta=0.50001,
            Newton_max_iter=1,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=10000,
-           tolerance=1e-14)
+           solver_options=options,
+           )

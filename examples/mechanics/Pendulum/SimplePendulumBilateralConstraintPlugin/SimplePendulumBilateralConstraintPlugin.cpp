@@ -28,10 +28,9 @@ using namespace std;
 #undef restrict
 #define restrict __restrict
 
-extern "C" double L;
-
 SICONOS_EXPORT void h0(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfY, double* restrict  y, unsigned int sizeZ, double* restrict  z)
 {
+  double L = z[0];
   y[0] = pow(L, 2) - (pow(q[0], 2) + pow(q[1], 2));
 }
 

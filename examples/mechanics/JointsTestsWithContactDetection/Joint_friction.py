@@ -13,14 +13,14 @@ with MechanicsHdf5Runner() as io:
 
     io.add_object('heavy1', [Contactor('SmallBox')], translation=[0, 0, 4],
                   mass=1.0,
-                  velocity=[0, 0, 15 ,0 ,0 ,0 ])
+                  velocity=[0, 0, 15, 0, 0, 0])
     io.add_object('heavy2', [Contactor('SmallBox')], translation=[0, 0, -4],
                   mass=1.0,
-                  velocity=[0, 0, 15 ,0 ,0 ,0 ])
+                  velocity=[0, 0, 15, 0, 0, 0])
 
     io.add_object('big', [Contactor('BigBox')], translation=[0, 0, 0],
                   mass=0.1,
-                  velocity=[0,0,0,0,0,0])
+                  velocity=[0, 0, 0, 0, 0, 0])
 
     # We create a prismatic joint with friction on its axis.  In fact
     # as there is no "normal force" in a 1-D friction, it is expressed
@@ -29,13 +29,13 @@ with MechanicsHdf5Runner() as io:
 
     io.add_relay_nsl('friction', lb=-0.1, ub=0.1)
 
-    io.add_joint('joint1', 'big', None, None, [[0,0,1]], 'PrismaticJointR',
+    io.add_joint('joint1', 'big', None, None, [[0, 0, 1]], 'PrismaticJointR',
                  friction='friction')
 
-options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options = sk.solver_options_create(sn.SICONOS_GENERIC_MECHANICAL_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
 options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-4
- 
+
 with MechanicsHdf5Runner(mode='r+') as io:
     io.run(t0=0,
            T=8,

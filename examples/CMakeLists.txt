@@ -121,7 +121,7 @@ if(${kernel_installed} GREATER -1)
   # sharing a double between an executable and a library is hackisch
   if(MSVC)
     list(APPEND EXCLUDE_PATTERN_FROM_TESTS RockingBlock Pendulum)
-  endif(MSVC)
+  endif()
 
 endif()
 
@@ -172,6 +172,13 @@ if(${mechanics_installed} GREATER -1)
       mechanics/RollingFriction
       )
     list(APPEND EXAMPLES_DIRECTORIES ${mechanics_bullet_examples})
+
+    find_python_module(pylmgc90)
+    
+    if(NOT pylmgc90_FOUND)
+      list(APPEND EXCLUDE_PATTERN_FROM_TESTS mkspheres spheres_in_a_box)
+    endif()
+
   endif()
   if(SICONOS_HAS_OCE)
     message(STATUS "add examples requiring oce")
