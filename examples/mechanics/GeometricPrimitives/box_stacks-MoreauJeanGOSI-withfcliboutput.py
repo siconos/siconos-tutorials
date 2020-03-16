@@ -15,6 +15,24 @@ from siconos.io.FrictionContactTrace import FrictionContactTraceParams
 # A collection of box stacks for stress-testing Siconos solver with
 # chains of contacts.
 
+
+test=True
+if test:
+    step = 125
+    hstep = 1e-2
+    itermax=100
+    tolerance = 1e-03
+    size_stack=2
+else:
+    step = 125
+    hstep = 1e-2
+    itermax=1000
+    tolerance = 1e-12
+    size_stack=5
+
+
+
+
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
 
@@ -42,13 +60,13 @@ with MechanicsHdf5Runner() as io:
             z += height + sep
 
     # A column
-    make_stack(0, -10, 1, 1, 5)
+    make_stack(0, -10, 1, 1, size_stack)
 
     # A pyramid
-    make_stack(0, 0, 5, 5, 5)
+    make_stack(0, 0, size_stack, size_stack, size_stack)
 
     # A wall
-    make_stack(0, 10, 1, 5, 5)
+    make_stack(0, 10, 1, size_stack, size_stack)
 
     # Definition of the ground
     io.add_primitive_shape('Ground', 'Box', (50, 50, 0.1))
@@ -68,12 +86,8 @@ with MechanicsHdf5Runner() as io:
     
 solver = sn.SICONOS_GLOBAL_FRICTION_3D_ADMM
 
-step = 125
-hstep = 1e-2
-itermax = 1000
 dump_probability = .02
 theta = 0.50
-tolerance = 1e-12
 
 if not os.path.exists('box_stacks'):
     os.mkdir('box_stacks')

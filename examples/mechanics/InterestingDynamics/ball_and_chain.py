@@ -114,7 +114,7 @@ with MechanicsHdf5Runner() as io:
 
 
 
-test=False
+test=True
 if test==True:
     T=0.1
     hstep=1e-3
