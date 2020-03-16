@@ -61,9 +61,15 @@ bullet_options.contactBreakingThreshold = 0.01
 
 
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
-options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100000
-options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-8
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-5
 
+
+test= True
+if test:
+    T=4.0
+else:
+    T=10.0
 
 
 with MechanicsHdf5Runner(mode='r+') as io:
@@ -72,12 +78,12 @@ with MechanicsHdf5Runner(mode='r+') as io:
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,
     # sizes of small objects may need to be expressed in cm or mm.
-
-    # print(pydoc.render_doc(io.run, "Help on %s"))
+    #import pydoc
+    #print(pydoc.render_doc(io.run, "Help on %s"))
 
     io.run(with_timer=False,
            t0=0,
-           T=10,
+           T=T,
            h=0.005,
            multipoints_iterations=True,
            theta=0.50001,

@@ -100,8 +100,12 @@ options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100
 options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-4
 
+test=True
+if test:
+    nstep = 100
+else:
+    nstep = 2000
 
-nstep = 2000
 step = 0.005
 with MechanicsHdf5Runner(mode='r+') as io:
 

@@ -50,6 +50,11 @@ with MechanicsHdf5Runner() as io:
     io.add_object('ground', [Contactor('Ground')],
                   translation=[0, 0, 0])
 
+test= True
+if test:
+    T=1.0
+else:
+    T=20.0
 
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
@@ -60,4 +65,4 @@ with MechanicsHdf5Runner(mode='r+') as io:
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,
     # sizes of small objects may need to be expressed in cm or mm.
-    io.run()
+    io.run(T=T)

@@ -27,9 +27,18 @@ if float(mu) < 0.1 or float(mu) > 2.0:
 fn = 'tesselation-{0}-mu-{1}.hdf5'.format(dist,mu)
 
 
-filename='n100-id1.tess'
+test=True
 
-fn = 'tesselation.hdf5'
+if test:
+    hstep=1e-3
+    T = hstep*1000
+    filename='n5-id1.tess'
+    fn = 'tesselation.hdf5'
+else:
+    hstep=1e-3
+    T = hstep*10000
+    filename='n100-id1.tess'
+    fn = 'tesselation.hdf5'
 
 tesselation = read_tess.read_tesselation(filename)
 
@@ -103,8 +112,7 @@ with MechanicsHdf5Runner(mode='w', io_filename=fn) as io:
 
     io.add_Newton_impact_friction_nsl('contact', mu=1.0, e=0.0)
 
-hstep=1e-3
-T = hstep*10000
+
 
 # Create solver options
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)

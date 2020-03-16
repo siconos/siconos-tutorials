@@ -29,17 +29,19 @@ plane_thickness = 0.2
 
 test = True
 if test:
-    n_layer = 10
+    n_layer = 2
     n_row = 2
     n_col = 2
-    step = 500
+    step = 200
     hstep = 1e-3
+    itermax=1000
 else:
     n_layer = 200
     n_row = 2
     n_col = 16
     step = 20000
     hstep = 1e-4
+    itermax=10000
 
 # Create solver options
 with MechanicsHdf5Runner(mode='w') as io:
@@ -55,7 +57,7 @@ with MechanicsHdf5Runner(mode='w') as io:
 
     io.add_Newton_impact_friction_nsl('contact', mu=1.0, e=0.01)
 
-itermax = 10000
+
 dump_probability = .02
 theta = 1.0
 tolerance = 1e-03

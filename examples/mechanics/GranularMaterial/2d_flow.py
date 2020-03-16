@@ -123,9 +123,9 @@ def create_grains(io, n_row=5, n_col=5, x_shift=3.0,
 
 test = True
 if test:
-    n_row = 10
-    n_col = 5
-    T = 3.0
+    n_row = 5
+    n_col = 3
+    T = 1.0
     hstep = 1e-3
 else:
     n_row = 50
@@ -171,7 +171,7 @@ with MechanicsHdf5Runner(mode='r+') as io:
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     io.run(verbose=True,
-           with_timer=True,
+           with_timer=False,
            bullet_options=bullet_options,
            face_class=None,
            edge_class=None,
@@ -185,6 +185,6 @@ with MechanicsHdf5Runner(mode='r+') as io:
            solver_options=options,
            numerics_verbose=True,
            output_frequency=100,
-           explode_Newton_solve=True,
+           explode_Newton_solve=False,
            display_Newton_convergence=False,
            )

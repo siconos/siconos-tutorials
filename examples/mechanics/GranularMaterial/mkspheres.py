@@ -12,7 +12,12 @@
 
 
 import numpy
-from pylmgc90 import pre
+try:
+    from pylmgc90 import pre
+except:
+    print('pylmgc90 is not found !!!, exit')
+    exit(0)
+
 import sys
 
 radius_min = 0.001
