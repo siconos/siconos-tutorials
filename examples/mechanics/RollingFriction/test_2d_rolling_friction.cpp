@@ -26,7 +26,7 @@
 */
 #include <boost/timer/timer.hpp>
 #include "SiconosKernel.hpp"
-
+#include "SolverOptions.h"
 using namespace std;
 
 class MyCollisionManager : public InteractionManager
@@ -173,8 +173,8 @@ int main(int argc, char* argv[])
 
     // -- (3) one step non smooth problem
     SP::OneStepNSProblem osnspb(new RollingFrictionContact(3));
-    //SP::OneStepNSProblem osnspb(new LCP());
-
+    osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-12;
+    
     // -- (4) Simulation setup with (1) (2) (3)
     SP::TimeStepping s(new TimeStepping(bouncingBall, t, OSI, osnspb));
 
