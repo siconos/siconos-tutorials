@@ -160,9 +160,8 @@ int main(int argc, char* argv[])
 #else
     SP::OneStepNSProblem impact(new LCP(SICONOS_LCP_LEMKE));
 #endif
-    impact->numericsSolverOptions()->dparam[0] = 1e-08;
-    impact->numericsSolverOptions()->iparam[0] = 100;
-    impact->numericsSolverOptions()->iparam[2] = 1; // random
+    impact->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-12;
+    impact->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 100;
     SP::TimeStepping s(new TimeStepping(sliderWithClearance, t));
     s->insertIntegrator(OSI);
     s->insertNonSmoothProblem(impact, SICONOS_OSNSP_TS_VELOCITY);
