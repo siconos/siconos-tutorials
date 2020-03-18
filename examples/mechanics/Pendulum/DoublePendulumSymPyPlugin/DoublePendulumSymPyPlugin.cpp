@@ -26,6 +26,13 @@
 
 #include "pendulum.h"
 
+
+#include "Inertia.cxx"
+#include "JacobianQNNL.cxx"
+#include "JacobianVNNL.cxx"
+#include "NNLEffects.cxx"
+
+
 double l1 = 1.0 ;
 double l2 = 1.0 ;
 
