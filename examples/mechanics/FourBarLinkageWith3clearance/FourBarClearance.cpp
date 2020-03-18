@@ -43,6 +43,7 @@ int main(int argc, char* argv[])
     double t0 = 0;                   // initial computation time
     double T = 1.0;                   // final computation time
     double h = 1e-4;                // time step
+    //T = 2*h;
     //double criterion = 1e-6;
     //unsigned int maxIter = 2000;
     char  filename[50] = "simu_";
@@ -123,10 +124,8 @@ int main(int argc, char* argv[])
     (*v0)(1) = 0.0;
     (*v0)(2) = 0.0;
 
-    SP::SiconosVector z(new SiconosVector(3));
-
     SP::LagrangianDS fourbar(new LagrangianDS(q0, v0, "FourBarClearancePlugin:mass"));
-    std::vector<double> zparams = {r1, r3, r5, Kp, lmd};
+    std::vector<double> zparams = {0.0, 0.0, 0.0, r1, r3, r5, Kp, lmd};
     SP::SiconosVector zz(new SiconosVector(zparams));
     fourbar->setzPtr(zz); // for r1, r3, r5, Kp and lmd
     // external plug-in
@@ -187,7 +186,6 @@ int main(int argc, char* argv[])
     // ----------------
     // --- Simulation ---
     // ----------------
-    fourbar-> setzPtr(z);
     fourbar->computeForces(t0, fourbar->q(), fourbar->velocity());
 
     inter->computeOutput(t0,0);
@@ -309,7 +307,7 @@ int main(int argc, char* argv[])
     dataPlot(0, 36) =0.5*((*v)(0)-6.0*0.75*PI*cos(0.75*PI*h))*((*v)(0)-6.0*0.75*PI*cos(0.75*PI*h)) + 0.5*3000.0*((*q)(0)-6.0*sin(0.75*PI*h))*((*q)(0)-6.0*sin(0.75*PI*h)) + 0.5*10.0*((*v)(0)-6.0*0.75*PI*cos(0.75*PI*h))*((*q)(0)-6.0*sin(0.75*PI*h));
     dataPlot(0, 37) = 6.0*sin(0.75*PI*h);
     dataPlot(0, 38) = 6.0*0.75*PI*cos(0.75*PI*h);
-    dataPlot(0, 39) = (*z)(2);
+    dataPlot(0, 39) = (*zz)(2);
     dataPlot(0, 40) =0.5*(((*v)(0)-6.0*0.75*PI*cos(0.75*PI*h))+ 10.0*((*q)(0)-6.0*sin(0.75*PI*h)))*(((*v)(0)-6.0*0.75*PI*cos(0.75*PI*h))+ 10.0*((*q)(0)-6.0*sin(0.75*PI*h)));
     dataPlot(0, 41) =0.5*((*inter->y(1))(0)*(*inter->y(1))(0));
     boost::timer::auto_cpu_timer time;
@@ -378,7 +376,7 @@ int main(int argc, char* argv[])
       dataPlot(kk, 36) = 0.5*((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt))*((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt)) + 0.5*3000.0*((*q)(0)-6.0*sin(0.75*PI*tt))*((*q)(0)-6.0*sin(0.75*PI*tt)) + 0.5*10.0*((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt))*((*q)(0)-6.0*sin(0.75*PI*tt));
       dataPlot(kk, 37) = 6.0*sin(0.75*PI*tt);
       dataPlot(kk, 38) = 6.0*0.75*PI*cos(0.75*PI*tt);
-      dataPlot(kk, 39) = (*z)(2);
+      dataPlot(kk, 39) = (*zz)(2);
       dataPlot(kk, 40) = 0.5*(((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt))+ 10.0*((*q)(0)-6.0*sin(0.75*PI*tt)))*(((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt))+ 10.0*((*q)(0)-6.0*sin(0.75*PI*tt)));
       dataPlot(kk, 41) = 0.5*((*inter->y(1))(0)*(*inter->y(1))(0));
 
@@ -454,7 +452,7 @@ int main(int argc, char* argv[])
     }
 
     cout << "\nEnd of computation - Number of iterations done: " << k << endl;
-cout << "Computation Time " << endl;;
+    cout << "Computation Time " << endl;;
     time.report();    // --- Output files ---
     dataPlot.resize(kk, outputSize);
     ioMatrix::write(filename, "ascii", dataPlot, "noDim");
