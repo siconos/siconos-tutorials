@@ -298,7 +298,7 @@ int main(int argc, char* argv[])
     Index index(11);
     for (int k =0; k< 11; k++) index.push_back(k);
     // Comparison with a reference file
-    double error=0.0, eps=1e-12;
+    double error=0.0, eps=1e-10;
     if ((error=ioMatrix::compareRefFile(DataPlot, "RockingBlockED_NewMarkAlpha.ref",
                                         eps, index)) >= 0.0
         && error > eps)
