@@ -78,6 +78,9 @@ int main(int argc, char* argv[])
     SP::SiconosVector ForceExtern(new SiconosVector(Nfreedom));
     (*ForceExtern)(1) = -MassBlock * GGearth;
     RockingBlock->setFExtPtr(ForceExtern);
+    std::vector<double> zparams = {LengthBlock, HeightBlock};
+    SP::SiconosVector zz(new SiconosVector(zparams));
+    RockingBlock->setzPtr(zz);
     //
     //----------------------------- Display variables of the dynamical system---------------------------------------
     cout << "Initial position of the rocking block:" << endl;
@@ -161,8 +164,6 @@ int main(int argc, char* argv[])
     SP::SiconosVector GapCon2 = inter2->y(0);
     SP::SiconosVector VelCon1 = inter1->y(1);
     SP::SiconosVector VelCon2 = inter2->y(1);
-    SP::SiconosVector LambdaCon1 = inter1->lambda(2);
-    SP::SiconosVector LambdaCon2 = inter2->lambda(2);
     SP::InteractionsGraph indexSet0 = RoBlockModel->topology()->indexSet(0);
     cout << "Size of IndexSet0: " << indexSet0->size() << endl;
 
@@ -181,8 +182,8 @@ int main(int argc, char* argv[])
     DataPlot(0, 8) = (*GapCon2)(0);  // Gap at second contact
     DataPlot(0, 9) = (*VelCon1)(0);  // Relative velocity at first contact
     DataPlot(0, 10) = (*VelCon2)(0);  // Relative velocity at second contact
-    DataPlot(0, 11) = (*LambdaCon1)(0); // Force at first contact
-    DataPlot(0, 12) = (*LambdaCon2)(0); // Force at second contact
+    DataPlot(0, 11) = 0.0; //(*LambdaCon1)(0); // Force at first contact
+    DataPlot(0, 12) = 0.0; //(*LambdaCon2)(0); // Force at second contact
     //----------------------------------- Simulation starts ----------------------------------------------------------
     cout << "====> Start computation ... " << endl << endl;
     bool NSEvent = false;
@@ -191,6 +192,9 @@ int main(int argc, char* argv[])
     while (EDscheme->hasNextEvent() && (k < NpointSave))
     {
       EDscheme->advanceToEvent(); // lead the simulation run from one event to the next
+      SP::SiconosVector LambdaCon1 = inter1->lambda(2);
+      SP::SiconosVector LambdaCon2 = inter2->lambda(2);
+
       //---------- detect the statue of the current event ------------------------------------
       if (eventsManager->nextEvent()->getType() == 2) // the current event is non-smooth
       {
