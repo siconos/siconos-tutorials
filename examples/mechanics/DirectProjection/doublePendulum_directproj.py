@@ -64,15 +64,16 @@ with MechanicsHdf5Runner() as io:
     # Mass1
     io.add_object('arm1', [Contactor('Mass1'),
                            Contactor('Arm1',
-                                     relative_translation=[0, r1+l1/2., 0])],
+                                     relative_translation=[0, r1 + l1 / 2., 0]
+                                     )],
                   translation=[0, 0, r2 + gap + r2 + l2 + r1 + hgap],
-                  orientation=((1, 0, 0), pi/2),
+                  orientation=((1, 0, 0), pi / 2),
                   mass=m1)
 
     # second branch + second mass
     io.add_object('arm2', [Contactor('Mass2'),
                            Contactor('Arm2',
-                                     relative_translation=[0, r2+l2/2., 0])],
+                                     relative_translation=[0, r2 + l2 / 2., 0])],
                   translation=[0, 0, r2 + gap],
                   orientation=((1, 0, 0), pi/2),
                   velocity=[0, 20, 0, 0, 0, 0],
