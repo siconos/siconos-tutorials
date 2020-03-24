@@ -128,7 +128,7 @@ int main()
 
     // -- Some configuration
 
-    osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 1000; // Max number of
+    osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 10000; // Max number of
     // iterations
     osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-5; // Tolerance
 
