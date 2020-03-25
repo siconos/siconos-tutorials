@@ -209,7 +209,7 @@ int main(int argc, char* argv[])
     cout << "====> Output file writing ..." << endl << endl;
     ioMatrix::write("SimplePendulumED_AlphaScheme.dat", "ascii", DataPlot, "noDim");
 
-    double error=0.0, eps=1e-12;
+    double error=0.0, eps=1e-10;
     if ((error=ioMatrix::compareRefFile(DataPlot, "SimplePendulumED_AlphaScheme.ref", eps)) >= 0.0
         && error > eps)
       return 1;
