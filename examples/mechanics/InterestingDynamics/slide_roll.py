@@ -140,7 +140,7 @@ else:
 # Create solver options
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 10000
-options.iparam[sn.SICONOS_DPARAM_TOL] = 1e-8
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-8
 
 with MechanicsHdf5Runner(mode='r+') as io:
 

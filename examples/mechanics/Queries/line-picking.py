@@ -61,7 +61,7 @@ class LinePicker():
 # Create solver options
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
-options.iparam[sn.SICONOS_DPARAM_TOL] = 1e-5
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-5
 
 with MechanicsHdf5Runner(mode='r+') as io:
 

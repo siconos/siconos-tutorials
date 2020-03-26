@@ -59,7 +59,7 @@ with MechanicsHdf5Runner() as io:
 # Create solver options
 options = sk.solver_options_create(sn.SICONOS_ROLLING_FRICTION_3D_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100000
-options.iparam[sn.SICONOS_DPARAM_TOL] = 1e-8
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-8
 
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done

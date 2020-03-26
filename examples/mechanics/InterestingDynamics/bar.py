@@ -113,7 +113,7 @@ def apply_forces(body):
 # Create solver options
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
-options.iparam[sn.SICONOS_DPARAM_TOL] = 1e-14
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-14
 with MechanicsHdf5Runner(mode='r+', collision_margin=0.01) as io:
 
     # By default earth gravity is applied and the units are those
