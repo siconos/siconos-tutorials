@@ -121,16 +121,17 @@ with MechanicsHdf5Runner() as io:
 options = sk.solver_options_create(sn.SICONOS_GENERIC_MECHANICAL_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 10000
 options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-8
-test=True
 
+options = None
+test=True
 if test:
-    T = 1.0
+    T = 0.2
 else:
     T = 20
 
 with MechanicsHdf5Runner(mode='r+') as io:
     io.run(h=0.01,
-           T=20,
+           T=T,
            solver_options=options,
            time_stepping=sk.TimeSteppingDirectProjection,
            osi=sk.MoreauJeanDirectProjectionOSI,
