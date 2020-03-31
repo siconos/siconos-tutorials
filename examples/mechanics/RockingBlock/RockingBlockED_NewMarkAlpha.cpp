@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
     SP::TimeDiscretisation TimeDiscret(new TimeDiscretisation(TimeInitial, StepSize));
     //2. Integration solver for one step
     SP::OneStepIntegrator OSI(new NewMarkAlphaOSI(_rho, IsHandleVelConstraint));
-    SP::NewMarkAlphaOSI _NewMarkAlpha = std11::static_pointer_cast<NewMarkAlphaOSI>(OSI);
+    SP::NewMarkAlphaOSI _NewMarkAlpha = std::static_pointer_cast<NewMarkAlphaOSI>(OSI);
     //3. Nonsmooth problem
     SP::OneStepNSProblem impact(new LCP());
     SP::OneStepNSProblem position(new LCP());
@@ -275,7 +275,7 @@ int main(int argc, char* argv[])
       // cout << "Acceleration: ";
       // AcceBlock->display();
       // cout << "Information on contacts" << endl;
-      // for(std11::tie(ui,uiend) = indexSet0->vertices(); ui!=uiend; ++ui)
+      // for(std::tie(ui,uiend) = indexSet0->vertices(); ui!=uiend; ++ui)
       //   {
       //     SP::Interaction inter = indexSet0->bundle(*ui);
       //     cout << "Contact number: " << inter->number() << endl;

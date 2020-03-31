@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
 
     // =========================== End of model definition ===========================
 
-    // SP::LsodarOSI lsodar = std11::static_pointer_cast<LsodarOSI>(OSI);
+    // SP::LsodarOSI lsodar = std::static_pointer_cast<LsodarOSI>(OSI);
     // lsodar->setMinMaxStepSizes(9.5e-4,1.0e-3);
     // lsodar->setTol(1,1.0e-3,1.0e-6);
     // lsodar->setMaxOrder(2, 2);

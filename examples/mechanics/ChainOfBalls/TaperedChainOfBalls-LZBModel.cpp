@@ -205,7 +205,7 @@ int main(int argc, char* argv[]){
     // -- (3) Non smooth problem --
     SP::OneStepNSProblem impact(new OSNSMultipleImpact(TypeContactLaw,DelPest));
     //SP::OneStepNSProblem impact(new OSNSMultipleImpact(TypeContactLaw,NestImpact));
-    SP::OSNSMultipleImpact multiple_impact = std11::dynamic_pointer_cast<OSNSMultipleImpact>(impact);
+    SP::OSNSMultipleImpact multiple_impact = std::dynamic_pointer_cast<OSNSMultipleImpact>(impact);
     multiple_impact->SetSaveData(_IsSaveDataImpact);
     multiple_impact->SetNameOutput(impact_data_name.c_str());
     multiple_impact->SetNstepSave(Nstep_save_impact);
@@ -255,7 +255,7 @@ int main(int argc, char* argv[]){
       for (boost::tie(ui,uiend) = DSG0->vertices(); ui!=uiend; ++ui)
 	    {
 	      SP::DynamicalSystem ds = DSG0->bundle(*ui);
-	      SP::LagrangianDS lag_ds = std11::dynamic_pointer_cast<LagrangianDS>(ds);
+	      SP::LagrangianDS lag_ds = std::dynamic_pointer_cast<LagrangianDS>(ds);
 	      SP::SiconosVector q = lag_ds->q();
 	      SP::SiconosVector v = lag_ds->velocity();
 	      dataPlot(k,col_pos) = (*q)(0);
@@ -281,7 +281,7 @@ int main(int argc, char* argv[]){
 	      for (boost::tie(ui,uiend) = DSG0->vertices(); ui!=uiend; ++ui)
         {
           SP::DynamicalSystem ds = DSG0->bundle(*ui);
-          SP::LagrangianDS lag_ds = std11::dynamic_pointer_cast<LagrangianDS>(ds);
+          SP::LagrangianDS lag_ds = std::dynamic_pointer_cast<LagrangianDS>(ds);
           const SiconosVector& q = lag_ds->qMemory().getSiconosVector(1);
           const SiconosVector& v = lag_ds->velocityMemory().getSiconosVector(1);
           dataPlot(k,col_pos) = q(0);

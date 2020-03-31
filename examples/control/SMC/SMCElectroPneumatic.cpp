@@ -108,8 +108,8 @@ int main(int argc, char* argv[])
   cout << "====> Simulation initialisation ..." << endl << endl;
   // initialise the process and the ControlManager
   simLsodar->initialize();
-//  (std11::static_pointer_cast<LsodarOSI>(simLsodar->integrator()))->setJT(1);
-//  (std11::static_pointer_cast<LsodarOSI>(simLsodar->integrator()))->setMaxOrder(0, 5);
+//  (std::static_pointer_cast<LsodarOSI>(simLsodar->integrator()))->setJT(1);
+//  (std::static_pointer_cast<LsodarOSI>(simLsodar->integrator()))->setMaxOrder(0, 5);
   simLsodar->run();
   SimpleMatrix& data = *simLsodar->data();
   ioMatrix::write("SMCElectroPneumatic.dat", "ascii", data, "noDim");

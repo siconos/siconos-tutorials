@@ -39,11 +39,11 @@
 SP::RigidBodyDS makeBox(float g, float pos, float vel)
 {
   // -- Shape: cube with all dimensions=1.0
-  SP::SiconosBox box1(std11::make_shared<SiconosBox>(1.0, 1.0, 1.0));
+  SP::SiconosBox box1(std::make_shared<SiconosBox>(1.0, 1.0, 1.0));
 
   // -- Initial position and velocity
-  SP::SiconosVector q0(std11::make_shared<SiconosVector>(7));
-  SP::SiconosVector v0(std11::make_shared<SiconosVector>(6));
+  SP::SiconosVector q0(std::make_shared<SiconosVector>(7));
+  SP::SiconosVector v0(std::make_shared<SiconosVector>(6));
   v0->zero();
   q0->zero();
 
@@ -52,15 +52,15 @@ SP::RigidBodyDS makeBox(float g, float pos, float vel)
   (*v0)(2) = vel;
 
   // -- The dynamical system --
-  SP::RigidBodyDS body(std11::make_shared<RigidBodyDS>(q0, v0, 1.0));
+  SP::RigidBodyDS body(std::make_shared<RigidBodyDS>(q0, v0, 1.0));
 
   // -- add the box to the body's set of contactactors
   // -- by default, the contactor id is 0 with no position offset,
   //    see SiconosContactor.hpp for how to change these.
-  body->contactors()->push_back(std11::make_shared<SiconosContactor>(box1));
+  body->contactors()->push_back(std::make_shared<SiconosContactor>(box1));
 
   // -- Set external forces (weight) --
-  SP::SiconosVector FExt(std11::make_shared<SiconosVector>(3));
+  SP::SiconosVector FExt(std::make_shared<SiconosVector>(3));
   FExt->zero();
   FExt->setValue(2, - g * body->scalarMass());
   body->setFExtPtr(FExt);
@@ -108,11 +108,11 @@ int main()
     // -- Add the dynamical system in the non smooth dynamical system
     model->insertDynamicalSystem(body);
 
-    SP::SiconosPlane ground(std11::make_shared<SiconosPlane>());
+    SP::SiconosPlane ground(std::make_shared<SiconosPlane>());
 
     // -- Create a Z-offset of -0.5 for the ground so that contact is
     //    at zero.
-    SP::SiconosVector groundOffset(std11::make_shared<SiconosVector>(7));
+    SP::SiconosVector groundOffset(std::make_shared<SiconosVector>(7));
     (*groundOffset)(2) = -0.5;  // translation 0,0,-0.5
     (*groundOffset)(3) = 1;     // orientation 1,0,0,0
 
@@ -163,7 +163,7 @@ int main()
     // -- The collision manager performs broadphase collision
     //    detection, we use the Bullet implementation here.
     SP::SiconosBulletCollisionManager collision_manager(
-      std11::make_shared<SiconosBulletCollisionManager>(options));
+      std::make_shared<SiconosBulletCollisionManager>(options));
 
     // -- insert a non smooth law for contactors id 0
     collision_manager->insertNonSmoothLaw(nslaw, 0, 0);
@@ -176,8 +176,8 @@ int main()
     //    equivalently it could be applied to the SiconosContactor
     //    inside the set, this is a design choice allowing for re-use
     //    for more complex compound contactor sets.
-    SP::SiconosContactorSet staticCtrSet(std11::make_shared<SiconosContactorSet>());
-    staticCtrSet->push_back(std11::make_shared<SiconosContactor>(ground));
+    SP::SiconosContactorSet staticCtrSet(std::make_shared<SiconosContactorSet>());
+    staticCtrSet->push_back(std::make_shared<SiconosContactor>(ground));
     collision_manager->insertStaticContactorSet(staticCtrSet, groundOffset);
 
     // -- MoreauJeanOSI Time Stepping with Bullet collision manager as

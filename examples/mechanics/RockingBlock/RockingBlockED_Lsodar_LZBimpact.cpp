@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
     SP::OneStepIntegrator OSI(new LsodarOSI());
     //3. Nonsmooth problem
     SP::OneStepNSProblem impact(new OSNSMultipleImpact(TypeContactLaw, DelP));
-    SP::OSNSMultipleImpact multiple_impact = std11::dynamic_pointer_cast<OSNSMultipleImpact>(impact);
+    SP::OSNSMultipleImpact multiple_impact = std::dynamic_pointer_cast<OSNSMultipleImpact>(impact);
     multiple_impact->SetSaveData(_IsSaveDataImpact);
     multiple_impact->SetNameOutput(impact_data_name.c_str());
     multiple_impact->SetNstepSave(Nstep_save_impact);
@@ -150,7 +150,7 @@ int main(int argc, char* argv[])
     //                    V. Process the simulation
     //==================================================================================================================
     // -------------------------------- Simulation initialization ------------------------------------------------------
-    //SP::LsodarOSI lsodar = std11::static_pointer_cast<LsodarOSI>(OSI);
+    //SP::LsodarOSI lsodar = std::static_pointer_cast<LsodarOSI>(OSI);
     //lsodar->setMinMaxStepSizes(1.0e-3,1.0e-3);
     //lsodar->setTol(1,1.0e-3,1.0e-6);
     //lsodar->setMaxOrder(2, 2);
@@ -248,7 +248,7 @@ int main(int argc, char* argv[])
       // cout << "Acceleration: ";
       // AcceBlock->display();
       // cout << "Information on contacts" << endl;
-      // for(std11::tie(ui,uiend) = indexSet0->vertices(); ui!=uiend; ++ui)
+      // for(std::tie(ui,uiend) = indexSet0->vertices(); ui!=uiend; ++ui)
       //   {
       //     SP::Interaction inter = indexSet0->bundle(*ui);
       //     cout << "Contact number: " << inter->number() << endl;

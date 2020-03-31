@@ -48,14 +48,14 @@ public:
     // std::cout<< "Call to updateInteractions in MyCollisionManager" << std::endl;
     InteractionsGraph::VIterator ui, uiend;
     SP::InteractionsGraph indexSet0 = simulation->nonSmoothDynamicalSystem()->topology()->indexSet0();
-    for(std11::tie(ui, uiend) = indexSet0->vertices(); ui != uiend; ++ui)
+    for(std::tie(ui, uiend) = indexSet0->vertices(); ui != uiend; ++ui)
     {
       SP::Interaction inter(indexSet0->bundle(*ui));
       //inter->display();
       if (inter->number()==0)
       {
-        SP::Lagrangian2d2DR r = std11::static_pointer_cast<Lagrangian2d2DR> (inter->relation());
-        SP::LagrangianLinearTIDS ds1(std11::dynamic_pointer_cast<LagrangianLinearTIDS>(
+        SP::Lagrangian2d2DR r = std::static_pointer_cast<Lagrangian2d2DR> (inter->relation());
+        SP::LagrangianLinearTIDS ds1(std::dynamic_pointer_cast<LagrangianLinearTIDS>(
                                        indexSet0->properties(*ui).source));
         SP::SiconosVector rpc = r->relPc1();
         SP::SiconosVector nnc = r->relNc();
