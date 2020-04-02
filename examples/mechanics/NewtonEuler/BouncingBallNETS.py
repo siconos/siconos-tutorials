@@ -41,7 +41,7 @@ class BouncingBallR(NewtonEuler1DR):
         #print(q)
         
         vec_q = SiconosVector()
-        vec_q.initFromBlock(q)
+        vec_q.block2contiguous(q)
         
       
         height = vec_q[0] - self._ballRadius
