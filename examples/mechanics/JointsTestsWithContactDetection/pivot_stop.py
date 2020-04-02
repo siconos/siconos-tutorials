@@ -98,12 +98,19 @@ class Ctrl(object):
 options = sk.solver_options_create(sn.SICONOS_GENERIC_MECHANICAL_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100000
 options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-10
-sk.solver_options_update_internal(options, 1, sn.SICONOS_FRICTION_3D_ONECONTACT_NSN) 
+sk.solver_options_update_internal(options, 1, sn.SICONOS_FRICTION_3D_ONECONTACT_NSN)
+
+
+
+options=None
+
+h = 0.001
+T= 20* h
 # Run the simulation
 with MechanicsHdf5Runner(mode='r+') as io:
     io.run(t0=0,
-           T=10,
-           h=0.0002,
+           T=T,
+           h=h,
            theta=0.50001,
            Newton_max_iter=1,
            solver_options=options,
@@ -114,4 +121,5 @@ with MechanicsHdf5Runner(mode='r+') as io:
            projection_tolerance_unilateral=1e-5,
            time_stepping=sk.TimeSteppingDirectProjection,
            osi=sk.MoreauJeanDirectProjectionOSI,
+           numerics_verbose=True
     )
