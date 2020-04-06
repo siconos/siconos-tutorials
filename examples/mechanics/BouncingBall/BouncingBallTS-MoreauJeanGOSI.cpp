@@ -26,9 +26,8 @@
 */
 
 #include "SiconosKernel.hpp"
-#include <boost/timer/timer.hpp>
 #include "SolverOptions.h"
-
+#include <chrono>
 using namespace std;
 
 int main(int argc, char* argv[])

@@ -26,8 +26,7 @@
   */
 
 #include "SiconosKernel.hpp"
-#include <boost/timer/timer.hpp>
-
+#include <chrono>
 using namespace std;
 
 int main(int argc, char* argv[])
@@ -149,10 +148,8 @@ int main(int argc, char* argv[])
 
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    
-
-    boost::timer::auto_cpu_timer time;
-    
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     while (s->hasNextEvent())
     {
       s->advanceToEvent();
@@ -163,25 +160,28 @@ int main(int argc, char* argv[])
       // --- Get values to be plotted ---
       //  if (fmod(s->nextTime(), hplot) < h)
       {
- 
+
         //std::cout << "k=" << k <<std::endl;
         dataPlot(k, 0) =  s->nextTime();
         dataPlot(k, 1) = (*q)(0);
         dataPlot(k, 2) = (*v)(0);
         dataPlot(k, 3) = (*p)(0);
-        dataPlot(k, 4) = (*lambda)(0);  
+        dataPlot(k, 4) = (*lambda)(0);
         dataPlot(k, 5) = (*p2)(0);
         dataPlot(k, 6) = (*lambda2)(0);
         k++;
       }
 
       s->processEvents();
-      
+      progressBar((double)k/N);
     }
 
-    cout << endl << "End of computation - Number of iterations done: " << N - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                             (end-start).count();
+    cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
+    cout << "Computation time : " << elapsed << " ms" << endl;
+
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result_tdg.dat", "ascii", dataPlot, "noDim");
@@ -191,7 +191,7 @@ cout << "Computation Time " << endl;;
                                         eps)) >= 0.0
         && error > eps)
       return 1;
-    
+
 
 
 
@@ -208,4 +208,3 @@ cout << "Computation Time " << endl;;
     return 1;
   }
 }
-

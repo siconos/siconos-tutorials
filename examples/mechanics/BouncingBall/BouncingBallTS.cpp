@@ -26,6 +26,7 @@
 */
 
 #include <SiconosKernel.hpp>
+#include <chrono>
 using namespace std;
 
 
