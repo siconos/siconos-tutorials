@@ -25,9 +25,9 @@
   Simulation with a Time-Stepping scheme.
 */
 
-#include <boost/timer/timer.hpp>
 #include <SiconosKernel.hpp>
 using namespace std;
+
 
 int main(int argc, char* argv[])
 {
@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
     // ================================= Computation =================================
 
 
-    int N = ceil((T - t0) / h)+10000; // Number of time steps
+    int N = ceil((T - t0) / h); // Number of time steps
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
@@ -143,8 +143,8 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::timer::auto_cpu_timer time;
-
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     while (s->hasNextEvent())
     {
       s->computeOneStep();
@@ -156,12 +156,15 @@ int main(int argc, char* argv[])
       dataPlot(k, 4) = (*lambda)(0);
       s->nextStep();
       k++;
+      progressBar((double)k/N);
 
     }
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                             (end-start).count();
+    cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
+    cout << "Computation time : " << elapsed << " ms" << endl;
 
-    cout  << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time :" << endl;
-    time.report();
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
