@@ -25,7 +25,7 @@
 */
 
 #include "SiconosKernel.hpp"
-#include <boost/timer/timer.hpp>
+#include <chrono>
 
 using namespace std;
 
@@ -141,10 +141,9 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
 
-    boost::timer::auto_cpu_timer time;
-    
     while (s->hasNextEvent())
     {
       //cout << "iteration  " << k <<endl;
@@ -160,12 +159,18 @@ int main(int argc, char* argv[])
       dataPlot(k, 3) = (*p)(0);
       dataPlot(k, 4) = (*lambda)(0);
       s->nextStep();
-      
       k++;
+      progressBar((double)k/N);
     }
-    cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                             (end-start).count();
+    cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
+    cout << "Computation time : " << elapsed << " ms" << endl;
+
+    // --- Output files ---
+    
+    
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
