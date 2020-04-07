@@ -5,7 +5,7 @@
 #include "myDS.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <boost/timer/timer.hpp>
+#include <chrono>
 
 using namespace std;
 
@@ -121,7 +121,8 @@ int main()
 
   // do simulation while events remains in the "future events" list of events manager.
   cout << " ==== Start of  simulation : " << NBStep << " steps====" << endl;
-  boost::timer::auto_cpu_timer time;
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
   unsigned int k = 0;
   while (aS->hasNextEvent())
   {

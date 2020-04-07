@@ -25,7 +25,7 @@
 */
 
 #include "SiconosKernel.hpp"
-#include <boost/timer/timer.hpp>
+#include <chrono>
 
 const double PI = 3.14159265;
 const double g = 9.81; // Gravity
@@ -34,7 +34,8 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-  boost::timer::auto_cpu_timer time;
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
   try
   {
     // ================= Creation of the model =======================

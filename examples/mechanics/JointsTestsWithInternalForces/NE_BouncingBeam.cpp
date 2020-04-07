@@ -28,7 +28,7 @@
 #include "KneeJointR.hpp"
 #include "PrismaticJointR.hpp"
 #include <boost/math/quaternion.hpp>
-#include <boost/timer/timer.hpp>
+#include <chrono>
 using namespace std;
 
 /* Given a position of a point in the Inertial Frame and the configuration vector q of a solid
@@ -230,7 +230,8 @@ int main(int argc, char* argv[])
     int k = 0;
     
 
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
         SP::SiconosVector yAux(new SiconosVector(3));
     yAux->setValue(0, 1);
     SP::SimpleMatrix Jaux(new SimpleMatrix(3, 3));

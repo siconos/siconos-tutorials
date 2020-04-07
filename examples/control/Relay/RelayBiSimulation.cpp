@@ -1,4 +1,4 @@
-#include <boost/timer/timer.hpp>
+#include <chrono>
 #include "SiconosKernel.hpp"
 
 using namespace std;
@@ -196,7 +196,8 @@ int main(int argc, char* argv[])
     int k = 0; // Current step
     int kcontroller = 0;
     // Simulation loop
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     
     while (controllerSimulation->hasNextEvent())
     {

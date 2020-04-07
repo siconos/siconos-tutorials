@@ -27,7 +27,7 @@
   translational clearance joints based on the non-smooth dynamics approach
   */
 
-#include <boost/timer/timer.hpp>
+#include <chrono>
 #include "SiconosKernel.hpp"
 #include "SolverOptions.h"
 
@@ -200,7 +200,8 @@ int main(int argc, char* argv[])
 
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
 
     while (s->hasNextEvent())
     {

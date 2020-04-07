@@ -3,7 +3,7 @@
 #include <stdlib.h>
 using namespace std;
 
-#include <boost/timer/timer.hpp>
+#include <chrono>
 #define PI 3.14159265
 
 // parameters according to Table 1
@@ -310,7 +310,8 @@ int main(int argc, char* argv[])
     dataPlot(0, 39) = (*zz)(2);
     dataPlot(0, 40) =0.5*(((*v)(0)-6.0*0.75*PI*cos(0.75*PI*h))+ 10.0*((*q)(0)-6.0*sin(0.75*PI*h)))*(((*v)(0)-6.0*0.75*PI*cos(0.75*PI*h))+ 10.0*((*q)(0)-6.0*sin(0.75*PI*h)));
     dataPlot(0, 41) =0.5*((*inter->y(1))(0)*(*inter->y(1))(0));
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     
     // --- Time loop ---
     cout << "Start computation ... " << endl;

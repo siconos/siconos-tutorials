@@ -24,7 +24,7 @@
 */
 
 #include "SiconosKernel.hpp"
-#include <boost/timer/timer.hpp>
+#include <chrono>
 #include "SiconosAlgebraProd.hpp"
 //#define TS_PROJ
 //#define TS_COMBINED
@@ -229,7 +229,8 @@ int main(int argc, char* argv[])
     int k = 1;
     
 
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     
 //    while (s->nextTime() < T)
     while(k < N)

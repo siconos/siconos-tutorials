@@ -27,7 +27,7 @@
 
 #include "SiconosKernel.hpp"
 #include <sstream>
-#include <boost/timer/timer.hpp>
+#include <chrono>
 #include "SolverOptions.h"
 
 using namespace std;
@@ -183,7 +183,8 @@ int withLevel(unsigned int mylevel)
     int k = 1;
     
 
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     int ncontact = 0 ;
     while (s->hasNextEvent())
     {

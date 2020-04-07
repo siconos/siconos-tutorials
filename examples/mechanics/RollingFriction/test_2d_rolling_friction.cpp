@@ -24,7 +24,7 @@
   Direct description of the model.
   Simulation with a Time-Stepping scheme.
 */
-#include <boost/timer/timer.hpp>
+#include <chrono>
 #include "SiconosKernel.hpp"
 #include "SolverOptions.h"
 using namespace std;
@@ -215,7 +215,8 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     SP::SiconosVector rpc = relation->relPc1();
     SP::SiconosVector nnc = relation->relNc();
 

@@ -46,7 +46,7 @@
 //
 //-----------------------------------------------------------------------
 #include "SiconosKernel.hpp"
-#include <boost/timer/timer.hpp>
+#include <chrono>
 
 using namespace std;
 int main(int argc, char* argv[])
@@ -61,7 +61,8 @@ int main(int argc, char* argv[])
   double Vinit = 10.0;    // initial voltage
   string Modeltitle = "DiodeBridge";
 
-  boost::timer::auto_cpu_timer time;
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
   try
   {
     // --- Dynamical system specification ---
@@ -166,7 +167,8 @@ int main(int argc, char* argv[])
     // resistor current
     dataPlot(k, 7) = (*y)(0) + (*lambda)(2);
 
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     
     // --- Time loop  ---
     for (k = 1 ; k < N ; ++k)

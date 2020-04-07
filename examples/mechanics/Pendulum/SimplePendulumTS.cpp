@@ -25,7 +25,7 @@
 //
 // =============================================================================================
 
-#include <boost/timer/timer.hpp>
+#include <chrono>
 #include "SiconosKernel.hpp"
 #include <stdlib.h>
 using namespace std;
@@ -162,8 +162,8 @@ int main(int argc, char* argv[])
     dataPlot(k, 4) = -l1 * cos((*simplependulum->q())(0));
     dataPlot(k, 5) =  l1 * cos((*simplependulum->q())(0)) * ((*simplependulum->velocity())(0));
     // --- Compute elapsed time ---
-    boost::timer::auto_cpu_timer tt;
-
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     //    EventsManager eventsManager = s->eventsManager();
     // --- Time loop ---
     cout << "Start computation ... " << endl;
@@ -183,11 +183,16 @@ int main(int argc, char* argv[])
       dataPlot(k, 4) = -l1 * cos((*simplependulum->q())(0));
       dataPlot(k, 5) =  l1 * cos((*simplependulum->q())(0)) * ((*simplependulum->velocity())(0));
       s->nextStep();
+      progressBar((double)k/N);
     }
 
-    cout << "time = " << endl;
-    tt.report(); 
-    cout << "End of computation - Number of iterations done: " << k << endl;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                             (end-start).count();
+    cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
+    cout << "Computation time : " << elapsed << " ms" << endl;
+
+    // --- Output files ---
 
     // --- Output files ---
     ioMatrix::write("SimplePendulumResult.dat", "ascii", dataPlot, "noDim");

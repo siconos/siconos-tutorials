@@ -26,7 +26,7 @@
 // =============================================================================================
 
 #define _USE_MATH_DEFINES
-#include <boost/timer/timer.hpp>
+#include <chrono>
 #include "SiconosKernel.hpp"
 #include <math.h>
 
@@ -37,7 +37,8 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-  boost::timer::auto_cpu_timer time;
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
   try
   {
 
@@ -248,7 +249,8 @@ int main(int argc, char* argv[])
 
     cout << "====> Start computation ... " << endl << endl;
 
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     while (k < N)
     {
       (*z)(0) = (*q)(0);

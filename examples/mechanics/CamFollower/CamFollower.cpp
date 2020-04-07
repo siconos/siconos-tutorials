@@ -22,7 +22,7 @@
 
 #include "SiconosKernel.hpp"
 #include "CamState.h"
-#include <boost/timer/timer.hpp>
+#include <chrono>
 #include "SolverOptions.h"
 
 using namespace std;
@@ -154,7 +154,8 @@ int main(int argc, char* argv[])
     DataPlot(k, 6) = CamVelocity;
     // Acceleration of the Cam
     DataPlot(k, 7) = CamPosition + (*lds->q())(0);
-    boost::timer::auto_cpu_timer tt;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     // --- Time loop ---
     cout << "Start computation ... " << endl;
     while (k < N)
@@ -179,11 +180,14 @@ int main(int argc, char* argv[])
       // transfer of state i+1 into state i and time incrementation
       S->nextStep();
     }
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                             (end-start).count();
+    cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
+    cout << "Computation time : " << elapsed << " ms" << endl;
+
     // --- Output files ---
     ioMatrix::write("result.dat", "ascii", DataPlot, "noDim");
-    cout << "time = " << endl;
-    tt.report();
-    cout << "End of computation - Number of iterations done: " << k << endl;
   }
 
   catch (SiconosException e)

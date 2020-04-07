@@ -25,7 +25,7 @@
 //
 // =============================================================================================
 
-#include <boost/timer/timer.hpp>
+#include <chrono>
 #include "SiconosKernel.hpp"
 #include <stdlib.h>
 using namespace std;
@@ -174,7 +174,8 @@ int main(int argc, char* argv[])
     dataPlot(k, 9) =  l1 * cos((*q)(0)) * ((*v)(0));
     dataPlot(k, 10) = l1 * cos((*q)(0)) * ((*v)(0)) + l2 * cos((*q)(1)) * ((*v)(1));
 
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     
     // --- Time loop ---
     cout << "Start computation ... " << endl;

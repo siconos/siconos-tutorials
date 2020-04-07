@@ -32,7 +32,7 @@
 
 #include <SiconosBulletCollisionManager.hpp>
 #include <RigidBodyDS.hpp>
-#include <boost/timer/timer.hpp>
+#include <chrono>
 #include "SolverOptions.h"
 
 
@@ -210,7 +210,8 @@ int main()
     int k = 1;
     
 
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     
     while (simulation->hasNextEvent())
     {

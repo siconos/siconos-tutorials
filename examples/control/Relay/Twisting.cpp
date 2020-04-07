@@ -133,7 +133,8 @@ int main(int argc, char* argv[])
     unsigned int k = 0; // Current step
 
     // Simulation loop
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
         while (s->hasNextEvent())
     {
       k++;
@@ -151,8 +152,11 @@ int main(int argc, char* argv[])
     dataPlot->resize(k, dataPlot->size(1));
 
     cout << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                             (end-start).count();
+    cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
+    cout << "Computation time : " << elapsed << " ms" << endl;
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("Twisting.dat", "ascii", *dataPlot, "noDim");
 

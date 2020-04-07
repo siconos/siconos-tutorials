@@ -1,6 +1,6 @@
 #include "SiconosKernel.hpp"
 #include <math.h>
-#include <boost/timer/timer.hpp>
+#include <chrono>
 using namespace std;
 static unsigned int ndof = 4;
 /* 02/2010 --> 08/2010*/
@@ -234,7 +234,8 @@ int main(int argc, char* argv[])
     unsigned int k = 0; // Current step
 
     // Simulation loop
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     
     unsigned int i = 0;
     int j = 0;

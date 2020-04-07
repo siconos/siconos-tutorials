@@ -1,6 +1,6 @@
 // This is the program to simulate the dynamic of a rocking block by using the Siconos platform
 //============================================================================
-#include <boost/timer/timer.hpp>
+#include <chrono>
 #include "SiconosKernel.hpp"
 #include "SiconosAlgebraProd.hpp"
 #include <stdlib.h>
@@ -33,7 +33,8 @@ unsigned int maxIter = 20000;
 int main(int argc, char* argv[])
 {
   //---------------------------- calculate the computation time --------------
-  boost::timer::auto_cpu_timer time;
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
   try
   {
     //=========================================================================

@@ -4,7 +4,7 @@
 #include "myDS.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <boost/timer/timer.hpp>
+#include <chrono>
 #include "SolverOptions.h"
 
 using namespace std;
@@ -127,7 +127,8 @@ int main(int argc, char *argv[])
   dataPlot(0, 7) = vectorfield->getValue(0);
   dataPlot(0, 8) = vectorfield->getValue(1);
 
-  boost::timer::auto_cpu_timer time;
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
   for(int k = 0 ; k < NBStep ; k++)
 //  while(aS->hasNextEvent())
   {

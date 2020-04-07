@@ -26,7 +26,7 @@
   see Flores/Leine/Glocker : Modeling and analysis of planar rigid multibody systems with
   translational clearance joints based on the non-smooth dynamics approach
   */
-#include <boost/timer/timer.hpp>
+#include <chrono>
 #include "SiconosKernel.hpp"
 #include "SolverOptions.h"
 
@@ -197,7 +197,8 @@ int main(int argc, char* argv[])
     int k = 1;
     
 
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     
     while (s->hasNextEvent())
     {

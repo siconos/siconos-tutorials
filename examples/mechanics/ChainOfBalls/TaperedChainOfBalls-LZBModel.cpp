@@ -31,7 +31,8 @@ const double g = 0.0; // Gravity
 using namespace std;
 
 int main(int argc, char* argv[]){
-  boost::timer::auto_cpu_timer time;
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
   try{
     // ================= Creation of the model =======================
 

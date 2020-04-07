@@ -1,6 +1,6 @@
 #include "SiconosKernel.hpp"
 #include "donnee.h"
-#include <boost/timer/timer.hpp>
+#include <chrono>
 using namespace std;
 
 
@@ -49,7 +49,8 @@ int main(int argc, char* argv[])
 
 
     
-    boost::timer::auto_cpu_timer time;
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     
 
     (*q0)(0) = L / (2 * r); //  vlaeur de  teta( 0 )

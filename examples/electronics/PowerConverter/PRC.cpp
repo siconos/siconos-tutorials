@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 #include <SiconosKernel.hpp>
-#include <boost/timer/timer.hpp>
+#include <chrono>
 
 using namespace std;
 
@@ -38,8 +38,9 @@ int main(int argc, char* argv[])
   string Bnamefunction = "Vgen";
   //double Vgen = sin(2*M_PI*55000*0)/fabs(sin(2*M_PI*55000*0));
 
-  // TIMER
-  boost::timer::auto_cpu_timer time;
+  // Chrono
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+  start = std::chrono::system_clock::now();
 
   try
   {
