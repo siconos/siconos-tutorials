@@ -32,7 +32,7 @@ using namespace std;
 int main(int argc, char* argv[])
 {
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   try
   {
     // ================= Creation of the model =======================
@@ -151,25 +151,25 @@ int main(int argc, char* argv[])
     bool nonSmooth = false;
     unsigned int numberOfEvent = 0 ;
     int k = 0;
-    
-    while (s->hasNextEvent() && k < N)
+
+    while(s->hasNextEvent() && k < N)
     {
       s->advanceToEvent();
       p = ball->p(1);
       f = ball->p(2);
-      if (eventsManager->nextEvent()->getType() == 2)
+      if(eventsManager->nextEvent()->getType() == 2)
         nonSmooth = true;
 
       s->processEvents();
       // If the treated event is non smooth, the pre-impact state has been solved in memory vectors during process.
-      if (nonSmooth)
+      if(nonSmooth)
       {
         dataPlot(k, 0) = s->startingTime();
         dataPlot(k, 1) = ball->qMemory().getSiconosVector(1)(0);
         dataPlot(k, 2) = ball->velocityMemory().getSiconosVector(1)(0);
         k++;
         nonSmooth = false;
-        
+
       }
       dataPlot(k, 0) = s->startingTime();
       dataPlot(k, 1) = (*q)(0);
@@ -178,7 +178,7 @@ int main(int argc, char* argv[])
       dataPlot(k, 4) = (*f)(0);
       ++k;
       ++numberOfEvent;
-      
+
     }
 
     // --- Output files ---
@@ -189,23 +189,23 @@ int main(int argc, char* argv[])
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
 
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot,
-                                        "BouncingBallED-withRestingContact.ref",
-                                        eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot,
+                                       "BouncingBallED-withRestingContact.ref",
+                                       eps)) >= 0.0
         && error > eps)
       return 1;
 
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught." << endl;
     return 1;
   }
-  }
+}

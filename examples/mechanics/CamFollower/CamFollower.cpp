@@ -158,7 +158,7 @@ int main(int argc, char* argv[])
     start = std::chrono::system_clock::now();
     // --- Time loop ---
     cout << "Start computation ... " << endl;
-    while (k < N)
+    while(k < N)
     {
       // get current time step
       k++;
@@ -182,7 +182,7 @@ int main(int argc, char* argv[])
     }
     end = std::chrono::system_clock::now();
     int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-                             (end-start).count();
+                  (end-start).count();
     cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
     cout << "Computation time : " << elapsed << " ms" << endl;
 
@@ -190,12 +190,12 @@ int main(int argc, char* argv[])
     ioMatrix::write("result.dat", "ascii", DataPlot, "noDim");
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in \'sample/CamFollower\'" << endl;
     return 1;

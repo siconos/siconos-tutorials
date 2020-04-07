@@ -15,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
 #include <stdio.h>
 #include <math.h>
 
@@ -36,7 +36,7 @@ extern "C" double FextFunction(double time)
 
 SICONOS_EXPORT void ballFExt(double time, double *fExt, unsigned int sizeOfq, unsigned int sizeZ, double* z)
 {
-  for (unsigned int i = 0; i < sizeOfq; i++)
+  for(unsigned int i = 0; i < sizeOfq; i++)
     fExt[i] = 0.0;
   fExt[0] = -m * g + FextFunction(time);
 }
@@ -49,7 +49,7 @@ extern "C" double MextFunction(double time)
 
 SICONOS_EXPORT void ballMExt(double time, double *mExt, unsigned int sizeOfq, unsigned int sizeZ, double* z)
 {
-  for (unsigned int i = 0; i < sizeOfq; i++)
+  for(unsigned int i = 0; i < sizeOfq; i++)
     mExt[i] = 0.0;
   mExt[0] = MextFunction(time);
 }

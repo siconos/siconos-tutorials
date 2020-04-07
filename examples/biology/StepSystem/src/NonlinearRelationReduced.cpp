@@ -21,15 +21,15 @@ void NonlinearRelationReduced::computeh(double t, SiconosVector& x, SiconosVecto
 
 
 
-  /** default function to compute jacobianH
-   *  \param double : current time
-   *  \param index for jacobian (0: jacobian according to x, 1 according to lambda)
-   */
+/** default function to compute jacobianH
+ *  \param double : current time
+ *  \param index for jacobian (0: jacobian according to x, 1 according to lambda)
+ */
 
-  /** default function to compute jacobianG according to lambda
-   *  \param double : current time
-   *  \param index for jacobian: at the time only one possible jacobian => i = 0 is the default value .
-   */
+/** default function to compute jacobianG according to lambda
+ *  \param double : current time
+ *  \param index for jacobian: at the time only one possible jacobian => i = 0 is the default value .
+ */
 
 
 /*g=g(lambda)*/

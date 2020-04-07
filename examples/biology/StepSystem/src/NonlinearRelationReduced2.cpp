@@ -24,7 +24,7 @@ void NonlinearRelationReduced2::computeg(double t, SiconosVector& lambda, Sicono
 {
   r(0) = 40.0 * (1 - lambda(0));
   r(1) = 40.0 * (1 - lambda(1));
- }
+}
 
 void NonlinearRelationReduced2::computeJachlambda(double t, SiconosVector& x, SiconosVector& lambda, SimpleMatrix& D)
 {

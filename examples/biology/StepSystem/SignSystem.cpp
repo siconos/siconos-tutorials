@@ -26,13 +26,13 @@ int main(int argc, char *argv[])
   // default, x0 = (1, 6)
   // else read from command line
   SP::SiconosVector xti(new SiconosVector(dimX));
-  if (argc==1)
+  if(argc==1)
   {
     xti->setValue(0,1);
     xti->setValue(1,6);
     strncpy(&filename[5],"1.6.log",7);
   }
-  else if (argc==3)
+  else if(argc==3)
   {
     //printf("argv[0] %s\n", argv[0]);
     printf("xti(0) is set to %f\n", atof(argv[1]));
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
   int NBStep = (int) floor(sTf/sStep);
   // NBStep =1;
   //*****BUILD THE DYNAMICAL SYSTEM
-  
+
   SP::MyDS aDS(new MyDS(xti));
 
 //******BUILD THE RELATION
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
   double ub = 1.;
   double lb = -1.;
   SP::NonSmoothLaw aNSL(new RelayNSL(sNSLawSize, lb, ub));
-  
+
   //****BUILD THE INTERACTION
   SP::Interaction aI(new Interaction(aNSL,aR));
 
@@ -127,8 +127,8 @@ int main(int argc, char *argv[])
   dataPlot(0, 8) = vectorfield->getValue(1);
 
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
-  
+  start = std::chrono::system_clock::now();
+
   for(int k = 0 ; k < NBStep ; k++)
   {
 #ifdef SICONOS_DEBUG
@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
 
     aDS->computeRhs(aS->nextTime());
 
-    if (cmp==1) // tricks just for display to avoid the computation of the initial Rhs
+    if(cmp==1)  // tricks just for display to avoid the computation of the initial Rhs
     {
       dataPlot(cmp-1, 7) = vectorfield->getValue(0);
       dataPlot(cmp-1, 8) = vectorfield->getValue(1);
@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
 
     dataPlot(cmp, 7) = vectorfield->getValue(0);
     dataPlot(cmp, 8) = vectorfield->getValue(1);
-    
+
 
     aS->nextStep();
 

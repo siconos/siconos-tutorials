@@ -227,11 +227,11 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " <<endl<<endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    
+
 //    while (s->nextTime() < T)
     while(k < N)
     {
@@ -273,12 +273,16 @@ int main(int argc, char* argv[])
 
 
       s->nextStep();
-      
+
       k++;
     }
     cout<<endl << "End of computation - Number of iterations done: "<<k-1<<endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout<<"====> Output file writing ..."<<endl;
     ioMatrix::write("ImpactingBar.dat", "ascii", dataPlot,"noDim");
     cout << " Comparison with a reference file" << endl;
@@ -287,8 +291,8 @@ cout << "Computation Time " << endl;;
     ioMatrix::read("ImpactingBar.ref", "ascii", dataPlotRef);
 
     double error = (dataPlot - dataPlotRef).normInf() ;
-cout << "Error = " << error << endl;
-    if (error > 1e-11)
+    cout << "Error = " << error << endl;
+    if(error > 1e-11)
     {
       std::cout << "Warning. The result is rather different from the reference file." << std::endl;
       std::cout << "Error = "<< (dataPlot - dataPlotRef).normInf()<<std::endl;

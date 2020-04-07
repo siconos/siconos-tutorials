@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 {
   //---------------------------- calculate the computation time --------------------------------------------------
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   try
   {
     //===========================================================================================================
@@ -138,7 +138,7 @@ int main(int argc, char* argv[])
     position->numericsSolverOptions()->dparam[0] = 1e-12;
     impact->numericsSolverOptions()->dparam[0] = 1e-12;
     acceleration->numericsSolverOptions()->dparam[0] = 1e-12;
-   
+
 
     //4. Simulation with (1), (2), (3)
     SP::Simulation EDscheme(new EventDriven(RoBlockModel, TimeDiscret));
@@ -187,11 +187,11 @@ int main(int argc, char* argv[])
     unsigned int NumberNSEvent = 0;
     double alpha_m, alpha_f, beta, gamma;
     unsigned int k = 1;
-    while (EDscheme->hasNextEvent() && (k < NpointSave))
+    while(EDscheme->hasNextEvent() && (k < NpointSave))
     {
-      if (IsTreatFirstSteps)
+      if(IsTreatFirstSteps)
       {
-        if (k == 1) // first step
+        if(k == 1)  // first step
         {
           alpha_m = 0.0;
           alpha_f = 0.0;
@@ -202,7 +202,7 @@ int main(int argc, char* argv[])
           _NewMarkAlpha->setBeta(beta);
           _NewMarkAlpha->setGamma(gamma);
         }
-        else if (k == 2)
+        else if(k == 2)
         {
           alpha_m = 0.0;
           alpha_f = -1.0 / 3.0; // -1/3 <= alpha_f <= 0
@@ -223,17 +223,17 @@ int main(int argc, char* argv[])
       SP::SiconosVector GapCon2 = inter2->y(0);
       SP::SiconosVector VelCon1 = inter1->y(1);
       SP::SiconosVector VelCon2 = inter2->y(1);
-      
+
       SP::SiconosVector LambdaCon1 = inter1->lambda(2);
       SP::SiconosVector LambdaCon2 = inter2->lambda(2);
       //---------- detect the statue of the current event ------------------------------------
-      if (eventsManager->nextEvent()->getType() == 2) // the current event is non-smooth
+      if(eventsManager->nextEvent()->getType() == 2)  // the current event is non-smooth
       {
         NSEvent = true;
       };
       EDscheme->processEvents();  // process the current event
       //------------------- get data at the beginning of non-smooth events ---------------------------
-      if (NSEvent)
+      if(NSEvent)
       {
         DataPlot(k, 0) = EDscheme->startingTime(); // instant at non-smooth event
         DataPlot(k, 1) = RockingBlock->qMemory().getSiconosVector(0)(0);      // Position X
@@ -245,7 +245,7 @@ int main(int argc, char* argv[])
         //EDscheme->update(1);
         k++;
         ++NumberNSEvent;
-        
+
         NSEvent = false;
         // The next event is maybe smooth
       };
@@ -265,7 +265,7 @@ int main(int argc, char* argv[])
       DataPlot(k, 12) = (*LambdaCon2)(0); // Force at second contact
       // go to the next time step
       k++;
-      
+
       // // Display information
       // cout << "********At the end of integation step***************"<< (k - 1) << endl;
       // cout << "Information on Dynamical System" << endl;
@@ -297,23 +297,23 @@ int main(int argc, char* argv[])
     ioMatrix::write("RockingBlockED_NewMarkAlpha.dat", "ascii", DataPlot, "noDim");
 
     Index index(11);
-    for (int k =0; k< 11; k++) index.push_back(k);
+    for(int k =0; k< 11; k++) index.push_back(k);
     // Comparison with a reference file
     double error=0.0, eps=1e-10;
-    if ((error=ioMatrix::compareRefFile(DataPlot, "RockingBlockED_NewMarkAlpha.ref",
-                                        eps, index)) >= 0.0
+    if((error=ioMatrix::compareRefFile(DataPlot, "RockingBlockED_NewMarkAlpha.ref",
+                                       eps, index)) >= 0.0
         && error > eps)
       return 1;
   }
   //============================== Catch exceptions ===================================================================
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught." << endl;
     return 1;
   }
-  }
+}

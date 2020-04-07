@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
     double hcontroller = 1.0e-2;      // Time step
     double Vinit = 1.0;
 
-    if (h > hcontroller)
+    if(h > hcontroller)
     {
       RuntimeException::selfThrow("hcontroller must be larger than h");
     }
@@ -198,8 +198,8 @@ int main(int argc, char* argv[])
     // Simulation loop
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    
-    while (controllerSimulation->hasNextEvent())
+
+    while(controllerSimulation->hasNextEvent())
     {
       kcontroller ++ ;
 //      cout << "step controller--> " << kcontroller << " at time t =" << controllerSimulation->nextTime() << endl;
@@ -210,7 +210,7 @@ int main(int argc, char* argv[])
       //  input of the controller in the process thanks to z and sampledControl
       prod(1.0, *B, *lambda, *sampledControl, true);
 
-      while (processSimulation->hasNextEvent() && processSimulation->nextTime() < controllerSimulation->nextTime())
+      while(processSimulation->hasNextEvent() && processSimulation->nextTime() < controllerSimulation->nextTime())
       {
         k++;
 //        cout << "         step --> " << k  << " at time t =" << processSimulation->nextTime() << endl;
@@ -235,8 +235,12 @@ int main(int argc, char* argv[])
       controllerSimulation->nextStep();
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     dataPlotController.resize(kcontroller, outputSize);
@@ -245,12 +249,12 @@ cout << "Computation Time " << endl;;
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in RelayBiSimulation.cpp" << endl;
     return 1;

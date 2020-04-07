@@ -1,8 +1,8 @@
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
 #include <stdio.h>
 #include "donnee.h"
 
@@ -33,8 +33,8 @@ SICONOS_EXPORT void F_int(double time, unsigned int sizeOfq,  double* restrict q
   fInt[0] =  r * epsilon * (velocity[0]);
   fInt[1] =  0;
   int i = 0;
-  while (temps[i] < time) i++ ;
-  if (velocity[0] < 0 && q[0] < thetaset(Som, i)) fInt[2] = -w * g   ;
+  while(temps[i] < time) i++ ;
+  if(velocity[0] < 0 && q[0] < thetaset(Som, i)) fInt[2] = -w * g   ;
   else  fInt[2] = c1 * velocity[2] + c2 * q[2] ;
   //fInt[2] =0;
 }
@@ -45,8 +45,8 @@ SICONOS_EXPORT void jacobianFIntq(double time, unsigned int sizeOfq,  double* re
   jacob[0] =  0;
   jacob[1] =  0;
   int i = 0;
-  while (temps[i] < time) i++ ;
-  if (velocity[0] < 0 && q[0] < thetaset(Som, i)) jacob[2] = 0  ;
+  while(temps[i] < time) i++ ;
+  if(velocity[0] < 0 && q[0] < thetaset(Som, i)) jacob[2] = 0  ;
   else  jacob[2] = c2 ;
   //jacob[2] =0;
 }
@@ -56,8 +56,8 @@ SICONOS_EXPORT void jacobianVFInt(double time, unsigned int sizeOfq,  double* re
   jacob[0] = r * epsilon;
   jacob[1] =   0;
   int i = 0;
-  while (temps[i] < time) i++ ;
-  if (velocity[0] < 0 && q[0] < thetaset(Som, i)) jacob[2] = 0  ;
+  while(temps[i] < time) i++ ;
+  if(velocity[0] < 0 && q[0] < thetaset(Som, i)) jacob[2] = 0  ;
   else  jacob[2] = c1 ;
   //  jacob[2] =0;
 }
@@ -87,8 +87,8 @@ SICONOS_EXPORT void F_intf(double time, unsigned int sizeOfq,  double* restrict 
   fInt[0] =  0;
   fInt[1] =  0;
   int i = 0;
-  while (temps[i] < time) i++ ;
-  if (velocity[0] < 0 && q[0] < thetaset(Som, i)) fInt[2] = -w * g   ;
+  while(temps[i] < time) i++ ;
+  if(velocity[0] < 0 && q[0] < thetaset(Som, i)) fInt[2] = -w * g   ;
   else  fInt[2] = c1 * velocity[2] + c2 * q[2] ;
   //fInt[2] =0;
 }
@@ -99,8 +99,8 @@ SICONOS_EXPORT void jacobianFIntqf(double time, unsigned int sizeOfq,  double* r
   jacob[0] =  0;
   jacob[1] =  0;
   int i = 0;
-  while (temps[i] < time) i++ ;
-  if (velocity[0] < 0 && q[0] < thetaset(Som, i)) jacob[2] = 0  ;
+  while(temps[i] < time) i++ ;
+  if(velocity[0] < 0 && q[0] < thetaset(Som, i)) jacob[2] = 0  ;
   else  jacob[2] = c2 ;
   //jacob[2] =0;
 }
@@ -110,8 +110,8 @@ SICONOS_EXPORT void jacobianVFIntf(double time, unsigned int sizeOfq,  double* r
   jacob[0] = 0;
   jacob[1] =   0;
   int i = 0;
-  while (temps[i] < time) i++ ;
-  if (velocity[0] < 0 && q[0] < thetaset(Som, i)) jacob[2] = 0  ;
+  while(temps[i] < time) i++ ;
+  if(velocity[0] < 0 && q[0] < thetaset(Som, i)) jacob[2] = 0  ;
   else  jacob[2] = c1 ;
   //jacob[2] =0;
 }

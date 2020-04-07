@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
     // Simulation loop
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-        while (s->hasNextEvent())
+    while(s->hasNextEvent())
     {
       k++;
       //  osnspb->setNumericsVerboseMode(1);
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
     cout << "End of computation - Number of iterations done: " << k - 1 << endl;
     end = std::chrono::system_clock::now();
     int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-                             (end-start).count();
+                  (end-start).count();
     cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
     cout << "Computation time : " << elapsed << " ms" << endl;
     cout << "====> Output file writing ..." << endl;
@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
 
     // Comparison with a reference file
     double error = 0;
-    if ((error=ioMatrix::compareRefFile(*dataPlot, "Twisting.ref", 1e-12, idx)) >= 0.0
+    if((error=ioMatrix::compareRefFile(*dataPlot, "Twisting.ref", 1e-12, idx)) >= 0.0
         && error > 1e-12)
     {
       return 1;
@@ -177,12 +177,12 @@ int main(int argc, char* argv[])
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in Fillipov.cpp" << endl;
     return 1;

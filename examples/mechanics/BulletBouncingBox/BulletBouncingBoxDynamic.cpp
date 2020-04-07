@@ -208,15 +208,15 @@ int main()
     std::cout << "====> Start computation ... " << std::endl << std::endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    
-    while (simulation->hasNextEvent())
+
+    while(simulation->hasNextEvent())
     {
       // --- Add a dynamic object at step 100 of the simulation ---
-      if (k==100)
+      if(k==100)
       {
         SP::RigidBodyDS ds(makeBox(g, 3.0, 0));
         simulation->nonSmoothDynamicalSystem()->insertDynamicalSystem(ds);
@@ -232,27 +232,27 @@ int main()
 
       // If broadphase collision detection shows some contacts then we may
       // display contact forces.
-      if ((collision_manager->statistics().new_interactions_created
-           + collision_manager->statistics().existing_interactions_processed) > 0)
+      if((collision_manager->statistics().new_interactions_created
+          + collision_manager->statistics().existing_interactions_processed) > 0)
       {
         // we *must* have an indexSet0, filled by Bullet broadphase
         // collision detection and an indexSet1, filled by
         // TimeStepping::updateIndexSet with the help of Bullet
         // getDistance() function
-        if (model->topology()->numberOfIndexSet() == 2)
+        if(model->topology()->numberOfIndexSet() == 2)
         {
           SP::InteractionsGraph index1 = simulation->indexSet(1);
 
           // This is the narrow phase contact detection : if
           // TimeStepping::updateIndexSet has filled indexSet1 then we
           // have some contact forces to display
-          if (index1->size() > 0)
+          if(index1->size() > 0)
           {
 
             // Four contact points for a cube with a side facing the
             // ground. Note : changing Bullet margin for collision
             // detection may lead this assertion to be false.
-            if (index1->size() == 4)
+            if(index1->size() == 4)
             {
               InteractionsGraph::VIterator iur = index1->begin();
 
@@ -269,14 +269,18 @@ int main()
       }
 
       simulation->nextStep();
-      
+
       k++;
     }
 
 
     std::cout << std::endl << "End of computation - Number of iterations done: " << k - 1 << std::endl;
     std::cout << "Computation Time " << std::endl;
-    time.report();
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+
 
     // --- Output files ---
     std::cout << "====> Output file writing ..." << std::endl;
@@ -284,21 +288,21 @@ int main()
     ioMatrix::write("result_dynamic.dat", "ascii", dataPlot, "noDim");
 
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "result_dynamic.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "result_dynamic.ref", eps)) >= 0.0
         && error > eps)
-	    // return 1;
-	    std::cout << "Warning the results differs from the reference file " << std::endl;	    
+      // return 1;
+      std::cout << "Warning the results differs from the reference file " << std::endl;
 
 
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     std::cout << e.report() << std::endl;
     exit(1);
   }
-  catch (...)
+  catch(...)
   {
     std::cout << "Exception caught in BulletBouncingBox" << std::endl;
     exit(1);

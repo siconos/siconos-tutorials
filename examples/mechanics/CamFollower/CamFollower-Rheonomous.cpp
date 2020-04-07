@@ -131,7 +131,7 @@ int main(int argc, char* argv[])
     osnspb->numericsSolverOptions()->dparam[0] = 1e-6;
 
     // -- Time discretisation --
-    SP::TimeDiscretisation t(new TimeDiscretisation(t0, h ));
+    SP::TimeDiscretisation t(new TimeDiscretisation(t0, h));
 
     SP::TimeStepping S(new TimeStepping(Follower, t, OSI, osnspb));
 
@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
     start = std::chrono::system_clock::now();
     // --- Time loop ---
     cout << "Start computation ... " << endl;
-    while (k < N)
+    while(k < N)
     {
       // get current time step
       k++;
@@ -199,12 +199,12 @@ int main(int argc, char* argv[])
     cout << "End of computation - Number of iterations done: " << k << endl;
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in \'sample/CamFollower\'" << endl;
     return 1;

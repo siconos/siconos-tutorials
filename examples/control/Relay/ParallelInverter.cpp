@@ -165,7 +165,7 @@ int main(int argc, char* argv[])
     SP::NonSmoothDynamicalSystem simpleExampleRelay(new NonSmoothDynamicalSystem(t0, T));
     simpleExampleRelay->insertDynamicalSystem(process);
     simpleExampleRelay->link(myProcessInteraction, process);
-    
+
     // ------------------
     // --- Simulation ---
     // ------------------
@@ -236,7 +236,7 @@ int main(int argc, char* argv[])
     // Simulation loop
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    
+
     unsigned int i = 0;
     int j = 0;
     SP::SiconosVector err(new SiconosVector(2));
@@ -244,7 +244,7 @@ int main(int argc, char* argv[])
     SP::SiconosVector temps(new SiconosVector(N + 1));
 
 
-    while (k < N - 1)
+    while(k < N - 1)
     {
       k++;
       //    osnspb->setNumericsVerboseMode(1);
@@ -275,16 +275,16 @@ int main(int argc, char* argv[])
       s->nextStep();
 
       //////////////////////////////////////////////////////////////////////////////////
-      if (((*yProc)(0) > 1e-8) || ((*yProc)(0) < -1e-8))
+      if(((*yProc)(0) > 1e-8) || ((*yProc)(0) < -1e-8))
       {
         (*temps)(k) = (*yProc)(0);
       }
       ///////////////////////////////////////////////////////////////////////////////////
     }
 
-    while (i < N - 1)
+    while(i < N - 1)
     {
-      if ((*temps)(i) == 0)
+      if((*temps)(i) == 0)
         j = j + 1;
 
       i++;
@@ -292,24 +292,28 @@ int main(int argc, char* argv[])
     cout << "The sliding mode appears at the step number : \n" << N - 1 - j << endl;
 
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("ParallelInverter.dat", "ascii", dataPlot, "noDim");
 
     double error=0.0, eps=1e-08;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "ParallelInverter.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "ParallelInverter.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in SimpleExampleRelay.cpp" << endl;
     return 1;

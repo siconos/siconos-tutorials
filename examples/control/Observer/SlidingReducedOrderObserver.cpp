@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
   cout << "====> Initialisation ..." << endl << endl;
   // Initialize the model and the controlManager
   sim->initialize();
- // --- Time loop ---
+// --- Time loop ---
   cout << "====> Start computation ... " << endl << endl;
   // ==== Simulation loop - Writing without explicit event handling =====
   sim->run();
@@ -117,8 +117,8 @@ int main(int argc, char* argv[])
   ioMatrix::write("SlidingReducedOrderObserver.dat", "ascii", dataPlot, "noDim");
 
   double error=0.0, eps=1e-12;
-  if ((error=ioMatrix::compareRefFile(dataPlot, "SlidingReducedOrderObserver.ref",
-                                      eps)) >= 0.0
+  if((error=ioMatrix::compareRefFile(dataPlot, "SlidingReducedOrderObserver.ref",
+                                     eps)) >= 0.0
       && error > eps)
     return 1;
   else

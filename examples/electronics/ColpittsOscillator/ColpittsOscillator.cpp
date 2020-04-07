@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
     SP::SiconosVector LS_b(new SiconosVector(3));
 
     LS_b->setValue(0,VCC/(Rc*C1));
-    LS_b->setValue(1,1.0/C2*(  VCC/Rc-VEE/Re));
+    LS_b->setValue(1,1.0/C2*(VCC/Rc-VEE/Re));
     LS_b->setValue(2,VCC/L);
 
 
@@ -191,7 +191,7 @@ int main(int argc, char* argv[])
 
       dataPlot(k, 6) = (*lambda)(0);
       dataPlot(k, 7) = (*lambda)(1);
-      
+
 
       aTS->nextStep();
 
@@ -201,7 +201,11 @@ int main(int argc, char* argv[])
     // --- elapsed time computing ---
     cout << ""  << endl;
     cout << "time = " << endl;
-    time.report();
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+
 
     // Number of time iterations
     cout << "Number of iterations done: " << k << endl;
@@ -218,7 +222,7 @@ int main(int argc, char* argv[])
     //       && error > eps)
     //     return 1;
     // }
-    
+
   }
   // --- Exceptions handling ---
   catch(SiconosException e)

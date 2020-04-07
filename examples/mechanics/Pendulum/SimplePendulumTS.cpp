@@ -168,10 +168,10 @@ int main(int argc, char* argv[])
     // --- Time loop ---
     cout << "Start computation ... " << endl;
     cout << "Number of time step" << N << "\n";
-    while (s->hasNextEvent())
+    while(s->hasNextEvent())
     {
       k++;
-      if (!(div(k, 10000).rem))  cout << "Step number " << k << "\n";
+      if(!(div(k, 10000).rem))  cout << "Step number " << k << "\n";
 
       // Solve problem
       s->advanceToEvent();
@@ -188,7 +188,7 @@ int main(int argc, char* argv[])
 
     end = std::chrono::system_clock::now();
     int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-                             (end-start).count();
+                  (end-start).count();
     cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
     cout << "Computation time : " << elapsed << " ms" << endl;
 
@@ -199,15 +199,15 @@ int main(int argc, char* argv[])
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in \'sample/MultiBeadsColumn\'" << endl;
     return 1;
-    
+
   }
 }

@@ -66,7 +66,7 @@ int withLevel(unsigned int mylevel)
     std::vector<SP::SiconosVector> q0(nBeads);
     std::vector<SP::SiconosVector> v0(nBeads);
 
-    for (unsigned int i = 0; i < nBeads; i++)
+    for(unsigned int i = 0; i < nBeads; i++)
     {
       (q0[i]).reset(new SiconosVector(nDof));
       (v0[i]).reset(new SiconosVector(nDof));
@@ -80,7 +80,7 @@ int withLevel(unsigned int mylevel)
 
 
     std::vector<SP::LagrangianLinearTIDS> beads(nBeads);
-    for (unsigned int i = 0; i < nBeads; i++)
+    for(unsigned int i = 0; i < nBeads; i++)
     {
       beads[i].reset(new LagrangianLinearTIDS(q0[i], v0[i], Mass));
       // -- Set external forces (weight) --
@@ -122,7 +122,7 @@ int withLevel(unsigned int mylevel)
     (*HOfBeads)(1, 4) = 1.0;
     (*HOfBeads)(2, 2) = -1.0;
     (*HOfBeads)(2, 5) = 1.0;
-      
+
     SP::SiconosVector bOfBeads(new SiconosVector(3));
     (*bOfBeads)(0) = -2 * R;
     (*bOfBeads)(1) = 0.0;
@@ -154,7 +154,7 @@ int withLevel(unsigned int mylevel)
     // --  (1) OneStepIntegrators --
     SP::MoreauJeanGOSI OSI(new MoreauJeanGOSI(theta));
     // add the dynamical system in the non smooth dynamical system
-    for (unsigned int i = 0; i < nBeads; i++)
+    for(unsigned int i = 0; i < nBeads; i++)
     {
       columnOfBeads->insertDynamicalSystem(beads[i]);
     }
@@ -195,7 +195,7 @@ int withLevel(unsigned int mylevel)
 
     dataPlot(0, 0) = columnOfBeads->t0();
 
-    for (unsigned int i = 0; i < nBeads; i++)
+    for(unsigned int i = 0; i < nBeads; i++)
     {
       dataPlot(0, 1 + i * 2) = (beads[i]->q())->getValue(0);
       dataPlot(0, 2 + i * 2) = (beads[i]->velocity())->getValue(0);
@@ -211,20 +211,20 @@ int withLevel(unsigned int mylevel)
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
     int ncontact = 0 ;
     //bool isOSNSinitialized = false;
-    while (s->hasNextEvent())
+    while(s->hasNextEvent())
     {
       // Rough contact detection
-      for (unsigned int i = 0; i < nBeads - 1; i++)
+      for(unsigned int i = 0; i < nBeads - 1; i++)
       {
-        if (abs(((beads[i])->q())->getValue(0) - R) < alert)
+        if(abs(((beads[i])->q())->getValue(0) - R) < alert)
         {
-          if (!inter)
+          if(!inter)
           {
             ncontact++;
             // std::cout << "Number of contact = " << ncontact << std::endl;
@@ -240,11 +240,11 @@ int withLevel(unsigned int mylevel)
 
 
 
-        if (abs(((beads[i + 1])->q())->getValue(0) - ((beads[i])->q())->getValue(0) - 2 * R) < alert)
+        if(abs(((beads[i + 1])->q())->getValue(0) - ((beads[i])->q())->getValue(0) - 2 * R) < alert)
         {
           //std::cout << "Alert distance for declaring contact = ";
           //std::cout << abs(((beads[i])->q())->getValue(0)-((beads[i+1])->q())->getValue(0))   <<std::endl;
-          if (!interOfBeads[i].get())
+          if(!interOfBeads[i].get())
           {
             ncontact++;
             // std::cout << "Number of contact = " << ncontact << std::endl;
@@ -264,7 +264,7 @@ int withLevel(unsigned int mylevel)
       //osnspb->display();
       // --- Get values to be plotted ---
       dataPlot(k, 0) =  s->nextTime();
-      for (unsigned int i = 0; i < nBeads; i++)
+      for(unsigned int i = 0; i < nBeads; i++)
       {
         dataPlot(k, 1 + i * 2) = (beads[i]->q())->getValue(0);
         dataPlot(k, 2 + i * 2) = (beads[i]->velocity())->getValue(0);
@@ -279,30 +279,34 @@ int withLevel(unsigned int mylevel)
       // }
 
       s->nextStep();
-      
+
       k++;
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
 
     // This is the power of c++
     ioMatrix::write("ColumnOfbeadsTS-MoreauJeanGOSI.dat", "ascii", dataPlot);
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "ColumnOfbeadsTS-MoreauJeanGOSI.ref",
-                                        eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "ColumnOfbeadsTS-MoreauJeanGOSI.ref",
+                                       eps)) >= 0.0
         && error > eps)
       return 1;
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in ColumnOfBeadsTS-MoreauJeanGOSI.cpp" << endl;
     return 1;

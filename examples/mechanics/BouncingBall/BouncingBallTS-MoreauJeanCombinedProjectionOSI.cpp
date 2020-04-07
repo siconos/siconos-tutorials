@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
     //while (s->hasNextEvent() && k < 95)
-    while (s->hasNextEvent())
+    while(s->hasNextEvent())
     {
 
       // for( int toto=0; toto<3;toto++)
@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
 
       maxviolation = s->maxViolationUnilateral();
 
-      if (maxviolation >= 1e-08)
+      if(maxviolation >= 1e-08)
       {
         std::cout << std::endl << "maxviolation = " << maxviolation << std::endl;
         std::cout << "(*lambda1)(0) "  << (*lambda1)(0) << std::endl;
@@ -196,7 +196,7 @@ int main(int argc, char* argv[])
       k++;
     }
     int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-      (end-start).count();
+                  (end-start).count();
     cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
     cout << "Computation time : " << elapsed << " ms" << endl;
 
@@ -206,19 +206,19 @@ int main(int argc, char* argv[])
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
     // Comparison with a reference file
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(
-           dataPlot, "BouncingBallTS-MoreauJeanCombinedProjectionOSI.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(
+                dataPlot, "BouncingBallTS-MoreauJeanCombinedProjectionOSI.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in BouncingBallTS.cpp" << endl;
     return 1;

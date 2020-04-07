@@ -126,13 +126,13 @@ SICONOS_EXPORT void g1(unsigned int sizeOfq, const double* q, unsigned int sizeO
 SICONOS_EXPORT void W1(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, double* W, unsigned int sizeZ, double* z)
 {
   // Jacobian of g1 (columnwise)
-  if (sizeOfY == 1)
+  if(sizeOfY == 1)
   {
     W[0] = 0.0;
     W[1] = 1.0;
     W[2] = 0.0;
   }
-  else if (sizeOfY == 2)
+  else if(sizeOfY == 2)
   {
     W[0] = 0.0;
     W[1] = 1.0;
@@ -154,9 +154,9 @@ SICONOS_EXPORT void g2(unsigned int sizeOfq, const double* q, unsigned int sizeO
 
 SICONOS_EXPORT void W2(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, double* W, unsigned int sizeZ, double* z)
 {
-    W[0] = -1.0;
-    W[1] = 0.0;
-    W[2] = 0.0;
+  W[0] = -1.0;
+  W[1] = 0.0;
+  W[2] = 0.0;
 }
 
 SICONOS_EXPORT void g3(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, double* g, unsigned int sizeZ, double* z)
@@ -166,7 +166,7 @@ SICONOS_EXPORT void g3(unsigned int sizeOfq, const double* q, unsigned int sizeO
 
 SICONOS_EXPORT void W3(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, double* W, unsigned int sizeZ, double* z)
 {
-    W[0] = 1.0;
-    W[1] = 0.0;
-    W[2] = 0.0;
+  W[0] = 1.0;
+  W[1] = 0.0;
+  W[2] = 0.0;
 }

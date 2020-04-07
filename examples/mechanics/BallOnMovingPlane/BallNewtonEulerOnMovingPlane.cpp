@@ -48,7 +48,7 @@ public:
   virtual void computeOutput(double t, Interaction& inter, unsigned int derivativeNumber)
   {
     VectorOfBlockVectors& DSlink = inter.linkToDSVariables();
-    if (derivativeNumber == 0)
+    if(derivativeNumber == 0)
     {
       computeh(t, *DSlink[NewtonEulerR::q0], *inter.y(0));
     }
@@ -152,7 +152,7 @@ int main(int argc, char* argv[])
     q02->zero();
     (*q02)(3) = 1.0;
     // -- The dynamical system --
-    SP::NewtonEulerDS movingplane(new NewtonEulerDS(q02, v02, m, I ));
+    SP::NewtonEulerDS movingplane(new NewtonEulerDS(q02, v02, m, I));
 
     // // -- Set external forces (weight) --
     movingplane->setFExtPtr(weight);
@@ -243,7 +243,7 @@ int main(int argc, char* argv[])
 #endif
     s->setNewtonTolerance(1e-10);
     s->setNewtonMaxIteration(10);
-    
+
     // =========================== End of model definition ===========================
 
     // ================================= Computation =================================
@@ -295,12 +295,12 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-        dataPlot(k, 6) = relation0->contactForce()->norm2();
-    while (s->hasNextEvent() && k <5000000)
+    dataPlot(k, 6) = relation0->contactForce()->norm2();
+    while(s->hasNextEvent() && k <5000000)
     {
       //      s->computeOneStep();
       s->advanceToEvent();
@@ -329,12 +329,16 @@ int main(int argc, char* argv[])
 
 
       s->nextStep();
-      
+
       k++;
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("BallNewtonEulerOnMovingPlane.dat", "ascii", dataPlot, "noDim");
@@ -350,7 +354,7 @@ cout << "Computation Time " << endl;;
 #endif
     std::cout << "Error w.r.t reference file = " << (dataPlot - dataPlotRef).normInf() << std::endl;
 
-    if ((dataPlot - dataPlotRef).normInf() > 1e-10)
+    if((dataPlot - dataPlotRef).normInf() > 1e-10)
     {
       std::cout << "Warning. The results is rather different from the reference file. err = " << (dataPlot - dataPlotRef).normInf() << std::endl;
       //(dataPlot-dataPlotRef).display();
@@ -359,12 +363,12 @@ cout << "Computation Time " << endl;;
       unsigned int imax = -1;
       unsigned int jmax = -1;
       double error;
-      for (unsigned int ii = 0;  ii < dataPlot.size(0); ii++)
+      for(unsigned int ii = 0;  ii < dataPlot.size(0); ii++)
       {
-        for (unsigned int jj = 0;  jj < dataPlot.size(1); jj++)
+        for(unsigned int jj = 0;  jj < dataPlot.size(1); jj++)
         {
           error = std::abs(dataPlot.getValue(ii, jj) - dataPlotRef.getValue(ii, jj)) ;
-          if (error > 1e-12)
+          if(error > 1e-12)
           {
 
             std::cout << "error = " << error << std::endl;
@@ -373,7 +377,7 @@ cout << "Computation Time " << endl;;
             std::cout << "dataPlotRef.getValue(ii,jj) =" <<  dataPlotRef.getValue(ii, jj) << std::endl;
           }
 
-          if (error > maxerror)
+          if(error > maxerror)
           {
             maxerror = error ;
             imax = ii;
@@ -391,12 +395,12 @@ cout << "Computation Time " << endl;;
     }
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in BouncingBallNETS.cpp" << endl;
     return 1;

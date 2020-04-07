@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
     double mu = 0.1;
 
     cout << "argc :" << argc << endl;
-    if (argc < 2)
+    if(argc < 2)
     {
       cout << "Using default arguments" << endl;
 
@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
       strncpy(&filename[26],"10",sizeofargv5);
 
     }
-    else if (argc==6)
+    else if(argc==6)
     {
 
       ::r1 = atof(argv[1]);
@@ -192,7 +192,7 @@ int main(int argc, char* argv[])
     inter1->computeOutput(t0,0);
     inter2->computeOutput(t0,0);
 
-    
+
     // -- Time discretisation --
     SP::TimeDiscretisation t(new TimeDiscretisation(t0, h));
 
@@ -222,7 +222,7 @@ int main(int argc, char* argv[])
     // -- OneStepIntegrators --//
 
 
-   // double theta = 0.500001;
+    // double theta = 0.500001;
 
     //SP::Moreau OSI(new Moreau(fourbar, theta));
     //s->insertIntegrator(OSI);
@@ -248,7 +248,7 @@ int main(int argc, char* argv[])
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
     unsigned int outputSize = 42;
-    SimpleMatrix dataPlot((N/500)+1 , outputSize);
+    SimpleMatrix dataPlot((N/500)+1, outputSize);
     SimpleMatrix beam1Plot(2,3*((N/500)+1));
     SimpleMatrix beam2Plot(2,3*((N/500)+1));
     SimpleMatrix beam3Plot(2,3*((N/500)+1));
@@ -262,7 +262,7 @@ int main(int argc, char* argv[])
     SimpleMatrix beam11Plot(1,2*((N/500)+1));
     SimpleMatrix beam12Plot(1,2*((N/500)+1));
     SimpleMatrix beam13Plot(1,2*((N/500)+1));
-	//cout << "size here " << (N/20) + 1 << endl;
+    //cout << "size here " << (N/20) + 1 << endl;
     // For the initial time step:
     // time
     SP::SiconosVector q = fourbar->q();
@@ -312,17 +312,17 @@ int main(int argc, char* argv[])
     dataPlot(0, 41) =0.5*((*inter->y(1))(0)*(*inter->y(1))(0));
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    
+
     // --- Time loop ---
     cout << "Start computation ... " << endl;
 
-    
-	double tt = 0;
-	int kk = 1;
-    while (s->hasNextEvent())
+
+    double tt = 0;
+    int kk = 1;
+    while(s->hasNextEvent())
     {
       //k++;
-      // 
+      //
       // if (!(div(k,1000).rem))  cout <<"Step number "<< k << "\n";
       s->advanceToEvent();
       // Solve problem
@@ -336,111 +336,112 @@ int main(int argc, char* argv[])
       // Data Output
 
       tt = s->nextTime();
-      if(((k%500)==0) && (k != 0)){
+      if(((k%500)==0) && (k != 0))
+      {
         // cout << "size here " << kk << endl;
-      dataPlot(kk, 0) = tt;
-      dataPlot(kk, 1) = (*q)(0); // crank revolution
-      dataPlot(kk, 2) = (*q)(1);
-      dataPlot(kk, 3) = (*q)(2);
-      dataPlot(kk, 4) = (*q)(3);
-      dataPlot(kk, 5) = (*q)(4);
-      dataPlot(kk, 6) = (*q)(5);
-      dataPlot(kk, 7) = (*q)(6);
-      dataPlot(kk, 8) = (*v)(0);
-      dataPlot(kk, 9) = (*v)(1);
-      dataPlot(kk, 10) = (*v)(2);
-      dataPlot(kk, 11) = (*inter1->y(1))(0);
-      dataPlot(kk, 12) = (*inter1->y(1))(1);
-      dataPlot(kk, 13) = (*q)(3)-l1 * cos((*q)(0)) - 0.5*l2 * cos((*q)(1));
-      dataPlot(kk, 14) = (*q)(4) -l1 * sin((*q)(0)) - 0.5*l2 * sin((*q)(1));
-      dataPlot(kk, 15) = l0 + (*q)(5) + 0.5*l3*cos((*q)(2)) - 0.5*l2 * cos((*q)(1))-(*q)(3);
-      dataPlot(kk, 16) = (*q)(6) + 0.5*l3 * sin((*q)(2)) - 0.5*l2 * sin((*q)(1))-(*q)(4);
-      dataPlot(kk, 17) = (*q)(5)-0.5*l3 * cos((*q)(2));
-      dataPlot(kk, 18) = (*q)(6) -0.5*l3 * sin((*q)(2));
-      dataPlot(kk, 19) = (*inter->y(1))(0);
-      dataPlot(kk, 20) = (*inter->y(1))(1);
-      dataPlot(kk, 21) = (*inter->lambda(1))(0) ; // lambda1
-      dataPlot(kk, 22) = (*inter1->lambda(1))(0) ; // lambda2
-      dataPlot(kk, 23) = (*inter2->y(1))(0);
-      dataPlot(kk, 24) = (*inter2->y(1))(1);
-      dataPlot(kk, 25) = (*inter2->lambda(1))(0) ; // lambda2
-      dataPlot(kk, 26) = (*inter2->lambda(1))(1) ; // lambda2
-      dataPlot(kk, 27) = (*inter1->lambda(1))(1) ; // lambda2
-      dataPlot(kk, 28) = (*inter->lambda(1))(1) ; // lambda2
-      dataPlot(kk, 29) = sqrt(pow(((*q)(3) - 0.5 * l2 * cos((*q)(1)) - l1 * cos((*q)(0))),2) + pow(((*q)(4) - 0.5 * l2 * sin((*q)(1)) - l1 * sin((*q)(0))),2));
-      dataPlot(kk, 30) = sqrt(pow((l0 + (*q)(5) + 0.5*l3 * cos((*q)(2)) - 0.5*l2 * cos((*q)(1))-(*q)(3)),2) + pow((-(*q)(4) + (*q)(6)+0.5*l3 * sin((*q)(2)) - 0.5*l2 * sin((*q)(1))),2));
-      dataPlot(kk, 31) = sqrt((pow(((*q)(5) - 0.5 * l3 * cos((*q)(2))),2) + pow(((*q)(6) - 0.5 * l3 * sin((*q)(2))),2)));
-      dataPlot(kk, 32) = (*inter->y(0))(0);
-      dataPlot(kk, 33) = (*inter1->y(0))(0);
-      dataPlot(kk, 34) = (*inter2->y(0))(0);
-      dataPlot(kk, 35) = (*fourbar->fInt())(0) - (0.5 * m1) * gravity * l1 * cos((*q)(0));
-      dataPlot(kk, 36) = 0.5*((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt))*((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt)) + 0.5*3000.0*((*q)(0)-6.0*sin(0.75*PI*tt))*((*q)(0)-6.0*sin(0.75*PI*tt)) + 0.5*10.0*((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt))*((*q)(0)-6.0*sin(0.75*PI*tt));
-      dataPlot(kk, 37) = 6.0*sin(0.75*PI*tt);
-      dataPlot(kk, 38) = 6.0*0.75*PI*cos(0.75*PI*tt);
-      dataPlot(kk, 39) = (*zz)(2);
-      dataPlot(kk, 40) = 0.5*(((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt))+ 10.0*((*q)(0)-6.0*sin(0.75*PI*tt)))*(((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt))+ 10.0*((*q)(0)-6.0*sin(0.75*PI*tt)));
-      dataPlot(kk, 41) = 0.5*((*inter->y(1))(0)*(*inter->y(1))(0));
+        dataPlot(kk, 0) = tt;
+        dataPlot(kk, 1) = (*q)(0); // crank revolution
+        dataPlot(kk, 2) = (*q)(1);
+        dataPlot(kk, 3) = (*q)(2);
+        dataPlot(kk, 4) = (*q)(3);
+        dataPlot(kk, 5) = (*q)(4);
+        dataPlot(kk, 6) = (*q)(5);
+        dataPlot(kk, 7) = (*q)(6);
+        dataPlot(kk, 8) = (*v)(0);
+        dataPlot(kk, 9) = (*v)(1);
+        dataPlot(kk, 10) = (*v)(2);
+        dataPlot(kk, 11) = (*inter1->y(1))(0);
+        dataPlot(kk, 12) = (*inter1->y(1))(1);
+        dataPlot(kk, 13) = (*q)(3)-l1 * cos((*q)(0)) - 0.5*l2 * cos((*q)(1));
+        dataPlot(kk, 14) = (*q)(4) -l1 * sin((*q)(0)) - 0.5*l2 * sin((*q)(1));
+        dataPlot(kk, 15) = l0 + (*q)(5) + 0.5*l3*cos((*q)(2)) - 0.5*l2 * cos((*q)(1))-(*q)(3);
+        dataPlot(kk, 16) = (*q)(6) + 0.5*l3 * sin((*q)(2)) - 0.5*l2 * sin((*q)(1))-(*q)(4);
+        dataPlot(kk, 17) = (*q)(5)-0.5*l3 * cos((*q)(2));
+        dataPlot(kk, 18) = (*q)(6) -0.5*l3 * sin((*q)(2));
+        dataPlot(kk, 19) = (*inter->y(1))(0);
+        dataPlot(kk, 20) = (*inter->y(1))(1);
+        dataPlot(kk, 21) = (*inter->lambda(1))(0) ; // lambda1
+        dataPlot(kk, 22) = (*inter1->lambda(1))(0) ; // lambda2
+        dataPlot(kk, 23) = (*inter2->y(1))(0);
+        dataPlot(kk, 24) = (*inter2->y(1))(1);
+        dataPlot(kk, 25) = (*inter2->lambda(1))(0) ; // lambda2
+        dataPlot(kk, 26) = (*inter2->lambda(1))(1) ; // lambda2
+        dataPlot(kk, 27) = (*inter1->lambda(1))(1) ; // lambda2
+        dataPlot(kk, 28) = (*inter->lambda(1))(1) ; // lambda2
+        dataPlot(kk, 29) = sqrt(pow(((*q)(3) - 0.5 * l2 * cos((*q)(1)) - l1 * cos((*q)(0))),2) + pow(((*q)(4) - 0.5 * l2 * sin((*q)(1)) - l1 * sin((*q)(0))),2));
+        dataPlot(kk, 30) = sqrt(pow((l0 + (*q)(5) + 0.5*l3 * cos((*q)(2)) - 0.5*l2 * cos((*q)(1))-(*q)(3)),2) + pow((-(*q)(4) + (*q)(6)+0.5*l3 * sin((*q)(2)) - 0.5*l2 * sin((*q)(1))),2));
+        dataPlot(kk, 31) = sqrt((pow(((*q)(5) - 0.5 * l3 * cos((*q)(2))),2) + pow(((*q)(6) - 0.5 * l3 * sin((*q)(2))),2)));
+        dataPlot(kk, 32) = (*inter->y(0))(0);
+        dataPlot(kk, 33) = (*inter1->y(0))(0);
+        dataPlot(kk, 34) = (*inter2->y(0))(0);
+        dataPlot(kk, 35) = (*fourbar->fInt())(0) - (0.5 * m1) * gravity * l1 * cos((*q)(0));
+        dataPlot(kk, 36) = 0.5*((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt))*((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt)) + 0.5*3000.0*((*q)(0)-6.0*sin(0.75*PI*tt))*((*q)(0)-6.0*sin(0.75*PI*tt)) + 0.5*10.0*((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt))*((*q)(0)-6.0*sin(0.75*PI*tt));
+        dataPlot(kk, 37) = 6.0*sin(0.75*PI*tt);
+        dataPlot(kk, 38) = 6.0*0.75*PI*cos(0.75*PI*tt);
+        dataPlot(kk, 39) = (*zz)(2);
+        dataPlot(kk, 40) = 0.5*(((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt))+ 10.0*((*q)(0)-6.0*sin(0.75*PI*tt)))*(((*v)(0)-6.0*0.75*PI*cos(0.75*PI*tt))+ 10.0*((*q)(0)-6.0*sin(0.75*PI*tt)));
+        dataPlot(kk, 41) = 0.5*((*inter->y(1))(0)*(*inter->y(1))(0));
 
-      beam1Plot(0,3*kk) = 0.0;
-      beam1Plot(0,3*kk+1) = 0.0;
-      beam1Plot(0,3*kk+2) = 0.0;
-      beam1Plot(1,3*kk) = l1*cos((*q)(0));
-      beam1Plot(1,3*kk+1) =l1*sin((*q)(0));
-      beam1Plot(1,3*kk+2) = 0.0;
+        beam1Plot(0,3*kk) = 0.0;
+        beam1Plot(0,3*kk+1) = 0.0;
+        beam1Plot(0,3*kk+2) = 0.0;
+        beam1Plot(1,3*kk) = l1*cos((*q)(0));
+        beam1Plot(1,3*kk+1) =l1*sin((*q)(0));
+        beam1Plot(1,3*kk+2) = 0.0;
 
-      beam2Plot(0,3*kk) = ((*q)(3) - 0.5*l2*cos((*q)(1))) + (-(*q)(3) + 0.5 * l2 * cos((*q)(1)) + l1 * cos((*q)(0)));
-      beam2Plot(0,3*kk+1) = ((*q)(4) - 0.5*l2*sin((*q)(1))) + (-(*q)(4) + 0.5 * l2 * sin((*q)(1)) + l1 * sin((*q)(0)));
-      beam2Plot(0,3*kk+2) = 0.0;
-      beam2Plot(1,3*kk) = (*q)(3) + 0.5*l2 * cos((*q)(1));
-      beam2Plot(1,3*kk+1) =(*q)(4) + 0.5*l2 * sin((*q)(1));
-      beam2Plot(1,3*kk+2) = 0.0;
+        beam2Plot(0,3*kk) = ((*q)(3) - 0.5*l2*cos((*q)(1))) + (-(*q)(3) + 0.5 * l2 * cos((*q)(1)) + l1 * cos((*q)(0)));
+        beam2Plot(0,3*kk+1) = ((*q)(4) - 0.5*l2*sin((*q)(1))) + (-(*q)(4) + 0.5 * l2 * sin((*q)(1)) + l1 * sin((*q)(0)));
+        beam2Plot(0,3*kk+2) = 0.0;
+        beam2Plot(1,3*kk) = (*q)(3) + 0.5*l2 * cos((*q)(1));
+        beam2Plot(1,3*kk+1) =(*q)(4) + 0.5*l2 * sin((*q)(1));
+        beam2Plot(1,3*kk+2) = 0.0;
 
-      beam3Plot(0,3*kk) = l0 + l3*cos((*q)(2));
-      beam3Plot(0,3*kk+1) =l3*sin((*q)(2));
-      beam3Plot(0,3*kk+2) = 0.0;
-      beam3Plot(1,3*kk) = l0;
-      beam3Plot(1,3*kk+1) =0.0;
-      beam3Plot(1,3*kk+2) = 0.0;
+        beam3Plot(0,3*kk) = l0 + l3*cos((*q)(2));
+        beam3Plot(0,3*kk+1) =l3*sin((*q)(2));
+        beam3Plot(0,3*kk+2) = 0.0;
+        beam3Plot(1,3*kk) = l0;
+        beam3Plot(1,3*kk+1) =0.0;
+        beam3Plot(1,3*kk+2) = 0.0;
 
-      beam4Plot(0,3*kk) = 0.0;
-      beam4Plot(0,3*kk+1) =0.0;
-      beam4Plot(0,3*kk+2) = 0.0;
-      beam4Plot(1,3*kk) = l0;
-      beam4Plot(1,3*kk+1) =0.0;
-      beam4Plot(1,3*kk+2) = 0.0;
+        beam4Plot(0,3*kk) = 0.0;
+        beam4Plot(0,3*kk+1) =0.0;
+        beam4Plot(0,3*kk+2) = 0.0;
+        beam4Plot(1,3*kk) = l0;
+        beam4Plot(1,3*kk+1) =0.0;
+        beam4Plot(1,3*kk+2) = 0.0;
 
-      beam5Plot(0,2*kk) = l1*cos((*q)(0));
-      beam5Plot(0,2*kk+1) = l1*sin((*q)(0));
-     // beam5Plot(0,3*kk+2) = 0.0;
-      //beam5Plot(1,3*kk) = 0.0;
-      //beam5Plot(1,3*kk+1) =0.0;
-      //beam5Plot(1,3*kk+2) = 0.0;
+        beam5Plot(0,2*kk) = l1*cos((*q)(0));
+        beam5Plot(0,2*kk+1) = l1*sin((*q)(0));
+        // beam5Plot(0,3*kk+2) = 0.0;
+        //beam5Plot(1,3*kk) = 0.0;
+        //beam5Plot(1,3*kk+1) =0.0;
+        //beam5Plot(1,3*kk+2) = 0.0;
 
-      beam6Plot(0,1*kk) = tt;
+        beam6Plot(0,1*kk) = tt;
 
-      beam7Plot(0,2*kk) = ((*q)(3) - 0.5*l2*cos((*q)(1))) - (-(*q)(3) + 0.5 * l2 * cos((*q)(1)) + l1 * cos((*q)(0)));
-      beam7Plot(0,2*kk+1) = ((*q)(4) - 0.5*l2*sin((*q)(1))) - (-(*q)(4) + 0.5 * l2 * sin((*q)(1)) + l1 * sin((*q)(0)));
+        beam7Plot(0,2*kk) = ((*q)(3) - 0.5*l2*cos((*q)(1))) - (-(*q)(3) + 0.5 * l2 * cos((*q)(1)) + l1 * cos((*q)(0)));
+        beam7Plot(0,2*kk+1) = ((*q)(4) - 0.5*l2*sin((*q)(1))) - (-(*q)(4) + 0.5 * l2 * sin((*q)(1)) + l1 * sin((*q)(0)));
 
-      beam8Plot(0,2*kk) = -2.0- 10*(-(*q)(3) + 0.5 * l2 * cos((*q)(1)) + l1 * cos((*q)(0)));
-      beam8Plot(0,2*kk+1) = 2.5 - 10*(-(*q)(4) + 0.5 * l2 * sin((*q)(1)) + l1 * sin((*q)(0)));
+        beam8Plot(0,2*kk) = -2.0- 10*(-(*q)(3) + 0.5 * l2 * cos((*q)(1)) + l1 * cos((*q)(0)));
+        beam8Plot(0,2*kk+1) = 2.5 - 10*(-(*q)(4) + 0.5 * l2 * sin((*q)(1)) + l1 * sin((*q)(0)));
 
-      beam9Plot(0,2*kk) = -2.0;
-      beam9Plot(0,2*kk+1) = 2.5;
+        beam9Plot(0,2*kk) = -2.0;
+        beam9Plot(0,2*kk+1) = 2.5;
 
-      beam10Plot(0,2*kk) = (l0 + l3*cos((*q)(2)));
-      beam10Plot(0,2*kk+1) = (l3*sin((*q)(2)));
+        beam10Plot(0,2*kk) = (l0 + l3*cos((*q)(2)));
+        beam10Plot(0,2*kk+1) = (l3*sin((*q)(2)));
 
-      beam11Plot(0,2*kk) = ((*q)(3) + 0.5*l2*cos((*q)(1))) - (-l0-l3 * cos((*q)(2)) + 0.5*l2 * cos((*q)(1))+(*q)(3));
-      beam11Plot(0,2*kk+1) = ((*q)(4) + 0.5*l2*sin((*q)(1))) - ((*q)(4) - l3 * sin((*q)(2)) + 0.5*l2 * sin((*q)(1)));
+        beam11Plot(0,2*kk) = ((*q)(3) + 0.5*l2*cos((*q)(1))) - (-l0-l3 * cos((*q)(2)) + 0.5*l2 * cos((*q)(1))+(*q)(3));
+        beam11Plot(0,2*kk+1) = ((*q)(4) + 0.5*l2*sin((*q)(1))) - ((*q)(4) - l3 * sin((*q)(2)) + 0.5*l2 * sin((*q)(1)));
 
-      beam12Plot(0,2*kk) = -2.0+ 10*(-l0-l3 * cos((*q)(2)) + 0.5*l2 * cos((*q)(1))+(*q)(3));
-      beam12Plot(0,2*kk+1) = -1.5 + 10*((*q)(4) - l3 * sin((*q)(2)) + 0.5*l2 * sin((*q)(1)));
+        beam12Plot(0,2*kk) = -2.0+ 10*(-l0-l3 * cos((*q)(2)) + 0.5*l2 * cos((*q)(1))+(*q)(3));
+        beam12Plot(0,2*kk+1) = -1.5 + 10*((*q)(4) - l3 * sin((*q)(2)) + 0.5*l2 * sin((*q)(1)));
 
-      beam13Plot(0,2*kk) = -2.0;
-      beam13Plot(0,2*kk+1) = -1.5;
+        beam13Plot(0,2*kk) = -2.0;
+        beam13Plot(0,2*kk+1) = -1.5;
 
-       kk++;
-       }
+        kk++;
+      }
       //dataPlot(k, 17) = s->getNewtonNbSteps();
       //dataPlot(k, 18) = s->nbProjectionIteration();
       //dataPlot(k, 19) = s->maxViolationUnilateral();
@@ -448,13 +449,17 @@ int main(int argc, char* argv[])
       //dataPlot(k, 21) = s->cumulatedNewtonNbSteps();
       //dataPlot(k, 22) = s->nbCumulatedProjectionIteration();
       s->processEvents();
-      
+
       k++;
     }
 
     cout << "\nEnd of computation - Number of iterations done: " << k << endl;
     cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     dataPlot.resize(kk, outputSize);
     ioMatrix::write(filename, "ascii", dataPlot, "noDim");
     ioMatrix::write("Link1.dat", "ascii", beam1Plot, "noDim");
@@ -474,19 +479,19 @@ int main(int argc, char* argv[])
 
 
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "FourBarClearance.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "FourBarClearance.ref", eps)) >= 0.0
         && error > eps)
       return 1;
-    
+
   }
 
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in FourBarClearance.cpp" << endl;
     return 1;

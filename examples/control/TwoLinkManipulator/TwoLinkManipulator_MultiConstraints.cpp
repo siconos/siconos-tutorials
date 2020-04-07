@@ -38,7 +38,7 @@ using namespace std;
 int main(int argc, char* argv[])
 {
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   try
   {
 
@@ -256,11 +256,11 @@ int main(int argc, char* argv[])
     dataPlot(k, 13) = (*z)(22);
     dataPlot(k, 14) = (*z)(23);
 
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-        while (k < N)
+    while(k < N)
     {
 
       (*z)(0) = (*q)(0);
@@ -284,9 +284,9 @@ int main(int argc, char* argv[])
       dataPlot(k, 6) = (*inter01->y(0))(0) - 2;
       dataPlot(k, 7) = nimpact; //(*inter->y(1))(1);
       dataPlot(k, 8) = (*z)(6);
-      if (test == 3) dataPlot(k, 9) = (*z)(4) / h;
+      if(test == 3) dataPlot(k, 9) = (*z)(4) / h;
       else dataPlot(k, 9) = (*z)(4);
-      if (test == 5) dataPlot(k, 10) = (*z)(24) / h;
+      if(test == 5) dataPlot(k, 10) = (*z)(24) / h;
       else dataPlot(k, 10) = (*z)(24);
       dataPlot(k, 11) = test;
       dataPlot(k, 13) = (*z)(22);
@@ -300,7 +300,7 @@ int main(int argc, char* argv[])
       s->nextStep();
 
       //    controller during impacts accumulation phase before the first impact
-      if ((dataPlot(k, 3) <= 0.01) && (test == 0) && (dataPlot(k, 6) < 0.3))
+      if((dataPlot(k, 3) <= 0.01) && (test == 0) && (dataPlot(k, 6) < 0.3))
       {
         (*z)(8) = dataPlot(k, 0);
         (*z)(5) =  0.7 + 0.5 * cos(PI / 2 + 2 * PI * ((*z)(8)) / (*z)(11));
@@ -310,17 +310,17 @@ int main(int argc, char* argv[])
       }
 
       //  controller during impacts accumulation phase after the first impact
-      if ((dataPlot(k, 12) > 0) && (test == 1))
+      if((dataPlot(k, 12) > 0) && (test == 1))
       {
         (*z)(8) = dataPlot(k, 0);
         arm->setComputeFIntFunction("Two-linkMultiPlugin", "U11");
         test = 2;
       }
-      if ((dataPlot(k, 12) > 0) && (test == 2))
+      if((dataPlot(k, 12) > 0) && (test == 2))
         nimpact = nimpact + 1;
 
       // controller during constraint-motion phase.
-      if ((dataPlot(k, 12) > 0) && (test == 2) && (dataPlot(k, 7) - dataPlot(k - 1, 7) == 1) && (fabs((*inter02->y(0))(0)) < 1e-6))
+      if((dataPlot(k, 12) > 0) && (test == 2) && (dataPlot(k, 7) - dataPlot(k - 1, 7) == 1) && (fabs((*inter02->y(0))(0)) < 1e-6))
       {
         // L= dataPlot(k,0)-(*z)(8);
         (*z)(8) = dataPlot(k, 0);
@@ -329,15 +329,15 @@ int main(int argc, char* argv[])
         nimpact = 0;
       }
       //  controller during impacts accumulation phase after the first impact
-      if (((*z)(24) > 0) && (test == 3))
+      if(((*z)(24) > 0) && (test == 3))
       {
         arm->setComputeFIntFunction("Two-linkMultiPlugin", "U21");
         test = 4;
       }
-      if (((*z)(24) > 0) && (test == 4))
+      if(((*z)(24) > 0) && (test == 4))
         nimpact = nimpact + 1;
       // controller during constraint-motion phase.
-      if (((*z)(24) > 0) && (test == 4) && (dataPlot(k, 7) - dataPlot(k - 1, 7) == 1)) // && (fabs((*inter0->y(1))(0))<1e-6))
+      if(((*z)(24) > 0) && (test == 4) && (dataPlot(k, 7) - dataPlot(k - 1, 7) == 1))  // && (fabs((*inter0->y(1))(0))<1e-6))
       {
         (*z)(8) = dataPlot(k, 0);
         arm->setComputeFIntFunction("Two-linkMultiPlugin", "U22");
@@ -345,7 +345,7 @@ int main(int argc, char* argv[])
         nimpact = 0;
       }
       // change of control law with a particular design of the desired trajectory that guarantee the take-off
-      if ((trunc((dataPlot(k, 0) + h) / (*z)(11)) > trunc((dataPlot(k, 0)) / (*z)(11))) && (test == 5))
+      if((trunc((dataPlot(k, 0) + h) / (*z)(11)) > trunc((dataPlot(k, 0)) / (*z)(11))) && (test == 5))
       {
         (*z)(8) = dataPlot(k, 0) + h;
         (*z)(10) = (*z)(12);
@@ -355,33 +355,37 @@ int main(int argc, char* argv[])
       }
 
       //  controller during free-motion phase
-      if (((*z)(13) - 0.1 >= 0) && (test == 6))
+      if(((*z)(13) - 0.1 >= 0) && (test == 6))
       {
         arm->setComputeFIntFunction("Two-linkMultiPlugin", "U");
         test = 0;
         (*z)(13) = 0;
       }
-      
+
     }
     cout << endl << "End of computation - Number of iterations done: " << k << endl;
     cout << "Computation Time " << endl;
-  time.report();    // --- Output files ---
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     dataPlot.resize(k,outputSize);
     ioMatrix::write("TwoLinkManipulator_MultiConstraints.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-7;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "TwoLinkManipulator_MultiConstraints.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "TwoLinkManipulator_MultiConstraints.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in TwolinkMulticonstrManip" << endl;
     return 1;

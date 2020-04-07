@@ -25,7 +25,7 @@ using namespace std;
 int main(int argc, char* argv[])
 {
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   try
   {
     // ================= Model definition =================
@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
     unsigned int outputSize = 7;
     SimpleMatrix dataPlot(N + 1, outputSize);
     dataPlot(k, 0) = t0;
-    for (int i = 0; i < (int)nDof; i++)
+    for(int i = 0; i < (int)nDof; i++)
     {
       dataPlot(k, 2 * i + 1) = (*dynamicalSystem->q())(i);
       dataPlot(k, 2 * i + 2) = (*dynamicalSystem->velocity())(i);
@@ -168,7 +168,7 @@ int main(int argc, char* argv[])
 
     // --- Time loop ---
     cout << "Start computation ... " << endl;
-    while (k < N)
+    while(k < N)
     {
 
       // get current time step
@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
 
       // get values
       dataPlot(k, 0) = s->nextTime();
-      for (int i = 0; i < (int)nDof; i++)
+      for(int i = 0; i < (int)nDof; i++)
       {
         dataPlot(k, 2 * i + 1) = (*dynamicalSystem->q())(i);
         dataPlot(k, 2 * i + 2) = (*dynamicalSystem->velocity())(i);
@@ -194,18 +194,18 @@ int main(int argc, char* argv[])
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
 
     double error=0.0, eps=1e-11;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "Woodpecker.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "Woodpecker.ref", eps)) >= 0.0
         && error > eps)
       return 1;
-    
+
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in \'WoodPecker\'" << endl;
     return 1;

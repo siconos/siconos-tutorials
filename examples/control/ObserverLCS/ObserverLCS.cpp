@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
     // Simulation loop
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-        while (k < N - 1)
+    while(k < N - 1)
     {
       k++;
       //  *z = *(myProcessInteraction->y(0)->getVectorPtr(0));
@@ -197,23 +197,27 @@ int main(int argc, char* argv[])
       s->nextStep();
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("ObserverLCS.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-10;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "ObserverLCS.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "ObserverLCS.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in ObserverLCS.cpp" << endl;
     return 1;

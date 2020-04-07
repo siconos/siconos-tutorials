@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
   double hControl = 1.0e-2;       // Time step for control
   double Xinit = 1.0;
 
-  if (h > hControl)
+  if(h > hControl)
   {
     RuntimeException::selfThrow("hControl must be bigger than h");
   }
@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
   ioMatrix::read("SMCExampleExplicit.ref", "ascii", dataPlotRef);
   std::cout << (dataPlot - dataPlotRef).normInf() << std::endl;
 
-  if ((dataPlot - dataPlotRef).normInf() > 1e-12)
+  if((dataPlot - dataPlotRef).normInf() > 1e-12)
   {
     std::cout << "Warning. The results is rather different from the reference file." << std::endl;
     return 1;

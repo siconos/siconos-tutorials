@@ -34,7 +34,7 @@ extern "C" double FextFunction(double time)
 
 SICONOS_EXPORT void ballFExt(double time, unsigned int sizeOfq, double *fExt, unsigned int sizeZ, double* z)
 {
-  for (unsigned int i = 0; i < sizeOfq; i++)
+  for(unsigned int i = 0; i < sizeOfq; i++)
     fExt[i] = 0.0;
   fExt[0] = -m * g + FextFunction(time);
 }

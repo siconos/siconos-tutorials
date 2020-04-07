@@ -1,8 +1,8 @@
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
 #include <stdio.h>
 #include <math.h>
 
@@ -14,7 +14,7 @@ extern "C" double computeControl(double time)
   double T = 0.1;
   int oddoreven = int(time / T);
 
-  if ((oddoreven / 2) == 0) u = alpha;
+  if((oddoreven / 2) == 0) u = alpha;
   else u = 0;
   u = 30 * sin(50 * time);
   return u;

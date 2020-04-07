@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 {
   //---------------------------- calculate the computation time --------------------------------------------------
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   try
   {
     //===========================================================================================================
@@ -150,7 +150,7 @@ int main(int argc, char* argv[])
     //----------------------------------- Simulation starts ----------------------------------------------------------
     cout << "====> Start computation ... " << endl << endl;
     unsigned int k = 1;
-    while (k < NpointSave)
+    while(k < NpointSave)
     {
       TSscheme->computeOneStep();
       DataPlot(k, 0) = TSscheme->nextTime();
@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
       DataPlot(k, 8) = potentialEnergy;
       // go to the next time step
       k++;
-      
+
       TSscheme->nextStep();
     };
     //----------------------- At the end of the simulation --------------------------
@@ -178,12 +178,12 @@ int main(int argc, char* argv[])
     ioMatrix::write("result.dat", "ascii", DataPlot, "noDim");
   }
   //============================== Catch exceptions ===================================================================
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught." << endl;
     return 1;

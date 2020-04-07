@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 {
   //---------------------------- calculate the computation time --------------------------------------------------
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   try
   {
     //===========================================================================================================
@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
     RoBlockModel->insertDynamicalSystem(RockingBlock);
     RoBlockModel->link(inter1, RockingBlock);
     RoBlockModel->link(inter2, RockingBlock);
-    
+
     //================================================================================================================
     //            IV. Create the simulation
     //================================================================================================================
@@ -150,17 +150,17 @@ int main(int argc, char* argv[])
     bool NSEvent = false;
     unsigned int NumberNSEvent = 0;
     unsigned int k = 1;
-    while (EDscheme->hasNextEvent() && (k < NpointSave))
+    while(EDscheme->hasNextEvent() && (k < NpointSave))
     {
       EDscheme->advanceToEvent(); // lead the simulation run from one event to the next
       //---------- detect the statue of the current event ------------------------------------
-      if (eventsManager->nextEvent()->getType() == 2) // the current event is non-smooth
+      if(eventsManager->nextEvent()->getType() == 2)  // the current event is non-smooth
       {
         NSEvent = true;
       };
       EDscheme->processEvents();  // process the current event
       //------------------- get data at the beginning of non-smooth events ---------------------------
-      if (NSEvent)
+      if(NSEvent)
       {
         DataPlot(k, 0) = EDscheme->startingTime(); // instant at non-smooth event
         DataPlot(k, 1) = RockingBlock->qMemory().getSiconosVector(1)(0);      // Position X
@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
         //EDscheme->update(1);
         k++;
         ++NumberNSEvent;
-        
+
         NSEvent = false;                        // The next event is maybe smooth
       };
       //-------------------- get data at smooth events or at the end of non-smooth events ---------------
@@ -185,7 +185,7 @@ int main(int argc, char* argv[])
       DataPlot(k, 6) = (*VelBlock)(2); // Velocity Vtheta
       // go to the next time step
       k++;
-      
+
     };
     //----------------------- At the end of the simulation --------------------------
     cout << "End of the simulation" << endl;
@@ -195,12 +195,12 @@ int main(int argc, char* argv[])
     ioMatrix::write("result.dat", "ascii", DataPlot, "noDim");
   }
   //============================== Catch exceptions ===================================================================
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught." << endl;
     return 1;

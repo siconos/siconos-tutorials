@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
   double hControl = 1.0e-2;       // Time step for control
   double Xinit = 1.0;
 
-  if (h > hControl)
+  if(h > hControl)
   {
     RuntimeException::selfThrow("hControl must be bigger than h");
   }

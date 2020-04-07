@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
   string Modeltitle = "DiodeBridge";
 
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   try
   {
     // --- Dynamical system specification ---
@@ -169,9 +169,9 @@ int main(int argc, char* argv[])
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    
+
     // --- Time loop  ---
-    for (k = 1 ; k < N ; ++k)
+    for(k = 1 ; k < N ; ++k)
     {
       // solve ...
       aTS->computeOneStep();
@@ -208,7 +208,11 @@ int main(int argc, char* argv[])
 
     // --- elapsed time computing ---
     cout << "time = " << endl;
-    time.report();
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+
 
     // Number of time iterations
     cout << "Number of iterations done: " << k << endl;
@@ -217,18 +221,18 @@ int main(int argc, char* argv[])
     ioMatrix::write("DiodeBridge.dat", "ascii", dataPlot, "noDim");
 
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "DiodeBridge.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "DiodeBridge.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
   // --- Exceptions handling ---
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught " << endl;
     return 1;

@@ -76,13 +76,13 @@ int main(int argc, char* argv[])
     double NumberContacts = NumberBalls ; // Number of contacts
     //(1) Radius of balls
     SP::SiconosVector RadiusBalls(new SiconosVector(NumberBalls));
-    for (unsigned int k = 0; k < NumberBalls; ++k)
+    for(unsigned int k = 0; k < NumberBalls; ++k)
     {
       (*RadiusBalls)(k) = (pow((1.0 - q_taper), (int)(k + 1))) * R_base_taper;
     }
     // (2) Mass of balls
     SP::SiconosVector MassBalls(new SiconosVector(NumberBalls));
-    for (unsigned int id = 0; id < NumberBalls; ++id)
+    for(unsigned int id = 0; id < NumberBalls; ++id)
     {
       (*MassBalls)(id) = (4.0 / 3.0) * PI * pow((*RadiusBalls)(id), 3) * mass_density;
     }
@@ -90,13 +90,13 @@ int main(int argc, char* argv[])
     // For the impactor balls
     SP::SiconosVector InitPosBalls(new SiconosVector(NumberBalls));
     (*InitPosBalls)(0) = Height + (*RadiusBalls)(0);
-    for (unsigned int j = 1; j < NumberBalls; ++j)
+    for(unsigned int j = 1; j < NumberBalls; ++j)
     {
       (*InitPosBalls)(j) = (*InitPosBalls)(j - 1) + (*RadiusBalls)(j - 1) + (*RadiusBalls)(j);
     }
     // (4) Initial velocity of balls
     SP::SiconosVector InitVelBalls(new SiconosVector(NumberBalls));
-    for (unsigned int i = 0; i < NumberBalls; ++i)
+    for(unsigned int i = 0; i < NumberBalls; ++i)
     {
       (*InitVelBalls)(i) = 0.0;
     }
@@ -104,9 +104,9 @@ int main(int argc, char* argv[])
     // (1) Restitution coefficient at contacts
     SP::SiconosVector ResCofContacts(new SiconosVector(NumberContacts));
     SP::SiconosVector ElasCofContacts(new SiconosVector(NumberContacts));
-    for (unsigned int id = 0; id < NumberContacts; ++id)
+    for(unsigned int id = 0; id < NumberContacts; ++id)
     {
-      if (id == 0) // contact ball-wall
+      if(id == 0)  // contact ball-wall
       {
         (*ResCofContacts)(id) = Res_BallWall;
       }
@@ -120,10 +120,10 @@ int main(int argc, char* argv[])
     // (2) Stiffness at contacts
     SP::SiconosVector StiffContacts(new SiconosVector(NumberContacts));
     double Rmoy, Emoy;
-    for (unsigned int id = 0; id < NumberContacts; ++id)
+    for(unsigned int id = 0; id < NumberContacts; ++id)
     {
       // for ball-wall contact
-      if (id == 0)
+      if(id == 0)
       {
         Emoy = (4.0 / 3.0) * ((YoungBall * YoungWall) / ((1.0 - pow(PoissonBall, 2)) * YoungWall + (1.0 - pow(PoissonWall, 2)) * YoungBall));
         Rmoy = (*RadiusBalls)(0);
@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
     // -- (1) OneStepIntegrators --
     SP::OneStepIntegrator OSI(new LsodarOSI());
 
-    for (unsigned int i = 0; i < NumberBalls; ++i)
+    for(unsigned int i = 0; i < NumberBalls; ++i)
     {
       _Rball = (*RadiusBalls)(i); // radius of the ball
       _massBall = (*MassBalls)(i); // mass of the ball
@@ -205,12 +205,12 @@ int main(int argc, char* argv[])
     SP::Relation relation;
     SP::Interaction interaction;
     double ResCoef, Stiff, ElasPow;
-    for (unsigned int j = 0; j < NumberContacts; ++j)
+    for(unsigned int j = 0; j < NumberContacts; ++j)
     {
       ResCoef = (*ResCofContacts)(j) ;
       Stiff = (*StiffContacts)(j);
       ElasPow = (*ElasCofContacts)(j);
-      if (j == 0) // for contact wall-ball
+      if(j == 0)  // for contact wall-ball
       {
         H = SP::SimpleMatrix(new SimpleMatrix(1, nDofBall));
         (*H)(0, 0) = 1.0;
@@ -229,7 +229,7 @@ int main(int argc, char* argv[])
       nslaw = SP::NonSmoothLaw(new MultipleImpactNSL(ResCoef, Stiff, ElasPow));
       relation = SP::Relation(new LagrangianLinearTIR(H, E));
       interaction = SP::Interaction(new Interaction(nslaw, relation));
-      if (j == 0) // for contact wall-ball
+      if(j == 0)  // for contact wall-ball
         BallChain->link(interaction, VecOfallDS[j]);
       else // For ball-ball contact
         BallChain->link(interaction, VecOfallDS[j-1],VecOfallDS[j]);
@@ -253,7 +253,7 @@ int main(int argc, char* argv[])
     s->insertIntegrator(OSI);
     s->insertNonSmoothProblem(impact, SICONOS_OSNSP_ED_IMPACT);
     s->insertNonSmoothProblem(acceleration, SICONOS_OSNSP_ED_SMOOTH_ACC);
-    
+
     // =========================== End of model definition ===========================
     //----------------------------------- Initialization-------------------------------
     s->setPrintStat(true);
@@ -281,13 +281,13 @@ int main(int argc, char* argv[])
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
     //====================================================================
-    while ((k < Npointsave) & (s->hasNextEvent()))
+    while((k < Npointsave) & (s->hasNextEvent()))
     {
       dataPlot(k, 0) =  s->startingTime();
       // Save state of the balls
       unsigned int col_pos = 1;
       unsigned int col_vel = NumberBalls + 1;
-      for (boost::tie(ui, uiend) = DSG0->vertices(); ui != uiend; ++ui)
+      for(boost::tie(ui, uiend) = DSG0->vertices(); ui != uiend; ++ui)
       {
         SP::DynamicalSystem ds = DSG0->bundle(*ui);
         SP::LagrangianDS lag_ds = std::dynamic_pointer_cast<LagrangianDS>(ds);
@@ -300,20 +300,20 @@ int main(int argc, char* argv[])
       }
       ++k;
       s->advanceToEvent(); // run simulation from one event to the next
-      if (eventsManager->nextEvent()->getType() == 2)
+      if(eventsManager->nextEvent()->getType() == 2)
       {
         nonSmooth = true;
       };
       //
       s->processEvents();  // process events
-      if (nonSmooth)
+      if(nonSmooth)
       {
         // multiple_impact->display();
         dataPlot(k, 0) = s->startingTime();
         // Save state of the balls
         unsigned int col_pos = 1;
         unsigned int col_vel = NumberBalls + 1;
-        for (boost::tie(ui, uiend) = DSG0->vertices(); ui != uiend; ++ui)
+        for(boost::tie(ui, uiend) = DSG0->vertices(); ui != uiend; ++ui)
         {
           SP::DynamicalSystem ds = DSG0->bundle(*ui);
           SP::LagrangianDS lag_ds = std::dynamic_pointer_cast<LagrangianDS>(ds);
@@ -327,33 +327,37 @@ int main(int argc, char* argv[])
         nonSmooth = false;
         ++NumberOfNSEvents;
         ++NumberOfEvents;
-        
+
         ++k;
       }
       // --- Get values to be plotted ---
       ++NumberOfEvents;
-      
+
     }
 
     cout << "Computation Time " << endl;
-    time.report();    // --- Output files ---
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("BeadColum_LZBModel.dat", "ascii", dataPlot, "noDim");
 
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "BeadColum_LZBModel.ref", eps))>=0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "BeadColum_LZBModel.ref", eps))>=0.0
         && error > eps)
       return 1;
   }
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught." << endl;
     return 1;
   }
-  }
+}

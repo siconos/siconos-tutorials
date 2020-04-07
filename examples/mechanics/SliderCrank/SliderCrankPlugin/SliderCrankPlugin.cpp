@@ -16,11 +16,11 @@
  * limitations under the License.
 */
 
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
 #include <math.h>
 #include <iostream>
 
@@ -162,20 +162,20 @@ SICONOS_EXPORT void g1(unsigned int sizeOfq,  double* restrict  q, unsigned int 
   // printf("q[2] = %e\n", q[2]);
   // printf("g1[0] = %e\n", g[0]);
 
-  if (sizeOfY > 1)
+  if(sizeOfY > 1)
     g[1] = l1 * cos(q[0]) + l2 * cos(q[1]) - a * cos(q[2]) - b * sin(q[2]); // tangential
 }
 
 SICONOS_EXPORT void W1(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfY, double* restrict  W, unsigned int sizeZ, double* restrict  z)
 {
   // Jacobian of g1 (columnwise)
-  if (sizeOfY == 1)
+  if(sizeOfY == 1)
   {
     W[0] = -l1 * cos(q[0]);
     W[1] = -l2 * cos(q[1]);
     W[2] = a * cos(q[2]) + b * sin(q[2]);
   }
-  else if (sizeOfY == 2)
+  else if(sizeOfY == 2)
   {
     W[0] = -l1 * cos(q[0]);
     W[1] = -l1 * sin(q[0]);
@@ -194,7 +194,7 @@ SICONOS_EXPORT void W1dot(unsigned int sizeOfq,  double* restrict  q, unsigned i
 {
   int sizeOfY = 1;
   // Jacobian of g1 (columnwise)
-  if (sizeOfY == 1)
+  if(sizeOfY == 1)
   {
     S2[0] = l1 * sin(q[0]) * qdot[0];
     S2[1] = l2 * sin(q[1]) * qdot[1];
@@ -218,20 +218,20 @@ SICONOS_EXPORT void W1dot(unsigned int sizeOfq,  double* restrict  q, unsigned i
 SICONOS_EXPORT void g2(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfY, double* restrict  g, unsigned int sizeZ, double* restrict  z)
 {
   g[0] = 0.5 * d - (l1 * sin(q[0]) + l2 * sin(q[1]) + a * sin(q[2]) + b * cos(q[2])); // normal
-  if (sizeOfY > 1)
+  if(sizeOfY > 1)
     g[1] = l1 * cos(q[0]) + l2 * cos(q[1]) + a * cos(q[2]) - b * sin(q[2]); // tangential
 }
 
 SICONOS_EXPORT void W2(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfY, double* restrict  W, unsigned int sizeZ, double* restrict  z)
 {
   // Jacobian of g2 (columnwise)
-  if (sizeOfY == 1)
+  if(sizeOfY == 1)
   {
     W[0] = -l1 * cos(q[0]);
     W[1] = -l2 * cos(q[1]);
     W[2] = -a * cos(q[2]) + b * sin(q[2]);
   }
-  else if (sizeOfY == 2)
+  else if(sizeOfY == 2)
   {
     W[0] = -l1 * cos(q[0]);
     W[1] = -l1 * sin(q[0]);
@@ -249,7 +249,7 @@ SICONOS_EXPORT void W2dot(unsigned int sizeOfq,  double* restrict  q, unsigned i
 {
   int sizeOfY = 1;
   // Jacobian of g1 (columnwise)
-  if (sizeOfY == 1)
+  if(sizeOfY == 1)
   {
     S2[0] = l1 * sin(q[0]) * qdot[0];
     S2[1] = l2 * sin(q[1]) * qdot[1];
@@ -273,20 +273,20 @@ SICONOS_EXPORT void W2dot(unsigned int sizeOfq,  double* restrict  q, unsigned i
 SICONOS_EXPORT void g3(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfY, double* restrict  g, unsigned int sizeZ, double* restrict  z)
 {
   g[0] = 0.5 * d + l1 * sin(q[0]) + l2 * sin(q[1]) - a * sin(q[2]) - b * cos(q[2]); // normal
-  if (sizeOfY > 1)
+  if(sizeOfY > 1)
     g[1] = l1 * cos(q[0]) + l2 * cos(q[1]) - a * cos(q[2]) + b * sin(q[2]); // tangential
 }
 
 SICONOS_EXPORT void W3(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfY, double* restrict  W, unsigned int sizeZ, double* restrict  z)
 {
   // Jacobian of g3 (columnwise)
-  if (sizeOfY == 1)
+  if(sizeOfY == 1)
   {
     W[0] = l1 * cos(q[0]);
     W[1] = l2 * cos(q[1]);
     W[2] = -a * cos(q[2]) + b * sin(q[2]);
   }
-  else if (sizeOfY == 2)
+  else if(sizeOfY == 2)
   {
     W[0] = l1 * cos(q[0]);
     W[1] = -l1 * sin(q[0]);
@@ -304,11 +304,11 @@ SICONOS_EXPORT void W3dot(unsigned int sizeOfq,  double* restrict  q, unsigned i
 {
   int sizeOfY = 1;
   // Jacobian of g1 (columnwise)
-  if (sizeOfY == 1)
+  if(sizeOfY == 1)
   {
     S2[0] = - l1 * sin(q[0]) * qdot[0];
     S2[1] = - l2 * sin(q[1]) * qdot[1];
-    S2[2] = ( a * sin(q[2]) + b * cos(q[2]))*qdot[2];
+    S2[2] = (a * sin(q[2]) + b * cos(q[2]))*qdot[2];
   }
 //   // else if (sizeOfY == 2)
 //   // {
@@ -327,20 +327,20 @@ SICONOS_EXPORT void W3dot(unsigned int sizeOfq,  double* restrict  q, unsigned i
 SICONOS_EXPORT void g4(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfY, double* restrict  g, unsigned int sizeZ, double* restrict  z)
 {
   g[0] = 0.5 * d + l1 * sin(q[0]) + l2 * sin(q[1]) + a * sin(q[2]) - b * cos(q[2]); // normal
-  if (sizeOfY > 1)
+  if(sizeOfY > 1)
     g[1] = l1 * cos(q[0]) + l2 * cos(q[1]) + a * cos(q[2]) + b * sin(q[2]); // tangential
 }
 
 SICONOS_EXPORT void W4(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfY, double* restrict  W, unsigned int sizeZ, double* restrict  z)
 {
   // Jacobian of g4 (columnwise)
-  if (sizeOfY == 1)
+  if(sizeOfY == 1)
   {
     W[0] = l1 * cos(q[0]);
     W[1] = l2 * cos(q[1]);
     W[2] = a * cos(q[2]) + b * sin(q[2]);
   }
-  else if (sizeOfY == 2)
+  else if(sizeOfY == 2)
   {
     W[0] = l1 * cos(q[0]);
     W[1] = -l1 * sin(q[0]);
@@ -358,11 +358,11 @@ SICONOS_EXPORT void W4dot(unsigned int sizeOfq,  double* restrict  q, unsigned i
 {
   int sizeOfY = 1;
   // Jacobian of g1 (columnwise)
-  if (sizeOfY == 1)
+  if(sizeOfY == 1)
   {
     S2[0] = - l1 * sin(q[0]) * qdot[0];
     S2[1] = - l2 * sin(q[1]) * qdot[1];
-    S2[2] = ( a * sin(q[2]) + b * cos(q[2]))*qdot[2];
+    S2[2] = (a * sin(q[2]) + b * cos(q[2]))*qdot[2];
   }
 //   // else if (sizeOfY == 2)
 //   // {

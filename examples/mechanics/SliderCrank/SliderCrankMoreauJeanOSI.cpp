@@ -223,14 +223,14 @@ int main(int argc, char* argv[])
 
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    
+
 
 //    while ((s->hasNextEvent()) && (k<= 3000))
-    while ((s->hasNextEvent()))
+    while((s->hasNextEvent()))
     {
 
       // std::cout <<"=====================================================" <<std::endl;
@@ -275,48 +275,52 @@ int main(int argc, char* argv[])
       SP::InteractionsGraph indexSet1 = topo->indexSet(1);
       dataPlot(k, 26) = indexSet1->size();
 
-      if (indexSet1->size() > 5)
+      if(indexSet1->size() > 5)
       {
         impact->display();
       }
       //      if (s->nextTime() > 0.035 and (*inter1->lambda(1))(0) >0.0)
 #ifdef DISPLAY_INTER
-        std::cout << "=============== Step k =" << k << std::endl;
-        std::cout << "Time " << s->nextTime() << std::endl;
+      std::cout << "=============== Step k =" << k << std::endl;
+      std::cout << "Time " << s->nextTime() << std::endl;
 
-        impact->display();
-        std::cout << " (*inter1->lambda(1))(0) " << (*inter1->lambda(1))(0) << std:: endl;
-        std::cout << " (*inter2->lambda(1))(0) " << (*inter2->lambda(1))(0) << std:: endl;
-        std::cout << " (*inter3->lambda(1))(0) " << (*inter3->lambda(1))(0) << std:: endl;
-        std::cout << " (*inter4->lambda(1))(0) " << (*inter4->lambda(1))(0) << std:: endl;
+      impact->display();
+      std::cout << " (*inter1->lambda(1))(0) " << (*inter1->lambda(1))(0) << std:: endl;
+      std::cout << " (*inter2->lambda(1))(0) " << (*inter2->lambda(1))(0) << std:: endl;
+      std::cout << " (*inter3->lambda(1))(0) " << (*inter3->lambda(1))(0) << std:: endl;
+      std::cout << " (*inter4->lambda(1))(0) " << (*inter4->lambda(1))(0) << std:: endl;
 #endif
 
       s->processEvents();
-      
+
       k++;
     }
 
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
 
     double error=0.0, eps=1e-10;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "SliderCrankMoreauJeanOSI.ref",
-                                        eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "SliderCrankMoreauJeanOSI.ref",
+                                       eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in SliderCrankD1MinusLinearOSI.cpp" << endl;
     return 1;

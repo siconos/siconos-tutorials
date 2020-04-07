@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
   plant->setzPtr(param);
 
 
-  
+
   // -------------
   // --- Model process ---
   // -------------
@@ -115,20 +115,20 @@ int main(int argc, char* argv[])
   ioMatrix::write("SMCElectroPneumatic.dat", "ascii", data, "noDim");
   std::cout << std::endl << simLsodar->dataLegend() << std::endl;
 
-/*
-  // Comparison with a reference file
-  SimpleMatrix dataPlotRef(dataPlot);
-  dataPlotRef.zero();
-  ioMatrix::read("SMCExampleImplicit.ref", "ascii", dataPlotRef);
-  std::cout << (dataPlot - dataPlotRef).normInf() << std::endl;
-  if ((dataPlot - dataPlotRef).normInf() > 1e-12)
-  {
-    std::cout << "Warning. The results is rather different from the reference file." << std::endl;
+  /*
+    // Comparison with a reference file
+    SimpleMatrix dataPlotRef(dataPlot);
+    dataPlotRef.zero();
+    ioMatrix::read("SMCExampleImplicit.ref", "ascii", dataPlotRef);
     std::cout << (dataPlot - dataPlotRef).normInf() << std::endl;
-    return 1;
-  }
-#else
-  return 0;
-*/
+    if ((dataPlot - dataPlotRef).normInf() > 1e-12)
+    {
+      std::cout << "Warning. The results is rather different from the reference file." << std::endl;
+      std::cout << (dataPlot - dataPlotRef).normInf() << std::endl;
+      return 1;
+    }
+  #else
+    return 0;
+  */
   return 0;
 }

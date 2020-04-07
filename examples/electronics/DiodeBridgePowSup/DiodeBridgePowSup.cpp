@@ -100,8 +100,8 @@ int main(int argc, char* argv[])
     LSDiodeBridgePowSup->setzPtr(Int_z);
 
     SP::SimpleMatrix Int_B(new SimpleMatrix(1, 4));
-    (*Int_B)(0 , 0) = 1.0 / Cfilt;
-    (*Int_B)(0 , 2) = 1.0 / Cfilt;
+    (*Int_B)(0, 0) = 1.0 / Cfilt;
+    (*Int_B)(0, 2) = 1.0 / Cfilt;
 
     SP::FirstOrderLinearR LTIRDiodeBridgePowSup(new FirstOrderLinearR(Int_C, Int_B));
     LTIRDiodeBridgePowSup->setDPtr(Int_D);
@@ -195,8 +195,8 @@ int main(int argc, char* argv[])
     // --- Compute elapsed time ---
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-        // --- Time loop  ---
-    while (k < N - 1)
+    // --- Time loop  ---
+    while(k < N - 1)
     {
       // get current time step
       k++;
@@ -249,7 +249,11 @@ int main(int argc, char* argv[])
 
     // --- elapsed time computing ---
     cout << "time = " << endl;
-    time.report();
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+
 
     // Number of time iterations
     cout << "Number of iterations done: " << k << endl;
@@ -258,13 +262,13 @@ int main(int argc, char* argv[])
     // open the file
     char buffer[30];
     ofstream outFile("DiodeBridgePowSup.dat");          // checks that it's opened
-    if (!outFile.is_open())
+    if(!outFile.is_open())
       SiconosMatrixException::selfThrow("function write error : Fail to open \"DiodeBridgePowSup.dat\"");
-    for (int i = 0; i < N + 1; i++)
+    for(int i = 0; i < N + 1; i++)
     {
       sprintf(buffer, "%1.10e ", dataPlot(i, 0)); // /!\ depends on machine precision
       outFile << buffer;
-      for (int j = 1; j < (int)nbPlot; j++)
+      for(int j = 1; j < (int)nbPlot; j++)
       {
         sprintf(buffer, "%1.6e ", dataPlot(i, j)); // /!\ depends on machine precision
         outFile << buffer;
@@ -276,18 +280,18 @@ int main(int argc, char* argv[])
   }
 
   // --- Exceptions handling ---
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cout << "SiconosException at time step " << k << endl;
     cerr << e.report() << endl;
     return 1;
   }
-  catch (std::exception& e)
+  catch(std::exception& e)
   {
     cout << "Exception: " << e.what() << endl;
     exit(-1);
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught " << endl;
     return 1;

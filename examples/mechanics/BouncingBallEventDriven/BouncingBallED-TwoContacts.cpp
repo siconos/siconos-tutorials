@@ -33,7 +33,7 @@ using namespace std;
 int main(int argc, char* argv[])
 {
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   try
   {
     // ================= Creation of the model =======================
@@ -179,10 +179,10 @@ int main(int argc, char* argv[])
     bool nonSmooth = false;
     unsigned int numberOfEvent = 0 ;
     double k = 1;
-    
+
     s->setPrintStat(true);
     //    s->setTolerance(1e-10);
-    while (s->hasNextEvent())
+    while(s->hasNextEvent())
     {
       s->advanceToEvent(); // run simulation from one event to the next
       f = ball->p(2);       // resultant force deduced from the LCP at acceleration level
@@ -190,19 +190,19 @@ int main(int argc, char* argv[])
       gamma = ball->acceleration();
       y1 = inter1->y(0);
       y2 = inter2->y(0);
-      if (eventsManager->nextEvent()->getType() == 2)
+      if(eventsManager->nextEvent()->getType() == 2)
         nonSmooth = true;
 
       s->processEvents();  // process events
       // If the treated event is non smooth, the pre-impact state has been solved in memory vectors during process.
-      if (nonSmooth) // if the event is nonsmooth
+      if(nonSmooth)  // if the event is nonsmooth
       {
         dataPlot(k,0) = s->startingTime(); // get the time at nonsmooth event
         dataPlot(k,1) = ball->qMemory().getSiconosVector(1)(0);
         dataPlot(k,2) = ball->velocityMemory().getSiconosVector(1)(0);
         k++;
         nonSmooth = false;
-        
+
         dataPlot(k,4) = 1;
         ++ll;
         //         cout << "========================================" << endl;
@@ -230,7 +230,7 @@ int main(int argc, char* argv[])
       //
       k++;
       ++numberOfEvent;
-      
+
     }
 
     // --- Output files ---
@@ -242,21 +242,21 @@ int main(int argc, char* argv[])
     ioMatrix::write("BouncingBallED-TwoContacts.dat", "ascii", dataPlot, "noDim");
 
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "BouncingBallED-TwoContacts.ref",
-                                        eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "BouncingBallED-TwoContacts.ref",
+                                       eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught." << endl;
     return 1;
   }
-  }
+}

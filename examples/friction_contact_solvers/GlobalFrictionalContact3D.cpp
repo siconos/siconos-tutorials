@@ -168,14 +168,14 @@ int main(int argc, char* argv[])
   //Driver call
   i = 0;
   info = gfc3d_driver(numericsProblem,
-		      reaction , velocity, globalVelocity,
-		      numerics_solver_options);
+                      reaction, velocity, globalVelocity,
+                      numerics_solver_options);
 
   solver_options_delete(numerics_solver_options);
   // Solver output
   printf("\n");
-  for (k = 0 ; k < m; k++) printf("velocity[%i] = %12.8e \t \t reaction[%i] = %12.8e \n ", k, velocity[k], k , reaction[k]);
-  for (k = 0 ; k < n; k++) printf("globalVelocity[%i] = %12.8e \t \n ", k, globalVelocity[k]);
+  for(k = 0 ; k < m; k++) printf("velocity[%i] = %12.8e \t \t reaction[%i] = %12.8e \n ", k, velocity[k], k, reaction[k]);
+  for(k = 0 ; k < n; k++) printf("globalVelocity[%i] = %12.8e \t \n ", k, globalVelocity[k]);
   printf("\n");
 
   free(reaction);
@@ -188,7 +188,7 @@ int main(int argc, char* argv[])
   numericsProblem->b = NULL;
 
   globalFrictionContact_free(numericsProblem);
-  
+
   return info;
 
 

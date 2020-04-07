@@ -122,16 +122,16 @@ int main()
   // do simulation while events remains in the "future events" list of events manager.
   cout << " ==== Start of  simulation : " << NBStep << " steps====" << endl;
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   unsigned int k = 0;
-  while (aS->hasNextEvent())
+  while(aS->hasNextEvent())
   {
     k++;
     //      if (cmp==150)
     // numerics_set_verbose(à);
     //      else if (cmp==151)
     numerics_set_verbose(0);
-    
+
 
     cmp++;
 
@@ -161,7 +161,7 @@ int main()
   ioMatrix::write("OptimalControl.dat", "ascii", dataPlot, "noDim");
 
   double error=0.0, eps=1e-08;
-  if ((error=ioMatrix::compareRefFile(dataPlot, "OptimalControl.ref", eps)) >= 0.0
+  if((error=ioMatrix::compareRefFile(dataPlot, "OptimalControl.ref", eps)) >= 0.0
       && error > eps)
     return 1;
 

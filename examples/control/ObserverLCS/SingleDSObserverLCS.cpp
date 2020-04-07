@@ -132,12 +132,12 @@ int main(int argc, char* argv[])
     dataPlot(k, 7) = (*processObserver->b())(0);
     dataPlot(k, 8) = abs((*processObserver->x())(0) - (*processObserver->x())(2)) ;
     dataPlot(k, 9) = abs((*processObserver->x())(1) - (*processObserver->x())(3))  ;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-        // Simulation loop
-    while (s->hasNextEvent())
+    // Simulation loop
+    while(s->hasNextEvent())
     {
       k++;
 
@@ -155,7 +155,7 @@ int main(int argc, char* argv[])
       dataPlot(k, 7) = (*processObserver->b())(0);
       dataPlot(k, 8) = abs((*processObserver->x())(0) - (*processObserver->x())(2)) ;
       dataPlot(k, 9) = abs((*processObserver->x())(1) - (*processObserver->x())(3))  ;
-      
+
 
       s->nextStep();
     }
@@ -163,7 +163,7 @@ int main(int argc, char* argv[])
     // Write the results into the file "ObserverLCS.dat"
     ioMatrix::write("SingleDSObserverLCS.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-9;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "SingleDSObserverLCS.ref", eps))>=0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "SingleDSObserverLCS.ref", eps))>=0.0
         && error > eps)
       return 1;
 
@@ -175,12 +175,12 @@ int main(int argc, char* argv[])
 
 
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in ObserverLCS.cpp" << endl;
     return 1;

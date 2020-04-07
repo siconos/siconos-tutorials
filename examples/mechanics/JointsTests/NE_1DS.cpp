@@ -35,24 +35,24 @@ using namespace std;
 /* Given a position of a point in the Inertial Frame and the configuration vector q of a solid
  * returns a position in the spatial frame.
  */
-void fromInertialToSpatialFrame(double *positionInInertialFrame, double *positionInSpatialFrame, SP::SiconosVector  q  )
+void fromInertialToSpatialFrame(double *positionInInertialFrame, double *positionInSpatialFrame, SP::SiconosVector  q)
 {
-double q0 = q->getValue(3);
-double q1 = q->getValue(4);
-double q2 = q->getValue(5);
-double q3 = q->getValue(6);
+  double q0 = q->getValue(3);
+  double q1 = q->getValue(4);
+  double q2 = q->getValue(5);
+  double q3 = q->getValue(6);
 
-::boost::math::quaternion<double>    quatQ(q0, q1, q2, q3);
-::boost::math::quaternion<double>    quatcQ(q0, -q1, -q2, -q3);
-::boost::math::quaternion<double>    quatpos(0, positionInInertialFrame[0], positionInInertialFrame[1], positionInInertialFrame[2]);
-::boost::math::quaternion<double>    quatBuff;
+  ::boost::math::quaternion<double>    quatQ(q0, q1, q2, q3);
+  ::boost::math::quaternion<double>    quatcQ(q0, -q1, -q2, -q3);
+  ::boost::math::quaternion<double>    quatpos(0, positionInInertialFrame[0], positionInInertialFrame[1], positionInInertialFrame[2]);
+  ::boost::math::quaternion<double>    quatBuff;
 
 //perform the rotation
-quatBuff = quatQ * quatpos * quatcQ;
+  quatBuff = quatQ * quatpos * quatcQ;
 
-positionInSpatialFrame[0] = quatBuff.R_component_2()+q->getValue(0);
-positionInSpatialFrame[1] = quatBuff.R_component_3()+q->getValue(1);
-positionInSpatialFrame[2] = quatBuff.R_component_4()+q->getValue(2);
+  positionInSpatialFrame[0] = quatBuff.R_component_2()+q->getValue(0);
+  positionInSpatialFrame[1] = quatBuff.R_component_3()+q->getValue(1);
+  positionInSpatialFrame[2] = quatBuff.R_component_4()+q->getValue(2);
 
 }
 void tipTrajectories(SP::SiconosVector  q, double * traj, double length)
@@ -64,7 +64,7 @@ void tipTrajectories(SP::SiconosVector  q, double * traj, double length)
   positionInInertialFrame[1]=0.0;
   positionInInertialFrame[2]=0.0;
 
-  fromInertialToSpatialFrame(positionInInertialFrame, positionInSpatialFrame, q  );
+  fromInertialToSpatialFrame(positionInInertialFrame, positionInSpatialFrame, q);
   traj[0] = positionInSpatialFrame[0];
   traj[1] = positionInSpatialFrame[1];
   traj[2] = positionInSpatialFrame[2];
@@ -75,7 +75,7 @@ void tipTrajectories(SP::SiconosVector  q, double * traj, double length)
   // std::cout <<  "positionInSpatialFrame[2]" <<  positionInSpatialFrame[2]<<std::endl;
 
   positionInInertialFrame[0]=-length/2;
-  fromInertialToSpatialFrame(positionInInertialFrame, positionInSpatialFrame, q  );
+  fromInertialToSpatialFrame(positionInInertialFrame, positionInSpatialFrame, q);
   traj[3]= positionInSpatialFrame[0];
   traj[4] = positionInSpatialFrame[1];
   traj[5] = positionInSpatialFrame[2];
@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
 
     FILE * pFile;
     pFile = fopen("data.h", "w");
-    if (pFile == NULL)
+    if(pFile == NULL)
     {
       printf("fopen exampleopen filed!\n");
       fclose(pFile);
@@ -206,11 +206,11 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 0;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-        SP::SiconosVector yAux(new SiconosVector(3));
+    SP::SiconosVector yAux(new SiconosVector(3));
     yAux->setValue(0, 1);
     SP::SimpleMatrix Jaux(new SimpleMatrix(3, 3));
     Index dimIndex(2);
@@ -218,7 +218,7 @@ int main(int argc, char* argv[])
     fprintf(pFile, "double T[%d*%d]={", N + 1, outputSize);
     double beamTipTrajectories[6];
 
-    for (k = 0; k < N; k++)
+    for(k = 0; k < N; k++)
     {
       //std::cout << " step "<< k <<std::endl;
       //s->newtonSolve(1e-4, 50);
@@ -243,21 +243,25 @@ int main(int argc, char* argv[])
       beam1Plot(1,3*k+1) = beamTipTrajectories[4];
       beam1Plot(1,3*k+2) = beamTipTrajectories[5];
 
-      for (unsigned int jj = 0; jj < outputSize; jj++)
+      for(unsigned int jj = 0; jj < outputSize; jj++)
       {
-        if ((k || jj))
+        if((k || jj))
           fprintf(pFile, ",");
         fprintf(pFile, "%f", dataPlot(k, jj));
       }
       fprintf(pFile, "\n");
       // s->nextStep();
       s->processEvents();
-      
+
     }
     fprintf(pFile, "};");
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("NE_1DS_1Knee_MLCP.dat", "ascii", dataPlot, "noDim");
     ioMatrix::write("NE_1DS_1Knee_MLCP_beam1.dat", "ascii", beam1Plot, "noDim");
@@ -265,12 +269,12 @@ cout << "Computation Time " << endl;;
     fclose(pFile);
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in NE_...cpp" << endl;
     return 1;

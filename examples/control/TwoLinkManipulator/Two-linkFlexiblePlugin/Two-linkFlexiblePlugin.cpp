@@ -16,18 +16,21 @@
  * limitations under the License.
 */
 
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
 #include <stdio.h>
 #include <math.h>
 
 #define PI 3.14159265
 
 #ifdef _MSC_VER
-double trunc(double d){ return (d>0) ? floor(d) : ceil(d) ; }
+double trunc(double d)
+{
+  return (d>0) ? floor(d) : ceil(d) ;
+}
 #endif
 
 double l1 = 0.5;//length of the first link
@@ -445,7 +448,7 @@ SICONOS_EXPORT void U1(double time, unsigned int sizeOfq, const double *q, const
   double qd12 = 0;
   double qd22 = 0;
   double qd32 = 0;
-  if (t3 < 1)
+  if(t3 < 1)
   {
     qd2 = b3 * t3 * t3 * t3 + b2 * t3 * t3 + b1 * t3 + b0;
     qd12 = 3 * b3 * t3 * t3 + 2 * b2 * t3 + b1;
@@ -465,7 +468,7 @@ SICONOS_EXPORT void U1(double time, unsigned int sizeOfq, const double *q, const
   double qd12c = 0;//3*b3*t3*t3+2*b2*t3+b1;
   double qd22c = 0;//6*b3*t3+2*b2;
   double qd32c = 0;//6*b3;
-  if (qd2 >= 0)
+  if(qd2 >= 0)
   {
     qd2c = qd2;
     qd12c = qd12;
@@ -497,7 +500,7 @@ SICONOS_EXPORT void U1(double time, unsigned int sizeOfq, const double *q, const
   double s2 = y1 - qr12;
 
   double s2ly = 0;
-  if (qd2 >= 0)
+  if(qd2 >= 0)
     s2ly = y1 - qr12;
   else
     s2ly = y1 + gamma2 * y;

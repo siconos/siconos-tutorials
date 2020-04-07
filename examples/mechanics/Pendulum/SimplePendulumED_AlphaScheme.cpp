@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
 {
   //---------------------------- calculate the computation time --------------------------------------------------
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   try
   {
     // ================= Creation of the model =======================
@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
     //1. Time discretization
     SP::TimeDiscretisation TimeDiscret(new TimeDiscretisation(t0, h));
     //2. Integration solver for one step
-    SP::OneStepIntegrator OSI(new NewMarkAlphaOSI( _rho, IsHandleVelConstraint));
+    SP::OneStepIntegrator OSI(new NewMarkAlphaOSI(_rho, IsHandleVelConstraint));
     //3. Nonsmooth problem
     SP::OneStepNSProblem impact(new LCP());
     SP::OneStepNSProblem acceleration(new LCP());
@@ -160,12 +160,12 @@ int main(int argc, char* argv[])
     unsigned int NumberNSEvent = 0;
     unsigned int k = 0;
 
-    while ((EDscheme->hasNextEvent()) && (k < N))
+    while((EDscheme->hasNextEvent()) && (k < N))
     {
       //std::cout << "--> k = " << k << std::endl;
       EDscheme->advanceToEvent(); // lead the simulation run from one event to the next
       //---------- detect the statue of the current event ------------------------------------
-      if (eventsManager->nextEvent()->getType() == 2) // the current event is non-smooth
+      if(eventsManager->nextEvent()->getType() == 2)  // the current event is non-smooth
       {
         NSEvent = true;
       };
@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
       _gdot = inter->y(1);
       _lambda = inter->lambda(2);
 
-      if (NSEvent)
+      if(NSEvent)
       {
         DataPlot(k, 0) = EDscheme->startingTime(); // instant at non-smooth event
         const SiconosVector& _qMemory = simplependulum->qMemory().getSiconosVector(0);
@@ -211,20 +211,20 @@ int main(int argc, char* argv[])
     ioMatrix::write("SimplePendulumED_AlphaScheme.dat", "ascii", DataPlot, "noDim");
 
     double error=0.0, eps=1e-10;
-    if ((error=ioMatrix::compareRefFile(DataPlot, "SimplePendulumED_AlphaScheme.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(DataPlot, "SimplePendulumED_AlphaScheme.ref", eps)) >= 0.0
         && error > eps)
       return 1;
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught" << endl;
     return 1;
 
   }
-  }
+}

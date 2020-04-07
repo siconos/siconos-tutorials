@@ -69,21 +69,21 @@ int main(int argc, char* argv[])
     init_state->setValue(1, 1.0);
 
     SP::SimpleMatrix LS_A(new SimpleMatrix(2, 2));
-    LS_A->setValue(0 , 1, -1.0);
-    LS_A->setValue(1 , 0, 1.0 / (Lvalue * Cvalue));
+    LS_A->setValue(0, 1, -1.0);
+    LS_A->setValue(1, 0, 1.0 / (Lvalue * Cvalue));
 
     SP::FirstOrderLinearTIDS LSCircuitRLCD(new FirstOrderLinearTIDS(init_state, LS_A));
 
     // --- Interaction between linear system and non smooth system ---
 
     SP::SimpleMatrix Int_C(new SimpleMatrix(1, 2));
-    Int_C->setValue(0 , 0 , 1.0 / Cvalue);
+    Int_C->setValue(0, 0, 1.0 / Cvalue);
 
     SP::SimpleMatrix Int_D(new SimpleMatrix(1, 1));
-    Int_D->setValue(0 , 0, Rvalue);
+    Int_D->setValue(0, 0, Rvalue);
 
     SP::SimpleMatrix Int_B(new SimpleMatrix(2, 1));
-    Int_B->setValue(0 , 0, 1.0);
+    Int_B->setValue(0, 0, 1.0);
 
     SP::FirstOrderLinearTIR LTIRCircuitRLCD(new FirstOrderLinearTIR(Int_C, Int_B));
     SP::NonSmoothLaw NSLaw(new ComplementarityConditionNSL(1));
@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
     InterCircuitRLCD->computeInput(t0,0);
 
 
-    
+
     // ------------------
     // --- Simulation ---
     // ------------------
@@ -162,8 +162,8 @@ int main(int argc, char* argv[])
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-        // --- Time loop  ---
-    for (k = 1 ; k < N ; ++k)
+    // --- Time loop  ---
+    for(k = 1 ; k < N ; ++k)
     {
       // solve ...
       StratCircuitRLCD->computeOneStep();
@@ -208,25 +208,29 @@ int main(int argc, char* argv[])
     // Number of time iterations
     cout << endl << "Number of iterations done: " << k - 1 << endl;
     cout << "Computation Time " << endl;
-    time.report();
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+
 
     // dataPlot (ascii) output
     dataPlot.resize(k, 9);
     ioMatrix::write("CircuitRLCD.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "CircuitRLCD.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "CircuitRLCD.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
 
   // --- Exceptions handling ---
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught " << endl;
     return 1;

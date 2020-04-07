@@ -48,10 +48,10 @@ int main(int argc, char* argv[])
     SP::SiconosVector lambda;
 
 
-    
+
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    
+
 
     (*q0)(0) = L / (2 * r); //  vlaeur de  teta( 0 )
     (*q0)(1) = -L + r * (*q0)(0); // y ( 0 )
@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
     // Objectifs du joueurs avec les instants correspendants
     SimpleMatrix Controle(G + 1, 2);
     Controle(0, 1) = (*q0)(1) - (*q0)(2);
-    for (int i = 0; i < G ; i++)
+    for(int i = 0; i < G ; i++)
     {
       Controle(i + 1, 0) = temps[i];
       Controle(i + 1, 1) = Som[i] - L;
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
 
     int k = 0;
 
-    while (k < N)
+    while(k < N)
     {
 
 
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
       (*M)(1, 1) = 1;
       (*M)(1, 2) = -1;
 
-      if (k != 0)
+      if(k != 0)
       {
         t0 = dataPlot(k - 1, 0);
         (*q0)(0) = (*q)(0);
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
       k++;
 
 
-      while (s->hasNextEvent() && (*q)(0) > 0.0)
+      while(s->hasNextEvent() && (*q)(0) > 0.0)
       {
         s->computeOneStep();
         // --- Get values to be plotted ---
@@ -160,10 +160,10 @@ int main(int argc, char* argv[])
         dataPlot(k, 6) = (*v)(1);
         dataPlot(k, 7) =  L + (*q)(1) - r * (*q)(0) - (*q)(2); // contrainte géométrique
         dataPlot(k, 8) = (*q)(1) - (*q)(2);
-        if (abs((*v)(0)) <= 0.05) cout << "valeur max de theta est : "  << (*q)(0) << endl;
+        if(abs((*v)(0)) <= 0.05) cout << "valeur max de theta est : "  << (*q)(0) << endl;
         k++;
         s->nextStep();
-        
+
       }
 
 
@@ -175,7 +175,7 @@ int main(int argc, char* argv[])
       (*M)(0, 0) = I;
 
       t0 = dataPlot(k - 1, 0) + h;
-      if (t0 + h < T)
+      if(t0 + h < T)
       {
         (*q0)(0) = 0;
         (*q0)(2) = (*q)(2);
@@ -200,13 +200,13 @@ int main(int argc, char* argv[])
         OSI.reset(new MoreauJeanOSI(theta));
         osnspb.reset(new LCP());
         s.reset(new TimeStepping(jeu, t, OSI, osnspb));
-        
+
         q = yoyo->q();
         v = yoyo->velocity();
         p = yoyo->p(1);
         lambda = inter->lambda(1);
 
-        while (s->hasNextEvent())
+        while(s->hasNextEvent())
         {
           s->computeOneStep();
           dataPlot(k, 0) =  s->nextTime();
@@ -219,9 +219,9 @@ int main(int argc, char* argv[])
           dataPlot(k, 7) = L + (*q)(1) - r * (*q)(0) - (*q)(2);
           dataPlot(k, 8) = (*q)(1) - (*q)(2);
           k++;
-          if ((*lambda)(0) > 0 && (-r * (*v)(0) + (*v)(1) - (*v)(2)) < 10e-14) break;
+          if((*lambda)(0) > 0 && (-r * (*v)(0) + (*v)(1) - (*v)(2)) < 10e-14) break;
           s->nextStep();
-          
+
         }
       }
     }
@@ -229,8 +229,12 @@ int main(int argc, char* argv[])
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // écrire les valeur de la matrice dataPlot dans un fichier result.dat
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // écrire les valeur de la matrice dataPlot dans un fichier result.dat
 
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
@@ -239,12 +243,12 @@ cout << "Computation Time " << endl;;
     // --- Libérer de la mémoire
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in main.cpp" << endl;
     return 1;

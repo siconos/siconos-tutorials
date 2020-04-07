@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
 
-    while (s->hasNextEvent())
+    while(s->hasNextEvent())
     {
       s->computeOneStep();
       //std ::cout << "time step k = " << k << std::endl;
@@ -176,7 +176,7 @@ int main(int argc, char* argv[])
 
     end = std::chrono::system_clock::now();
     int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-      (end-start).count();
+                  (end-start).count();
     cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
     cout << "Computation time : " << elapsed << " ms" << endl;
     // --- Output files ---
@@ -186,31 +186,31 @@ int main(int argc, char* argv[])
     // Comparison with a reference file
     double error=0.0, eps=1e-12;
 
-    if (levelForProjection == 1)
+    if(levelForProjection == 1)
     {
-      if ((error=ioMatrix::compareRefFile(
-             dataPlot, "BouncingBallTS-MoreauJeanDirectProjectionOSI.ref",
-             eps)) >= 0.0
+      if((error=ioMatrix::compareRefFile(
+                  dataPlot, "BouncingBallTS-MoreauJeanDirectProjectionOSI.ref",
+                  eps)) >= 0.0
           && error > eps)
         return 1;
     }
     else
     {
-      if ((error=ioMatrix::compareRefFile(
-            dataPlot, "BouncingBallTS-MoreauJeanDirectProjectionOSI-level0.ref",
-            eps)) >= 0.0
+      if((error=ioMatrix::compareRefFile(
+                  dataPlot, "BouncingBallTS-MoreauJeanDirectProjectionOSI-level0.ref",
+                  eps)) >= 0.0
           && error > eps)
         return 1;
     }
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in BouncingBallTS.cpp" << endl;
     return 1;

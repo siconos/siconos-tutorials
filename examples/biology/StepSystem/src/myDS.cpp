@@ -58,7 +58,7 @@ void MyDS::computeJacobianfx(double t, SP::SiconosVector x)
   _jacobianfx->setValue(0, 1, 0);
   _jacobianfx->setValue(1, 1, -1.5);
 
-  
+
   /*
   #ifdef SICONOS_DEBUG
     std::cout<<"MyDS::computeJacobianfx."<<std::endl;

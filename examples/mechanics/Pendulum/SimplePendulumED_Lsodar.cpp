@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
 {
   //---------------------------- calculate the computation time --------------------------------------------------
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   try
   {
     // ================= Creation of the model =======================
@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
     SP::NonSmoothDynamicalSystem Pendulum(new NonSmoothDynamicalSystem(t0, T));
     Pendulum->insertDynamicalSystem(simplependulum);
     Pendulum->link(inter, simplependulum);
-    
+
     // ----------------
     // --- Simulation ---
     // ----------------
@@ -159,21 +159,21 @@ int main(int argc, char* argv[])
     bool NSEvent = false;
     unsigned int NumberNSEvent = 0;
     unsigned int k = 0;
-    
-    while ((EDscheme->hasNextEvent()) && (k < N))
+
+    while((EDscheme->hasNextEvent()) && (k < N))
     {
       EDscheme->advanceToEvent(); // lead the simulation run from one event to the next
       //---------- detect the statue of the current event ------------------------------------
-      if (eventsManager->nextEvent()->getType() == 2) // the current event is non-smooth
+      if(eventsManager->nextEvent()->getType() == 2)  // the current event is non-smooth
       {
         NSEvent = true;
       };
       EDscheme->processEvents();  // process the current event
       //------------------- get data at the beginning of non-smooth events ---------------------------
-      
+
       _lambda = inter->lambda(2);
       _gdot = inter->y(1);
-      if (NSEvent)
+      if(NSEvent)
       {
         DataPlot(k, 0) = EDscheme->startingTime(); // instant at non-smooth event
 
@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
         DataPlot(k, 9) = (*_lambda)(0); // Reaction force
         k++;
         ++NumberNSEvent;
-        
+
         NSEvent = false;                        // The next event is maybe smooth
       }
       else
@@ -208,7 +208,7 @@ int main(int argc, char* argv[])
         DataPlot(k, 9) = (*_lambda)(0); // Reaction force
         k++;
       }
-      
+
     }
     //----------------------- At the end of the simulation --------------------------
     cout << " " << endl;
@@ -219,21 +219,21 @@ int main(int argc, char* argv[])
     ioMatrix::write("Simplependulum_Lsodar.dat", "ascii", DataPlot, "noDim");
 
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(DataPlot, "Simplependulum_Lsodar.ref",
-                                        eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(DataPlot, "Simplependulum_Lsodar.ref",
+                                       eps)) >= 0.0
         && error > eps)
       return 1;
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught" << endl;
     return 1;
 
   }
-  }
+}

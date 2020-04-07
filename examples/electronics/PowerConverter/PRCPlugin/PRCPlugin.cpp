@@ -19,11 +19,11 @@
 #if defined(_MSC_VER)
 #define _USE_MATH_DEFINES
 #endif
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
 #include <math.h>
 #include <iostream>
 #include <stdio.h>
@@ -37,7 +37,7 @@
 SICONOS_EXPORT void computeU(double time, unsigned int sizeU, double *U, unsigned int sizeZ, double* z)
 {
   double f = 55000.0;
-  if (time == 0.0)
+  if(time == 0.0)
     U[0] = 0;
   else
   {

@@ -55,11 +55,11 @@ int main(int argc, char* argv[])
     (*init_state)(3) = 0.0;
 
     SP::SimpleMatrix LS_A(new SimpleMatrix(4, 4));
-    (*LS_A)(0 , 1) = -1.0 / Lrvalue;
-    (*LS_A)(1 , 0) = 1.0 / Crvalue;
-    (*LS_A)(2 , 3) = -1.0 / Lfvalue;
-    (*LS_A)(3 , 2) = 1.0 / Cfvalue;
-    (*LS_A)(3 , 3) = -1.0 / (Rvalue * Cfvalue);
+    (*LS_A)(0, 1) = -1.0 / Lrvalue;
+    (*LS_A)(1, 0) = 1.0 / Crvalue;
+    (*LS_A)(2, 3) = -1.0 / Lfvalue;
+    (*LS_A)(3, 2) = 1.0 / Cfvalue;
+    (*LS_A)(3, 3) = -1.0 / (Rvalue * Cfvalue);
 
     SP::FirstOrderLinearDS LSPRC(new FirstOrderLinearDS(init_state, LS_A));
 
@@ -75,22 +75,22 @@ int main(int argc, char* argv[])
 
     // -> Relation
     SP::SimpleMatrix Int_C(new SimpleMatrix(4, 4));
-    (*Int_C)(0 , 1) = -1.0;
-    (*Int_C)(1 , 1) = 1.0;
-    (*Int_C)(2 , 2) = 1.0;
-    (*Int_C)(3 , 2) = 1.0;
+    (*Int_C)(0, 1) = -1.0;
+    (*Int_C)(1, 1) = 1.0;
+    (*Int_C)(2, 2) = 1.0;
+    (*Int_C)(3, 2) = 1.0;
 
     SP::SimpleMatrix Int_D(new SimpleMatrix(4, 4));
-    (*Int_D)(0 , 2) = 1.0;
-    (*Int_D)(1 , 3) = 1.0;
-    (*Int_D)(2 , 0) = -1.0;
-    (*Int_D)(3 , 1) = -1.0;
+    (*Int_D)(0, 2) = 1.0;
+    (*Int_D)(1, 3) = 1.0;
+    (*Int_D)(2, 0) = -1.0;
+    (*Int_D)(3, 1) = -1.0;
 
     SP::SimpleMatrix Int_B(new SimpleMatrix(4, 4));
-    (*Int_B)(1 , 0) = -1.0 / Crvalue;
-    (*Int_B)(1 , 1) = 1.0 / Crvalue;
-    (*Int_B)(2 , 2) = 1.0 / Lfvalue;
-    (*Int_B)(2 , 3) = 1.0 / Lfvalue;
+    (*Int_B)(1, 0) = -1.0 / Crvalue;
+    (*Int_B)(1, 1) = 1.0 / Crvalue;
+    (*Int_B)(2, 2) = 1.0 / Lfvalue;
+    (*Int_B)(2, 3) = 1.0 / Lfvalue;
     SP::FirstOrderLinearTIR LTIRPRC(new FirstOrderLinearTIR(Int_C, Int_B));
     LTIRPRC->setDPtr(Int_D);
 
@@ -159,7 +159,7 @@ int main(int argc, char* argv[])
 
     // --- Time loop  ---
     cout << "====> Start computation ... " << endl << endl;
-    for (k = 1 ; k < N ; ++k)
+    for(k = 1 ; k < N ; ++k)
     {
       aTS->computeOneStep();
       // --- Get values to be plotted ---
@@ -180,12 +180,12 @@ int main(int argc, char* argv[])
   }
 
   // --- Exceptions handling ---
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught " << endl;
     return 1;

@@ -3,20 +3,23 @@
 
 #include <boost/math/quaternion.hpp>
 
-extern "C" void externalForces(double t, double *f, unsigned int size_z, double *z){
+extern "C" void externalForces(double t, double *f, unsigned int size_z, double *z)
+{
   f[0]=0;
   f[1]=0;
   f[2]=0;
 
 }
 
-extern "C" void externalMoment(double t,double *m, unsigned int size_z, double *z){
-    m[0]=0;
-    m[1]=0;
-    m[2]=0;
+extern "C" void externalMoment(double t,double *m, unsigned int size_z, double *z)
+{
+  m[0]=0;
+  m[1]=0;
+  m[2]=0;
 }
 
-extern "C" void fInt_beam1(double t, double *q, double *v, double *f, unsigned int size_z, double *z){
+extern "C" void fInt_beam1(double t, double *q, double *v, double *f, unsigned int size_z, double *z)
+{
   // printf("fInt_beam1\n");
   // printf("q[0] = %e\t q[1] = %e\t, q[2]=%e\n",q[0],q[1],q[2]);
   f[0]=1e4*q[0];
@@ -25,26 +28,29 @@ extern "C" void fInt_beam1(double t, double *q, double *v, double *f, unsigned i
   // printf("f[0] = %e\t f[1] = %e\t, f[2]=%e\n",f[0],f[1],f[2]);
 
 }
-extern "C" void jacobianFIntq_beam1(double t, double *q, double *v, double *jac, unsigned int size_z, double *z){
-  for (int i =0; i < 3; i++)
+extern "C" void jacobianFIntq_beam1(double t, double *q, double *v, double *jac, unsigned int size_z, double *z)
+{
+  for(int i =0; i < 3; i++)
   {
-    for (int j=0; j<7; j++)
+    for(int j=0; j<7; j++)
       jac[i+j*3]=0.0;
   }
   jac[0+0*3]=1e4;
   jac[2+2*3]=1e4;
 }
 
-extern "C" void jacobianFIntv_beam1(double t, double *q, double *v, double *jac, unsigned int size_z, double *z){
-  for (int i =0; i < 3; i++)
+extern "C" void jacobianFIntv_beam1(double t, double *q, double *v, double *jac, unsigned int size_z, double *z)
+{
+  for(int i =0; i < 3; i++)
   {
-    for (int j=0; j< 6; j++)
+    for(int j=0; j< 6; j++)
       jac[i+j*3]=0.0;
   }
 }
 
 
-extern "C" void mInt_beam1(double t, double *q, double *v, double *m, unsigned int size_z, double *z){
+extern "C" void mInt_beam1(double t, double *q, double *v, double *m, unsigned int size_z, double *z)
+{
   // printf("mInt_beam1 :\n");
 
   // Simple torsional spring around y axis
@@ -64,11 +70,12 @@ extern "C" void mInt_beam1(double t, double *q, double *v, double *m, unsigned i
   // printf("m[0] = %e\t m[1] = %e\t, m[2]=%e\n",m[0],m[1],m[2]);
 }
 
-extern "C" void jacobianMIntq_beam1(double t, double *q, double *v, double *jac, unsigned int size_z, double *z){
+extern "C" void jacobianMIntq_beam1(double t, double *q, double *v, double *jac, unsigned int size_z, double *z)
+{
   // printf("jacobianMIntq_beam1:\n ");
-  for (int i =0; i < 3; i++)
+  for(int i =0; i < 3; i++)
   {
-    for (int j=0; j<7; j++)
+    for(int j=0; j<7; j++)
       jac[i+j*3]=0.0;
   }
   // printf("q[0] = %e\n", q[0]);
@@ -118,10 +125,11 @@ extern "C" void jacobianMIntq_beam1(double t, double *q, double *v, double *jac,
 
 
 
-extern "C" void jacobianMIntv_beam1(double t, double *q, double *v, double *jac, unsigned int size_z, double *z){
-  for (int i =0; i < 3; i++)
+extern "C" void jacobianMIntv_beam1(double t, double *q, double *v, double *jac, unsigned int size_z, double *z)
+{
+  for(int i =0; i < 3; i++)
   {
-    for (int j=0; j< 6; j++)
+    for(int j=0; j< 6; j++)
       jac[i+j*3]=0.0;
   }
 }

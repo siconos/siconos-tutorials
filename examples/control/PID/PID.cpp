@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
   // add the dynamical system in the non smooth dynamical system
   sim->addDynamicalSystem(doubleIntegrator);
 
- // use a controlSensor
+// use a controlSensor
   SP::SimpleMatrix C(new SimpleMatrix(1, 2, 0));
   (*C)(0, 0) = 1;
   SP::LinearSensor sens(new LinearSensor(doubleIntegrator, C));
@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
 
   std::cout << (dataPlot - dataPlotRef).normInf() << std::endl;
 
-  if ((dataPlot - dataPlotRef).normInf() > 1e-12)
+  if((dataPlot - dataPlotRef).normInf() > 1e-12)
   {
     std::cout << "Warning. The result is rather different from the reference file." << std::endl;
     std::cout << (dataPlot - dataPlotRef).normInf() << std::endl;

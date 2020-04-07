@@ -114,15 +114,15 @@ int main(int argc, char* argv[])
 
   //Driver call
   fc3d_driver(&NumericsProblem,
-	      reaction , velocity,
-	      numerics_solver_options);
+              reaction, velocity,
+              numerics_solver_options);
 
 
   solver_options_delete(numerics_solver_options);
 
   // Solver output
   printf("\n");
-  for (k = 0 ; k < 3 * NC; k++) printf("Velocity[%i] = %12.8e \t \t Reaction[%i] = %12.8e \n ", k, velocity[k], k , reaction[k]);
+  for(k = 0 ; k < 3 * NC; k++) printf("Velocity[%i] = %12.8e \t \t Reaction[%i] = %12.8e \n ", k, velocity[k], k, reaction[k]);
   printf("\n");
 
   free(reaction);

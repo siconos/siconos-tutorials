@@ -67,13 +67,13 @@ void tipTrajectories(SP::SiconosVector  q, double * traj, double length)
   positionInInertialFrame[1]=0.0;
   positionInInertialFrame[2]=0.0;
 
-  fromInertialToSpatialFrame(positionInInertialFrame, positionInSpatialFrame, q  );
+  fromInertialToSpatialFrame(positionInInertialFrame, positionInSpatialFrame, q);
   traj[0] = positionInSpatialFrame[0];
   traj[1] = positionInSpatialFrame[1];
   traj[2] = positionInSpatialFrame[2];
 
   positionInInertialFrame[0]=-length/2;
-  fromInertialToSpatialFrame(positionInInertialFrame, positionInSpatialFrame, q  );
+  fromInertialToSpatialFrame(positionInInertialFrame, positionInSpatialFrame, q);
   traj[3]= positionInSpatialFrame[0];
   traj[4] = positionInSpatialFrame[1];
   traj[5] = positionInSpatialFrame[2];
@@ -310,13 +310,13 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 0;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-        double beamTipTrajectories[6];
+    double beamTipTrajectories[6];
 
-    for (k = 0; k < N; k++)
+    for(k = 0; k < N; k++)
     {
       // solve non-smooth problems
       s->advanceToEvent();
@@ -377,12 +377,16 @@ int main(int argc, char* argv[])
       beam3Plot(1,3*k+2) = beamTipTrajectories[5];
 
       s->nextStep();
-      
+
     }
 
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    dataPlot.resize(k, outputSize);
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    dataPlot.resize(k, outputSize);
 
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
@@ -392,18 +396,18 @@ cout << "Computation Time " << endl;;
     ioMatrix::write("NE_3DS_3Knee_1Prism_beam3.dat", "ascii", beam3Plot, "noDim");
 
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "NE_3DS_3Knee_1Prism_GMP.ref",
-                                        eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "NE_3DS_3Knee_1Prism_GMP.ref",
+                                       eps)) >= 0.0
         && error > eps)
       return 1;
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in NE_...cpp" << endl;
     return 1;

@@ -174,10 +174,10 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    
+
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    
+
     SP::SiconosVector rpc = relation->relPc1();
     SP::SiconosVector nnc = relation->relNc();
 
@@ -188,7 +188,7 @@ int main(int argc, char* argv[])
 
 
 
-    while (s->hasNextEvent())
+    while(s->hasNextEvent())
     {
       // a fake contact detection
       (*rpc)(0) = -R;
@@ -219,31 +219,35 @@ int main(int argc, char* argv[])
       dataPlot(k, 7) = (*p1)(0);
       dataPlot(k, 8) = (*lambda1)(0);
       s->nextStep();
-      
+
       k++;
 
     }
     cout  << "End of computation - Number of iterations done: " << k - 1 << endl;
     cout << "Computation Time : "  << endl;
-    time.report();
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("Ball2D.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "Ball2D.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "Ball2D.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
 
-  catch (SiconosException& e)
+  catch(SiconosException& e)
   {
     cerr << e.report() << endl;
     return 1;
 
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in BouncingBallTS.cpp" << endl;
     return 1;

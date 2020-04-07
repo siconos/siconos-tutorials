@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
     double T = 0.2;    // final computation time
     //T=0.00375;
 
-    
+
     double h = 1e-5;       // time step : do not decrease, because of strong penetrations
 
     // geometrical characteristics
@@ -156,13 +156,13 @@ int main(int argc, char* argv[])
     SP::SiconosVector q = slider->q();
     SP::SiconosVector v = slider->velocity();
 
- 
+
     // computation for a first consistent output
     inter1->computeOutput(t0,0);
     inter2->computeOutput(t0,0);
     inter3->computeOutput(t0,0);
     inter4->computeOutput(t0,0);
-    
+
     int k =0;
     dataPlot(k, 0) = sliderWithClearance->t0();
     dataPlot(k, 1) = (*q)(0) / (2.*M_PI); // crank revolution
@@ -219,14 +219,14 @@ int main(int argc, char* argv[])
 
     // ==== Simulation loop - Writing without explicit event handling =====
     k++;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    
+
 
 //    while ((s->hasNextEvent()) && (k <= 500))
- while ((s->hasNextEvent()))
+    while((s->hasNextEvent()))
     {
 
       std::cout <<"=====================================================" <<std::endl;
@@ -274,10 +274,10 @@ int main(int argc, char* argv[])
 
 
 
-      dataPlot(k, 31) = ( inter1->lambdaMemory(2).getSiconosVector(0) )(0); // lambda1_k^+
-      dataPlot(k, 32) = ( inter2->lambdaMemory(2).getSiconosVector(0) )(0); // lambda2_k^+
-      dataPlot(k, 33) = ( inter3->lambdaMemory(2).getSiconosVector(0) )(0); // lambda3_k^+
-      dataPlot(k, 34) = ( inter4->lambdaMemory(2).getSiconosVector(0) )(0); // lambda4_k^+
+      dataPlot(k, 31) = (inter1->lambdaMemory(2).getSiconosVector(0))(0);   // lambda1_k^+
+      dataPlot(k, 32) = (inter2->lambdaMemory(2).getSiconosVector(0))(0);   // lambda2_k^+
+      dataPlot(k, 33) = (inter3->lambdaMemory(2).getSiconosVector(0))(0);   // lambda3_k^+
+      dataPlot(k, 34) = (inter4->lambdaMemory(2).getSiconosVector(0))(0);   // lambda4_k^+
 
       // std::cout << "dataPlot(k, 27)" << dataPlot(k, 27)  << std::endl;
       // std::cout << "dataPlot(k, 31)" << dataPlot(k, 31)  << std::endl;
@@ -291,20 +291,24 @@ int main(int argc, char* argv[])
 
 
       s->processEvents();
-      
+
       k++;
     }
 
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
 
     double error=0.0, eps=1e-11;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "SliderCrankD1MinusLinearOSI.ref",
-                                        eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "SliderCrankD1MinusLinearOSI.ref",
+                                       eps)) >= 0.0
         && error > eps)
       return 1;
 
@@ -312,12 +316,12 @@ cout << "Computation Time " << endl;;
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in SliderCrankD1MinusLinear.cpp" << endl;
     return 1;

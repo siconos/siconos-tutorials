@@ -176,16 +176,16 @@ int main(int argc, char* argv[])
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    
+
     // --- Time loop ---
     cout << "Start computation ... " << endl;
 
-    
 
-    while (s->hasNextEvent())
+
+    while(s->hasNextEvent())
     {
       k++;
-      
+
       //  if (!(div(k,1000).rem))  cout <<"Step number "<< k << "\n";
 
       // Solve problem
@@ -210,17 +210,21 @@ int main(int argc, char* argv[])
     }
 
     cout << "End of computation - Number of iterations done: " << k << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     ioMatrix::write("DoublePendulumResult.dat", "ascii", dataPlot, "noDim");
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in \'sample/MultiBeadsColumn\'" << endl;
     return 1;

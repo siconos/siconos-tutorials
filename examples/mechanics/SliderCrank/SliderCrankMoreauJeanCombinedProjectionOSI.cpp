@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
     inter2->computeOutput(t0,0);
     inter3->computeOutput(t0,0);
     inter4->computeOutput(t0,0);
-    
+
     dataPlot(0, 0) = sliderWithClearance->t0();
     dataPlot(0, 1) = (*q)(0) / (2.*M_PI); // crank revolution
     dataPlot(0, 2) = (*q)(1);
@@ -195,12 +195,12 @@ int main(int argc, char* argv[])
 
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    
-    while (s->hasNextEvent())
+
+    while(s->hasNextEvent())
     {
       s->advanceToEvent();
 
@@ -241,29 +241,33 @@ int main(int argc, char* argv[])
       dataPlot(k, 33) = s->cumulatedNewtonNbIterations();
       dataPlot(k, 34) = s->nbCumulatedProjectionIteration();
       s->processEvents();
-      
+
       k++;
     }
 
     cout << endl << "Max violation unilateral = " << s->maxViolationUnilateral() << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-10;
-    if ((error=ioMatrix::compareRefFile(
-           dataPlot, "SliderCrankMoreauJeanCombinedProjectionOSI.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(
+                dataPlot, "SliderCrankMoreauJeanCombinedProjectionOSI.ref", eps)) >= 0.0
         && error > eps)
       return 1;
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in SliderCrankD1MinusLinearOSI.cpp" << endl;
     return 1;

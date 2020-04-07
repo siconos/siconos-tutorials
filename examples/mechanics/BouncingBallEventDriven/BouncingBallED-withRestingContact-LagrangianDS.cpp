@@ -32,7 +32,7 @@ using namespace std;
 int main(int argc, char* argv[])
 {
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   try
   {
     // ================= Creation of the model =======================
@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
     // =========================== End of model definition ===========================
 
     // ================================= Computation =================================
- 
+
     int N = 1854; // Number of saved points: depends on the number of events ...
 
     // --- Get the values to be plotted ---
@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
     SP::SiconosVector q = ball->q();
     SP::SiconosVector v = ball->velocity();
     SP::SiconosVector p = ball->p(1);
-    SP::SiconosVector f; 
+    SP::SiconosVector f;
 
     //   SiconosVector * y = bouncingBall->nonSmoothDynamicalSystem()->interaction(0)->y(0);
 
@@ -155,24 +155,24 @@ int main(int argc, char* argv[])
     bool nonSmooth = false;
     unsigned int numberOfEvent = 0 ;
     int k = 0;
-    
-    while (s->hasNextEvent() && k < N)
+
+    while(s->hasNextEvent() && k < N)
     {
       s->advanceToEvent();
-      if (eventsManager->nextEvent()->getType() == 2)
+      if(eventsManager->nextEvent()->getType() == 2)
         nonSmooth = true;
 
       s->processEvents();
       f  = ball->p(2);
       // If the treated event is non smooth, the pre-impact state has been solved in memory vectors during process.
-      if (nonSmooth)
+      if(nonSmooth)
       {
         dataPlot(k, 0) = s->startingTime();
         dataPlot(k, 1) = ball->qMemory().getSiconosVector(1)(0);
         dataPlot(k, 2) = ball->velocityMemory().getSiconosVector(1)(0);
         k++;
         nonSmooth = false;
-        
+
       }
       dataPlot(k, 0) = s->startingTime();
       dataPlot(k, 1) = (*q)(0);
@@ -181,7 +181,7 @@ int main(int argc, char* argv[])
       dataPlot(k, 4) = (*f)(0);
       ++k;
       ++numberOfEvent;
-      
+
     }
 
     // --- Output files ---
@@ -191,22 +191,22 @@ int main(int argc, char* argv[])
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot,
-                                        "BouncingBallED-withRestingContact.ref",
-                                        eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot,
+                                       "BouncingBallED-withRestingContact.ref",
+                                       eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught." << endl;
     return 1;
   }
-  }
+}

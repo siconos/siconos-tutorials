@@ -31,7 +31,7 @@ using namespace std;
 int main(int argc, char* argv[])
 {
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   try
   {
     // ================= Creation of the model =======================
@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
 #ifdef HEM5
     SP::OneStepIntegrator OSI(new Hem5OSI());
 #endif
-      // -- (2) Time discretisation --
+    // -- (2) Time discretisation --
     SP::TimeDiscretisation t(new TimeDiscretisation(t0, h));
 
     // -- (3) Non smooth problem --
@@ -127,7 +127,7 @@ int main(int argc, char* argv[])
     s->insertNonSmoothProblem(impact, SICONOS_OSNSP_ED_IMPACT);
     s->insertNonSmoothProblem(acceleration, SICONOS_OSNSP_ED_SMOOTH_ACC);
     s->setPrintStat(true);
-    
+
     // =========================== End of model definition ===========================
 
     // ================================= Computation =================================
@@ -162,18 +162,18 @@ int main(int argc, char* argv[])
     unsigned int numberOfEvent = 0 ;
     int k = 0;
     int kns = 0;
-    
-    while (s->hasNextEvent() && k < N)
+
+    while(s->hasNextEvent() && k < N)
     {
       s->advanceToEvent();
       p = ball->p(1);
       f = ball->p(2);
-      if (eventsManager->nextEvent()->getType() == 2)
+      if(eventsManager->nextEvent()->getType() == 2)
         nonSmooth = true;
 
       s->processEvents();
       // If the treated event is non smooth, the pre-impact state has been solved in memory vectors during process.
-      if (nonSmooth)
+      if(nonSmooth)
       {
         dataPlot(k, 0) = s->startingTime();
         dataPlot(k, 1) = ball->qMemory().getSiconosVector(1)(0);
@@ -181,7 +181,7 @@ int main(int argc, char* argv[])
         k++;
         kns++;
         nonSmooth = false;
-        
+
       }
       dataPlot(k, 0) = s->startingTime();
       dataPlot(k, 1) = (*q)(0);
@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
       dataPlot(k, 4) = (*f)(0);
       ++k;
       ++numberOfEvent;
-      
+
     }
 
     // --- Output files ---
@@ -208,14 +208,14 @@ int main(int argc, char* argv[])
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught." << endl;
     return 1;
   }
-  }
+}

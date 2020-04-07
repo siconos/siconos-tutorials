@@ -44,11 +44,12 @@ MyDS::~MyDS()
 }
 
 
-void  MyDS::computef(double t, SP::SiconosVector state) {
+void  MyDS::computef(double t, SP::SiconosVector state)
+{
 
   SP::SiconosVector QX(new SiconosVector(2));
   SP::SiconosVector X(new SiconosVector(2));
-  
+
   X->setValue(0, (state->getValue(0) - 2.0));
   X->setValue(1, (state->getValue(1) + 1.0));
 
@@ -73,7 +74,8 @@ void  MyDS::computef(double t, SP::SiconosVector state) {
 
 }
 
-void MyDS::computeJacobianfx(double t, SP::SiconosVector state) {
+void MyDS::computeJacobianfx(double t, SP::SiconosVector state)
+{
 
 
   SP::SiconosMatrix jacXalpha(new SimpleMatrix(2, 2));

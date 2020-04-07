@@ -80,8 +80,8 @@ int main(int argc, char* argv[])
     (*init_stateLS1)(0) = VinitLS1;
 
     SP::SimpleMatrix LS1_A(new SimpleMatrix(2, 2));
-    (*LS1_A)(0 , 1) = -1.0 / Cvalue;
-    (*LS1_A)(1 , 0) = 1.0 / Lvalue;
+    (*LS1_A)(0, 1) = -1.0 / Cvalue;
+    (*LS1_A)(1, 0) = 1.0 / Lvalue;
 
     cout << " LS1 matrice A = " << endl;
     LS1_A->display();
@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
     (*init_stateLS2)(0) = VinitLS2;
 
     SP::SimpleMatrix LS2_A(new SimpleMatrix(1, 1));
-    (*LS2_A)(0 , 0) = -1.0 / (Rvalue * Cfilt);
+    (*LS2_A)(0, 0) = -1.0 / (Rvalue * Cfilt);
 
     cout << " LS2 matrice A = " << endl;
     LS2_A->display();
@@ -100,24 +100,24 @@ int main(int argc, char* argv[])
 
     // --- Interaction between linear systems and non smooth system ---
     SP::SimpleMatrix Int_C(new SimpleMatrix(4, 3));
-    (*Int_C)(0 , 2) = 1.0;
-    (*Int_C)(2 , 0) = -1.0;
-    (*Int_C)(2 , 2) = 1.0;
-    (*Int_C)(3 , 0) = 1.0;
+    (*Int_C)(0, 2) = 1.0;
+    (*Int_C)(2, 0) = -1.0;
+    (*Int_C)(2, 2) = 1.0;
+    (*Int_C)(3, 0) = 1.0;
 
     SP::SimpleMatrix Int_D(new SimpleMatrix(4, 4));
-    (*Int_D)(0 , 1) = -1.0;
-    (*Int_D)(1 , 0) = 1.0;
-    (*Int_D)(1 , 2) = 1.0;
-    (*Int_D)(1 , 3) = -1.0;
-    (*Int_D)(2 , 1) = -1.0;
-    (*Int_D)(3 , 1) = 1.0;
+    (*Int_D)(0, 1) = -1.0;
+    (*Int_D)(1, 0) = 1.0;
+    (*Int_D)(1, 2) = 1.0;
+    (*Int_D)(1, 3) = -1.0;
+    (*Int_D)(2, 1) = -1.0;
+    (*Int_D)(3, 1) = 1.0;
 
     SP::SimpleMatrix Int_B(new SimpleMatrix(3, 4));
-    (*Int_B)(0 , 2) = -1.0 / Cvalue;
-    (*Int_B)(0 , 3) = 1.0 / Cvalue;
-    (*Int_B)(2 , 0) = 1.0 / Cfilt;
-    (*Int_B)(2 , 2) = 1.0 / Cfilt;
+    (*Int_B)(0, 2) = -1.0 / Cvalue;
+    (*Int_B)(0, 3) = 1.0 / Cvalue;
+    (*Int_B)(2, 0) = 1.0 / Cfilt;
+    (*Int_B)(2, 2) = 1.0 / Cfilt;
 
     SP::FirstOrderLinearTIR LTIRDiodeBridgeCapFilter(new FirstOrderLinearTIR(Int_C, Int_B));
     LTIRDiodeBridgeCapFilter->setDPtr(Int_D);
@@ -186,8 +186,8 @@ int main(int argc, char* argv[])
     // --- Compute elapsed time ---
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-        // --- Time loop  ---
-    while (k < N - 1)
+    // --- Time loop  ---
+    while(k < N - 1)
     {
       // get current time step
       k++;
@@ -217,7 +217,7 @@ int main(int argc, char* argv[])
       // diode F1 current
       dataPlot(k, 6) = (InterDiodeBridgeCapFilter->getLambda(0))(2);
 
-       // load voltage
+      // load voltage
       dataPlot(k, 7) = (*LS2DiodeBridgeCapFilter->x())(0);
 
 
@@ -228,7 +228,11 @@ int main(int argc, char* argv[])
 
     // --- elapsed time computing ---
     cout << "time = " << endl;
-    time.report();
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+
 
     // Number of time iterations
     cout << "Number of iterations done: " << k << endl;
@@ -241,11 +245,11 @@ int main(int argc, char* argv[])
     SimpleMatrix dataPlotRef(dataPlot);
     dataPlotRef.zero();
     Index idx(4);
-    for (int i =0 ; i < 4; i++)
+    for(int i =0 ; i < 4; i++)
       idx.push_back(i);
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "DiodeBridgeCapFilter.ref",
-                                        eps, idx)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "DiodeBridgeCapFilter.ref",
+                                       eps, idx)) >= 0.0
         && error > eps)
       return 1;
 
@@ -255,18 +259,18 @@ int main(int argc, char* argv[])
 
 
   // --- Exceptions handling ---
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cout << "SiconosException" << endl;
     cerr << e.report() << endl;
     return 1;
   }
-  catch (std::exception& e)
+  catch(std::exception& e)
   {
     cout << "Exception: " << e.what() << endl;
     exit(-1);
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught " << endl;
     return 1;

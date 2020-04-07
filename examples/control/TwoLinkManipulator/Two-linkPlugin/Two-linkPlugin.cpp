@@ -16,10 +16,10 @@
  * limitations under the License.
 */
 
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
 #endif
 
 #define _USE_MATH_DEFINES
@@ -217,7 +217,7 @@ SICONOS_EXPORT void U10(double time, unsigned int sizeOfq, const double *q, cons
   double b2 = -3 * b0 - 3 * sqrt(z[7]) * alpha;
   double b3 = 2 * b0 + 2 * sqrt(z[7]) * alpha;
 
-  if (t2 < delta)
+  if(t2 < delta)
   {
     qd1 = 0.65 + 0.1 * cos(2 * PI * (z[8] + (t2 - delta) * (t2 - delta) * t2 / (delta * delta)) / P);
     qd11 = -(2 * PI / P) * 0.1 * sin(2 * PI * (z[8] + (t2 - delta) * (t2 - delta) * t2 / (delta * delta)) / P) * (2 * (t2 - delta) * t2 + (t2 - delta) * (t2 - delta)) / (delta * delta);
@@ -251,7 +251,7 @@ SICONOS_EXPORT void U10(double time, unsigned int sizeOfq, const double *q, cons
   double s2 = y1 - qr12;
 
   double s2ly = 0;
-  if (qd2 >= 0)
+  if(qd2 >= 0)
     s2ly = y1 - qr12;
   else
     s2ly = y1 + gamma2 * y;

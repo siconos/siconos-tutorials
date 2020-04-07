@@ -1,8 +1,8 @@
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
 #include <stdio.h>
 #include <math.h>
 
@@ -17,7 +17,7 @@ SICONOS_EXPORT void SinPo(double time, unsigned int sizeOfE, double* EPtr, unsig
 
   VSinPo = Voffset + (amplitude * cos((omega * time) + phase));
 
-  for (unsigned int i = 0; i < sizeOfE; i++) EPtr[i] = z[i];
+  for(unsigned int i = 0; i < sizeOfE; i++) EPtr[i] = z[i];
   EPtr[2] -= VSinPo;
   EPtr[3] += VSinPo;
   z[4] = VSinPo;

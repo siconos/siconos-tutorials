@@ -1,6 +1,6 @@
 #include "SiconosKernel.hpp"
 #include <math.h>
-#include "SolverOptions.h" 
+#include "SolverOptions.h"
 using namespace std;
 
 // main program
@@ -21,37 +21,37 @@ int main(int argc, char* argv[])
     double xinit = 0.0;
     double vinit = 0.0;
     char  filename[50] = "simu.";
-    if (argc==1)
+    if(argc==1)
     {
       xinit = 1.0;
       vinit =1.0;
       strncpy(&filename[5],"1.0.1.0.log",7);
     }
-    else if (argc==3)
+    else if(argc==3)
     {
-    //printf("argv[0] %s\n", argv[0]);
-    printf("xinit is set to %f\n", atof(argv[1]));
-    printf("vinit is set to %f\n", atof(argv[2]));
+      //printf("argv[0] %s\n", argv[0]);
+      printf("xinit is set to %f\n", atof(argv[1]));
+      printf("vinit is set to %f\n", atof(argv[2]));
 
-    xinit = atof(argv[1]);
-    vinit = atof(argv[2]);
-    int sizeofargv1 = strlen(argv[1]);
-    // printf("sizeofargv1 %i\n",sizeofargv1);
-    strncpy(&filename[5],argv[1],sizeofargv1);
-    int sizeofargv2 = strlen(argv[2]);
-    //printf("sizeofargv2 %i\n",sizeofargv2);
-    strncpy(&filename[5+sizeofargv1],".",1);
+      xinit = atof(argv[1]);
+      vinit = atof(argv[2]);
+      int sizeofargv1 = strlen(argv[1]);
+      // printf("sizeofargv1 %i\n",sizeofargv1);
+      strncpy(&filename[5],argv[1],sizeofargv1);
+      int sizeofargv2 = strlen(argv[2]);
+      //printf("sizeofargv2 %i\n",sizeofargv2);
+      strncpy(&filename[5+sizeofargv1],".",1);
 
-    strncpy(&filename[5+sizeofargv1+1],argv[2],sizeofargv2);
-    strncpy(&filename[5+sizeofargv1+sizeofargv2+1],".log",4);
+      strncpy(&filename[5+sizeofargv1+1],argv[2],sizeofargv2);
+      strncpy(&filename[5+sizeofargv1+sizeofargv2+1],".log",4);
 
 
-    // printf("Output is written in filename %s\n",  filename);
-  }
-  else
-  {
-    cout << "wrong  number of arguments = " << argc << endl;
-  }
+      // printf("Output is written in filename %s\n",  filename);
+    }
+    else
+    {
+      cout << "wrong  number of arguments = " << argc << endl;
+    }
 
     double m=1, stiffness=1;
     double alpha =1.0;
@@ -176,7 +176,7 @@ int main(int argc, char* argv[])
     // Simulation loop
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-        while (k < N - 1)
+    while(k < N - 1)
     {
       k++;
 
@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
       dataPlot(k, 3) = (*lambdaProc)(0);
       dataPlot(k, 4) = (*yProc)(0);
       process->computeRhs(s->nextTime());
-      if (k==1) // tricks just for display to avoid the computation of the initial Rhs
+      if(k==1)  // tricks just for display to avoid the computation of the initial Rhs
       {
         dataPlot(k-1, 7) = vectorfield->getValue(0);
         dataPlot(k-1, 8) = vectorfield->getValue(1);
@@ -201,8 +201,12 @@ int main(int argc, char* argv[])
       s->nextStep();
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("FrictionOscillator.dat", "ascii", dataPlot, "noDim");
     ioMatrix::write(filename, "ascii", dataPlot, "noDim");
@@ -220,11 +224,11 @@ cout << "Computation Time " << endl;;
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cout << e.report() << endl;
   }
-  catch (...)
+  catch(...)
   {
     cout << "Exception caught in Fillipov.cpp" << endl;
   }

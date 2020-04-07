@@ -50,7 +50,7 @@ public:
   virtual void computeOutput(double t, Interaction& inter, unsigned int derivativeNumber)
   {
     VectorOfBlockVectors& DSlink = inter.linkToDSVariables();
-    if (derivativeNumber == 0)
+    if(derivativeNumber == 0)
     {
       computeh(t, *DSlink[NewtonEulerR::q0], *inter.y(0));
     }
@@ -270,12 +270,12 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-        //dataPlot(k, 6) = relation0->contactForce()->norm2();
-    while (s->hasNextEvent() )
+    //dataPlot(k, 6) = relation0->contactForce()->norm2();
+    while(s->hasNextEvent())
     {
       //      s->computeOneStep();
       s->advanceToEvent();
@@ -306,12 +306,16 @@ int main(int argc, char* argv[])
 
 
       s->nextStep();
-      
+
       k++;
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("BallNewtonEuler.dat", "ascii", dataPlot, "noDim");
@@ -319,12 +323,12 @@ cout << "Computation Time " << endl;;
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in BouncingBallNETS.cpp" << endl;
     return 1;

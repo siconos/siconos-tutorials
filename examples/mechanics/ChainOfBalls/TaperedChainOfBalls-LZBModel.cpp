@@ -30,10 +30,12 @@ const double g = 0.0; // Gravity
 
 using namespace std;
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[])
+{
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
-  try{
+  start = std::chrono::system_clock::now();
+  try
+  {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
@@ -72,13 +74,13 @@ int main(int argc, char* argv[]){
     double NumberContacts = NumberBalls -1 ; // Number of contacts
     //(1) Radius of balls
     SP::SiconosVector RadiusBalls(new SiconosVector(NumberBalls));
-    for (unsigned int k = 0; k < NumberBalls; ++k)
+    for(unsigned int k = 0; k < NumberBalls; ++k)
     {
       (*RadiusBalls)(k) = (pow(double(1.0 - q_taper),int(k + 1)))*R_base_taper;
     }
     // (2) Mass of balls
     SP::SiconosVector MassBalls(new SiconosVector(NumberBalls));
-    for (unsigned int id = 0; id < NumberBalls; ++id)
+    for(unsigned int id = 0; id < NumberBalls; ++id)
     {
       (*MassBalls)(id) = (4.0/3.0)*PI*pow((*RadiusBalls)(id),3)*mass_density;
     }
@@ -87,14 +89,14 @@ int main(int argc, char* argv[]){
     SP::SiconosVector InitPosBalls(new SiconosVector(NumberBalls));
     (*InitPosBalls)(0) = 0.0;
     (*InitPosBalls)(1) = (*RadiusBalls)(0) + Height + (*RadiusBalls)(1);
-    for (unsigned int j = 2; j < NumberBalls; ++j)
+    for(unsigned int j = 2; j < NumberBalls; ++j)
     {
       (*InitPosBalls)(j) = (*InitPosBalls)(j - 1) + (*RadiusBalls)(j - 1) + (*RadiusBalls)(j);
     }
     // (4) Initial velocity of balls
     SP::SiconosVector InitVelBalls(new SiconosVector(NumberBalls));
     (*InitVelBalls)(0) = V_impact;
-    for (unsigned int i = 1; i < NumberBalls; ++i)
+    for(unsigned int i = 1; i < NumberBalls; ++i)
     {
       (*InitVelBalls)(i) = 0.0;
     }
@@ -102,7 +104,7 @@ int main(int argc, char* argv[]){
     // (1) Restitution coefficient at contacts
     SP::SiconosVector ResCofContacts(new SiconosVector(NumberContacts));
     SP::SiconosVector ElasCofContacts(new SiconosVector(NumberContacts));
-    for (unsigned int id = 0; id < NumberContacts; ++id)
+    for(unsigned int id = 0; id < NumberContacts; ++id)
     {
       (*ResCofContacts)(id) = CoefRes;
       (*ElasCofContacts)(id) = PowCompLaw;
@@ -110,7 +112,7 @@ int main(int argc, char* argv[]){
     // (2) Stiffness at contacts
     SP::SiconosVector StiffContacts(new SiconosVector(NumberContacts));
     double Rmoy, Emoy;
-    for (unsigned int id = 0; id < NumberContacts; ++id)
+    for(unsigned int id = 0; id < NumberContacts; ++id)
     {
       Emoy = (2.0/3.0)*(YoungBall/(1.0 - pow(PoissonBall,2)));
       Rmoy = ((*RadiusBalls)(id)*(*RadiusBalls)(id+1))/((*RadiusBalls)(id) + (*RadiusBalls)(id+1));
@@ -253,33 +255,33 @@ int main(int argc, char* argv[]){
       // Save state of the balls
       unsigned int col_pos = 1;
       unsigned int col_vel = NumberBalls + 1;
-      for (boost::tie(ui,uiend) = DSG0->vertices(); ui!=uiend; ++ui)
-	    {
-	      SP::DynamicalSystem ds = DSG0->bundle(*ui);
-	      SP::LagrangianDS lag_ds = std::dynamic_pointer_cast<LagrangianDS>(ds);
-	      SP::SiconosVector q = lag_ds->q();
-	      SP::SiconosVector v = lag_ds->velocity();
-	      dataPlot(k,col_pos) = (*q)(0);
-	      dataPlot(k,col_vel) = (*v)(0);
-	      col_pos++;
-	      col_vel++;
-	    }
+      for(boost::tie(ui,uiend) = DSG0->vertices(); ui!=uiend; ++ui)
+      {
+        SP::DynamicalSystem ds = DSG0->bundle(*ui);
+        SP::LagrangianDS lag_ds = std::dynamic_pointer_cast<LagrangianDS>(ds);
+        SP::SiconosVector q = lag_ds->q();
+        SP::SiconosVector v = lag_ds->velocity();
+        dataPlot(k,col_pos) = (*q)(0);
+        dataPlot(k,col_vel) = (*v)(0);
+        col_pos++;
+        col_vel++;
+      }
       ++k;
       s->advanceToEvent(); // run simulation from one event to the next
       if(eventsManager->nextEvent()->getType() == 2)
-	    {
-	      nonSmooth = true;
-	    };
+      {
+        nonSmooth = true;
+      };
       //
       s->processEvents();  // process events
-      if (nonSmooth)
-	    {
-	      //multiple_impact->display();
-	      dataPlot(k,0) = s->startingTime();
-	      // Save state of the balls
-	      unsigned int col_pos = 1;
-	      unsigned int col_vel = NumberBalls + 1;
-	      for (boost::tie(ui,uiend) = DSG0->vertices(); ui!=uiend; ++ui)
+      if(nonSmooth)
+      {
+        //multiple_impact->display();
+        dataPlot(k,0) = s->startingTime();
+        // Save state of the balls
+        unsigned int col_pos = 1;
+        unsigned int col_vel = NumberBalls + 1;
+        for(boost::tie(ui,uiend) = DSG0->vertices(); ui!=uiend; ++ui)
         {
           SP::DynamicalSystem ds = DSG0->bundle(*ui);
           SP::LagrangianDS lag_ds = std::dynamic_pointer_cast<LagrangianDS>(ds);
@@ -290,34 +292,40 @@ int main(int argc, char* argv[]){
           col_pos++;
           col_vel++;
         }
-	      nonSmooth = false;
-	      ++NumberOfNSEvents;
-	      ++NumberOfEvents;
-	      
-	      ++k;
-	    }
+        nonSmooth = false;
+        ++NumberOfNSEvents;
+        ++NumberOfEvents;
+
+        ++k;
+      }
       // --- Get values to be plotted ---
       ++NumberOfEvents;
-      
+
     }
 
     dataPlot.resize(k,outputSize);
     cout << "Computation Time " << endl;
-  time.report();    // --- Output files ---
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout<<"====> Output file writing ..."<<endl;
     ioMatrix::write("TaperedChainOfBalls-LZBModel.dat", "ascii",dataPlot,"noDim");
 
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "TaperedChainOfBalls-LZBModel.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "TaperedChainOfBalls-LZBModel.ref", eps)) >= 0.0
         && error > eps)
       return 1;
   }
   catch(SiconosException e)
-  {cerr << e.report() << endl;
-    return 1;}
+  {
+    cerr << e.report() << endl;
+    return 1;
+  }
   catch(...)
   {
     cerr << "Exception caught." << endl;
     return 1;
   }
-  }
+}

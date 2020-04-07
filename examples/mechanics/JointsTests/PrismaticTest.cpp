@@ -17,7 +17,7 @@
 */
 
 /*!\file PrismaticTest.cpp
-  \brief \ref 
+  \brief \ref
 
   Simulation with a Time-Stepping scheme.
 */
@@ -153,14 +153,14 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 0;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-        Index dimIndex(2);
+    Index dimIndex(2);
     Index startIndex(4);
     int cmp = 0;
-    for (cmp = 0; cmp < N; cmp++)
+    for(cmp = 0; cmp < N; cmp++)
     {
       // solve ...
       s->advanceToEvent();
@@ -177,29 +177,33 @@ int main(int argc, char* argv[])
       dataPlot(k, 7) = (*q1)(6);
 
       s->nextStep();
-      
+
       k++;
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("PrismaticTest.dat", "ascii", dataPlot, "noDim");
 
     double error=0.0, eps=1e-11;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "PrismaticTest.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "PrismaticTest.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in BouncingBallTS.cpp" << endl;
     return 1;

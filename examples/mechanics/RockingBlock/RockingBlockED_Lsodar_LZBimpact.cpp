@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 {
   //---------------------------- calculate the computation time --------------------------------------------------
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   try
   {
     //===========================================================================================================
@@ -190,20 +190,20 @@ int main(int argc, char* argv[])
     bool NSEvent = false;
     unsigned int NumberNSEvent = 0;
     unsigned int k = 1;
-    while (EDscheme->hasNextEvent() && (k < NpointSave))
+    while(EDscheme->hasNextEvent() && (k < NpointSave))
     {
       EDscheme->advanceToEvent(); // lead the simulation run from one event to the next
       SP::SiconosVector LambdaCon1 = inter1->lambda(2);
       SP::SiconosVector LambdaCon2 = inter2->lambda(2);
 
       //---------- detect the statue of the current event ------------------------------------
-      if (eventsManager->nextEvent()->getType() == 2) // the current event is non-smooth
+      if(eventsManager->nextEvent()->getType() == 2)  // the current event is non-smooth
       {
         NSEvent = true;
       };
       EDscheme->processEvents();  // process the current event
       //------------------- get data at the beginning of non-smooth events ---------------------------
-      if (NSEvent)
+      if(NSEvent)
       {
         DataPlot(k, 0) = EDscheme->startingTime(); // instant at non-smooth event
         DataPlot(k, 1) = (*PosBlock)(0); //Position X
@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
         //EDscheme->update(1);
         k++;
         ++NumberNSEvent;
-        
+
         NSEvent = false;                        // The next event is maybe smooth
       };
       //-------------------- get data at smooth events or at the end of non-smooth events ---------------
@@ -238,7 +238,7 @@ int main(int argc, char* argv[])
       DataPlot(k, 12) = (*LambdaCon2)(0); // Force at second contact
       // go to the next time step
       k++;
-      
+
       // // Display information
       // cout << "********At the end of integation step***************"<< (k - 1) << endl;
       // cout << "Information on Dynamical System" << endl;
@@ -271,19 +271,19 @@ int main(int argc, char* argv[])
     ioMatrix::write("RockingBlockED_Lsodar_LZBimpact.dat", "ascii", DataPlot, "noDim");
 
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(DataPlot, "RockingBlockED_Lsodar_LZBimpact.ref",
-                                        eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(DataPlot, "RockingBlockED_Lsodar_LZBimpact.ref",
+                                       eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
   //============================== Catch exceptions ===================================================================
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught." << endl;
     return 1;

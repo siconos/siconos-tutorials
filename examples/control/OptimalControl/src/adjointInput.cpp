@@ -70,7 +70,7 @@ void adjointInput::computeg(double t, SiconosVector& x, SiconosVector& lambda, S
   beta(t, x, betatmp);
 
   r(0) = betatmp->getValue(0) * (lambda(0) - 1.0);       //R=g_barre(x,lambda_barre)
-  r(1) =  (betatmp->getValue(1)) * (lambda(0) - 1.0);
+  r(1) = (betatmp->getValue(1)) * (lambda(0) - 1.0);
   r(2) = (K2P->getValue(0)) * (lambda(0) - 1.0);
   r(3) = (K2P->getValue(1)) * (lambda(0) - 1.0);
 

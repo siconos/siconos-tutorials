@@ -38,7 +38,7 @@ using namespace std;
 int main(int argc, char* argv[])
 {
   std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+  start = std::chrono::system_clock::now();
   try
   {
 
@@ -166,7 +166,7 @@ int main(int argc, char* argv[])
     // -------------
 
     SP::NonSmoothDynamicalSystem Manipulator(new NonSmoothDynamicalSystem(t0, T));
-   // add the dynamical system in the non smooth dynamical system
+    // add the dynamical system in the non smooth dynamical system
     Manipulator->insertDynamicalSystem(arm);
 
     // link the interaction and the dynamical system
@@ -251,7 +251,7 @@ int main(int argc, char* argv[])
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    while (k < N)
+    while(k < N)
     {
       (*z)(0) = (*q)(0);
       (*z)(1) = (*q)(1);
@@ -274,7 +274,7 @@ int main(int argc, char* argv[])
       dataPlot(k, 6) = (*inter01->y(0))(0) - 2;
       dataPlot(k, 7) = nimpact; //(*inter->y(1))(1);
       dataPlot(k, 8) = (*z)(6);
-      if (test == 3) dataPlot(k, 9) = (*z)(4) / h;
+      if(test == 3) dataPlot(k, 9) = (*z)(4) / h;
       else dataPlot(k, 9) = (*z)(4);
       dataPlot(k, 10) = test;
       dataPlot(k, 12) = (*z)(22);
@@ -286,7 +286,7 @@ int main(int argc, char* argv[])
       s->nextStep();
 
       //    controller during impacts accumulation phase before the first impact
-      if ((dataPlot(k, 3) <= 0.01) && (test == 0) && (dataPlot(k, 6) < 0.6))
+      if((dataPlot(k, 3) <= 0.01) && (test == 0) && (dataPlot(k, 6) < 0.6))
       {
         (*z)(8) = dataPlot(k, 0);
         (*z)(5) =  0.65 + 0.1 * cos(2 * PI * ((*z)(8)) / (*z)(11));
@@ -296,17 +296,17 @@ int main(int argc, char* argv[])
       }
 
       //  controller during impacts accumulation phase after the first impact
-      if ((dataPlot(k, 11) > 0) && (test == 1))
+      if((dataPlot(k, 11) > 0) && (test == 1))
       {
         (*z)(8) = dataPlot(k, 0);
         arm->setComputeFIntFunction("Two-linkPlugin", "U11");
         test = 2;
       }
-      if ((dataPlot(k, 11) > 0) && (test == 2))
+      if((dataPlot(k, 11) > 0) && (test == 2))
         nimpact = nimpact + 1;
 
       // controller during constraint-motion phase.
-      if ((dataPlot(k, 11) > 0) && (test == 2) && (dataPlot(k, 7) - dataPlot(k - 1, 7) == 1)) // && (fabs((*inter->y(1))(1))<1e-8))
+      if((dataPlot(k, 11) > 0) && (test == 2) && (dataPlot(k, 7) - dataPlot(k - 1, 7) == 1))  // && (fabs((*inter->y(1))(1))<1e-8))
       {
         L = dataPlot(k, 0) - (*z)(8);
         (*z)(8) = dataPlot(k, 0);
@@ -316,7 +316,7 @@ int main(int argc, char* argv[])
       }
 
       // change of control law with a particular design of the desired trajectory that guarantee the take-off
-      if ((trunc((dataPlot(k, 0) + h) / (*z)(11)) > trunc((dataPlot(k, 0)) / (*z)(11))) && (test == 3))
+      if((trunc((dataPlot(k, 0) + h) / (*z)(11)) > trunc((dataPlot(k, 0)) / (*z)(11))) && (test == 3))
       {
         (*z)(10) = dataPlot(k, 0) + h;
         (*z)(8) = (*z)(12);
@@ -326,7 +326,7 @@ int main(int argc, char* argv[])
       }
 
       //  controller during free-motion phase
-      if (((*z)(13) - 0.1 >= 0) && (test == 4))
+      if(((*z)(13) - 0.1 >= 0) && (test == 4))
       {
         arm->setComputeFIntFunction("Two-linkPlugin", "U");
         test = 0;
@@ -335,24 +335,28 @@ int main(int argc, char* argv[])
     }
     cout << endl << "End of computation - Number of iterations done: " << k << endl;
     cout << "Computation Time :" << endl;
-    time.report();
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+
     // --- Output files ---
     // --- Output files ---
     dataPlot.resize(k,outputSize);
     ioMatrix::write("TwoLinkManipulator.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-10;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "TwoLinkManipulator.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "TwoLinkManipulator.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in TwolinkManipulator" << endl;
     return 1;

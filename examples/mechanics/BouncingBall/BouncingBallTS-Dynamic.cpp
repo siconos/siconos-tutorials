@@ -143,13 +143,14 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    while (s->hasNextEvent())
+    while(s->hasNextEvent())
     {
-      if (k==201) {
+      if(k==201)
+      {
         inter.reset(new Interaction(nslaw, relation));
 
         // link the interaction and the dynamical system
@@ -175,7 +176,7 @@ int main(int argc, char* argv[])
     }
     end = std::chrono::system_clock::now();
     int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-      (end-start).count();
+                  (end-start).count();
     cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
     cout << "Computation time : " << elapsed << " ms" << endl;
     // --- Output files ---
@@ -185,19 +186,19 @@ int main(int argc, char* argv[])
 
 
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "BouncingBallTS-Dynamic.ref",
-                                        eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "BouncingBallTS-Dynamic.ref",
+                                       eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in BouncingBallTS.cpp" << endl;
     return 1;

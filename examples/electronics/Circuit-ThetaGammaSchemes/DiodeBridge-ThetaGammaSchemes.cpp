@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
 
     // -- (4) Simulation setup with (1) (2) (3)
     SP::TimeStepping aTS(new TimeStepping(DiodeBridge,aTiDisc, aOSI, aLCP));
-    
+
     int k = 0;
     double h = aTS->timeStep();
     int N = ceil((T - t0) / h); // Number of time steps
@@ -193,9 +193,9 @@ int main(int argc, char* argv[])
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    
+
     // --- Time loop  ---
-    for (k = 1 ; k < N ; ++k)
+    for(k = 1 ; k < N ; ++k)
     {
       // solve ...
       aTS->computeOneStep();
@@ -243,7 +243,11 @@ int main(int argc, char* argv[])
 
     // --- elapsed time computing ---
     cout << "time = " << endl;
-    time.report();
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+
 
     // Number of time iterations
     cout << "Number of iterations done: " << k << endl;
@@ -252,7 +256,7 @@ int main(int argc, char* argv[])
     dataPlot.resize(k, 10);
     ioMatrix::write("DiodeBridge.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-10;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "DiodeBridge.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "DiodeBridge.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 
@@ -260,12 +264,12 @@ int main(int argc, char* argv[])
   }
 
   // --- Exceptions handling ---
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught " << endl;
     return 1;

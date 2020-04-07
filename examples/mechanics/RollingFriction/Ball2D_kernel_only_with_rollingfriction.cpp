@@ -39,12 +39,16 @@ protected:
   double _R ;
 
 public:
-  MyCollisionManager(double R) : InteractionManager() {_R=R;}
+  MyCollisionManager(double R) : InteractionManager()
+  {
+    _R=R;
+  }
   virtual ~MyCollisionManager() {}
 
   /** Called by Simulation after updating positions prior to starting
    * the Newton loop. */
-  void updateInteractions(SP::Simulation simulation) {
+  void updateInteractions(SP::Simulation simulation)
+  {
     // std::cout<< "Call to updateInteractions in MyCollisionManager" << std::endl;
     InteractionsGraph::VIterator ui, uiend;
     SP::InteractionsGraph indexSet0 = simulation->nonSmoothDynamicalSystem()->topology()->indexSet0();
@@ -52,7 +56,7 @@ public:
     {
       SP::Interaction inter(indexSet0->bundle(*ui));
       //inter->display();
-      if (inter->number()==0)
+      if(inter->number()==0)
       {
         SP::Lagrangian2d2DR r = std::static_pointer_cast<Lagrangian2d2DR> (inter->relation());
         SP::LagrangianLinearTIDS ds1(std::dynamic_pointer_cast<LagrangianLinearTIDS>(
@@ -211,7 +215,7 @@ int main(int argc, char* argv[])
     SP::SiconosVector rpc = relation->relPc1();
     SP::SiconosVector nnc = relation->relNc();
 
-    while (s->hasNextEvent())
+    while(s->hasNextEvent())
     {
       osnspb->setNumericsVerboseMode(1);
 
@@ -228,32 +232,36 @@ int main(int argc, char* argv[])
       dataPlot(k, 6) = (*q)(1);
       dataPlot(k, 7) = (*q)(2);
       dataPlot(k, 8) = (*v)(1);
-       s->nextStep();
-       // getchar();
+      s->nextStep();
+      // getchar();
       k++;
 
     }
     cout  << "End of computation - Number of iterations done: " << k - 1 << endl;
     cout << "Computation Time :"  << endl;
-    time.report();
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("Ball_2d_with_kernel_only_with_rollingfriction.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-10;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "Ball_2d_with_kernel_only_with_rollingfriction.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "Ball_2d_with_kernel_only_with_rollingfriction.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
 
-  catch (SiconosException& e)
+  catch(SiconosException& e)
   {
     cerr << e.report() << endl;
     return 1;
 
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in BouncingBallTS.cpp" << endl;
     return 1;

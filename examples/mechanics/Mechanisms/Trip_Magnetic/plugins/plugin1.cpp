@@ -13,8 +13,9 @@
 
 
 //static double ManetteForce[3];
-extern "C" void manetteForcesFromSpring(double t, double* q, double *v,double *f, unsigned int size_z,double *z){
- /*spring K is N.mm/rad*/
+extern "C" void manetteForcesFromSpring(double t, double* q, double *v,double *f, unsigned int size_z,double *z)
+{
+  /*spring K is N.mm/rad*/
   double K=0.382*10;//*10;
   double A0=1.99;
   double angle0=2*acos(z[3]);
@@ -25,9 +26,9 @@ extern "C" void manetteForcesFromSpring(double t, double* q, double *v,double *f
   double P0contactSpringz=-0.9;
   //double d=5.65;
   double GP=3.19;
-  if (q[6]<0)
+  if(q[6]<0)
     angle=-angle;
-  if (angle-angle0<-1e7)
+  if(angle-angle0<-1e7)
     printf("ERROR in externalManetteForces, angle negatif=%lf\n",angle-angle0);
   double C_p=K*(A0-(angle-angle0));
 #ifdef  VERBOSE_DEBUG_PLUGIN
@@ -55,13 +56,14 @@ extern "C" void manetteForcesFromSpring(double t, double* q, double *v,double *f
   //ManetteForce[2]=f[2];
 }
 
-extern "C" void externalManetteForces(double t, double* q,double *v,double *f, unsigned int size_z,double *z){
+extern "C" void externalManetteForces(double t, double* q,double *v,double *f, unsigned int size_z,double *z)
+{
   f[0]=0;
   f[1]=0;
   f[2]=0;
-  manetteForcesFromSpring( t,  q,  v, f, size_z, z);
+  manetteForcesFromSpring(t,  q,  v, f, size_z, z);
   //printf("%e %e %e\n", f[0], f[1], f[2]);
-#ifdef  VERBOSE_DEBUG_PLUGIN  
+#ifdef  VERBOSE_DEBUG_PLUGIN
   printf("externalManetteForces : The spring forces intensity is %e in the direction %e %e %e \n",F_p,quatbuf.R_component_2(),quatbuf.R_component_3(),quatbuf.R_component_4());
 #endif
   f[0]=-f[0];
@@ -73,7 +75,8 @@ extern "C" void externalManetteForces(double t, double* q,double *v,double *f, u
 /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-extern "C" void externalManetteMomentum(double t, double* q,double *v,double *m, unsigned int size_z,double *z){
+extern "C" void externalManetteMomentum(double t, double* q,double *v,double *m, unsigned int size_z,double *z)
+{
   m[0]=0;
   m[1]=0;
   m[2]=0;
@@ -93,7 +96,7 @@ extern "C" void externalManetteMomentum(double t, double* q,double *v,double *m,
   GP_manette[1]=quatbuf.R_component_3();
   GP_manette[2]=quatbuf.R_component_4();
   double f[3];
-  manetteForcesFromSpring( t,  q,  v, f, size_z, z);
+  manetteForcesFromSpring(t,  q,  v, f, size_z, z);
 
   cross3(GP_manette,f,m);
   //printf("externalManetteMometum: m[0] = %lf, m[1] = %lf, m[2]=%lf.\n",m[0],m[1],m[2]);
@@ -126,27 +129,27 @@ extern "C" void MZPlatineMomemtumDueSpringFct(double *qEquipage, double *qPlatin
   // {
   //   std::cout << "qPlatine belongs to DS PLATINE. accuracy"<< sqrt(norm2_q) <<std::endl;
   // }
-  
+
   *Theta_equipage=2*acos(qEquipage[3]);
-  if (qEquipage[6]<0)
+  if(qEquipage[6]<0)
     *Theta_equipage=- *Theta_equipage;
-/*   printf("Theta_equipage:%e\n",Theta_equipage);*/
+  /*   printf("Theta_equipage:%e\n",Theta_equipage);*/
   double Theta_platine=2*acos(qPlatine[3]);
-  if (qPlatine[6]<0)
+  if(qPlatine[6]<0)
     Theta_platine=-Theta_platine;
-/*   printf("Theta_platine:%e\n",Theta_platine);*/
+  /*   printf("Theta_platine:%e\n",Theta_platine);*/
   /*diffAngle is zero in the closed position.*/
   double diffAngle = *Theta_equipage-Theta_platine-(-54.54-22.0)*M_PI/180.0;/*-(-54.54-22.0)(-69+2).....FvsD -78.5+2 */
- // printf("diffangle1:%e\n",diffAngle);
- // printf("Equipage:%e\n",*Theta_equipage);
+// printf("diffangle1:%e\n",diffAngle);
+// printf("Equipage:%e\n",*Theta_equipage);
   //printf("Plate:%e\n",Theta_platine);
   /*The Z momentum:*/
   /*if (Theta_equipage < -69.0*M_PI/180.0)
-    { 
+    {
     MZPlatineMomemtumDueSpring=-K2*(0.5236);
     }
     else
-    { 
+    {
     MZPlatineMomemtumDueSpring-K2*(diffAngle + 0.5236);
     }*/
   /*The force intensity*/
@@ -158,7 +161,8 @@ extern "C" void MZPlatineMomemtumDueSpringFct(double *qEquipage, double *qPlatin
 
 
 
-extern "C" void FPlatineA2(double t, double* q,double *v,double *f, unsigned int size_z,double *z){
+extern "C" void FPlatineA2(double t, double* q,double *v,double *f, unsigned int size_z,double *z)
+{
 
   ::boost::math::quaternion<double>    quattrf(q[3],q[4],q[5],q[6]);
   ::boost::math::quaternion<double>    cquattrf(q[3],-q[4],-q[5],-q[6]);
@@ -177,19 +181,19 @@ extern "C" void FPlatineA2(double t, double* q,double *v,double *f, unsigned int
   double PbZ=1.95;
   /*P0 coordinate of the application point of the spring on platine.*/
   ::boost::math::quaternion<double>   G0P0(0,
-					   0.19-3.319,
-					   9-4.365,
-					   -7.6+4.7);
+      0.19-3.319,
+      9-4.365,
+      -7.6+4.7);
 
   quatbuf=quattrf*G0P0*cquattrf;
   double Px=quatbuf.R_component_2()+q[0];
   double Py=quatbuf.R_component_3()+q[1];
   double Pz=quatbuf.R_component_4()+q[2];
   double lengthSpring = sqrt((PbX-Px)*(PbX-Px)+
-			     (PbY-Py)*(PbY-Py)+
-			     (PbZ-Pz)*(PbZ-Pz));
+                             (PbY-Py)*(PbY-Py)+
+                             (PbZ-Pz)*(PbZ-Pz));
 
-/*  printf("plugin, externalPlatineForces, spring A2 lenght:%e\n",lengthSpring);*/
+  /*  printf("plugin, externalPlatineForces, spring A2 lenght:%e\n",lengthSpring);*/
 #ifdef  VERBOSE_DEBUG_PLUGIN
   printf("plugin, externalPlatineForces, spring A2 lenght:%e\n",lengthSpring);
 #endif
@@ -201,12 +205,13 @@ extern "C" void FPlatineA2(double t, double* q,double *v,double *f, unsigned int
   f[1]=nFp*quatbuf.R_component_3();
   f[2]=nFp*quatbuf.R_component_4();
 
-  
+
 }
 
-extern "C" void externalPlatineForces(double t, double* q,double *v,double *f, unsigned int size_z,double *z){
+extern "C" void externalPlatineForces(double t, double* q,double *v,double *f, unsigned int size_z,double *z)
+{
 
-  FPlatineA2( t, q, v, f, size_z, z);
+  FPlatineA2(t, q, v, f, size_z, z);
 
 #ifdef  VERBOSE_DEBUG_PLUGIN
   printf("plugin, externalPlatineForces force due to A2 %e, %e, %e\n",f[0],f[1],f[2]);
@@ -214,14 +219,14 @@ extern "C" void externalPlatineForces(double t, double* q,double *v,double *f, u
 
   double MZPlatineMomemtumDueSpring ;
   double Theta_equipage;
-  MZPlatineMomemtumDueSpringFct( &(*(sDS[EQUIPAGE]->q()))(0), q, &MZPlatineMomemtumDueSpring, &Theta_equipage);
-  
+  MZPlatineMomemtumDueSpringFct(&(*(sDS[EQUIPAGE]->q()))(0), q, &MZPlatineMomemtumDueSpring, &Theta_equipage);
+
   double F=MZPlatineMomemtumDueSpring/5.48; //updated 26 May 2015 (old value 5.0)// new value 5.48//
-/*  printf("externalPlatineForces, F=%e, diffAngle contact spring =%lf\n",F,diffAngle);*/
+  /*  printf("externalPlatineForces, F=%e, diffAngle contact spring =%lf\n",F,diffAngle);*/
 #ifdef  VERBOSE_DEBUG_PLUGIN
   printf("externalPlatineForces, F=%e, diffAngle contact spring =%lf\n",F,diffAngle);
 #endif
-  if (MZPlatineMomemtumDueSpring<0)
+  if(MZPlatineMomemtumDueSpring<0)
     printf("externalPlatineForces, M negatif:%lf\n",MZPlatineMomemtumDueSpring);
 
   ::boost::math::quaternion<double>    quattrf(q[3],q[4],q[5],q[6]);
@@ -229,20 +234,20 @@ extern "C" void externalPlatineForces(double t, double* q,double *v,double *f, u
   ::boost::math::quaternion<double>    quatbuf;
 
   ::boost::math::quaternion<double>    quatDir0_2(0,-1.1,0.9,0);
-  
+
   quatbuf=quattrf*quatDir0_2*cquattrf;
   double norm2FP=sqrt(quatbuf.R_component_2()*quatbuf.R_component_2()+quatbuf.R_component_3()*quatbuf.R_component_3()+quatbuf.R_component_4()*quatbuf.R_component_4());
   double FPlatineSpringP[3];
   FPlatineSpringP[0]=quatbuf.R_component_2()* F/norm2FP;
   FPlatineSpringP[1]=quatbuf.R_component_3()* F/norm2FP;
   FPlatineSpringP[2]=quatbuf.R_component_4()* F/norm2FP;
-  
+
   f[0]+=FPlatineSpringP[0];
   f[1]+=FPlatineSpringP[1];
   f[2]+=FPlatineSpringP[2];
-/*  printf("externalPlatineForces : The springP force is :%e,%e,%e\n",FPlatineSpringP[0],FPlatineSpringP[1],FPlatineSpringP[2]);
+  /*  printf("externalPlatineForces : The springP force is :%e,%e,%e\n",FPlatineSpringP[0],FPlatineSpringP[1],FPlatineSpringP[2]);
 
-  printf("externalPlatineForces : The ext forces is :%e %e %e\n",f[0],f[1],f[2]);*/
+    printf("externalPlatineForces : The ext forces is :%e %e %e\n",f[0],f[1],f[2]);*/
 
 #ifdef  VERBOSE_DEBUG_PLUGIN
   printf("externalPlatineForces : The springP force is :%e,%e,%e\n",FPlatineSpringP[0],FPlatineSpringP[1],FPlatineSpringP[2]);
@@ -252,14 +257,15 @@ extern "C" void externalPlatineForces(double t, double* q,double *v,double *f, u
   f[0]=-f[0];
   f[1]=-f[1];
   f[2]=-f[2];
-  
-  
+
+
 }
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 
-extern "C" void externalPlatineMomentum(double t, double* q,double *v,double *m, unsigned int size_z,double *z){
+extern "C" void externalPlatineMomentum(double t, double* q,double *v,double *m, unsigned int size_z,double *z)
+{
   m[0]=0;
   m[1]=0;
   m[2]=0;
@@ -289,26 +295,26 @@ extern "C" void externalPlatineMomentum(double t, double* q,double *v,double *m,
   GPA2[1]=quatbuf.R_component_3();
   GPA2[2]=quatbuf.R_component_4();
   double f[3];
-  FPlatineA2( t, q, v, f, size_z, z);
-  
+  FPlatineA2(t, q, v, f, size_z, z);
+
   cross3(GPA2,f,MA2);
-/*  printf("externalPlatineMomentum : momemtum due to A2:%e,%e,%e\n",MA2[0],MA2[1],MA2[2]);*/
+  /*  printf("externalPlatineMomentum : momemtum due to A2:%e,%e,%e\n",MA2[0],MA2[1],MA2[2]);*/
 
 #ifdef  VERBOSE_DEBUG_PLUGIN
   printf("externalPlatineMomentum : momemtum due to A2:%e,%e,%e\n",MA2[0],MA2[1],MA2[2]);
 #endif
 
-  
+
   m[0]=MA2[0];
   m[1]=MA2[1];
   double MZPlatineMomemtumDueSpring ;
   double Theta_equipage;
   double lva1r=0.2513;
   MZPlatineMomemtumDueSpringFct(&(*(sDS[EQUIPAGE]->q()))(0), q, &MZPlatineMomemtumDueSpring, &Theta_equipage);
-    
+
   m[2]=MA2[2]+(lva1r*MZPlatineMomemtumDueSpring);
-/*  printf("externalPlatineMomentum :%e,%e,%e\n",m[0],m[1],m[2]);*/
-#ifdef  VERBOSE_DEBUG_PLUGIN  
+  /*  printf("externalPlatineMomentum :%e,%e,%e\n",m[0],m[1],m[2]);*/
+#ifdef  VERBOSE_DEBUG_PLUGIN
   printf("externalPlatineMomentum :%e,%e,%e\n",m[0],m[1],m[2]);
 #endif
   m[0]=-m[0];
@@ -318,20 +324,21 @@ extern "C" void externalPlatineMomentum(double t, double* q,double *v,double *m,
 
 /*////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 double FEquipageSpringP[3];
-extern "C" void externalEquipageForces(double t, double* q,double *v,double *f, unsigned int size_z,double *z){
-   f[0]=0;
-   f[1]=0;
-   f[2]=0;
+extern "C" void externalEquipageForces(double t, double* q,double *v,double *f, unsigned int size_z,double *z)
+{
+  f[0]=0;
+  f[1]=0;
+  f[2]=0;
 
-   ::boost::math::quaternion<double>    quattrf1(q[3],q[4],q[5],q[6]);
-   ::boost::math::quaternion<double>    cquattrf1(q[3],-q[4],-q[5],-q[6]);
-   ::boost::math::quaternion<double>    quatbuf1;
+  ::boost::math::quaternion<double>    quattrf1(q[3],q[4],q[5],q[6]);
+  ::boost::math::quaternion<double>    cquattrf1(q[3],-q[4],-q[5],-q[6]);
+  ::boost::math::quaternion<double>    quatbuf1;
 
   double M ;
   double Theta_equipage;
-  MZPlatineMomemtumDueSpringFct(q,  &(*(sDS[PLATINE]->q()))(0)   ,  &M, &Theta_equipage);
+  MZPlatineMomemtumDueSpringFct(q,  &(*(sDS[PLATINE]->q()))(0),  &M, &Theta_equipage);
 
-    
+
   double d_platine=5.8;
   double d_equipage=6.6;
   double d_gplatine = 5.48;//5(old plugin value validated);/*5.48 new value*/
@@ -342,7 +349,7 @@ extern "C" void externalEquipageForces(double t, double* q,double *v,double *f, 
   //f[0]+=(M/d_gequipage)*cos(Theta_g_equip);
   //f[1]+=(M/d_gequipage)*sin(Theta_g_equip);
   /*printf("externalEquipageForces : The equivalent, spring A3 force is fg= %lf, theta_g_equip = %lf.\n",(M/d_gequipage),Theta_g_equip);*/
-/*printf("externalEquipageForces : The equivalent, spring A3 force is fg= %lf, f_0 = %lf,f_1 = %lf,theta_g_equip = %lf.\n",(M/d_gequipage), f[0],f[1],Theta_g_equip);*/
+  /*printf("externalEquipageForces : The equivalent, spring A3 force is fg= %lf, f_0 = %lf,f_1 = %lf,theta_g_equip = %lf.\n",(M/d_gequipage), f[0],f[1],Theta_g_equip);*/
 #ifdef  VERBOSE_DEBUG_PLUGIN
   printf("externalEquipageForces : The equivalent, spring A3 force is fg= %lf, theta = %lf.\n",(M/d_gequipage),Theta_g_equip);
 #endif
@@ -353,28 +360,30 @@ extern "C" void externalEquipageForces(double t, double* q,double *v,double *f, 
 
   double norm2FE1=sqrt(quatbuf1.R_component_2()*quatbuf1.R_component_2()+quatbuf1.R_component_3()*quatbuf1.R_component_3()+quatbuf1.R_component_4()*quatbuf1.R_component_4());
 
-   FEquipageSpringP[0]=quatbuf1.R_component_2()* (M/d_gequipage)/norm2FE1;
-   FEquipageSpringP[1]=quatbuf1.R_component_3()* (M/d_gequipage)/norm2FE1;
-   FEquipageSpringP[2]=quatbuf1.R_component_4()* (M/d_gequipage)/norm2FE1;
-  
-   f[0]+=FEquipageSpringP[0];
-   f[1]+=FEquipageSpringP[1];
-   f[2]+=FEquipageSpringP[2];
+  FEquipageSpringP[0]=quatbuf1.R_component_2()* (M/d_gequipage)/norm2FE1;
+  FEquipageSpringP[1]=quatbuf1.R_component_3()* (M/d_gequipage)/norm2FE1;
+  FEquipageSpringP[2]=quatbuf1.R_component_4()* (M/d_gequipage)/norm2FE1;
 
-   f[0]=-f[0];
-   f[1]=-f[1];
-   f[2]=-f[2];
+  f[0]+=FEquipageSpringP[0];
+  f[1]+=FEquipageSpringP[1];
+  f[2]+=FEquipageSpringP[2];
+
+  f[0]=-f[0];
+  f[1]=-f[1];
+  f[2]=-f[2];
 }
 
 /*////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-extern "C" void externalBarreForces(double t, double* q,double *v,double *f, unsigned int size_z,double *z){
- f[0]=0;
- f[1]=0;
- f[2]=0;
+extern "C" void externalBarreForces(double t, double* q,double *v,double *f, unsigned int size_z,double *z)
+{
+  f[0]=0;
+  f[1]=0;
+  f[2]=0;
 }
-extern "C" void externalBarreMomentum(double t, double* q,double *v,double *m, unsigned int size_z,double *z){
-  if (t <1.0)
+extern "C" void externalBarreMomentum(double t, double* q,double *v,double *m, unsigned int size_z,double *z)
+{
+  if(t <1.0)
   {
     m[0]=0;
     m[1]=0;
@@ -395,13 +404,13 @@ extern "C" void externalBarreMomentum(double t, double* q,double *v,double *m, u
 //     f[2]=100;
 //   else
 //     f[2]=-10;
- 
+
 // /*artificial momentum*/
 //   /*spring white*/
 //   double Theta_equipage=2*acos(sDS[EQUIPAGE]->q()->getValue(3));
 //   if (sDS[EQUIPAGE]->q()->getValue(6)<0)
 //     Theta_equipage=-Theta_equipage;
-  
+
 //   double Theta0_equipage=2*acos(sDS[EQUIPAGE]->q0()->getValue(3));
 //   if (sDS[EQUIPAGE]->q0()->getValue(6)<0)
 //     Theta0_equipage=-Theta0_equipage;
@@ -417,42 +426,43 @@ extern "C" void externalBarreMomentum(double t, double* q,double *v,double *m, u
 // #endif
 }
 
-extern "C" void externalMomentumx(double t, double* q,double *v,double *m, unsigned int size_z,double *z){
+extern "C" void externalMomentumx(double t, double* q,double *v,double *m, unsigned int size_z,double *z)
+{
 
-double angle =2*acos(q[3]);
+  double angle =2*acos(q[3]);
 //printf("angle:%e\n",angle);
- if (angle > 0.459)
+  if(angle > 0.459)
   {
-  	m[0]=0;
-  	m[1]=0;
-  	m[2]=-0;
-  }	
- else
+    m[0]=0;
+    m[1]=0;
+    m[2]=-0;
+  }
+  else
   {
     m[0]=0.0;
     m[1]=0;
     m[2]=0;
   }
 
- m[0]=-m[0];
- m[1]=-m[1];
- m[2]=-m[2];
- return; 
+  m[0]=-m[0];
+  m[1]=-m[1];
+  m[2]=-m[2];
+  return;
 }
 
 extern "C" void prescribedvelocityB1(double time, unsigned int sizeofprescribedvelocity, double *pv)
 {
   /* the plugin implements v(t) = C + A cos(omega *t) */
-   if (time <0.7)
-    {
-      double C = 0.0;
-      pv[0] =  C;
-    }
-   else 
-    {
-      double C = 0.2;
-      pv[0] =  C;
-    }
-    //printf("prescribed velocity = %e\n", pv[0]);
-    
+  if(time <0.7)
+  {
+    double C = 0.0;
+    pv[0] =  C;
+  }
+  else
+  {
+    double C = 0.2;
+    pv[0] =  C;
+  }
+  //printf("prescribed velocity = %e\n", pv[0]);
+
 }

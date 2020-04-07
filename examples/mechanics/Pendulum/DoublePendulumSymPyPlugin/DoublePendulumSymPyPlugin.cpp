@@ -16,11 +16,11 @@
  * limitations under the License.
 */
 
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
 #include <stdio.h>
 #include <math.h>
 
@@ -42,12 +42,12 @@ SICONOS_EXPORT void mass(unsigned int sizeOfq, const double *q, double *mass, un
   int n = sizeOfq;
 
   int n1 = n*n;
- 
+
   // mass set to zero
-  for (int i = 0; i < n1; i++)
+  for(int i = 0; i < n1; i++)
   {
 
-    mass[i] = 0.0;	
+    mass[i] = 0.0;
 
   }
 
@@ -59,12 +59,12 @@ SICONOS_EXPORT void FGyr(unsigned int sizeOfq, const double *q, const double *ve
 {
 
   int n = sizeOfq;
- 
+
   // FGyr set to zero
-  for (int i = 0; i < n; i++)
+  for(int i = 0; i < n; i++)
   {
 
-    FGyr[i] = 0.0;	
+    FGyr[i] = 0.0;
 
   }
 
@@ -78,12 +78,12 @@ SICONOS_EXPORT void jacobianFGyrq(unsigned int sizeOfq, const double *q, const d
   int n = sizeOfq;
 
   int n1 = n*n;
- 
+
   // mass set to zero
-  for (int i = 0; i < n1; i++)
+  for(int i = 0; i < n1; i++)
   {
 
-    jacob[i] = 0.0;	
+    jacob[i] = 0.0;
 
   }
 
@@ -97,12 +97,12 @@ SICONOS_EXPORT void jacobianVFGyr(unsigned int sizeOfq, const double *q, const  
   int n = sizeOfq;
 
   int n1 = n*n;
- 
+
   // mass set to zero
-  for (int i = 0; i < n1; i++)
+  for(int i = 0; i < n1; i++)
   {
 
-    jacob[i] = 0.0;	
+    jacob[i] = 0.0;
 
   }
 

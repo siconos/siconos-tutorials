@@ -16,11 +16,11 @@
  * limitations under the License.
 */
 
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
 
 #define _USE_MATH_DEFINES
 #include <stdio.h>
@@ -471,9 +471,9 @@ SICONOS_EXPORT void U1(double time, unsigned int sizeOfq, const double *q, const
   double qd22 = 0;
   double qd32 = 0;
   double qd42 = 0;
-  if (time <= t1)
+  if(time <= t1)
   {
-    if (time <= t2)
+    if(time <= t2)
     {
       qd1 = c0 + c1 * (time - z[8]) + c2 * (time - z[8]) * (time - z[8]) / 2 + c3 * (time - z[8]) * (time - z[8]) * (time - z[8]) / 6 + w0 * (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - z[8]) + w1 * (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - t2) + w2 * (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - t2) * (time - t2) + w3 * (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - t2) * (time - t2) * (time - t2);
       qd11 = c1 + c2 * (time - z[8]) + c3 * (time - z[8]) * (time - z[8]) / 2 + 4 * (time - z[8]) * (time - z[8]) * (time - z[8]) * (w0 + w1 * (time - t2) + w2 * (time - t2) * (time - t2) + w3 * (time - t2) * (time - t2) * (time - t2)) + (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - z[8]) * (w1 + 2 * w2 * (time - t2) + 3 * w3 * (time - t2) * (time - t2));
@@ -916,7 +916,7 @@ SICONOS_EXPORT void U3(double time, unsigned int sizeOfq, const double *q, const
   double qd31 = 0;
   double qd41 = 0;
 
-  if (time <= td)
+  if(time <= td)
   {
     qd1 = c0 + w0 * (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - z[8]) + w1 * (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - td) + w2 * (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - td) * (time - td) + w3 * (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - td) * (time - td) * (time - td);
     qd11 = (time - z[8]) * (time - z[8]) * (time - z[8]) * (time - z[8]) * (w1 + 2 * w2 * (time - td) + 3 * w3 * (time - td) * (time - td)) + 4 * (time - z[8]) * (time - z[8]) * (time - z[8]) * (w0 + w1 * (time - td) + w2 * (time - td) * (time - td) + w3 * (time - td) * (time - td) * (time - td));

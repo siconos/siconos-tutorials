@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
     std::vector<SP::SiconosVector> q0(nBeads);
     std::vector<SP::SiconosVector> v0(nBeads);
 
-    for (unsigned int i = 0; i < nBeads; i++)
+    for(unsigned int i = 0; i < nBeads; i++)
     {
       (q0[i]).reset(new SiconosVector(nDof));
       (v0[i]).reset(new SiconosVector(nDof));
@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
 
 
     std::vector<SP::LagrangianLinearTIDS> beads(nBeads);
-    for (unsigned int i = 0; i < nBeads; i++)
+    for(unsigned int i = 0; i < nBeads; i++)
     {
       beads[i].reset(new LagrangianLinearTIDS(q0[i], v0[i], Mass));
       // -- Set external forces (weight) --
@@ -127,7 +127,7 @@ int main(int argc, char* argv[])
 
     SP::NonSmoothDynamicalSystem columnOfBeads(new NonSmoothDynamicalSystem(t0, T));
     // add the dynamical system in the non smooth dynamical system
-    for (unsigned int i = 0; i < nBeads; i++)
+    for(unsigned int i = 0; i < nBeads; i++)
     {
       columnOfBeads->insertDynamicalSystem(beads[i]);
     }
@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
 
     dataPlot(0, 0) = columnOfBeads->t0();
 
-    for (unsigned int i = 0; i < nBeads; i++)
+    for(unsigned int i = 0; i < nBeads; i++)
     {
       dataPlot(0, 1 + i * 2) = (beads[i]->q())->getValue(0);
       dataPlot(0, 2 + i * 2) = (beads[i]->velocity())->getValue(0);
@@ -176,20 +176,20 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-        int ncontact = 0 ;
-    while (s->hasNextEvent())
+    int ncontact = 0 ;
+    while(s->hasNextEvent())
     {
       // Rough contact detection
-      for (unsigned int i = 0; i < nBeads - 1; i++)
+      for(unsigned int i = 0; i < nBeads - 1; i++)
       {
         // Between first bead and plane
-        if (abs(((beads[i])->q())->getValue(0) - R) < alert)
+        if(abs(((beads[i])->q())->getValue(0) - R) < alert)
         {
-          if (!inter)
+          if(!inter)
           {
             ncontact++;
             // std::cout << "Number of contact = " << ncontact << std::endl;
@@ -202,11 +202,11 @@ int main(int argc, char* argv[])
         }
 
         // Between two beads
-        if (abs(((beads[i + 1])->q())->getValue(0) - ((beads[i])->q())->getValue(0) - 2 * R) < alert)
+        if(abs(((beads[i + 1])->q())->getValue(0) - ((beads[i])->q())->getValue(0) - 2 * R) < alert)
         {
           //std::cout << "Alert distance for declaring contact = ";
           //std::cout << abs(((beads[i])->q())->getValue(0)-((beads[i+1])->q())->getValue(0))   <<std::endl;
-          if (!interOfBeads[i].get())
+          if(!interOfBeads[i].get())
           {
             ncontact++;
             // std::cout << "Number of contact = " << ncontact << std::endl;
@@ -225,7 +225,7 @@ int main(int argc, char* argv[])
 
       // --- Get values to be plotted ---
       dataPlot(k, 0) =  s->nextTime();
-      for (unsigned int i = 0; i < nBeads; i++)
+      for(unsigned int i = 0; i < nBeads; i++)
       {
         dataPlot(k, 1 + i * 2) = (beads[i]->q())->getValue(0);
         dataPlot(k, 2 + i * 2) = (beads[i]->velocity())->getValue(0);
@@ -240,29 +240,33 @@ int main(int argc, char* argv[])
       // }
 
       s->nextStep();
-      
+
       k++;
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("ColumnOfbeadsTS.dat", "ascii", dataPlot, "noDim");
 
     double error=0.0, eps=1e-12;
-    if ((error=ioMatrix::compareRefFile(dataPlot, "ColumnOfbeadsTS.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "ColumnOfbeadsTS.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in ColumnOfBeadsTS.cpp" << endl;
     return 1;

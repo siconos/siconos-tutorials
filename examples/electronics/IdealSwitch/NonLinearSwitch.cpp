@@ -123,9 +123,9 @@ int main()
   aS->setNewtonTolerance(1e-11);
   aS->setResetAllLambda(false);
   //To compute necessary information for memory allocator
-  
+
   aS->initialize();
-  
+
   aMLCP->preCompute(0.0);
   cout << "nonSmoothDynamicalSystem()->isLinear() : " << boolalpha
        << aN->isLinear() << endl;
@@ -162,7 +162,7 @@ int main()
   (*fout) << "C_charge " << "V1 " << "R(t)" << endl;
 #endif
 
-  for (int k = 0 ; k < NBStep ; k++)
+  for(int k = 0 ; k < NBStep ; k++)
   {
     //      if (cmp==150)
     //        numerics_set_verbose(1);
@@ -182,9 +182,9 @@ int main()
     //std::cout<<" V4="<<lambda->getValue(3)<<" V5="<<lambda->getValue(4)<<" l6="<<lambda->getValue(5)<<" l7="<<lambda->getValue(6);
     //std::cout<<" l8="<<lambda->getValue(7)<<" l9="<<lambda->getValue(8)<<std::endl;
     stateChanged = false;
-    if (lambda->getValue(6) > 1)
+    if(lambda->getValue(6) > 1)
     {
-      if (switchIsOn || k == 0)
+      if(switchIsOn || k == 0)
       {
         switchIsOn = false;
         stateChanged = true;
@@ -192,15 +192,15 @@ int main()
     }
     else
     {
-      if (!switchIsOn || k == 0)
+      if(!switchIsOn || k == 0)
       {
         switchIsOn = true;
         stateChanged = true;
       }
     }
-    if (lambda->getValue(8) > 1)
+    if(lambda->getValue(8) > 1)
     {
-      if (diodeIsOn || k == 0)
+      if(diodeIsOn || k == 0)
       {
         diodeIsOn = false;
         stateChanged = true;
@@ -208,19 +208,19 @@ int main()
     }
     else
     {
-      if (!diodeIsOn || k == 0)
+      if(!diodeIsOn || k == 0)
       {
         diodeIsOn = true;
         stateChanged = true;
       }
     }
-    if (stateChanged)
+    if(stateChanged)
     {
-      if (switchIsOn)
+      if(switchIsOn)
         std::cout << "SWITCH=ON";
       else
         std::cout << "SWITCH=OFF";
-      if (diodeIsOn)
+      if(diodeIsOn)
         std::cout << " DIODE=ON";
       else
         std::cout << " DIODE=OFF";
@@ -237,7 +237,7 @@ int main()
     getline(*fin, sz);
     //cout << "==== difference = " <<fabs(xR - x->getValue(0))  <<endl;
 
-    if (fabs(xR - x->getValue(0)) > 10e-7)
+    if(fabs(xR - x->getValue(0)) > 10e-7)
     {
       cout << "==== simulation is stopped because of a too large difference with a referenced trajectory. ==== " << endl;
       cout << "==== difference = " <<fabs(xR - x->getValue(0))  <<endl;

@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
     SP::SiconosVector v0(new SiconosVector(nDof));
     (*q0)(0) = position_init;
     (*v0)(0) = velocity_init;
-    
+
     SP::SiconosVector q0_2(new SiconosVector(nDof));
     SP::SiconosVector v0_2(new SiconosVector(nDof));
     (*q0_2)(0) = position_init  + 2*R + 0.001;
@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
     SP::Relation relation(new LagrangianLinearTIR(H));
 
     SP::Interaction inter(new Interaction(nslaw, relation));
-    
+
     // Interaction ball-ball
     //
     SP::SimpleMatrix H_bb(new SimpleMatrix(nDof, 2*nDof));
@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
     (*H_bb)(0, 3) = 1.0;
     (*H_bb)(1, 4) = 1.0;
     (*H_bb)(2, 5) = 1.0;
-    
+
     SP::SiconosVector b_bb(new SiconosVector(3));
     (*b_bb)(0) = -2 * R;
     (*b_bb)(1) = 0.0;
@@ -164,7 +164,7 @@ int main(int argc, char* argv[])
     options->dparam[SICONOS_DPARAM_TOL] = 1e-13;
     // -- (4) Simulation setup with (1) (2) (3)
     SP::TimeStepping s(new TimeStepping(bouncingBall, t, OSI, osnspb));
- 
+
     // =========================== End of model definition ===========================
 
     // ================================= Computation =================================
@@ -199,12 +199,12 @@ int main(int argc, char* argv[])
     cout << "====> Start computation ... " << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-    
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    
-    while (s->hasNextEvent())
+
+    while(s->hasNextEvent())
     {
       osnspb->setNumericsVerboseMode(0);
 
@@ -221,35 +221,39 @@ int main(int argc, char* argv[])
       dataPlot(k, 7) = (*p2)(0);
       //osnspb->display();
       s->nextStep();
-      
+
       k++;
     }
     cout  << "End of computation - Number of iterations done: " << k - 1 << endl;
-cout << "Computation Time " << endl;;
-    time.report();    // --- Output files ---
+    cout << "Computation Time " << endl;;
+    end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
+                  (end-start).count();
+    cout << "Computation time : " << elapsed << " ms" << endl;
+    // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
 
     double error=0.0, eps=1e-10;
-    if ((error=ioMatrix::compareRefFile(dataPlot,
-                                        "TwoBouncingBallTS-MoreauJeanGOSI.ref",
-                                        eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot,
+                                       "TwoBouncingBallTS-MoreauJeanGOSI.ref",
+                                       eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
 
-  catch (SiconosException e)
+  catch(SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch (...)
+  catch(...)
   {
     cerr << "Exception caught in BouncingBallTS.cpp" << endl;
     return 1;
-    
+
   }
 
 

@@ -22,13 +22,13 @@ int main(int argc, char *argv[])
 
 //***** Set the initial condition
   SP::SiconosVector xti(new SiconosVector(dimX));
-  if (argc==1)
+  if(argc==1)
   {
     xti->setValue(0,1);
     xti->setValue(1,6);
     strncpy(&filename[5],"1.6.log",7);
   }
-  else if (argc==3)
+  else if(argc==3)
   {
     //printf("argv[0] %s\n", argv[0]);
     printf("xti(0) is set to %f\n", atof(argv[1]));
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
 #endif
     cmp++;
     aS->advanceToEvent();
- 
+
     dataPlot(cmp, 0) = aS->nextTime();
     dataPlot(cmp, 1) = x->getValue(0);
     dataPlot(cmp, 2) = x->getValue(1);
@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
 
     aDS->computeRhs(aS->nextTime());
 
-    if (cmp==1) // tricks just for display to avoid the computation of the initial Rhs
+    if(cmp==1)  // tricks just for display to avoid the computation of the initial Rhs
     {
       dataPlot(cmp-1, 7) = vectorfield->getValue(0);
       dataPlot(cmp-1, 8) = vectorfield->getValue(1);
@@ -156,9 +156,9 @@ int main(int argc, char *argv[])
 
     dataPlot(cmp, 7) = vectorfield->getValue(0);
     dataPlot(cmp, 8) = vectorfield->getValue(1);
-    
+
     aS->nextStep();
-   
+
     // (*fout)<<cmp<<" "<<x->getValue(0)<<" "<<x->getValue(1)<<" "<<lambda->getValue(0)<<" "<<lambda->getValue(1)<<" "<<lambda->getValue(2)<<" "<<lambda->getValue(3)<<endl;
   }
 
