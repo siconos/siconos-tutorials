@@ -1,3 +1,4 @@
+
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
@@ -250,7 +251,7 @@ int main()
       }
 
       simulation->nextStep();
-
+      progressBar((double)k/N);
       k++;
     }
 
@@ -259,7 +260,7 @@ int main()
     end = std::chrono::system_clock::now();
     int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
                   (end-start).count();
-    cout << "Computation time : " << elapsed << " ms" << endl;
+    std::cout << "Computation time : " << elapsed << " ms" << std::endl;
 
 
     // --- Output files ---
