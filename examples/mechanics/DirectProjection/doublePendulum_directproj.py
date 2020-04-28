@@ -121,18 +121,28 @@ with MechanicsHdf5Runner() as io:
 options = sk.solver_options_create(sn.SICONOS_GENERIC_MECHANICAL_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 10000
 options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-8
+sk.solver_options_update_internal(options, 1, sn.SICONOS_FRICTION_3D_ONECONTACT_NSN)
+#options=None
 
-options = None
+
+options_pos = sk.solver_options_create(sn.SICONOS_MLCP_ENUM)
+options_pos.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 10000
+options_pos.dparam[sn.SICONOS_DPARAM_TOL] = 1e-12
+
+
+
 test=True
 if test:
-    T = 0.2
+    T = 1.0
 else:
     T = 20
-
+h=0.01
+#T=3*h
 with MechanicsHdf5Runner(mode='r+') as io:
-    io.run(h=0.01,
+    io.run(h=h,
            T=T,
            solver_options=options,
+           solver_options_pos=options_pos,
            time_stepping=sk.TimeSteppingDirectProjection,
            osi=sk.MoreauJeanDirectProjectionOSI,
            projection_itermax=3,
