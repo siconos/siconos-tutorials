@@ -10,19 +10,22 @@ public:
   double LengthBlock = 0.2;
   double HeightBlock = 0.1;
 
-  void computeh(SiconosVector& q, SiconosVector& z, SiconosVector& y)
+  void computeh(const BlockVector& q, BlockVector& z, SiconosVector& y)
   {
-    y(0) = q(1) - 0.5 * LengthBlock * sin(q(2)) - 0.5 * HeightBlock * cos(q(2));
+    double q1 = q.getValue(1);
+    double q2 = q.getValue(2);
+    y.setValue(0, q1 - 0.5 * LengthBlock * sin(q2) - 0.5 * HeightBlock * cos(q2));
   }
 
-  void computeJachq(SiconosVector& q, SiconosVector& z)
+  void computeJachq(const BlockVector& q, BlockVector& z)
   {
-    (*_jachq)(0,0) = 0.0;
-    (*_jachq)(0,1) = 1.0;
-    (*_jachq)(0,2) = -0.5 * LengthBlock * cos(q(2)) + 0.5 * HeightBlock * sin(q(2));
+    double q2 = q.getValue(2);
+    _jachq->setValue(0, 0, 0.0);
+    _jachq->setValue(0, 1, 1.0);
+    _jachq->setValue(0, 2, -0.5 * LengthBlock * cos(q2) + 0.5 * HeightBlock * sin(q2));
   }
 
-  void computeDotJachq(SiconosVector& q, SiconosVector& z, SiconosVector& qdot)
+  void computeDotJachq(const BlockVector& q, BlockVector& z, const BlockVector& qdot)
 
   {
     // TMP : this stage won't be necessary when the LagrangianScleronomousR
@@ -33,9 +36,11 @@ public:
       unsigned int sizeDS = 3;
       _dotjachq.reset(new SimpleMatrix(sizeY, sizeDS));
     }
-    (*_dotjachq)(0,0) = 0.0;
-    (*_dotjachq)(0,1) = 0.0;
-    (*_dotjachq)(0,2) = (0.5 * LengthBlock * sin(q(2)) + 0.5 * HeightBlock * cos(q(2))) * qdot(2);
+    double q2 = q.getValue(2);
+    double qdot2 = qdot.getValue(2);
+    _dotjachq->setValue(0, 0, 0.0);
+    _dotjachq->setValue(0, 1, 0.0);
+    _dotjachq->setValue(0, 2, (0.5 * LengthBlock * sin(q2) + 0.5 * HeightBlock * cos(q2)) * qdot2);
   }
 
 };
@@ -47,19 +52,22 @@ public:
   double LengthBlock = 0.2;
   double HeightBlock = 0.1;
 
-  void computeh(SiconosVector& q, SiconosVector& z, SiconosVector& y)
+  void computeh(const BlockVector& q, BlockVector& z, SiconosVector& y)
   {
-    y(0) = q(1) + 0.5 * LengthBlock * sin(q(2)) - 0.5 * HeightBlock * cos(q(2));
+    double q1 = q.getValue(1);
+    double q2 = q.getValue(2);
+    y.setValue(0, q1 + 0.5 * LengthBlock * sin(q2) - 0.5 * HeightBlock * cos(q2));
   }
 
-  void computeJachq(SiconosVector& q, SiconosVector& z)
+  void computeJachq(SiconosVector& q, BlockVector& z)
   {
-  (*_jachq)(0,0) = 0.0;
-  (*_jachq)(0,1) = 1.0;
-  (*_jachq)(0,2) = 0.5 * LengthBlock * cos(q(2)) + 0.5 * HeightBlock * sin(q(2));
+    double q2 = q.getValue(2);
+    _jachq->setValue(0, 0, 0.0);
+    _jachq->setValue(0, 1, 1.0);
+    _jachq->setValue(0, 2, 0.5 * LengthBlock * cos(q2) + 0.5 * HeightBlock * sin(q2));
   }
 
-  void computeDotJachq(SiconosVector& q, SiconosVector& z, SiconosVector& qdot)
+  void computeDotJachq(const BlockVector& q, BlockVector& z, const BlockVector& qdot)
   {
     // TMP : this stage won't be necessary when the LagrangianScleronomousR
     // class will be updated
@@ -69,10 +77,11 @@ public:
       unsigned int sizeDS = 3;
       _dotjachq.reset(new SimpleMatrix(sizeY, sizeDS));
     }
-    (*_dotjachq)(0,0) = 0.0;
-    (*_dotjachq)(0,1) = 0.0;
-    (*_dotjachq)(0,2) = (-0.5 * LengthBlock * sin(q(2)) + 0.5 * HeightBlock * cos(q(2))) * qdot(2);
-
+    double q2 = q.getValue(2);
+    double qdot2 = qdot.getValue(2);
+    _dotjachq->setValue(0, 0, 0.0);
+    _dotjachq->setValue(0, 1, 0.0);
+    _dotjachq->setValue(0, 2, (-0.5 * LengthBlock * sin(q2) + 0.5 * HeightBlock * cos(q2)) * qdot2);
   }
 
 };

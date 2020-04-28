@@ -16,7 +16,7 @@ NonlinearRelation::NonlinearRelation():
 }
 
 /*y = h(X)*/
-void NonlinearRelation::computeh(double t, SiconosVector& x, SiconosVector& lambda, SiconosVector& y)
+void NonlinearRelation::computeh(double t, const BlockVector& x, const SiconosVector& lambda, SiconosVector& y)
 {
   DEBUG_PRINTF("NonlinearRelation::computeh at time %e\n ", t);
   DEBUG_EXPR(x.display());
@@ -29,13 +29,13 @@ void NonlinearRelation::computeh(double t, SiconosVector& x, SiconosVector& lamb
 }
 
 /*g=g(lambda)*/
-void NonlinearRelation::computeg(double t, SiconosVector& lambda, SiconosVector& r)
+void NonlinearRelation::computeg(double t, const SiconosVector& lambda, BlockVector& r)
 {
   DEBUG_PRINTF("NonlinearRelation::computeg at time %e\n ", t);
   DEBUG_EXPR(lambda.display());
 
-  r(0) = 40.0 * (1 - lambda(2)) * (lambda(1));
-  r(1) = 40.0 * (lambda(0)) * (1 - lambda(3));
+  r.setValue(0, 40.0 * (1 - lambda(2)) * (lambda(1)));
+  r.setValue(1, 40.0 * (lambda(0)) * (1 - lambda(3)));
   /*
   #ifdef SICONOS_DEBUG
     std::cout<<"NonlinearRelation::computeg with lambda="<<std::endl;
@@ -51,13 +51,13 @@ void NonlinearRelation::computeg(double t, SiconosVector& lambda, SiconosVector&
 
 }
 
-void NonlinearRelation::computeJachlambda(double t, SiconosVector& x, SiconosVector& lambda, SimpleMatrix& D)
+void NonlinearRelation::computeJachlambda(double t, const BlockVector& x, const SiconosVector& lambda, SimpleMatrix& D)
 {
   DEBUG_PRINTF("NonlinearRelation::computeJachlambda at time %e\n ", t);
   D.zero();
 }
 
-void NonlinearRelation::computeJachx(double t, SiconosVector& x, SiconosVector& lambda, SimpleMatrix& C)
+void NonlinearRelation::computeJachx(double t, const BlockVector& x, const SiconosVector& lambda, SimpleMatrix& C)
 {
   DEBUG_PRINTF("NonlinearRelation::computeJachx at time %e\n ", t);
 
@@ -73,7 +73,7 @@ void NonlinearRelation::computeJachx(double t, SiconosVector& x, SiconosVector& 
 
 }
 
-void NonlinearRelation::computeJacglambda(double t, SiconosVector& lambda, SimpleMatrix& B)
+void NonlinearRelation::computeJacglambda(double t, const SiconosVector& lambda, SimpleMatrix& B)
 {
   DEBUG_PRINTF("NonlinearRelation::computeJacglambda at time %e\n ", t);
   DEBUG_EXPR(lambda.display());

@@ -13,7 +13,7 @@ NonlinearRelationWithSign::NonlinearRelationWithSign():
 
 
 /*y = h(X)*/
-void NonlinearRelationWithSign::computeh(double t, SiconosVector& x, SiconosVector& lambda, SiconosVector& y)
+void NonlinearRelationWithSign::computeh(double t, const BlockVector& x, const SiconosVector& lambda, SiconosVector& y)
 {
 
   //SiconosVector& lambda = *inter.lambda(0);
@@ -35,7 +35,7 @@ void NonlinearRelationWithSign::computeh(double t, SiconosVector& x, SiconosVect
 
 
 /*g=g(lambda)*/
-void NonlinearRelationWithSign::computeg(double t, SiconosVector& lambda, SiconosVector& r)
+void NonlinearRelationWithSign::computeg(double t, const SiconosVector& lambda, BlockVector& r)
 {
 
 #ifdef SICONOS_DEBUG
@@ -57,7 +57,7 @@ void NonlinearRelationWithSign::computeg(double t, SiconosVector& lambda, Sicono
 
 }
 
-void NonlinearRelationWithSign::computeJachx(double t, SiconosVector& x, SiconosVector& lambda, SimpleMatrix& C)
+void NonlinearRelationWithSign::computeJachx(double t, const BlockVector& x, const SiconosVector& lambda, SimpleMatrix& C)
 {
   C.setValue(0, 0, -1);
   C.setValue(0, 1, 0);
@@ -76,12 +76,12 @@ void NonlinearRelationWithSign::computeJachx(double t, SiconosVector& x, Siconos
 
 }
 
-void NonlinearRelationWithSign::computeJachlambda(double t, SiconosVector& x, SiconosVector& lambda, SimpleMatrix& D)
+void NonlinearRelationWithSign::computeJachlambda(double t, const BlockVector& x, const SiconosVector& lambda, SimpleMatrix& D)
 {
   D.zero();
 }
 
-void NonlinearRelationWithSign::computeJacglambda(double t, SiconosVector& lambda, SimpleMatrix& B)
+void NonlinearRelationWithSign::computeJacglambda(double t, const SiconosVector& lambda, SimpleMatrix& B)
 {
 
   //  double *g = &(*Jacglambda)(0,0);

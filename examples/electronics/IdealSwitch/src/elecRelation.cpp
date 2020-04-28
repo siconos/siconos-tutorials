@@ -34,7 +34,7 @@ double elecRelation::source(double t)
 }
 
 /*y = h(X,lambda)*/
-void elecRelation::computeh(double t, SiconosVector& x, SiconosVector& lambda, SiconosVector& y)
+void elecRelation::computeh(double t, const BlockVector& x, const SiconosVector& lambda, SiconosVector& y)
 {
 
 
@@ -59,16 +59,16 @@ void elecRelation::computeh(double t, SiconosVector& x, SiconosVector& lambda, S
 
 
 
-void elecRelation::computeg(double t, SiconosVector& lambda, SiconosVector& r)
+void elecRelation::computeg(double t, const SiconosVector& lambda, BlockVector& r)
 {
 #ifdef SICONOS_DEBUG
   std::cout << "************      computeg at: " << t << std::endl;
 #endif
 
 #ifdef CLSC_CIRCUIT
-  r(0) = (lambda(2) - lambda(3)) / sL;
+  r.setValue(0, (lambda(2) - lambda(3)) / sL);
 #else
-  r(0) = lambda(1) / sC;
+  r.setValue(0, lambda(1) / sC);
 #endif
 
 #ifdef SICONOS_DEBUG
@@ -81,7 +81,7 @@ void elecRelation::computeg(double t, SiconosVector& lambda, SiconosVector& r)
  *  \param double : current time
  *  \param index for jacobian (0: jacobian according to x, 1 according to lambda)
  */
-void elecRelation::computeJachx(double t, SiconosVector& x, SiconosVector& lambda, SimpleMatrix& C)
+void elecRelation::computeJachx(double t, const BlockVector& x, const SiconosVector& lambda, SimpleMatrix& C)
 {
 
   double* h = C.getArray();
@@ -107,7 +107,7 @@ void elecRelation::computeJachx(double t, SiconosVector& x, SiconosVector& lambd
 #endif
 
 }
-void elecRelation::computeJachlambda(double t, SiconosVector& x, SiconosVector& lambda, SimpleMatrix& D)
+void elecRelation::computeJachlambda(double t, const BlockVector& x, const SiconosVector& lambda, SimpleMatrix& D)
 {
 
   double* h = D.getArray();
@@ -218,7 +218,7 @@ void elecRelation::computeJachlambda(double t, SiconosVector& x, SiconosVector& 
 
 }
 
-void elecRelation::computeJacglambda(double time, SiconosVector& lambda, SimpleMatrix& B)
+void elecRelation::computeJacglambda(double time, const SiconosVector& lambda, SimpleMatrix& B)
 {
 
   double *g = B.getArray();

@@ -12,7 +12,7 @@ NonlinearRelationReduced::NonlinearRelationReduced():
 }
 
 /*y = h(X)*/
-void NonlinearRelationReduced::computeh(double t, SiconosVector& x, SiconosVector& lambda, SiconosVector& y)
+void NonlinearRelationReduced::computeh(double t, const BlockVector& x, const SiconosVector& lambda, SiconosVector& y)
 {
 
   y(0) =  8.0 - x(1);
@@ -33,18 +33,18 @@ void NonlinearRelationReduced::computeh(double t, SiconosVector& x, SiconosVecto
 
 
 /*g=g(lambda)*/
-void NonlinearRelationReduced::computeg(double t, SiconosVector& lambda, SiconosVector& r)
+void NonlinearRelationReduced::computeg(double t, const SiconosVector& lambda, BlockVector& r)
 {
-  r(1) = 40.0 * (1 - lambda(0));
-  r(0) =  0.0;
+  r.setValue(1, 40.0 * (1 - lambda(0)));
+  r.setValue(0, 0.0);
 }
 
-void NonlinearRelationReduced::computeJachlambda(double t, SiconosVector& x, SiconosVector& lambda, SimpleMatrix& D)
+void NonlinearRelationReduced::computeJachlambda(double t, const BlockVector& x, const SiconosVector& lambda, SimpleMatrix& D)
 {
   D.zero();
 }
 
-void NonlinearRelationReduced::computeJachx(double t, SiconosVector& x, SiconosVector& lambda, SimpleMatrix& C)
+void NonlinearRelationReduced::computeJachx(double t, const BlockVector& x, const SiconosVector& lambda, SimpleMatrix& C)
 {
 
   C(0, 0) =  0;
@@ -52,7 +52,7 @@ void NonlinearRelationReduced::computeJachx(double t, SiconosVector& x, SiconosV
 
 }
 
-void NonlinearRelationReduced::computeJacglambda(double t, SiconosVector& lambda, SimpleMatrix& B)
+void NonlinearRelationReduced::computeJacglambda(double t, const SiconosVector& lambda, SimpleMatrix& B)
 {
   B(0, 0) =  0.0;
   B(1, 0) = -40.0;

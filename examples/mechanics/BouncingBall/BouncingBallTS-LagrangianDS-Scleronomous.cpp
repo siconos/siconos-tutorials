@@ -26,6 +26,7 @@
 */
 
 #include "SiconosKernel.hpp"
+#include "BallRelations.hpp"
 #include <chrono>
 using namespace std;
 
@@ -84,7 +85,7 @@ int main(int argc, char* argv[])
 
     SP::NonSmoothLaw nslaw(new NewtonImpactNSL(e));
 
-    SP::Relation relation(new LagrangianScleronomousR("BouncingBallPlugin:h0", "BouncingBallPlugin:G0"));
+    SP::Relation relation(new BallR());
     SP::Interaction inter(new Interaction(nslaw, relation));
 
     // -------------
@@ -146,7 +147,7 @@ int main(int argc, char* argv[])
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
 
-    while(s->hasNextEvent())
+    while (s->hasNextEvent())
     {
       s->computeOneStep();
 
@@ -164,7 +165,7 @@ int main(int argc, char* argv[])
     }
     end = std::chrono::system_clock::now();
     int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-                  (end-start).count();
+      (end-start).count();
     cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
     cout << "Computation time : " << elapsed << " ms" << endl;
     // --- Output files ---
@@ -173,19 +174,19 @@ int main(int argc, char* argv[])
     ioMatrix::write("result-scleronomous.dat", "ascii", dataPlot, "noDim");
 
     double error=0.0, eps=1e-12;
-    if((error=ioMatrix::compareRefFile(dataPlot, "BouncingBallTS-Scleronomous.ref",
-                                       eps)) >= 0.0
+    if ((error=ioMatrix::compareRefFile(dataPlot, "BouncingBallTS-Scleronomous.ref",
+                                        eps)) >= 0.0
         && error > eps)
       return 1;
 
   }
 
-  catch(SiconosException e)
+  catch (SiconosException e)
   {
     cerr << e.report() << endl;
     return 1;
   }
-  catch(...)
+  catch (...)
   {
     cerr << "Exception caught in BouncingBallTS.cpp" << endl;
     return 1;
