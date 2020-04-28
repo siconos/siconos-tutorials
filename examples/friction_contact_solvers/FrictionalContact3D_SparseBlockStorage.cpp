@@ -86,13 +86,11 @@ int main(int argc, char* argv[])
   NumericsProblem.mu = mu;
   NumericsProblem.q = q;
 
-  NumericsMatrix *MM = (NumericsMatrix*)malloc(sizeof(*MM));
-  MM->storageType = 1;
-  MM->size0 = 3 * NC;
-  MM->size1 = 3 * NC;
+  NumericsMatrix *MM = NM_create(1, 3 * NC, 3 * NC);
+  
   NumericsProblem.M = MM;
 
-  SparseBlockStructuredMatrix *MBlockMatrix = (SparseBlockStructuredMatrix*)malloc(sizeof(*MBlockMatrix));
+  SparseBlockStructuredMatrix *MBlockMatrix = SBM_new();
   MM->matrix1 = MBlockMatrix;
   MBlockMatrix->nbblocks = 3;
   double * block[3] = {M11, M22, M33};
