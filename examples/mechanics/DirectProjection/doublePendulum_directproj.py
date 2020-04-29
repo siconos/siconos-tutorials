@@ -133,7 +133,7 @@ options_pos.dparam[sn.SICONOS_DPARAM_TOL] = 1e-12
 
 test=True
 if test:
-    T = 0.5
+    T = 0.2
 else:
     T = 20
 h=0.01
