@@ -1,6 +1,5 @@
 # The siconos tutorial
 
-
 This repository contains all sources files and examples programs for Siconos software.
 
 
