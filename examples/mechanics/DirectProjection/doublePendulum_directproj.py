@@ -133,7 +133,7 @@ options_pos.dparam[sn.SICONOS_DPARAM_TOL] = 1e-12
 
 test=True
 if test:
-    T = 1.0
+    T = 0.5
 else:
     T = 20
 h=0.01
@@ -147,5 +147,4 @@ with MechanicsHdf5Runner(mode='r+') as io:
            osi=sk.MoreauJeanDirectProjectionOSI,
            projection_itermax=3,
            projection_tolerance=1e-5,
-           projection_tolerance_unilateral=1e-5
-    )
+           projection_tolerance_unilateral=1e-5)
