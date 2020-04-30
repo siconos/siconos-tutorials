@@ -9,11 +9,11 @@
 
 -  To parse the LMGC77 input file, run
 
-       python ./lmgc77_utils/parser_lmgc77_2D.py
+       python ../lmgc77_utils/parser_lmgc77_2D.py
 
 -  To build 3D brick form 2D Finite element mesh run
 
-     python ./lmgc77_utils/make_3d_brick.py
+     python ../lmgc77_utils/make_3d_brick.py
 
 - to run the simulation
 
