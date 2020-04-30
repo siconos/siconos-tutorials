@@ -132,12 +132,12 @@ options_pos.dparam[sn.SICONOS_DPARAM_TOL] = 1e-12
 
 
 test=True
+h=0.01
 if test:
-    T = 0.2
+    T = 3*h
 else:
     T = 20
-h=0.01
-#T=3*h
+
 with MechanicsHdf5Runner(mode='r+') as io:
     io.run(h=h,
            T=T,
