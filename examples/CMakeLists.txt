@@ -25,7 +25,7 @@ include(SiconosRequiredVersion)
 # --> this set siconos_ROOT to the directory where siconos is installed
 # Remark : we may also use the package registry magic to find siconos:
 # see https://cmake.org/cmake/help/git-master/manual/cmake-packages.7.html#creating-packages
-find_package(siconos ${SICONOS_REQUIRED_VERSION} REQUIRED)
+find_package(siconos  REQUIRED)
 
 # --- Search siconos package path ---
 # --> based on path to script siconos
