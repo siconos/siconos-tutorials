@@ -1,0 +1,41 @@
+{
+     "editor.quickSuggestions": {
+         "other": true,
+         "comments": false,
+         "strings": false
+     },
+    "editor.quickSuggestionsDelay": 10,
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/scratch/arocca/.local/include/siconos/**",
+                "/scratch/arocca/Siconos/siconos-gitlab/numerics/src/MLCP/**",
+                "/scratch/arocca/Siconos/siconos-gitlab/numerics/src/tools/**",
+                "/scratch/arocca/Siconos/siconos-gitlab/kernel/src/**",
+                "/scratch/arocca/Siconos/siconos-gitlab/externals/**",
+                "/scratch/arocca/Siconos/siconos-gitlab/io/src/**",
+                "/scratch/arocca/Siconos/siconos-gitlab/**",
+                "/scratch/arocca/non-smooth-dae/Jupyter-Python/Siconos-examples/DrumBoiler/DrumBoiler-07-2020/src/**"
+            ],
+            "defines": [],
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "browse": {
+                "path": [
+                    "/scratch/arocca/.local/include/siconos/**",
+                    "/scratch/arocca/Siconos/siconos-gitlab/numerics/src/**",
+                    "/scratch/arocca/Siconos/siconos-gitlab/kernel/src/**",
+                    "/scratch/arocca/Siconos/siconos-gitlab/externals/**",
+                    "/scratch/arocca/Siconos/siconos-gitlab/io/src/**",
+                    "/scratch/arocca/Siconos/siconos-gitlab/**",
+                    "/scratch/arocca/non-smooth-dae/Jupyter-Python/Siconos-examples/DrumBoiler/DrumBoiler-07-2020/src/**"
+                ],
+                "limitSymbolsToIncludedHeaders": false
+            }
+        }
+    ],
+    "version": 4
+}

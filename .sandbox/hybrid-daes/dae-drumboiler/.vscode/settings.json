@@ -1,0 +1,13 @@
+{
+    "search.showLineNumbers": true,
+    "C_Cpp.default.intelliSenseMode": "gcc-x64",
+    "C_Cpp.workspaceSymbols": "All",
+    "C_Cpp.loggingLevel": "Information",
+    "C_Cpp.default.cStandard": "c11",
+    "C_Cpp.default.browse.limitSymbolsToIncludedHeaders": false,
+    "files.associations": {
+    "*.cpp": "cpp",
+    "ostream": "cpp",
+    "iostream": "cpp"
+    }
+}
