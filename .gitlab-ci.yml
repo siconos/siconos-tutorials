@@ -1,4 +1,9 @@
 # Templates for ci jobs
+# 
+# The included file contains the definition of the two families of jobs used in this script, and that may be used as templates
+# for 'extends' keyword in the jobs below :
+# - .siconos-install : build a docker image with siconos ready to use and save it into the gitlab project registry.
+# - .examples-build : configure and run all examples on a pre-built image including siconos.
 include: ci_gitlab/gitlab-ci-tutorials-templates.yml
 
 # ---- Siconos install jobs ----

@@ -79,7 +79,8 @@ stages:
   image: $IMAGE_NAME
   stage: build
   variables:
-    SICONOS_INSTALL_DIR: /home/install-siconos
+    SICONOS_INSTALL_DIR: /home/install-siconos # where to find siconos binary
+    siconos_DIR: $SICONOS_INSTALL_DIR/lib/cmake # where to find siconos cmake config
   script:
     - sh ci_gitlab/build_and_run_examples.sh
 
