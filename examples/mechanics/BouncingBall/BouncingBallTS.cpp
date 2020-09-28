@@ -157,8 +157,6 @@ int main(int argc, char* argv[])
       dataPlot(k, 4) = (*lambda)(0);
       s->nextStep();
       k++;
-      progressBar((double)k/N);
-
     }
     end = std::chrono::system_clock::now();
     int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>

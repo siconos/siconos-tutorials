@@ -16,24 +16,26 @@ set(tests_timeout 35 CACHE INTERNAL "Limit time for tests (in seconds)")
 # -- Try to find a proper siconos installation --
 # Get siconos version required to run the examples
 include(SiconosRequiredVersion)
-# Hints :
-# - check siconos_ROOT variable or
-# - look for siconos binary in directories from PATH environment variable 
+
+# find_package looks for a proper installation of siconos and especially for the
+# package configuration file siconos-config.cmake.
+# See https://cmake.org/cmake/help/git-master/command/find_package.html?highlight=find_package
+#
+# If siconos is not installed in a standard place, cmake searches in directories listed in CMAKE_PREFIX_PATH.
+# This variable must contains the path to siconos installation.
 # 
-# find_package: look for siconosConfig.cmake file 
-# 
-# --> this set siconos_ROOT to the directory where siconos is installed
 # Remark : we may also use the package registry magic to find siconos:
 # see https://cmake.org/cmake/help/git-master/manual/cmake-packages.7.html#creating-packages
 find_package(siconos  REQUIRED)
 
 # --- Search siconos package path ---
-# --> based on path to script siconos
+# --> based on path to script siconos.
+# Note FP : this would probably be better to set this variable in siconos-config.cmake.
 find_file(SICONOS_SCRIPT
   siconos
+  NO_DEFAULT_PATH
   PATHS ${siconos_ROOT}/bin
   )
-   
 if(NOT SICONOS_SCRIPT)
   message(FATAL_ERROR "Can not find siconos script. Please set your PATH environment variable properly.")
 endif()
