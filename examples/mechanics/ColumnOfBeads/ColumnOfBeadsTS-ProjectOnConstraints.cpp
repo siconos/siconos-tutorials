@@ -284,14 +284,9 @@ int withLevel(unsigned int mylevel)
 
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in ColumnOfBeadsTS.cpp" << endl;
+    Siconos::exception::process();
     return 1;
   }
 

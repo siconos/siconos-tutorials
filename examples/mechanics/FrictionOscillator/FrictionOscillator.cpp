@@ -224,12 +224,9 @@ int main(int argc, char* argv[])
 
   }
 
-  catch(SiconosException e)
-  {
-    cout << e.report() << endl;
-  }
   catch(...)
   {
-    cout << "Exception caught in Fillipov.cpp" << endl;
+    Siconos::exception::process();
+    return 1;
   }
 }

@@ -200,14 +200,9 @@ int main(int argc, char* argv[])
 
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in Fillipov.cpp" << endl;
+    Siconos::exception::process();
     return 1;
   }
 }

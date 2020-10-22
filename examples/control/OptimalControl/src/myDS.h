@@ -108,7 +108,6 @@ public:
 
   /** Default function to the right-hand side term
    *  \param double time : current time
-   *  \exception RuntimeException
    */
   void alpha(double t, SP::SiconosVector xvalue, SP::SiconosVector alpha);
   void JacobianXalpha(double t, SP::SiconosVector xvalue, SP::SiconosMatrix JacXalpha);

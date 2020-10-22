@@ -184,7 +184,7 @@ int main(int argc, char* argv[])
         std::cout << std::endl << "maxviolation = " << maxviolation << std::endl;
         std::cout << "(*lambda1)(0) "  << (*lambda1)(0) << std::endl;
         std::cout << "(*lambda0)(0) "  << (*lambda0)(0) << std::endl;
-        //RuntimeException::selfThrow("maxviolation > 0   ");
+        //THROW_EXCEPTION("maxviolation > 0   ");
       }
 
       //dataPlot(k, 6) = (*lambda2)(0);
@@ -213,14 +213,9 @@ int main(int argc, char* argv[])
 
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in BouncingBallTS.cpp" << endl;
+    Siconos::exception::process();
     return 1;
   }
 

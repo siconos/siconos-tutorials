@@ -180,15 +180,9 @@ int main(int argc, char* argv[])
   }
 
   // --- Exceptions handling ---
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught " << endl;
+    Siconos::exception::process();
     return 1;
-
   }
 }

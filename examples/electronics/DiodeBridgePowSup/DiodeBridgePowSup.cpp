@@ -263,7 +263,7 @@ int main(int argc, char* argv[])
     char buffer[30];
     ofstream outFile("DiodeBridgePowSup.dat");          // checks that it's opened
     if(!outFile.is_open())
-      SiconosMatrixException::selfThrow("function write error : Fail to open \"DiodeBridgePowSup.dat\"");
+      THROW_EXCEPTION("function write error : Fail to open \"DiodeBridgePowSup.dat\"");
     for(int i = 0; i < N + 1; i++)
     {
       sprintf(buffer, "%1.10e ", dataPlot(i, 0)); // /!\ depends on machine precision
@@ -280,20 +280,9 @@ int main(int argc, char* argv[])
   }
 
   // --- Exceptions handling ---
-  catch(SiconosException e)
-  {
-    cout << "SiconosException at time step " << k << endl;
-    cerr << e.report() << endl;
-    return 1;
-  }
-  catch(std::exception& e)
-  {
-    cout << "Exception: " << e.what() << endl;
-    exit(-1);
-  }
   catch(...)
   {
-    cerr << "Exception caught " << endl;
+    Siconos::exception::process();
     return 1;
   }
 }

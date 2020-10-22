@@ -3,7 +3,7 @@
 #include <math.h>
 #include <iostream>
 
-#include "RuntimeException.hpp"
+#include "SiconosException.hpp"
 #define PI 3.14159265
 using namespace std;
 

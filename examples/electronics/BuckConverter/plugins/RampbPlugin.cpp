@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <iostream>
-//#include <RuntimeException.h>
 
 using namespace std;
 

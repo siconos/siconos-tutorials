@@ -199,14 +199,9 @@ int main(int argc, char* argv[])
     cout << "End of computation - Number of iterations done: " << k << endl;
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in \'sample/CamFollower\'" << endl;
+    Siconos::exception::process();
     return 1;
   }
 }

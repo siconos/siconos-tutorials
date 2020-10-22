@@ -301,14 +301,9 @@ int withLevel(unsigned int mylevel)
       return 1;
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in ColumnOfBeadsTS-MoreauJeanGOSI.cpp" << endl;
+    Siconos::exception::process();
     return 1;
   }
 

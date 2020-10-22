@@ -277,15 +277,10 @@ int main()
 
   }
 
-  catch(SiconosException e)
-  {
-    std::cout << e.report() << std::endl;
-    exit(1);
-  }
   catch(...)
   {
-    std::cout << "Exception caught in BulletBouncingBox" << std::endl;
-    exit(1);
+    Siconos::exception::process();
+    return 1;
   }
 
   return 0;

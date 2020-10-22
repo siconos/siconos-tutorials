@@ -259,20 +259,9 @@ int main(int argc, char* argv[])
 
 
   // --- Exceptions handling ---
-  catch(SiconosException e)
-  {
-    cout << "SiconosException" << endl;
-    cerr << e.report() << endl;
-    return 1;
-  }
-  catch(std::exception& e)
-  {
-    cout << "Exception: " << e.what() << endl;
-    exit(-1);
-  }
   catch(...)
   {
-    cerr << "Exception caught " << endl;
+    Siconos::exception::process();
     return 1;
   }
 }

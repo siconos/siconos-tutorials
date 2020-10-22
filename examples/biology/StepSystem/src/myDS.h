@@ -64,7 +64,6 @@ public:
 
   /** Default function to compute \f$ \nabla_x f: (x,t) \in R^{n} \times R  \mapsto  R^{n \times n} \f$
    *  \param double time : current time
-   *  \exception RuntimeException
    */
   //virtual void computeJacobianfx(double);
 
@@ -76,7 +75,6 @@ public:
 
   /** Default function to the right-hand side term
    *  \param double time : current time
-   *  \exception RuntimeException
    */
   /* virtual void computeRhs(double); */
 

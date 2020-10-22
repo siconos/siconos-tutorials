@@ -269,14 +269,9 @@ int main(int argc, char* argv[])
     fclose(pFile);
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in NE_...cpp" << endl;
+    Siconos::exception::process();
     return 1;
   }
 

@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 
   if(h > hControl)
   {
-    RuntimeException::selfThrow("hControl must be bigger than h");
+    THROW_EXCEPTION("hControl must be bigger than h");
   }
 
   // ================= Creation of the model =======================

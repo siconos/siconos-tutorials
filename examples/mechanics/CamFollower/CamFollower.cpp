@@ -190,14 +190,9 @@ int main(int argc, char* argv[])
     ioMatrix::write("result.dat", "ascii", DataPlot, "noDim");
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in \'sample/CamFollower\'" << endl;
+    Siconos::exception::process();
     return 1;
   }
 }

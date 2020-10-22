@@ -24,7 +24,7 @@
 #include <math.h>
 #include <iostream>
 
-#include "RuntimeException.hpp"
+#include "SiconosException.hpp"
 
 using namespace std;
 
@@ -187,7 +187,7 @@ SICONOS_EXPORT void W1(unsigned int sizeOfq,  double* restrict  q, unsigned int 
     W[5] = a * sin(q[2]) - b * cos(q[2]);
   }
   else
-    RuntimeException::selfThrow("W1 - not implemented!");
+    THROW_EXCEPTION("W1 - not implemented!");
 }
 
 SICONOS_EXPORT void W1dot(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfqdot,  double* restrict  qdot, double* restrict  S2, unsigned int sizeOfZ, double* restrict  z)
@@ -212,7 +212,7 @@ SICONOS_EXPORT void W1dot(unsigned int sizeOfq,  double* restrict  q, unsigned i
 //   //   W[5] = a * sin(q[2]) - b * cos(q[2]);
 //   }
 //   else
-//     RuntimeException::selfThrow("W1 - not implemented!");
+//     THROW_EXCEPTION("W1 - not implemented!");
 }
 
 SICONOS_EXPORT void g2(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfY, double* restrict  g, unsigned int sizeZ, double* restrict  z)
@@ -243,7 +243,7 @@ SICONOS_EXPORT void W2(unsigned int sizeOfq,  double* restrict  q, unsigned int 
     W[5] = -a * sin(q[2]) - b * cos(q[2]);
   }
   else
-    RuntimeException::selfThrow("W2 - not implemented!");
+    THROW_EXCEPTION("W2 - not implemented!");
 }
 SICONOS_EXPORT void W2dot(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfqdot,  double* restrict  qdot, double* restrict  S2, unsigned int sizeOfZ, double* restrict  z)
 {
@@ -267,7 +267,7 @@ SICONOS_EXPORT void W2dot(unsigned int sizeOfq,  double* restrict  q, unsigned i
 //   //   W[5] = a * sin(q[2]) - b * cos(q[2]);
 //   }
 //   else
-//     RuntimeException::selfThrow("W1 - not implemented!");
+//     THROW_EXCEPTION("W1 - not implemented!");
 }
 
 SICONOS_EXPORT void g3(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfY, double* restrict  g, unsigned int sizeZ, double* restrict  z)
@@ -298,7 +298,7 @@ SICONOS_EXPORT void W3(unsigned int sizeOfq,  double* restrict  q, unsigned int 
     W[5] = a * sin(q[2]) + b * cos(q[2]);
   }
   else
-    RuntimeException::selfThrow("W3 - not implemented!");
+    THROW_EXCEPTION("W3 - not implemented!");
 }
 SICONOS_EXPORT void W3dot(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfqdot,  double* restrict  qdot, double* restrict  S2, unsigned int sizeOfZ, double* restrict  z)
 {
@@ -322,7 +322,7 @@ SICONOS_EXPORT void W3dot(unsigned int sizeOfq,  double* restrict  q, unsigned i
 //   //   W[5] = a * sin(q[2]) - b * cos(q[2]);
 //   }
 //   else
-//     RuntimeException::selfThrow("W1 - not implemented!");
+//     THROW_EXCEPTION("W1 - not implemented!");
 }
 SICONOS_EXPORT void g4(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfY, double* restrict  g, unsigned int sizeZ, double* restrict  z)
 {
@@ -352,7 +352,7 @@ SICONOS_EXPORT void W4(unsigned int sizeOfq,  double* restrict  q, unsigned int 
     W[5] = -a * sin(q[2]) + b * cos(q[2]);
   }
   else
-    RuntimeException::selfThrow("W4 - not implemented!");
+    THROW_EXCEPTION("W4 - not implemented!");
 }
 SICONOS_EXPORT void W4dot(unsigned int sizeOfq,  double* restrict  q, unsigned int sizeOfqdot,  double* restrict  qdot, double* restrict  S2, unsigned int sizeOfZ, double* restrict  z)
 {
@@ -376,5 +376,5 @@ SICONOS_EXPORT void W4dot(unsigned int sizeOfq,  double* restrict  q, unsigned i
 //   //   W[5] = a * sin(q[2]) - b * cos(q[2]);
 //   }
 //   else
-//     RuntimeException::selfThrow("W1 - not implemented!");
+//     THROW_EXCEPTION("W1 - not implemented!");
 }
