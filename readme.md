@@ -2,7 +2,6 @@
 
 This repository contains all sources files and examples programs for Siconos software.
 
-
 There you will find some tutorial (jupyter notebooks) 
 and a list of examples for different areas of application.
 
