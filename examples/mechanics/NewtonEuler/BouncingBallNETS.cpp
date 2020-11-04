@@ -45,20 +45,7 @@ public:
 
   my_NewtonEulerR(double radius): R_CLASS(), _sBallRadius(radius) { };
 
-  virtual void computeOutput(double t, Interaction& inter, unsigned int derivativeNumber)
-  {
-    VectorOfBlockVectors& DSlink = inter.linkToDSVariables();
-    if(derivativeNumber == 0)
-    {
-      computeh(t, *DSlink[NewtonEulerR::q0], *inter.y(0));
-    }
-    else
-    {
-      R_CLASS::computeOutput(t, inter, derivativeNumber);
-    }
-
-  }
-  void computeh(double time, BlockVector& q0, SiconosVector& y)
+  void computeh(double time, const BlockVector& q0, SiconosVector& y)
   {
     double height = fabs(q0.getValue(0)) - _sBallRadius;
     // std::cout <<"my_NewtonEulerR:: computeh _jachq" << std:: endl;
