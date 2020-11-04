@@ -22,60 +22,51 @@
 import sys
 import matplotlib
 matplotlib.use('Agg')
-from matplotlib.pyplot import subplot, title, plot, grid, savefig, figure
-from numpy import array, eye, empty, zeros, savetxt, loadtxt, linalg
-from siconos.kernel import FirstOrderLinearDS,  FirstOrderLinearR, RelayNSL,\
-    NonSmoothDynamicalSystem, TimeDiscretisation, TimeStepping, EulerMoreauOSI, \
-    Interaction, Relay
-from math import ceil
+from matplotlib.pyplot import subplot, title, plot, grid, savefig
+import numpy as np
+import siconos.kernel as sk
+import scipy.linalg as la
 
-
-# variables
 t0 = 0.0   # start time
 T = 1.0     # end time
 h = 1.0e-3   # time step
-Vinit =1.0
+Vinit = 1.0
 theta = 0.5
-N = int((T-t0)/h)
+N = int((T-t0) / h)
 
-# matrices
-A = zeros((2,2))
-x0 = array([Vinit,-Vinit])
-B = 2.0*eye(2)
-C = eye(2)
-D = zeros((2,2))
+# Dynamical systems
+A = np.zeros((2, 2))
+x0 = np.array([Vinit, -Vinit])
+B = 2.0 * np.eye(2)
+C = np.eye(2)
+D = np.zeros((2,2))
 
-# dynamical systems
-process = FirstOrderLinearDS(x0, A)
+process = sk.FirstOrderLinearDS(x0, A)
 
-myNslaw = RelayNSL(2)
-myProcessRelation=FirstOrderLinearR(C, B);
+myNslaw = sk.RelayNSL(2)
+myProcessRelation = sk.FirstOrderLinearR(C, B)
 #myProcessRelation.setDPtr(D)
 
-myProcessInteraction = Interaction(myNslaw,
+myProcessInteraction = sk.Interaction(myNslaw,
                                    myProcessRelation)
 
-simplerelay = NonSmoothDynamicalSystem(t0,T)
+# NSDS
+simplerelay = sk.NonSmoothDynamicalSystem(t0,T)
 simplerelay.insertDynamicalSystem(process)
 simplerelay.link(myProcessInteraction,process)
 
-
 #myProcessRelation.computeJachx(0, x0, x0 , x0, C)
 
-td = TimeDiscretisation(t0, h)
-s = TimeStepping(simplerelay, td)
-
-myIntegrator = EulerMoreauOSI(theta)
-
-s.insertIntegrator(myIntegrator)
-
-osnspb = Relay()
-s.insertNonSmoothProblem(osnspb)
+# Simulation
+s = sk.TimeStepping(simplerelay,
+                    sk.TimeDiscretisation(t0, h),
+                    sk.EulerMoreauOSI(theta),
+                    sk.Relay())
 #s.setComputeResiduY(True)
 #s.setComputeResiduR(True)
 
 # matrix to save data
-dataPlot = empty((N+1,7))
+dataPlot = np.empty((N+1,7))
 k=0
 dataPlot[k, 0] = t0
 dataPlot[k, 1:3] = process.x()
@@ -91,7 +82,6 @@ while(s.hasNextEvent()):
          sys.stdout.write('.')
 
      s.computeOneStep()
-     #osnspb.display()
      dataPlot[k, 0] = s.nextTime()
      dataPlot[k, 1] = process.x()[0]
      dataPlot[k, 2] = process.x()[1]
@@ -101,18 +91,17 @@ while(s.hasNextEvent()):
      dataPlot[k, 6] = myProcessInteraction.y(0)[1]
      k += 1
      s.nextStep()
-     #print s.nextTime()
 sys.stdout.write('\n')
 # save to disk
-savetxt('SimpleExampleRelay_py.dat', dataPlot)
+np.savetxt('SimpleExampleRelay_py.dat', dataPlot)
 
-dataRef = loadtxt('SimpleExampleRelay_py.ref')
+dataRef = np.loadtxt('SimpleExampleRelay_py.ref')
 
-print('Comparison with reference file -  error = ',linalg.norm(dataPlot-dataRef) )
+print('Comparison with reference file -  error = ',la.norm(dataPlot-dataRef) )
 
 
 
-assert(linalg.norm(dataPlot-dataRef) <= 1e-12)
+assert(la.norm(dataPlot-dataRef) <= 1e-12)
 
 
 # plot interesting stuff
