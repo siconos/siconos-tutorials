@@ -1,13 +1,6 @@
 # This directory contains some simulations of granular materials with contact, impact and friction.
 
 
-## Simulation of spheres into a box.
-+ spheres_in_a_box.py
-+ mkspheres.py : creation of the sample of spheres using LMGC90
-http://www.lmgc.univ-montp2.fr/~dubois/LMGC90/Web/Welcome_%21.html
-
-
-
 
 ## Simulation of flows of polyhedra into an hopper chute
 
@@ -26,3 +19,10 @@ http://www.lmgc.univ-montp2.fr/~dubois/LMGC90/Web/Welcome_%21.html
   + n100-id1.tess tesselation file obtained from the NEPER software
 	http://neper.sourceforge.net/index.html
   + read_tess.py :  sinple reader of a NEPER .tess file
+
+## Simulation of spheres into a box.
++ spheres_in_a_box.py
++ mkspheres.py : creation of the sample of spheres using LMGC90
+http://www.lmgc.univ-montp2.fr/~dubois/LMGC90/Web/Welcome_%21.html
+
+
