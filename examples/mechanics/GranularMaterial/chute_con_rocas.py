@@ -48,34 +48,54 @@ if test:
     hstep = 1e-3
 else:
     n_layer = 200
-    n_row = 2
+    n_row = 6
     n_col = 16
-    T = 4
+    T = 20.
     hstep = 1e-4
+
+
+# A hook to remove bosy that to far from the hopper at the end of the iteration
+def  death_hook(io):
+    #loop over the bodies
+    nds= io._nsds.getNumberOfDS()
+    # print('nds =', nds)
+    allds=io._nsds.dynamicalSystemsVector()
+    for ds in allds:
+        #ds.display()
+        z = ds.q()[2]
+        if (z <= -2):
+            io._interman.removeBody(ds)
+            io._nsds.removeDynamicalSystem(ds)
+            print('remove ds number ', ds.number(), ' with height = ', z)
 
 # Create solver options
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
+options.iparam[sn.SICONOS_FRICTION_3D_NSGS_FREEZING_CONTACT] = 10
 options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-3
+
 with MechanicsHdf5Runner(mode='w', io_filename=fn) as io:
     ch = chute.create_chute(io, box_height=box_height,
                             box_length=box_length,
                             box_width=box_width,
                             plane_thickness=plane_thickness,
-                            scale=1, trans=[-0.6, -1.8, -1])
+                            scale=1, trans=[-0.9, -1.8, -1])
 
     rcs = rocas.create_rocas(io, n_layer=n_layer, n_row=n_row, n_col=n_col,
-                             x_shift=2.0, roca_size=0.1, top=3,
+                             x_shift=1.8, roca_size=0.1, top=3,
                              rate=0.2, density=density)
 
     io.add_Newton_impact_friction_nsl('contact', mu=1.0, e=0.01)
 
 with MechanicsHdf5Runner(mode='r+', io_filename=fn) as io:
-    io.run(t0=0,
+    io.run(with_timer=False,
+           explode_Newton_solve=False,
+           t0=0,
            T=T,
            h=hstep,
            multipoints_iterations=True,
            theta=1.0,
            Newton_max_iter=1,
            solver_options=options,
-           output_frequency=10)
+           output_frequency=10,
+           end_run_iteration_hook=death_hook)
