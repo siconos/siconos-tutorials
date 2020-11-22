@@ -206,9 +206,9 @@ int main(int argc, char* argv[])
     // -- (2) Time discretisation --
     SP::TimeDiscretisation t(new TimeDiscretisation(t0,h));
     // -- (3) Non smooth problem --
-    SP::OneStepNSProblem impact(new OSNSMultipleImpact(TypeContactLaw,DelPest));
-    //SP::OneStepNSProblem impact(new OSNSMultipleImpact(TypeContactLaw,NestImpact));
-    SP::OSNSMultipleImpact multiple_impact = std::dynamic_pointer_cast<OSNSMultipleImpact>(impact);
+    SP::OneStepNSProblem impact(new MultipleImpact(TypeContactLaw,DelPest));
+    //SP::OneStepNSProblem impact(new MultipleImpact(TypeContactLaw,NestImpact));
+    SP::MultipleImpact multiple_impact = std::dynamic_pointer_cast<MultipleImpact>(impact);
     multiple_impact->SetSaveData(_IsSaveDataImpact);
     multiple_impact->SetNameOutput(impact_data_name.c_str());
     multiple_impact->SetNstepSave(Nstep_save_impact);
