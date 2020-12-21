@@ -134,7 +134,7 @@ int main(int argc, char* argv[])
     SP::TimeDiscretisation t(new TimeDiscretisation(t0, h));
 
     // -- (3) one step non smooth problem
-    SP::OneStepNSProblem osnspb(new LCP());
+    SP::OneStepNSProblem osnspb(new FrictionContact(2));
 
     // -- (4) Simulation setup with (1) (2) (3)
     SP::TimeStepping s(new TimeStepping(bouncingBall, t, OSI, osnspb));
@@ -219,7 +219,6 @@ int main(int argc, char* argv[])
       dataPlot(k, 7) = (*p1)(0);
       dataPlot(k, 8) = (*lambda1)(0);
       s->nextStep();
-
       k++;
 
     }
