@@ -3,6 +3,7 @@ from __future__ import print_function
 import os,sys
 import numpy as np
 import math
+import siconos.kernel as Kernel
 
 np.set_printoptions(precision=3)
 
@@ -45,8 +46,9 @@ class Ctrl(object):
     def initialize(self, io):
         self.count = 0
         self.topo = io._nsds.topology()
-        self.ds1 = self.topo.getDynamicalSystem('bar1')
-        self.ds2 = self.topo.getDynamicalSystem('bar2')
+        self.ds1 = Kernel.cast_NewtonEulerDS(self.topo.getDynamicalSystem('bar1'))
+        self.ds2 = Kernel.cast_NewtonEulerDS(self.topo.getDynamicalSystem('bar2'))
+        
         self.joint1 = cast_PrismaticJointR(
             self.topo.getInteraction('joint1').relation())
 
