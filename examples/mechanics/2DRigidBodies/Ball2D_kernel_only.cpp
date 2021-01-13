@@ -233,7 +233,7 @@ int main(int argc, char* argv[])
     dataPlot.resize(k, outputSize);
     ioMatrix::write("Ball_2d_with_kernel_only.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-12;
-    if((error=ioMatrix::compareRefFile(dataPlot, "Ball2D.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "Ball2D_kernel_only.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 
