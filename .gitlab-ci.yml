@@ -6,32 +6,40 @@
 # - .examples-build : configure and run all examples on a pre-built image including siconos.
 include: ci_gitlab/gitlab-ci-tutorials-templates.yml
 
+# examples, on debian-buster with a standard (default)
+# Siconos installation.
+run-examples:debian-buster:
+  variables:
+    IMAGE_NAME: $CI_REGISTRY/nonsmooth/siconos/siconos-master-debian-buster
+    cdash_submit: 1
+  extends: .examples-build
+
 # ---- Siconos install jobs ----
 # Prepare 'Siconos ready' images
 # and push them to siconos-tutorials repository.
 # 
 # A standard install of siconos.
 # Based on siconos registry ubuntu18.04.
-siconos-install:siconos-ubuntu-18.04:
-  variables:
-    IMAGE_NAME: siconos-ubuntu-18.04
-  extends: .siconos-install
+# siconos-install:siconos-ubuntu-18.04:
+#   variables:
+#     IMAGE_NAME: siconos-ubuntu-18.04
+#   extends: .siconos-install
 
-# An install of siconos with mechanisms,
-# oce/pythonocc based.
-siconos-install:siconos-ubuntu-18.04-with-mechanisms:
-  variables:
-    IMAGE_NAME: siconos-ubuntu-18.04-with-mechanisms
-  extends: .siconos-install
+# # An install of siconos with mechanisms,
+# # oce/pythonocc based.
+# siconos-install:siconos-ubuntu-18.04-with-mechanisms:
+#   variables:
+#     IMAGE_NAME: siconos-ubuntu-18.04-with-mechanisms
+#   extends: .siconos-install
 
-# An install of siconos with mechanisms,
-# oce/pythonocc on archlinux
-siconos-install:siconos-archlinux-with-mechanisms:
-  variables:
-    IMAGE_NAME: siconos-archlinux-with-mechanisms
-  extends: .siconos-install
-  allow_failure: true
-  when: manual
+# # An install of siconos with mechanisms,
+# # oce/pythonocc on archlinux
+# siconos-install:siconos-archlinux-with-mechanisms:
+#   variables:
+#     IMAGE_NAME: siconos-archlinux-with-mechanisms
+#   extends: .siconos-install
+#   allow_failure: true
+#  when: manual
   
 # ---- Examples jobs ----
 # Build and tests examples from tutorials
@@ -40,29 +48,9 @@ siconos-install:siconos-archlinux-with-mechanisms:
 
 # examples, on ubuntu-18.04 with standard (default)
 # Siconos installation.
-examples:ubuntu-18.04:
-  variables:
-    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconos-ubuntu-18.04
-    cdash_submit: 1
-  extends: .examples-build
+# examples:ubuntu-18.04:
+#   variables:
+#     IMAGE_NAME: $CI_REGISTRY_IMAGE/siconos-ubuntu-18.04
+#     cdash_submit: 1
+#   extends: .examples-build
 
-# examples, on ubuntu-18.04 with standard (default)
-# Siconos installation.
-examples:ubuntu-18.04-with-mechanisms:
-  variables:
-    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconos-ubuntu-18.04-with-mechanisms
-  extends: .examples-build
-  allow_failure: true
-  when: manual
-
-  
-# examples, on ubuntu-18.04 with standard (default)
-# Siconos installation.
-examples:archlinux-with-mechanisms:
-  variables:
-    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconos-archlinux-with-mechanisms
-    PYTHONPATH: $CI_PROJECT_DIR/install/site-packages
-  extends: .examples-build
-  allow_failure: true
-  when: manual
-  
