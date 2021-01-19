@@ -28,22 +28,18 @@ if(DEFINED ENV{TRAVIS})
     set(CI_TRAVIS ON)
     set(ENV{CI_PROJECT_DIR} ${CTEST_SOURCE_DIRECTORY})
   endif()
-endif()
-if(DEFINED ENV{GITLAB_CI})
+elseif(DEFINED ENV{GITLAB_CI})
   if($ENV{GITLAB_CI} STREQUAL true)
     set(CI_GITLAB ON)
   endif()
 endif()
+  
 if(NOT DEFINED ENV{CI_PROJECT_DIR} )
   message(FATAL_ERROR "Please set env variable CI_PROJECT_DIR to siconos-tutorials sources directory (git repo).")
 endif()
 
 # -- Definition of all variables required for ctest --
 include($ENV{CI_PROJECT_DIR}/ci_gitlab/ctest_tools.cmake)
-
-# ------------------
-# Here starts ctest config
-# ------------------
 
 # - Source dir and path to siconos install
 if(NOT CTEST_SOURCE_DIRECTORY)
@@ -131,6 +127,7 @@ ctest_test(
   RETURN_VALUE _RESULT
   # QUIET
   )
+post_ctest(PHASE Test)
 
 if(CDASH_SUBMIT)
   ctest_submit(
