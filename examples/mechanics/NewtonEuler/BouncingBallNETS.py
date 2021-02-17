@@ -35,7 +35,7 @@ class BouncingBallR(sk.NewtonEuler1DR):
         
     def computeh(self, time, q, y):
 
-        height = np.abs(q.getValue(0) - self._ballRadius)
+        height = q.getValue(0) - self._ballRadius
         y[0] = height
 
         nnc = [1,0,0]
