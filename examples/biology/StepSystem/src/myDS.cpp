@@ -18,7 +18,7 @@
 #include "myDS.h"
 // #define DEBUG_STDOUT
 // #define DEBUG_MESSAGES
-#include "debug.h"
+#include "siconos_debug.h"
 
 MyDS::MyDS(SP::SiconosVector x0): FirstOrderNonLinearDS(x0)
 {
