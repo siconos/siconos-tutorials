@@ -4,7 +4,7 @@
 using namespace std;
 
 #include <chrono>
-#define PI 3.14159265
+
 
 // parameters according to Table 1
 // geometrical characteristics
@@ -28,8 +28,8 @@ double m3 = 1.0;
 double I1 = m1*l1*l1/3.0;
 double J2 = m2*l2*l2/12.0;
 double I3 = m3*l3*l3/3.0;
-//double PI = 22.0/7.0;
-
+//#define PI 3.14159265
+const double PI = acos(-1.0);
 
 int main(int argc, char* argv[])
 {
