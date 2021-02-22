@@ -412,7 +412,7 @@ int main(int argc, char* argv[])
 
         beam5Plot(0,2*kk) = l1*cos((*q)(0));
         beam5Plot(0,2*kk+1) = l1*sin((*q)(0));
-        // beam5Plot(0,3*kk+2) = 0.0;
+        //beam5Plot(0,3*kk+2) = 0.0;
         //beam5Plot(1,3*kk) = 0.0;
         //beam5Plot(1,3*kk+1) =0.0;
         //beam5Plot(1,3*kk+2) = 0.0;
@@ -478,7 +478,7 @@ int main(int argc, char* argv[])
 
 
 
-    double error=0.0, eps=1e-12;
+    double error=0.0, eps=1e-09;
     if((error=ioMatrix::compareRefFile(dataPlot, "FourBarClearance.ref", eps)) >= 0.0
         && error > eps)
       return 1;
