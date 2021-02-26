@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2018 INRIA.
+ * Copyright 2021 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 //
 //  DiodeBridgeCapFilter  : sample of an electrical circuit involving :
 //  - a 1st linear dynamical system LSDiodeBridge1 consisting of
-//        an LC oscillator (1 µF , 10 mH)
+//        an LC oscillator (1 microF , 10 mH)
 //  - a non smooth system : a 4 diodes bridge used as a full wave rectifier
 //        of the supplied voltage across the LC oscillator, providing power
 //    to the resistor load of the 2nd dynamical system

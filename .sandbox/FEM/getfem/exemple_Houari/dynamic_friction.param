@@ -5,8 +5,8 @@
 
 N = 3;
 %%%%% pde parameters :	        				      %%%%%
-%MU = 7700;	        % Lamé coefficient.
-%LAMBDA = 11500;   	% Lamé coefficient.
+%MU = 7700;	        % Lame coefficient.
+%LAMBDA = 11500;   	% Lame coefficient.
 MU = 55
 LAMBDA = 100
 FRICTION_COEF = 0.0;    % Friction coefficient.

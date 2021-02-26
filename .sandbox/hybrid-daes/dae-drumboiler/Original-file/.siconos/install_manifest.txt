@@ -1,1 +1,0 @@
-/scratch/arocca/non-smooth-dae/Jupyter-Python/Siconos-examples/DrumBoiler/DrumBoiler-07-2020/Original-file/drumboiler-doublemixture

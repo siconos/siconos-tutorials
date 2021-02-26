@@ -9,7 +9,7 @@
 #undef restrict
 #define restrict __restrict
 
-// forces extérieures appliquées sur le yoyo dans la phase contrainte
+// forces exterieures appliquees sur le yoyo dans la phase contrainte
 SICONOS_EXPORT void force_ext(double time, unsigned int sizeOfq, double* restrict fExt, unsigned int sizeZ, double* restrict  z)
 {
   fExt[0] = -m * r * g;
@@ -18,7 +18,7 @@ SICONOS_EXPORT void force_ext(double time, unsigned int sizeOfq, double* restric
   fExt[2] = 0;
 }
 
-// forces extérieures appliquées sur le yoyo dans la phase libre
+// forces exterieures appliquees sur le yoyo dans la phase libre
 SICONOS_EXPORT void force_extf(double time, unsigned int sizeOfq, double* restrict fExt, unsigned int sizeZ, double* restrict  z)
 {
   fExt[0] = 0;
@@ -27,7 +27,7 @@ SICONOS_EXPORT void force_extf(double time, unsigned int sizeOfq, double* restri
   fExt[2] = 0;
 }
 
-// forces intérieures appliquées sur le yoyo dans la phase contrainte
+// forces interieures appliquees sur le yoyo dans la phase contrainte
 SICONOS_EXPORT void F_int(double time, unsigned int sizeOfq,  double* restrict q,  double* restrict velocity, double* restrict fInt, unsigned int sizeZ, double* restrict  z)
 {
   fInt[0] =  r * epsilon * (velocity[0]);
@@ -81,7 +81,7 @@ SICONOS_EXPORT void G11(unsigned int sizeDS,  double* restrict  q, double time, 
 }
 
 
-// forces intérieures appliquées sur le yoyo dans la phase libre
+// forces interieures appliquees sur le yoyo dans la phase libre
 SICONOS_EXPORT void F_intf(double time, unsigned int sizeOfq,  double* restrict q,  double* restrict velocity, double* restrict fInt, unsigned int sizeZ, double* restrict  z)
 {
   fInt[0] =  0;
