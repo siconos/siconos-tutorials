@@ -34,17 +34,17 @@ class BouncingBallR(sk.NewtonEuler1DR):
 
         
     def computeh(self, time, q, y):
-
-        height = q.getValue(0) - self._ballRadius
+        
+        height = q[0] - self._ballRadius
         y[0] = height
 
         nnc = [1,0,0]
         self.setnc(nnc)
 
-        ppc1 = [height, q.getValue(1), q.getValue(2)]
+        ppc1 = [height, q[1], q[2]]
         self.setpc1(ppc1)
  
-        ppc2 = [0.0, q.getValue(1), q.getValue(2)]
+        ppc2 = [0.0, q[1], q[2]]
         self.setpc2(ppc2)
 
 #
