@@ -181,7 +181,7 @@ int main(int argc, char* argv[])
 
   numericsProblem->H = NM_new();
   NumericsMatrix *HH =  numericsProblem->H;
-  HH->storageType = 1;
+  HH->storageType = NM_SPARSE_BLOCK;
   HH->size0 = Ndof;
   HH->size1 = 3 * NC;
 

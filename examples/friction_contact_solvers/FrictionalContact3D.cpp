@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
   NumericsProblem.q = q;
 
   NumericsMatrix *MM = (NumericsMatrix*)malloc(sizeof(*MM));
-  MM->storageType = 0;
+  MM->storageType = NM_DENSE;
   MM->matrix0 = M;
   MM->size0 = 3 * NC;
   MM->size1 = 3 * NC;

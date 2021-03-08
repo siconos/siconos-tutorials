@@ -148,7 +148,7 @@ int main(int argc, char* argv[])
 
     // -- (3) one step non smooth problem
     SP::LinearOSNS osnspb(new LCP(SICONOS_LCP_NSGS_SBM));
-    osnspb->setMStorageType(1);
+    osnspb->setMStorageType(NM_SPARSE_BLOCK);
     // -- (4) Simulation setup with (1) (2) (3)
     SP::TimeStepping s(new TimeStepping(columnOfBeads, t, OSI, osnspb));
 

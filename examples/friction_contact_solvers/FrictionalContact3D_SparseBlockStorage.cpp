@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
   NumericsProblem.mu = mu;
   NumericsProblem.q = q;
 
-  NumericsMatrix *MM = NM_create(1, 3 * NC, 3 * NC);
+  NumericsMatrix *MM = NM_create(NM_SPARSE_BLOCK, 3 * NC, 3 * NC);
   
   NumericsProblem.M = MM;
 
