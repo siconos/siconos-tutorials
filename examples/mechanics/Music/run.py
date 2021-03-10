@@ -132,7 +132,7 @@ simu = guitar_model.simulation
 
 k = 1
 print("Start simulation ...")
-start_time = time.clock()
+start_time = time.process_time()
 pos = 1
 
 while (simu.hasNextEvent() and k < 200):
@@ -160,7 +160,7 @@ while (simu.hasNextEvent() and k < 200):
         pos += 1
     k += 1
     simu.nextStep()
-print('End of simulation process. Duration: ', time.clock() - start_time)
+print('End of simulation process. Duration: ', time.process_time() - start_time)
 print("nb steps", k)
 
 # --- Output dir for results ---
