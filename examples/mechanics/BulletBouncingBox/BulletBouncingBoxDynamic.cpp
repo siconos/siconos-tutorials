@@ -136,7 +136,7 @@ int main()
     osnspb->setMaxSize(16384);                        // max number of
     // interactions
 
-    osnspb->setMStorageType(1);                      // Sparse storage
+    osnspb->setMStorageType(NM_SPARSE_BLOCK);                      // Sparse storage
 
     osnspb->setNumericsVerboseMode(0);               // 0 silent, 1
     // verbose
