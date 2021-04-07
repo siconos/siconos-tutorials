@@ -58,7 +58,7 @@ with MechanicsHdf5Runner() as io:
 
     io.add_convex_shape('Ground', vertices, outsideMargin=diameter*margin_ratio)
 
-    test=True
+    test=False
     if test==True:
         n_spheres = 10
     else:
@@ -90,12 +90,14 @@ with MechanicsHdf5Runner() as io:
     # Definition of a non smooth law. As no group ids are specified it
     # is between contactors of group id 0.
     io.add_Newton_impact_rolling_friction_nsl('contact_rolling', e= 0.0, mu=0.3, mu_r=1e-03)
-    #io.add_Newton_impact_friction_nsl('contact', e= 0.9, mu=0.3)
+    #io.add_Newton_impact_friction_nsl('contact', e= 0.0, mu=0.3)
 
 # Create solver options
-options = sk.solver_options_create(sn.SICONOS_ROLLING_FRICTION_3D_NSGS)
-options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
-options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-4
+options = sk.solver_options_create(sn.SICONOS_GLOBAL_ROLLING_FRICTION_3D_NSGS_WR)
+#options = sk.solver_options_create(sn.SICONOS_GLOBAL_FRICTION_3D_ADMM)
+#options = sk.solver_options_create(sn.SICONOS_GLOBAL_FRICTION_3D_NSGS_WR)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 10000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-04
 options.iparam[sn.SICONOS_FRICTION_3D_NSGS_FREEZING_CONTACT] = 20
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
@@ -115,8 +117,10 @@ with MechanicsHdf5Runner(mode='r+') as io:
            theta=0.50001,
            Newton_max_iter=1,
            set_external_forces=None,
+           osi=sk.MoreauJeanGOSI,
            solver_options=options,
            violation_verbose=False,
            numerics_verbose=False,
-           output_frequency=10,
+           numerics_verbose_level=0,
+           output_frequency=50,
            constraint_activation_threshold=1e-08)
