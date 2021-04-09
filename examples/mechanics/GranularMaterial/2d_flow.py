@@ -19,6 +19,8 @@ bullet_options = SiconosBulletOptions()
 bullet_options.worldScale = 1.0
 bullet_options.contactBreakingThreshold = 0.04
 bullet_options.dimension = 1
+bullet_options.perturbationIterations = 3
+bullet_options.minimumPointsPerturbationThreshold = 3
 
 density = 1000.0
 
@@ -178,7 +180,6 @@ with MechanicsHdf5Runner(mode='r+') as io:
            t0=0,
            T=T,
            h=hstep,
-           multipoints_iterations=True,
            theta=0.50001,
            Newton_max_iter=1,
            set_external_forces=None,

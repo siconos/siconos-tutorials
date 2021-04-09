@@ -23,6 +23,7 @@ bullet_options.worldScale = 1000
 bullet_options.contactBreakingThreshold = 0.0002
 bullet_options.perturbationIterations = 0
 bullet_options.minimumPointsPerturbationThreshold = 0
+
 hstep = 0.001
 theta = 0.50001
 itermax = 1000
@@ -134,7 +135,6 @@ with MechanicsHdf5Runner(io_filename='siab-{0}.hdf5'.format(nb_laid_particles), 
            t0=0,
            T=8.00,
            h=hstep,
-           multipoints_iterations=False,
            theta=theta,
            Newton_max_iter=1,
            set_external_forces=None,
