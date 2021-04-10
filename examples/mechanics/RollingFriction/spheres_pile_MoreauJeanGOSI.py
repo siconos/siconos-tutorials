@@ -58,7 +58,7 @@ with MechanicsHdf5Runner() as io:
 
     io.add_convex_shape('Ground', vertices, outsideMargin=diameter*margin_ratio)
 
-    test=False
+    test=True
     if test==True:
         n_spheres = 10
     else:

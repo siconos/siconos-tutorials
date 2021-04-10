@@ -113,7 +113,6 @@ with MechanicsHdf5Runner(mode='r+') as io:
     # Because of fixed collision margins used in the collision detection,
     # sizes of small objects may need to be expressed in cm or mm.
     io.run(with_timer=False,
-           multipoints_iterations=False,
            bullet_options=bullet_options,
            gravity_scale=1,
            t0=0,
