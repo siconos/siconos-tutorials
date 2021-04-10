@@ -156,14 +156,9 @@ int main(int argc, char* argv[])
     int k = 1;
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    //while (s->hasNextEvent() && k < 95)
+
     while(s->hasNextEvent())
     {
-
-      // for( int toto=0; toto<3;toto++)
-      //  std::cout <<"============> Step Number : " << k << "======================"  <<std::endl;
-
-
 
       s->computeOneStep();
 
