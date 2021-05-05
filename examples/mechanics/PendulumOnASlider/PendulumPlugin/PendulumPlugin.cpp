@@ -7,7 +7,7 @@
 #include <math.h>
 #include <iostream>
 
-#include "RuntimeException.hpp"
+#include "SiconosException.hpp"
 
 using namespace std;
 
@@ -144,7 +144,7 @@ SICONOS_EXPORT void W1(unsigned int sizeOfq, const double* q, unsigned int sizeO
     W[5] = 0.0;
   }
   else
-    RuntimeException::selfThrow("W1 - not implemented!");
+    THROW_EXCEPTION("W1 - not implemented!");
 }
 
 SICONOS_EXPORT void g2(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, double* g, unsigned int sizeZ, double* z)

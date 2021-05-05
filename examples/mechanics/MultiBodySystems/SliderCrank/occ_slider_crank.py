@@ -14,6 +14,8 @@ from siconos.io.mechanics_run import MechanicsHdf5Runner
 from OCC.BRepPrimAPI import BRepPrimAPI_MakeCylinder
 from OCC.gp import gp_Pnt, gp_Ax2, gp_Dir
 import siconos
+import siconos.numerics as sn
+import siconos.kernel as sk
 siconos.io.mechanics_run.set_backend('occ')
 
 # this cylinder is defined for the visualisation of the axis edge
@@ -345,11 +347,16 @@ with MechanicsHdf5Runner() as io:
 h_step = 1e-4
 n_step = 2000
 
+options = sk.solver_options_create(sn.SICONOS_GENERIC_MECHANICAL_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 10000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-4
+sk.solver_options_update_internal(options, 1, sn.SICONOS_FRICTION_3D_ONECONTACT_NSN)
+
 with MechanicsHdf5Runner(mode='r+') as io:
 
     io.run(with_timer=True,
            t0=0,
            T=n_step*h_step,
            h=h_step,
-           itermax=1000,
+           solver_options=options,
            Newton_max_iter=5)

@@ -4,7 +4,7 @@
 using namespace std;
 
 #include <chrono>
-#define PI 3.14159265
+
 
 // parameters according to Table 1
 // geometrical characteristics
@@ -28,8 +28,8 @@ double m3 = 1.0;
 double I1 = m1*l1*l1/3.0;
 double J2 = m2*l2*l2/12.0;
 double I3 = m3*l3*l3/3.0;
-//double PI = 22.0/7.0;
-
+//#define PI 3.14159265
+const double PI = acos(-1.0);
 
 int main(int argc, char* argv[])
 {
@@ -412,7 +412,7 @@ int main(int argc, char* argv[])
 
         beam5Plot(0,2*kk) = l1*cos((*q)(0));
         beam5Plot(0,2*kk+1) = l1*sin((*q)(0));
-        // beam5Plot(0,3*kk+2) = 0.0;
+        //beam5Plot(0,3*kk+2) = 0.0;
         //beam5Plot(1,3*kk) = 0.0;
         //beam5Plot(1,3*kk+1) =0.0;
         //beam5Plot(1,3*kk+2) = 0.0;
@@ -478,7 +478,7 @@ int main(int argc, char* argv[])
 
 
 
-    double error=0.0, eps=1e-12;
+    double error=0.0, eps=1e-09;
     if((error=ioMatrix::compareRefFile(dataPlot, "FourBarClearance.ref", eps)) >= 0.0
         && error > eps)
       return 1;
@@ -486,15 +486,9 @@ int main(int argc, char* argv[])
   }
 
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in FourBarClearance.cpp" << endl;
+    Siconos::exception::process();
     return 1;
-
   }
 }

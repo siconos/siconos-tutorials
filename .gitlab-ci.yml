@@ -1,63 +1,37 @@
-# Templates for ci jobs
-include: ci_gitlab/gitlab-ci-tutorials-templates.yml
 
-# ---- Siconos install jobs ----
-# Prepare 'Siconos ready' images
-# and push them to siconos-tutorials repository.
-# 
-# A standard install of siconos.
-# Based on siconos registry ubuntu18.04.
-siconos-install:siconos-ubuntu-18.04:
-  variables:
-    IMAGE_NAME: siconos-ubuntu-18.04
-  extends: .siconos-install
+variables:
+  # Default ctest model. Warning : overwritten if set in schedules variables (as we expect)
+  ctest_build_model: Continuous
+  # Default behavior regarding cdash submission
+  cdash_submit: 0
 
-# An install of siconos with mechanisms,
-# oce/pythonocc based.
-siconos-install:siconos-ubuntu-18.04-with-mechanisms:
+# -- Template for examples build-test-install jobs --
+# - Pull an image (possibly from siconos-tutorials registry)
+#   named  IMAGE_NAME
+.examples-build:
+  image: $IMAGE_NAME
+  stage: test
   variables:
-    IMAGE_NAME: siconos-ubuntu-18.04-with-mechanisms
-  extends: .siconos-install
+    SICONOS_INSTALL_DIR: /home/install-siconos # where to find siconos binary
+    CMAKE_PREFIX_PATH: $SICONOS_INSTALL_DIR  # required by cmake to find siconos-config
+  script:
+    - sh ci_gitlab/build_and_run_examples.sh
 
-# An install of siconos with mechanisms,
-# oce/pythonocc on archlinux
-siconos-install:siconos-archlinux-with-mechanisms:
+# examples, on ubuntu20 with a standard (default)
+# Siconos installation (based on current development, master branch, version
+run-examples:ubuntu-20:
   variables:
-    IMAGE_NAME: siconos-archlinux-with-mechanisms
-  extends: .siconos-install
-  allow_failure: true
-  when: manual
-  
-# ---- Examples jobs ----
-# Build and tests examples from tutorials
-# Pull docker image 'siconos ready'
-# then build, run and tests examples.
-
-# examples, on ubuntu-18.04 with standard (default)
-# Siconos installation.
-examples:ubuntu-18.04:
-  variables:
-    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconos-ubuntu-18.04
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconos-master
     cdash_submit: 1
   extends: .examples-build
 
-# examples, on ubuntu-18.04 with standard (default)
-# Siconos installation.
-examples:ubuntu-18.04-with-mechanisms:
-  variables:
-    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconos-ubuntu-18.04-with-mechanisms
-  extends: .examples-build
-  allow_failure: true
-  when: manual
 
-  
-# examples, on ubuntu-18.04 with standard (default)
-# Siconos installation.
-examples:archlinux-with-mechanisms:
+# examples, with a standard (default) Siconos installation
+# with version from release 4.4 (latest)
+# Triggered manualy.
+run-examples:release:
   variables:
-    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconos-archlinux-with-mechanisms
-    PYTHONPATH: $CI_PROJECT_DIR/install/site-packages
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconos-release-4.4
+    cdash_submit: 1
   extends: .examples-build
-  allow_failure: true
   when: manual
-  

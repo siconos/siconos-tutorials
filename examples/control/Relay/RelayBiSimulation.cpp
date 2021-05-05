@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 
     if(h > hcontroller)
     {
-      RuntimeException::selfThrow("hcontroller must be larger than h");
+      THROW_EXCEPTION("hcontroller must be larger than h");
     }
 
 
@@ -249,14 +249,9 @@ int main(int argc, char* argv[])
 
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in RelayBiSimulation.cpp" << endl;
+    Siconos::exception::process();
     return 1;
   }
 }

@@ -9,7 +9,7 @@ import subprocess
 import siconos.mechanisms.mbtb as mbtb
 
 command = ['siconos', '--build-plugins', '-q']
-subprocess.run(command, check=True)
+subprocess.run(command)
 
 
 WITH_CLEARANCE_ON_RODE = 1

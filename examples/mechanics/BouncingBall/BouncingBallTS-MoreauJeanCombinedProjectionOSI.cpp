@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2018 INRIA.
+ * Copyright 2021 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -156,14 +156,9 @@ int main(int argc, char* argv[])
     int k = 1;
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    //while (s->hasNextEvent() && k < 95)
+
     while(s->hasNextEvent())
     {
-
-      // for( int toto=0; toto<3;toto++)
-      //  std::cout <<"============> Step Number : " << k << "======================"  <<std::endl;
-
-
 
       s->computeOneStep();
 
@@ -184,7 +179,7 @@ int main(int argc, char* argv[])
         std::cout << std::endl << "maxviolation = " << maxviolation << std::endl;
         std::cout << "(*lambda1)(0) "  << (*lambda1)(0) << std::endl;
         std::cout << "(*lambda0)(0) "  << (*lambda0)(0) << std::endl;
-        //RuntimeException::selfThrow("maxviolation > 0   ");
+        //THROW_EXCEPTION("maxviolation > 0   ");
       }
 
       //dataPlot(k, 6) = (*lambda2)(0);
@@ -213,14 +208,9 @@ int main(int argc, char* argv[])
 
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in BouncingBallTS.cpp" << endl;
+    Siconos::exception::process();
     return 1;
   }
 

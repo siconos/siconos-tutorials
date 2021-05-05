@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2018 INRIA.
+ * Copyright 2021 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -136,7 +136,7 @@ int main()
     osnspb->setMaxSize(16384);                        // max number of
     // interactions
 
-    osnspb->setMStorageType(1);                      // Sparse storage
+    osnspb->setMStorageType(NM_SPARSE_BLOCK);                      // Sparse storage
 
     osnspb->setNumericsVerboseMode(0);               // 0 silent, 1
     // verbose
@@ -297,15 +297,10 @@ int main()
 
   }
 
-  catch(SiconosException e)
-  {
-    std::cout << e.report() << std::endl;
-    exit(1);
-  }
   catch(...)
   {
-    std::cout << "Exception caught in BulletBouncingBox" << std::endl;
-    exit(1);
+    Siconos::exception::process();
+    return 1;
   }
 
   return 0;

@@ -48,6 +48,8 @@ from siconos.mechanics.collision.bullet import SiconosBulletOptions
 bullet_options = SiconosBulletOptions()
 bullet_options.worldScale = 1.0
 bullet_options.contactBreakingThreshold = 0.04
+bullet_options.perturbationIterations = 3
+bullet_options.minimumPointsPerturbationThreshold = 3
 
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100000
@@ -64,7 +66,6 @@ with MechanicsHdf5Runner(mode='r+') as io:
            t0=0,
            T=20,
            h=0.005,
-           multipoints_iterations=True,
            theta=0.50001,
            Newton_max_iter=20,
            set_external_forces=None,

@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2018 INRIA.
+ * Copyright 2021 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -148,7 +148,7 @@ int main(int argc, char* argv[])
 
     // -- (3) one step non smooth problem
     SP::LinearOSNS osnspb(new LCP(SICONOS_LCP_NSGS_SBM));
-    osnspb->setMStorageType(1);
+    osnspb->setMStorageType(NM_SPARSE_BLOCK);
     // -- (4) Simulation setup with (1) (2) (3)
     SP::TimeStepping s(new TimeStepping(columnOfBeads, t, OSI, osnspb));
 
@@ -278,14 +278,9 @@ int main(int argc, char* argv[])
 
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in ColumnOfBeadsTS.cpp" << endl;
+    Siconos::exception::process();
     return 1;
   }
 

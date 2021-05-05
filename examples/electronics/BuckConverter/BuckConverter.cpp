@@ -503,20 +503,10 @@ int main(int argc, char* argv[])
 
   } // end of "try" section
   // --- Exceptions handling ---
-  catch(SiconosException e)
-  {
-    cout << "Time step n " << k << " : " << tinst << endl;
-    cout << "SiconosException" << endl;
-    cout << e.report() << endl;
-  }
-  catch(std::exception& e)
-  {
-    cout << "Exception: " << e.what() << endl;
-    exit(-1);
-  }
   catch(...)
   {
-    cout << "Exception caught " << endl;
+    Siconos::exception::process();
+    return 1;
   }
 
 // --- elapsed time computing ---

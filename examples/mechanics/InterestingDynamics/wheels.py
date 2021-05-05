@@ -82,7 +82,7 @@ class roll(object):
         ang_force = 6.0
         self.io = io
         topo = io._nsds.topology()
-        self.wheels = [topo.getDynamicalSystem('wheel%d'%i) for i in [1,2,3,4]]
+        self.wheels = [Kernel.cast_NewtonEulerDS(topo.getDynamicalSystem('wheel%d'%i)) for i in [1,2,3,4]]
         self.wheel_force = np.array(self.wheels[0].fExt())        
         self.wheel_torque = Kernel.SiconosVector(3)
         self.wheel_torque.setValue(1, ang_force)

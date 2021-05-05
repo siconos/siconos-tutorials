@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2018 INRIA.
+ * Copyright 2021 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -181,7 +181,7 @@ int main(int argc, char* argv[])
 
   numericsProblem->H = NM_new();
   NumericsMatrix *HH =  numericsProblem->H;
-  HH->storageType = 1;
+  HH->storageType = NM_SPARSE_BLOCK;
   HH->size0 = Ndof;
   HH->size1 = 3 * NC;
 

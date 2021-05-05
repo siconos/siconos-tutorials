@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2018 INRIA.
+ * Copyright 2021 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,20 +45,7 @@ public:
 
   my_NewtonEulerR(double radius): R_CLASS(), _sBallRadius(radius) { };
 
-  virtual void computeOutput(double t, Interaction& inter, unsigned int derivativeNumber)
-  {
-    VectorOfBlockVectors& DSlink = inter.linkToDSVariables();
-    if(derivativeNumber == 0)
-    {
-      computeh(t, *DSlink[NewtonEulerR::q0], *inter.y(0));
-    }
-    else
-    {
-      R_CLASS::computeOutput(t, inter, derivativeNumber);
-    }
-
-  }
-  void computeh(double time, BlockVector& q0, SiconosVector& y)
+  void computeh(double time, const BlockVector& q0, SiconosVector& y)
   {
     double height = fabs(q0.getValue(0)) - _sBallRadius;
     // std::cout <<"my_NewtonEulerR:: computeh _jachq" << std:: endl;
@@ -317,14 +304,9 @@ int main(int argc, char* argv[])
 
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in BouncingBallNETS.cpp" << endl;
+    Siconos::exception::process();
     return 1;
   }
 

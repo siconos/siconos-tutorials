@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2018 INRIA.
+ * Copyright 2021 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,12 +106,12 @@ int main(int argc, char* argv[])
     unsigned int qDim = 7;           // degrees of freedom for the ball
     unsigned int nDim = 6;           // degrees of freedom for the ball
     double t0 = 0;                   // initial computation time
-    double T = 10.0;                  // final computation time
+    double T = 10.0;                 // final computation time
     double h = 0.001;                // time step
-    double position_init = 1.0;      // initial position for lowest bead.
-    double velocity_init = 0.0;      // initial velocity for lowest bead.
-    double omega_initx = 0.0;
-    double omega_initz = 0.0;// initial velocity for lowest bead.
+    double position_init = 1.0;      // initial position
+    double velocity_init = 0.0;      // initial velocity
+    double omega_initx = 0.0;        // initial angular velocity
+    double omega_initz = 0.0;        // initial angular velocity
     double theta = 1.0;              // theta for MoreauJeanOSI integrator
     double m = 1; // Ball mass
     double g = 10.0; // Gravity
@@ -150,16 +150,12 @@ int main(int argc, char* argv[])
     (*bdindex)[1] = 3;
     (*bdindex)[2] = 5;
 
-
     // SP::SiconosVector bdPrescribedVelocity(new SiconosVector(1));
     // bdPrescribedVelocity->setValue(0,0.5);
     // SP::BoundaryCondition bd (new BoundaryCondition(bdindex,bdPrescribedVelocity));
 
-
     SP::BoundaryCondition bd(new BoundaryCondition(bdindex));
     bd->setComputePrescribedVelocityFunction("BallOnMovingPlanePlugin", "prescribedvelocity3");
-
-
 
     ball->setBoundaryConditions(bd);
 
@@ -170,25 +166,12 @@ int main(int argc, char* argv[])
     // -- nslaw --
     double e = 0.9;
 
-    // Interaction ball-floor
-    //
-
-    //     vector<SP::SiconosMatrix> vecMatrix1;
-    //     vecMatrix1.push_back(H);
-    //     SP::BlockMatrix H_block(new BlockMatrix(vecMatrix1,1,1));
-
-    //     SP::SiconosMatrix HT(new SimpleMatrix(1,nDim));
-    //     vector<SP::SiconosMatrix> vecMatrix2;
-    //     vecMatrix2.push_back(HT);
-    //     SP::BlockMatrix HT_block(new BlockMatrix(vecMatrix2,1,1));
-
 #ifdef WITH_FC3D
     SP::NonSmoothLaw nslaw0(new NewtonImpactFrictionNSL(e, e, 0.6, 3));
 #else
     SP::NonSmoothLaw nslaw0(new NewtonImpactNSL(e));
 #endif
 
-    // Version with my_NewtonEulerR()
     SP::NewtonEulerR relation0(new my_NewtonEulerR(radius));
     SP::Interaction inter(new Interaction(nslaw0, relation0));
 
@@ -229,9 +212,9 @@ int main(int argc, char* argv[])
 #endif
     s->setNewtonTolerance(1e-10);
     s->setNewtonMaxIteration(10);
-    // =========================== End of model definition ===========================
+    // =========================== End of model definition ===================
 
-    // ================================= Computation =================================
+    // ================================= Computation =========================
 
 
     int N = ceil((T - t0) / h); // Number of time steps
@@ -287,6 +270,7 @@ int main(int argc, char* argv[])
     //dataPlot(k, 6) = relation0->contactForce()->norm2();
     while(s->hasNextEvent())
     {
+      //std::cout << "step " << k << std::endl;
       //      s->computeOneStep();
       s->advanceToEvent();
       // --- Get values to be plotted ---
@@ -294,9 +278,21 @@ int main(int argc, char* argv[])
       dataPlot(k, 1) = (*q)(0);
       dataPlot(k, 2) = (*v)(0);
       dataPlot(k, 3) = (*p)(0);
-
       dataPlot(k, 4) = (*reaction)(0);
-      dataPlot(k, 5) = acos((*q)(3));
+
+      /* fix issue with machine accuracy */
+      if ((*q)(3) > 1.0)
+      {
+        dataPlot(k, 5) = acos(1.0);
+      }
+      else if  ((*q)(3) < - 1.0)
+      {
+        dataPlot(k, 5) = acos(-1.0);
+      }
+      else
+      {
+        dataPlot(k, 5) = acos((*q)(3));
+      }
       // dataPlot(k, 6) = relation0->contactForce()->norm2();
       dataPlot(k, 7) = (*q)(0);
       dataPlot(k, 8) = (*q)(1);
@@ -312,8 +308,6 @@ int main(int argc, char* argv[])
       dataPlot(k, 17) = (*v)(3);
       dataPlot(k, 18) = (*v)(4);
       dataPlot(k, 19) = (*v)(5);
-
-
 
       s->nextStep();
 
@@ -349,14 +343,9 @@ int main(int argc, char* argv[])
 
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in BouncingBallNETS.cpp" << endl;
+    Siconos::exception::process();
     return 1;
   }
 

@@ -132,7 +132,7 @@ simu = guitar_model.simulation
 
 k = 1
 print("Start simulation ...")
-start_time = time.clock()
+start_time = time.process_time()
 pos = 1
 
 while (simu.hasNextEvent() and k < 200):
@@ -160,7 +160,7 @@ while (simu.hasNextEvent() and k < 200):
         pos += 1
     k += 1
     simu.nextStep()
-print('End of simulation process. Duration: ', time.clock() - start_time)
+print('End of simulation process. Duration: ', time.process_time() - start_time)
 print("nb steps", k)
 
 # --- Output dir for results ---
@@ -169,10 +169,10 @@ if not os.path.exists(result_dir):
     os.mkdir(result_dir)
 filename = output_name + '_' + str(number_of_modes) + '_' + str(int(fs)) + '.h5'
 filename = os.path.join(result_dir, filename)
-start = time.clock()
+start = time.perf_counter()
 save_simu_to_hdf5(guitar_model, string,
                    matlab_data=matlab_input,
                    filename=filename, filt_frets=filt_frets,
                    restit=restit)
 
-print('write (hdf5) file ' + filename + ': {0}.'.format(time.clock() - start))
+print('write (hdf5) file ' + filename + ': {0}.'.format(time.perf_counter() - start))

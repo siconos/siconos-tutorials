@@ -182,14 +182,9 @@ int main(int argc, char* argv[])
       return 1;
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in SimpleExampleRelay.cpp" << endl;
+    Siconos::exception::process();
     return 1;
   }
 }

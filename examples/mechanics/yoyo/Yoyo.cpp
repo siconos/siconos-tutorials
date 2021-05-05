@@ -243,14 +243,9 @@ int main(int argc, char* argv[])
     // --- Libérer de la mémoire
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in main.cpp" << endl;
+    Siconos::exception::process();
     return 1;
   }
 

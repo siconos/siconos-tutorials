@@ -2,7 +2,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2018 INRIA.
+ * Copyright 2021 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------
 //
 //  CircuitRLCD  : sample of an electrical circuit involving :
-//  - a linear dynamical system consisting of an LC oscillator (1 µF , 10 mH)
+//  - a linear dynamical system consisting of an LC oscillator (1 microF , 10 mH)
 //  - a non smooth system (a 1000 Ohm resistor in series with a diode) in parallel
 //    with the oscillator
 //
@@ -199,14 +199,9 @@ int main(int argc, char* argv[])
 
 
   // --- Exceptions handling ---
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught " << endl;
+    Siconos::exception::process();
     return 1;
   }
 }

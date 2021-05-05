@@ -16,25 +16,27 @@ set(tests_timeout 35 CACHE INTERNAL "Limit time for tests (in seconds)")
 # -- Try to find a proper siconos installation --
 # Get siconos version required to run the examples
 include(SiconosRequiredVersion)
-# Hints :
-# - check siconos_ROOT variable or
-# - look for siconos binary in directories from PATH environment variable 
+
+# find_package looks for a proper installation of siconos and especially for the
+# package configuration file siconos-config.cmake.
+# See https://cmake.org/cmake/help/git-master/command/find_package.html?highlight=find_package
+#
+# If siconos is not installed in a standard place, cmake searches in directories listed in CMAKE_PREFIX_PATH.
+# This variable must contains the path to siconos installation.
 # 
-# find_package: look for siconosConfig.cmake file 
-# 
-# --> this set siconos_ROOT to the directory where siconos is installed
 # Remark : we may also use the package registry magic to find siconos:
 # see https://cmake.org/cmake/help/git-master/manual/cmake-packages.7.html#creating-packages
-find_package(siconos ${SICONOS_REQUIRED_VERSION} REQUIRED)
+find_package(siconos  REQUIRED)
 
 # --- Search siconos package path ---
-# --> based on path to script siconos
-find_file(SICONOS_SCRIPT
-  siconos
-  PATHS ${siconos_ROOT}/bin
-  )
-   
-if(NOT SICONOS_SCRIPT)
+# --> based on path to script siconos.
+# Note FP : this would probably be better to set this variable in siconos-config.cmake.
+# find_file(siconos_SCRIPT
+#   siconos
+#   NO_DEFAULT_PATH
+#   PATHS ${siconos_ROOT}/bin
+#   )
+if(NOT siconos_SCRIPT)
   message(FATAL_ERROR "Can not find siconos script. Please set your PATH environment variable properly.")
 endif()
 
@@ -247,7 +249,7 @@ foreach(current_dir IN LISTS EXAMPLES_DIRECTORIES)
   # # (.siconos for each _dir)
   # Not needed if we use tmpdir for build
   # add_custom_target(clean_${test_dir_name} ALL
-  #   COMMAND ${SICONOS_SCRIPT} --clean
+  #   COMMAND ${siconos_SCRIPT} --clean
   #   WORKING_DIRECTORY ${working_dir}
   #   COMMENT "Clean ${working_dir}")
   
@@ -266,7 +268,7 @@ foreach(current_dir IN LISTS EXAMPLES_DIRECTORIES)
       # Build everything in temp dirs (autom. removed at the end of the test)
       add_test(
         NAME py_${test_name}
-        COMMAND ${SICONOS_SCRIPT} ${driver} --build-plugins --tmp-dir
+        COMMAND ${siconos_SCRIPT} ${driver} --build-plugins --tmp-dir
         WORKING_DIRECTORY ${working_dir}
         )
       if(SICONOS_HAS_OCE)
@@ -285,13 +287,13 @@ foreach(current_dir IN LISTS EXAMPLES_DIRECTORIES)
       # A test for the build part (siconos --no-exec)
       # Build everything in temp dirs (autom. removed at the end of the test)
       add_test(NAME build_${test_name}
-        COMMAND ${SICONOS_SCRIPT} --no-exec ${driver} --tmp-dir
+        COMMAND ${siconos_SCRIPT} --no-exec ${driver} --tmp-dir
         WORKING_DIRECTORY ${working_dir})
 
       # and a test for the run part
       add_test(
         NAME run_${test_name}
-        COMMAND ${SICONOS_SCRIPT} ${driver} --no-build
+        COMMAND ${siconos_SCRIPT} ${driver} --no-build
         WORKING_DIRECTORY ${working_dir})
 
       set_tests_properties(run_${test_name} PROPERTIES
@@ -323,7 +325,7 @@ if(${mechanisms_installed} GREATER -1)
     
     add_test(
       NAME ${test_name}
-      COMMAND ${siconos_ROOT}/bin/siconos_mechanisms .
+      COMMAND ${siconos_mechanisms_SCRIPT} .
       WORKING_DIRECTORY ${working_dir})
     # set timeout value
     set_tests_properties(${target_name} PROPERTIES TIMEOUT ${tests_timeout})
@@ -333,7 +335,7 @@ endif()
 
 message("============================================================================================")
 message("Found siconos : ")
-execute_process(COMMAND ${SICONOS_SCRIPT} --info)
+execute_process(COMMAND ${siconos_SCRIPT} --info)
 
 message("\nTry ctest -N to get a list of all tests that will be processed.")
 message("============================================================================================")

@@ -3,7 +3,7 @@
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
-# Copyright 2018 INRIA.
+# Copyright 2021 INRIA.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ from siconos.kernel import \
     FrictionContact, NewtonImpactFrictionNSL, TimeStepping
 
 import siconos.kernel as sk
+import siconos.numerics as sn
 
 from siconos.mechanics.collision.bullet import \
      SiconosBulletCollisionManager
@@ -113,7 +114,7 @@ osnspb = FrictionContact(3)
 osnspb.numericsSolverOptions().iparam[0] = 1000
 osnspb.numericsSolverOptions().dparam[0] = 1e-5
 osnspb.setMaxSize(16384)
-osnspb.setMStorageType(1)
+osnspb.setMStorageType(sn.NM_SPARSE_BLOCK)
 osnspb.setNumericsVerboseMode(False)
 
 # keep previous solution

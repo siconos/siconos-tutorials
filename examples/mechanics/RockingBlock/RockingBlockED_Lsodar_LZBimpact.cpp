@@ -129,8 +129,8 @@ int main(int argc, char* argv[])
     //2. Integration solver for one step
     SP::OneStepIntegrator OSI(new LsodarOSI());
     //3. Nonsmooth problem
-    SP::OneStepNSProblem impact(new OSNSMultipleImpact(TypeContactLaw, DelP));
-    SP::OSNSMultipleImpact multiple_impact = std::dynamic_pointer_cast<OSNSMultipleImpact>(impact);
+    SP::OneStepNSProblem impact(new MultipleImpact(TypeContactLaw, DelP));
+    SP::MultipleImpact multiple_impact = std::dynamic_pointer_cast<MultipleImpact>(impact);
     multiple_impact->SetSaveData(_IsSaveDataImpact);
     multiple_impact->SetNameOutput(impact_data_name.c_str());
     multiple_impact->SetNstepSave(Nstep_save_impact);
@@ -278,14 +278,9 @@ int main(int argc, char* argv[])
 
   }
   //============================== Catch exceptions ===================================================================
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught." << endl;
+    Siconos::exception::process();
     return 1;
   }
 }

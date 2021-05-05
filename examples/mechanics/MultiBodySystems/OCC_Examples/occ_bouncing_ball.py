@@ -7,9 +7,13 @@
 from siconos.mechanics.collision.tools import Volume, Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
 from siconos import numerics
+import siconos.numerics as sn
+import siconos.kernel as sk
 import siconos.io.mechanics_run
 from OCC.BRepPrimAPI import BRepPrimAPI_MakeBox, BRepPrimAPI_MakeSphere
 from OCC.gp import gp_Pnt
+
+
 
 siconos.io.mechanics_run.set_backend('occ')
 
@@ -29,7 +33,7 @@ with MechanicsHdf5Runner() as io:
 
     io.add_object('ground',
                   [Contactor('Ground', contact_type='Face', contact_index=5)],
-                  mass=0, translation=[0, 0, 0])
+                  translation=[0, 0, 0])
 
     io.add_interaction('sphere-ground',
                        'sphere', 'Sphere-1',
@@ -38,6 +42,10 @@ with MechanicsHdf5Runner() as io:
                        offset1=0.01)
 
     io.add_Newton_impact_friction_nsl('contact', mu=0.3, e=0.9)
+    
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 100000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-8
 
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
@@ -57,8 +65,6 @@ with MechanicsHdf5Runner(mode='r+') as io:
            theta=0.50001,
            Newton_max_iter=20,
            set_external_forces=None,
-           solver=numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=100000,
-           tolerance=1e-8,
+           solver_options=options,
            numerics_verbose=False,
            output_frequency=None)

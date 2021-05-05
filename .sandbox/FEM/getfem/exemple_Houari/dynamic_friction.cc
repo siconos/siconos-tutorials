@@ -67,7 +67,7 @@ struct friction_problem {
   getfem::mesh_fem mf_u;     /* main mesh_fem, for the friction solution     */
   getfem::mesh_fem mf_rhs;   /* mesh_fem for the right hand side (f(x),..)   */
   getfem::mesh_fem mf_vm;    /* mesh_fem used for the VonMises stress        */
-  scalar_type lambda, mu;    /* Lamé coefficients.                           */
+  scalar_type lambda, mu;    /* Lame coefficients.                           */
   scalar_type rho, PG;       /* density, and gravity                         */
   scalar_type friction_coef; /* friction coefficient.                        */
 
@@ -111,8 +111,8 @@ void friction_problem::init(void) {
   residual = PARAM.real_value("RESIDUAL");
   if (residual == 0.) residual = 1e-10;
 
-  mu = PARAM.real_value("MU", "Lamé coefficient mu");
-  lambda = PARAM.real_value("LAMBDA", "Lamé coefficient lambda");
+  mu = PARAM.real_value("MU", "Lame coefficient mu");
+  lambda = PARAM.real_value("LAMBDA", "Lame coefficient lambda");
   rho = PARAM.real_value("RHO", "Density");
   PG = PARAM.real_value("PG", "Gravity constant");
   friction_coef = PARAM.real_value("FRICTION_COEF", "Friction coefficient");
@@ -569,7 +569,7 @@ void friction_problem::solve(void) {
     case 5:
       a = 4./(dt*dt); b = 1.; beta_ = 1./(2.*dt); alpha_ = 1./(1.+restit);
       if (t == 0)
-	gmm::add(gmm::scaled(V0, dt), U0, U1); // + terme d'orde supérieur ...
+	gmm::add(gmm::scaled(V0, dt), U0, U1); // + terme d'orde superieur ...
       gmm::add(gmm::scaled(U1, 2.*a), gmm::scaled(U0, -a), U2);
       gmm::mult(DYNAMIC.get_M(), U2, DF);
       gmm::add(gmm::scaled(U1, -2.), gmm::scaled(U0, -1.), U2);
@@ -581,7 +581,7 @@ void friction_problem::solve(void) {
     case 6:
       a = 4./(dt*dt); b = 1.; beta_ = 1./(2.*dt); alpha_ = 1./2*dt;
       if (t == 0)
-	gmm::add(gmm::scaled(V0, dt), U0, U1); // + terme d'orde supérieur ...
+	gmm::add(gmm::scaled(V0, dt), U0, U1); // + terme d'orde superieur ...
       gmm::add(gmm::scaled(U1, 2.*a), gmm::scaled(U0, -a), U2);
       gmm::mult(DYNAMIC.get_M(), U2, DF);
       gmm::add(gmm::scaled(U1, -2.), gmm::scaled(U0, -1.), U2);

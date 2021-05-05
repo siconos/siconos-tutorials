@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2018 INRIA.
+ * Copyright 2021 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -209,14 +209,9 @@ int main(int argc, char* argv[])
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
   }
 
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught in SliderCrankD1MinusLinearOSI.cpp" << endl;
+    Siconos::exception::process();
     return 1;
   }
 }

@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2018 INRIA.
+ * Copyright 2021 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -238,9 +238,9 @@ int main(int argc, char* argv[])
     // -- (2) Time discretisation --
     SP::TimeDiscretisation t(new TimeDiscretisation(t0, h));
     // -- (3) Non smooth problem --
-    SP::OneStepNSProblem impact(new OSNSMultipleImpact(TypeContactLaw, DelPest));
-    //SP::OneStepNSProblem impact(new OSNSMultipleImpact(TypeContactLaw,NestImpact));
-    SP::OSNSMultipleImpact multiple_impact = std::dynamic_pointer_cast<OSNSMultipleImpact>(impact);
+    SP::OneStepNSProblem impact(new MultipleImpact(TypeContactLaw, DelPest));
+    //SP::OneStepNSProblem impact(new MultipleImpact(TypeContactLaw,NestImpact));
+    SP::MultipleImpact multiple_impact = std::dynamic_pointer_cast<MultipleImpact>(impact);
     multiple_impact->SetSaveData(_IsSaveDataImpact);
     multiple_impact->SetNameOutput(impact_data_name.c_str());
     multiple_impact->SetNstepSave(Nstep_save_impact);
@@ -350,14 +350,9 @@ int main(int argc, char* argv[])
         && error > eps)
       return 1;
   }
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught." << endl;
+    Siconos::exception::process();
     return 1;
   }
 }

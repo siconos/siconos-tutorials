@@ -197,14 +197,9 @@ int main(int argc, char* argv[])
     ioMatrix::write("resultNEW.dat", "ascii", DataPlot, "noDim");
   }
   //============================== Catch exceptions ===================================================================
-  catch(SiconosException e)
-  {
-    cerr << e.report() << endl;
-    return 1;
-  }
   catch(...)
   {
-    cerr << "Exception caught." << endl;
+    Siconos::exception::process();
     return 1;
   }
 }

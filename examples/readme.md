@@ -7,6 +7,7 @@ All examples can be executed independently.
 
 They require a proper install of Siconos (see [Download and install Siconos](https://nonsmooth.gricad-pages.univ-grenoble-alpes.fr/siconos/install_guide/index.html).
 
+Be careful examples and siconos are not necessarily synchronized. We ensure synchronization when release are completed.
 
 Run a simulation
 ----------------
