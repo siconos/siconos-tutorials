@@ -121,6 +121,7 @@ h_step = 5e-3
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
 options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-4
+options.iparam[sn.SICONOS_FRICTION_3D_NSGS_FREEZING_CONTACT] = 100
 
 
 # Load and run the simulation

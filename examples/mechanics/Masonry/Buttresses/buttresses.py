@@ -116,6 +116,10 @@ with MechanicsHdf5Runner() as io:
 T = 1.0
 #T = 3e-2
 h_step = 5e-3
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-4
+options.iparam[sn.SICONOS_FRICTION_3D_NSGS_FREEZING_CONTACT] = 100
     
 # Load and run the simulation
 with MechanicsHdf5Runner(mode='r+') as io:
@@ -124,8 +128,6 @@ with MechanicsHdf5Runner(mode='r+') as io:
            h=h_step,
            theta=0.5,
            Newton_max_iter=1,
-           solver=Numerics.SICONOS_FRICTION_3D_NSGS,
-           itermax=1000,
-           tolerance=1e-04,
+           solver_options=options,
            output_frequency=1,
            with_timer=True)
