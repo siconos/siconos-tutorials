@@ -4,6 +4,10 @@ variables:
   ctest_build_model: Continuous
   # Default behavior regarding cdash submission
   cdash_submit: 0
+  # Name of the docker image used to run examples. Default = master.
+  # Set by CI in siconos project for "triggered" examples.
+  SICONOS_DOCKER_NAME: siconos-master
+
 
 # -- Template for examples build-test-install jobs --
 # - Pull an image (possibly from siconos-tutorials registry)
@@ -19,12 +23,32 @@ variables:
 
 # examples, on ubuntu20 with a standard (default)
 # Siconos installation (based on current development, master branch, version
+# Run only when a push has been done to this project.
 run-examples:ubuntu-20:
   variables:
     IMAGE_NAME: $CI_REGISTRY_IMAGE/siconos-master
     cdash_submit: 1
   extends: .examples-build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: always
+    - when: never
 
+# examples, on ubuntu20 with a standard (default)
+# Siconos installation (based on the last commit in siconos)
+# - Run only when triggered from siconos project
+# - Run on a docker image corresponding to a specific branch in siconos project.
+#   (var: SICONOS_DOCKER_NAME, automatically set by CI in siconos project)
+triggered-examples:
+  extends: .examples-build
+  variables:
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/$SICONOS_DOCKER_NAME
+    cdash_submit: 1
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+      when: always
+    - when: never
+ 
 
 # examples, with a standard (default) Siconos installation
 # with version from release 4.4 (latest)
