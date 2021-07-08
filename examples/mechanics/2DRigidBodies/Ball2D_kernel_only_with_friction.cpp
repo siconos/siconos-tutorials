@@ -61,13 +61,13 @@ public:
         SP::Lagrangian2d2DR r = std::static_pointer_cast<Lagrangian2d2DR> (inter->relation());
         SP::LagrangianLinearTIDS ds1(std::dynamic_pointer_cast<LagrangianLinearTIDS>(
                                        indexSet0->properties(*ui).source));
-        SP::SiconosVector rpc = r->relPc1();
-        SP::SiconosVector nnc = r->relNc();
+        SP::SiconosVector pc = r->pc1();
+        SP::SiconosVector nnc = r->nc();
         SP::SiconosVector q = ds1->q();
         double angle= (*q)(2);
         // std::cout << "angle = " << angle << std::endl;
-        (*rpc)(0) = -_R* cos(angle);
-        (*rpc)(1) = _R* sin(angle);
+        (*pc)(0) = -_R + (*q)(0) ;
+        (*pc)(1) = 0.0 + (*q)(1);
         (*nnc)(0) = 1.0;
         (*nnc)(1) = 0.0;
       }
@@ -222,9 +222,7 @@ int main(int argc, char* argv[])
     int k = 1;
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    SP::SiconosVector rpc = relation->relPc1();
-    SP::SiconosVector nnc = relation->relNc();
-
+ 
 
     while(s->hasNextEvent())
     {

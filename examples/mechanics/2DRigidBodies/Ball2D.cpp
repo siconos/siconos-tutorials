@@ -178,12 +178,12 @@ int main(int argc, char* argv[])
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
 
-    SP::SiconosVector rpc = relation->relPc1();
-    SP::SiconosVector nnc = relation->relNc();
+    SP::SiconosVector pc = relation->pc1();
+    SP::SiconosVector nnc = relation->nc();
 
-    SP::SiconosVector rpc1 = relation1->relPc1();
-    SP::SiconosVector rpc2 = relation1->relPc2();
-    SP::SiconosVector nnc1 = relation1->relNc();
+    SP::SiconosVector pc1 = relation1->pc1();
+    SP::SiconosVector pc2 = relation1->pc2();
+    SP::SiconosVector nnc1 = relation1->nc();
 
 
 
@@ -191,21 +191,18 @@ int main(int argc, char* argv[])
     while(s->hasNextEvent())
     {
       // a fake contact detection
-      (*rpc)(0) = -R;
-      (*rpc)(1) = 0.0;
+      (*pc)(0) = -R + (*q)(0);
+      (*pc)(1) = 0.0 + (*q)(1);
       (*nnc)(0) = 1.0;
       (*nnc)(1) = 0.0;
 
-      (*rpc1)(0) = -R;
-      (*rpc1)(1) = 0.0;
+      (*pc1)(0) = -R + (*q1)(0);;
+      (*pc1)(1) = 0.0 + (*q1)(1);
 
-      (*rpc2)(0) = R;
-      (*rpc2)(1) = 0.0;
+      (*pc2)(0) = R + (*q)(0);;
+      (*pc2)(1) = 0.0 + (*q)(1);;
       (*nnc1)(0) = 1.0;
       (*nnc1)(1) = 0.0;
-
-
-
 
       s->computeOneStep();
       // --- Get values to be plotted ---
