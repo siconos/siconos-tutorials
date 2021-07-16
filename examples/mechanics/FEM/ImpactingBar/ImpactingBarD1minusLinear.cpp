@@ -181,7 +181,6 @@ int main(int argc, char* argv[])
     // -> saved in a matrix dataPlot
     unsigned int outputSize = 13;
     SimpleMatrix dataPlot(N,outputSize);
-
     SP::SiconosVector q = bar->q();
     SP::SiconosVector v = bar->velocity();
     SP::SiconosVector p = bar->p(1);
@@ -286,7 +285,21 @@ int main(int argc, char* argv[])
     // --- Output files ---
     cout<<"====> Output file writing ..."<<endl;
     dataPlot.resize(k, outputSize);
+   
     ioMatrix::write("ImpactingBarD1MinusLinear.dat", "ascii", dataPlot,"noDim");
+    cout << " Comparison with a reference file" << endl;
+    SimpleMatrix dataPlotRef(dataPlot);
+    dataPlotRef.zero();
+    ioMatrix::read("ImpactingBarD1MinusLinear.ref", "ascii", dataPlotRef);
+
+    double error = (dataPlot - dataPlotRef).normInf() ;
+    cout << "Error = " << error << endl;
+    if(error > 1e-11)
+    {
+      std::cout << "Warning. The result is rather different from the reference file." << std::endl;
+      std::cout << "Error = "<< (dataPlot - dataPlotRef).normInf()<<std::endl;
+      return 1;
+    }
 
   }
 
