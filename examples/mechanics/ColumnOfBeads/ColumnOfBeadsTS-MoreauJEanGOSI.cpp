@@ -293,7 +293,7 @@ int withLevel(unsigned int mylevel)
     dataPlot.resize(k, outputSize);
 
     // This is the power of c++
-    ioMatrix::write("ColumnOfbeadsTS-MoreauJeanGOSI.dat", "ascii", dataPlot);
+    ioMatrix::write("ColumnOfbeadsTS-MoreauJeanGOSI.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-12;
     if((error=ioMatrix::compareRefFile(dataPlot, "ColumnOfbeadsTS-MoreauJeanGOSI.ref",
                                        eps)) >= 0.0
