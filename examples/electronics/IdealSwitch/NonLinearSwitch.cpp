@@ -134,11 +134,6 @@ int main()
        << boolalpha
        << aN->topology()->hasChanged() << endl;
 
-
-  //  aS->insertNonSmoothProblem(aMLCP);
-  SP::SolverOptions numSolOptions = aMLCP->numericsSolverOptions();
-  mlcp_driver_init(aMLCP->getNumericsMLCP().get(), &*numSolOptions);
-
   //*****BUILD THE STEP INTEGRATOR
   //  SP::NonSmoothSolver  mySolver( new NonSmoothSolver((*solverName),iparam,dparam,floatWorkingMem,intWorkingMem));
 
