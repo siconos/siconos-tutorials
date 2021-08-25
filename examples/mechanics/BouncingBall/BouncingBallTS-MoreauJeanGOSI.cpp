@@ -183,6 +183,11 @@ int main(int argc, char* argv[])
                                        eps)) >= 0.0
         && error > eps)
       return 1;
+    std::cout << "Comparison with a reference file" << std::endl;
+    if((error=ioMatrix::compareRefFile(dataPlot, "BouncingBallTS.ref",
+                                       eps)) >= 0.0
+        && error > eps)
+      return 1;
 
 
   }
