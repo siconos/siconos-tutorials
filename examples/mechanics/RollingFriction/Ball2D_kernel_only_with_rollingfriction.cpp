@@ -216,7 +216,7 @@ int main(int argc, char* argv[])
 
     while(s->hasNextEvent())
     {
-      osnspb->setNumericsVerboseMode(1);
+      //osnspb->setNumericsVerboseMode(1);
 
       s->computeOneStep();
       //osnspb->display();
