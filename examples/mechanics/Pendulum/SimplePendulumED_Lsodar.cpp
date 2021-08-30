@@ -216,10 +216,10 @@ int main(int argc, char* argv[])
     cout << "Number of events processed during simulation: " << (k + 1) << endl;
     cout << "Number of non-smooth events: " << NumberNSEvent << endl;
     cout << "====> Output file writing ..." << endl << endl;
-    ioMatrix::write("Simplependulum_Lsodar.dat", "ascii", DataPlot, "noDim");
+    ioMatrix::write("SimplependulumED_Lsodar.dat", "ascii", DataPlot, "noDim");
 
     double error=0.0, eps=1e-12;
-    if((error=ioMatrix::compareRefFile(DataPlot, "Simplependulum_Lsodar.ref",
+    if((error=ioMatrix::compareRefFile(DataPlot, "SimplePendulumED_Lsodar.ref",
                                        eps)) >= 0.0
         && error > eps)
       return 1;
