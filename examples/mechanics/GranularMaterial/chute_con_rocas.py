@@ -54,19 +54,50 @@ else:
     hstep = 1e-4
 
 
-# A hook to remove bosy that to far from the hopper at the end of the iteration
-def  death_hook(io):
-    #loop over the bodies
-    nds= io._nsds.getNumberOfDS()
-    # print('nds =', nds)
-    allds=io._nsds.dynamicalSystemsVector()
-    for ds in allds:
-        #ds.display()
-        z = ds.q()[2]
-        if (z <= -2):
-            io._interman.removeBody(ds)
-            io._nsds.removeDynamicalSystem(ds)
-            print('remove ds number ', ds.number(), ' with height = ', z)
+# A hook to remove body that to far from the hopper at the end of the iteration
+import numpy
+class death_hook():
+    def __init__(self):
+        pass
+
+    def initialize(self, io):
+        self._io= io
+        pass
+
+    def call(self, step):
+        #print('call death hook at step', step)
+
+        # # First way (slow) : loop over the bodies
+        # nds= self._io._nsds.getNumberOfDS()
+        # print('nds =', nds)
+        # allds=self._io._nsds.dynamicalSystemsVector()
+
+        # for ds in allds:
+        #     #ds.display()
+        #     z = ds.q()[2]
+        #     print('z', z)
+        #     if (z <= -2):
+        #         self._io._interman.removeBody(ds)
+        #         self._io._nsds.removeDynamicalSystem(ds)
+        #         print('remove ds number ', ds.number(), ' with height = ', z)
+
+
+        # second way (faster) :  direct access to nsds positions
+        positions  = self._io._io.positions(self._io._nsds)
+        if positions is not None:
+            z = positions[:,3]
+            # We search for the ds index that are below a given criteria
+            ds_idx = numpy.nonzero(z < -2)[0]
+            for i in ds_idx :
+                n_ds = int(positions[i,0])
+                ds = self._io._nsds.dynamicalSystem(n_ds)
+                self._io._interman.removeBody(ds)
+                self._io._nsds.removeDynamicalSystem(ds)
+                print('remove ds number ', ds.number(), ' with height = ', z[i])
+
+
+
+dh = death_hook()
 
 # Create solver options
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
@@ -98,4 +129,4 @@ with MechanicsHdf5Runner(mode='r+', io_filename=fn) as io:
            Newton_max_iter=1,
            solver_options=options,
            output_frequency=10,
-           end_run_iteration_hook=death_hook)
+           end_run_iteration_hook=dh)
