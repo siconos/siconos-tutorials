@@ -430,13 +430,13 @@ int main(int argc, char* argv[])
     cout << "Computation time : " << elapsed << " ms" << endl;
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
-    ioMatrix::write("NE_3DS_3Knee_1Prism_MLCP.dat", "ascii", dataPlot);
+    ioMatrix::write("NE_3DS_3Knee_1Prism_MLCP_withSprings.dat", "ascii", dataPlot, "noDim");
     ioMatrix::write("NE_3DS_3Knee_1Prism_MLCP_beam1.dat", "ascii", beam1Plot, "noDim");
     ioMatrix::write("NE_3DS_3Knee_1Prism_MLCP_beam2.dat", "ascii", beam2Plot, "noDim");
     ioMatrix::write("NE_3DS_3Knee_1Prism_MLCP_beam3.dat", "ascii", beam3Plot, "noDim");
 
     double error=0.0, eps=1e-10;
-    if((error=ioMatrix::compareRefFile(dataPlot, "NE_3DS_3Knee_1Prism_MLCP.ref",
+    if((error=ioMatrix::compareRefFile(dataPlot, "NE_3DS_3Knee_1Prism_MLCP_withSprings.ref",
                                        eps)) >= 0.0
         && error > eps)
       return 1;
