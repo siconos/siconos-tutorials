@@ -256,9 +256,9 @@ int main(int argc, char* argv[])
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
-    ioMatrix::write("Ball_2d_with_kernel_only_with_friction.dat", "ascii", dataPlot, "noDim");
+    ioMatrix::write("Ball2D_kernel_only_with_friction.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-12;
-    if((error=ioMatrix::compareRefFile(dataPlot, "Ball_2d_with_kernel_only_with_friction.ref", eps)) >= 0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "Ball2D_kernel_only_with_friction.ref", eps)) >= 0.0
         && error > eps)
       return 1;
 

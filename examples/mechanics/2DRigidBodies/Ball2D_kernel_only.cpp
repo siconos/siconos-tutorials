@@ -105,9 +105,6 @@ int main(int argc, char* argv[])
     SP::Interaction inter1(new Interaction(nslaw, relation1));
 
 
-
-
-
     // -------------
     // --- Model ---
     // -------------
@@ -176,12 +173,12 @@ int main(int argc, char* argv[])
     int k = 1;
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
-    SP::SiconosVector rpc = relation->relPc1();
-    SP::SiconosVector nnc = relation->relNc();
+    SP::SiconosVector rpc = relation->pc1();
+    SP::SiconosVector nnc = relation->nc();
 
-    SP::SiconosVector rpc1 = relation1->relPc1();
-    SP::SiconosVector rpc2 = relation1->relPc2();
-    SP::SiconosVector nnc1 = relation1->relNc();
+    SP::SiconosVector rpc1 = relation1->pc1();
+    SP::SiconosVector rpc2 = relation1->pc2();
+    SP::SiconosVector nnc1 = relation1->nc();
 
 
 
@@ -189,16 +186,16 @@ int main(int argc, char* argv[])
     while(s->hasNextEvent())
     {
       // a fake contact detection
-      (*rpc)(0) = -R;
-      (*rpc)(1) = 0.0;
+      (*rpc)(0) = -R + (*q)(0);
+      (*rpc)(1) = (*q)(1);
       (*nnc)(0) = 1.0;
       (*nnc)(1) = 0.0;
 
-      (*rpc1)(0) = -R;
-      (*rpc1)(1) = 0.0;
+      (*rpc1)(0) = -R + (*q1)(0);
+      (*rpc1)(1) = (*q1)(1);
 
-      (*rpc2)(0) = R;
-      (*rpc2)(1) = 0.0;
+      (*rpc2)(0) = R + (*q)(0);;
+      (*rpc2)(1) = (*q)(1);
       (*nnc1)(0) = 1.0;
       (*nnc1)(1) = 0.0;
 
@@ -231,7 +228,7 @@ int main(int argc, char* argv[])
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
-    ioMatrix::write("Ball_2d_with_kernel_only.dat", "ascii", dataPlot, "noDim");
+    ioMatrix::write("Ball2D_kernel_only.dat", "ascii", dataPlot, "noDim");
     double error=0.0, eps=1e-12;
     if((error=ioMatrix::compareRefFile(dataPlot, "Ball2D_kernel_only.ref", eps)) >= 0.0
         && error > eps)
