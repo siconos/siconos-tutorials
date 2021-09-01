@@ -6,8 +6,9 @@ import math
 import random
 from siconos.mechanics.collision.tools import Contactor
 from siconos.mechanics.collision.convexhull import ConvexHull
+from siconos.mechanics.collision.bullet import SiconosBulletOptions
 
-from siconos.io.mechanics_run import MechanicsHdf5Runner
+from siconos.io.mechanics_run import MechanicsHdf5Runner, MechanicsHdf5Runner_run_options
 
 import siconos.numerics as sn
 import siconos.kernel as sk
@@ -113,25 +114,53 @@ hstep = 1e-4
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
 
+bullet_options = SiconosBulletOptions()
+bullet_options.worldScale = 1.
+bullet_options.contactBreakingThreshold = 0.04
+bullet_options.perturbationIterations = 3
+bullet_options.minimumPointsPerturbationThreshold = 3
+
+
+
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
 options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-4
-with MechanicsHdf5Runner(mode='r+', collision_margin=0.01) as io:
 
+
+run_options=MechanicsHdf5Runner_run_options()
+run_options['t0']=0
+run_options['T']=step*hstep
+run_options['h']=hstep
+
+#run_options['bullet_options']=bullet_options
+run_options['solver_options']=options
+#run_options['constraint_activation_threshold']=1e-05
+
+run_options['gravity_scale']= 1.0/scale
+
+run_options['Newton_max_iter']=10
+run_options['output_frequency']=100
+
+run_options['verbose']=False
+run_options['with_timer']=False
+run_options['violation_verbose']=True
+
+with MechanicsHdf5Runner(mode='r+', collision_margin=0.01) as io:
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,
     # sizes of small objects may need to be expressed in cm or mm.
-    io.run(with_timer=False,
-           gravity_scale=1.0/scale,
-           t0=0,
-           T=step*hstep,
-           h=hstep,
-           multipoints_iterations=True,
-           theta=0.50001,
-           Newton_max_iter=10,
-           set_external_forces=None,
-           solver_options=options,
-           numerics_verbose=False,
-           violation_verbose=True,
-           output_frequency=100)
+    io.run(run_options)
+    # io.run(with_timer=False,
+    #        gravity_scale=1.0/scale,
+    #        t0=0,
+    #        T=step*hstep,
+    #        h=hstep,
+    #        multipoints_iterations=True,
+    #        theta=0.50001,
+    #        Newton_max_iter=10,
+    #        set_external_forces=None,
+    #        solver_options=options,
+    #        numerics_verbose=False,
+    #        violation_verbose=True,
+    #        output_frequency=100)
