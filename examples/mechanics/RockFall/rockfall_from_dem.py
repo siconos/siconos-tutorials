@@ -3,6 +3,7 @@
 #
 # Example of how to use the heightmap object to interact with a static terrain.
 #
+import numpy as np
 
 from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
@@ -10,7 +11,6 @@ from siconos.io.mechanics_run import MechanicsHdf5Runner
 import siconos.numerics as sn
 import siconos.kernel as sk
 
-import numpy as np
 
 
 # 1 - build the heightmap as a numpy 2D array
