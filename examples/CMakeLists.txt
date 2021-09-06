@@ -244,6 +244,13 @@ foreach(current_dir IN LISTS EXAMPLES_DIRECTORIES)
     configure_file(${datafile} ${working_dir} COPYONLY)
   endforeach()
   
+  file(GLOB current_example_dir_data ${src_dir}/data/*.asc)
+  # Copy data files into the working directory.
+  foreach(datafile IN LISTS current_example_dir_data)
+    file(MAKE_DIRECTORY ${working_dir}/data)
+    configure_file(${datafile} ${working_dir}/data/ COPYONLY)
+  endforeach()
+
   string(REPLACE "/" "_" test_dir_name ${current_dir})
   # # Create a target to clean all build directories
   # # (.siconos for each _dir)
