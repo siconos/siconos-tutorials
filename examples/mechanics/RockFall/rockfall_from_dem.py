@@ -107,13 +107,15 @@ with MechanicsHdf5Runner() as io:
                                  mass=polyhedron_mass,
                                  inertia=polyhedron_inertia)
     polyhedron_id = obj_polyhedron.attrs['id']
+    #obj_polyhedron.attrs['color'] = [0., 1.0, 0.]
  
 
     # the ground object made with the ground shape. As the mass is
     # not given, it is a static object only involved in contact
     # detection.
-    io.add_object('ground', [Contactor('MyTerrain', collision_group=0)],
-                  translation=[0, 0, 0])
+    obj_ground=io.add_object('ground', [Contactor('MyTerrain', collision_group=0)],
+                             translation=[0, 0, 0])
+    obj_ground.attrs['color'] = [0.0, 0.0, 1.0]
 
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
