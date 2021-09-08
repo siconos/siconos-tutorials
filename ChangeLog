@@ -21,7 +21,22 @@ of the file were added first, and each subsequent addition is placed on a line
 before it.
 	Do not hesitate to use the emacs mode Change Log for editing this file
 
-	
+
+--------------------------------------------------------------------------------
+  v 4.4.0
+--------------------------------------------------------------------------------
+
+This version complies with the siconos version 4.4.0
+
+Main Changes:
+	* [examples] add a rockfall example reading digital elevation map as a raster file
+	* [examples] add masonry examples
+	* [examples] update ref files with new Lie integration of NewtonEulerDS
+	* [examples] mechanics/GranularMaterial add an example of hook to remove body w.r.t. a user logic
+	* [sandbox]  Added DoubleMixture Drumboiler Example: MCP for phase change modelling and MLCS example
+
+
+
 --------------------------------------------------------------------------------
   v3.6.0 October 2013
 --------------------------------------------------------------------------------
