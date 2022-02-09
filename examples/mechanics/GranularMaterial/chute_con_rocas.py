@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from siconos.io.mechanics_run import MechanicsHdf5Runner
+from siconos.io.mechanics_run import MechanicsHdf5Runner, MechanicsHdf5Runner_run_options
 import siconos.numerics as sn
 import siconos.kernel as sk
-
+from siconos.mechanics.collision.bullet import SiconosBulletOptions
 import chute
 import rocas
 import random
@@ -118,15 +118,43 @@ with MechanicsHdf5Runner(mode='w', io_filename=fn) as io:
 
     io.add_Newton_impact_friction_nsl('contact', mu=1.0, e=0.01)
 
+run_options=MechanicsHdf5Runner_run_options()
+run_options['t0']=0
+run_options['T']=T
+run_options['h']=hstep
+run_options['theta']=1.0
+
+bullet_options = SiconosBulletOptions()
+bullet_options.perturbationIterations = 0.
+#bullet_options.minimumPointsPerturbationThreshold = 0.
+
+run_options['bullet_options']=bullet_options
+run_options['solver_options']=options
+run_options['constraint_activation_threshold']=1e-05
+
+run_options['end_run_iteration_hook'] = dh
+
+
+run_options['Newton_options']=sk.SICONOS_TS_LINEAR
+run_options['skip_last_update_output']=True
+run_options['skip_reset_lambdas']=True
+
+#run_options['osns_assembly_type']= sk.REDUCED_DIRECT
+
+run_options['verbose']=False
+run_options['with_timer']=False
+run_options['explode_Newton_solve']=False
+run_options['explode_computeOneStep']=False
+
+#run_options['numerics_verbose']=True
+#run_options['numerics_verbose_level']=0
+
+run_options['output_frequency']=10
+
+run_options['time_stepping']=None
+
+
+    
+    
 with MechanicsHdf5Runner(mode='r+', io_filename=fn) as io:
-    io.run(with_timer=False,
-           explode_Newton_solve=False,
-           t0=0,
-           T=T,
-           h=hstep,
-           multipoints_iterations=True,
-           theta=1.0,
-           Newton_max_iter=1,
-           solver_options=options,
-           output_frequency=10,
-           end_run_iteration_hook=dh)
+    io.run(run_options)
