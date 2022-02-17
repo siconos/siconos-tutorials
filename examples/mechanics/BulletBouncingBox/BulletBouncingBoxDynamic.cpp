@@ -178,7 +178,7 @@ int main()
     //    for more complex compound contactor sets.
     SP::SiconosContactorSet staticCtrSet(std::make_shared<SiconosContactorSet>());
     staticCtrSet->push_back(std::make_shared<SiconosContactor>(ground));
-    collision_manager->insertStaticContactorSet(staticCtrSet, groundOffset);
+    collision_manager->addStaticBody(staticCtrSet, groundOffset);
 
     // -- MoreauJeanOSI Time Stepping with Bullet collision manager as
     // -- the interaction manager.

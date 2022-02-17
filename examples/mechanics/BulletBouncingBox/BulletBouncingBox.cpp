@@ -15,7 +15,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 /*!\file BulletBouncingBox.cpp
   \brief C++ input file, a Bullet box bouncing on the ground
@@ -24,34 +24,31 @@
   detection.
 
 */
-
-#include <SiconosBodies.hpp>
-#include <SiconosKernel.hpp>
-
-#include <SiconosBulletCollisionManager.hpp>
-#include <RigidBodyDS.hpp>
-#include <chrono>
 #include "SolverOptions.h"
+#include <RigidBodyDS.hpp>
+#include <SiconosBodies.hpp>
+#include <SiconosBulletCollisionManager.hpp>
+#include <SiconosKernel.hpp>
+#include <chrono>
 
 int main()
 {
 
   // User-defined main parameters
-  double t0 = 0;                   // initial computation time
-  double T = 20.0;                 // end of computation time
-  double h = 0.005;                // time step
-  double position_init = 10.0;     // initial position
-  double velocity_init = 0.0;      // initial velocity
+  double t0 = 0;               // initial computation time
+  double T = 20.0;             // end of computation time
+  double h = 0.005;            // time step
+  double position_init = 10.0; // initial position
+  double velocity_init = 0.0;  // initial velocity
 
   double g = 9.81;
-  double theta = 0.5;              // theta for MoreauJeanOSI integrator
+  double theta = 0.5; // theta for MoreauJeanOSI integrator
 
   // -----------------------------------------
   // --- Dynamical systems && interactions ---
   // -----------------------------------------
 
-  try
-  {
+  try {
 
     // ------------
     // --- Init ---
@@ -59,11 +56,10 @@ int main()
 
     std::cout << "====> Model loading ..." << std::endl << std::endl;
 
-
     // -- OneStepIntegrators --
-    SP::OneStepIntegrator osi;
-    osi.reset(new MoreauJeanOSI(theta));
-
+    //    SP::OneStepIntegrator osi;
+    // osi.reset(new MoreauJeanOSI(theta));
+    auto osi = std::make_shared<MoreauJeanOSI>(theta);
     // -- Model --
     SP::NonSmoothDynamicalSystem model(new NonSmoothDynamicalSystem(t0, T));
 
@@ -91,7 +87,7 @@ int main()
     // -- Set external forces (weight) --
     SP::SiconosVector FExt(std::make_shared<SiconosVector>(3));
     FExt->zero();
-    FExt->setValue(2, - g * body->scalarMass());
+    FExt->setValue(2, -g * body->scalarMass());
     body->setFExtPtr(FExt);
 
     // -- Add the dynamical system in the non smooth dynamical system
@@ -99,11 +95,10 @@ int main()
 
     SP::SiconosPlane ground(std::make_shared<SiconosPlane>());
 
-    // -- Create a Z-offset of -0.5 for the ground so that contact is
-    //    at zero.
+    // -- Create a Z-offset of -0.5 for the ground so that contact is at zero.
     SP::SiconosVector groundOffset(std::make_shared<SiconosVector>(7));
-    (*groundOffset)(2) = -0.5;  // translation 0,0,-0.5
-    (*groundOffset)(3) = 1;     // orientation 1,0,0,0
+    (*groundOffset)(2) = -0.5; // translation 0,0,-0.5
+    (*groundOffset)(3) = 1;    // orientation 1,0,0,0
 
     // ------------------
     // --- Simulation ---
@@ -117,26 +112,24 @@ int main()
 
     // -- Some configuration
 
-    osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 10000; // Max number of
-    // iterations
-    osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-5; // Tolerance
+    // Max number of iterations
+    osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 10000;
 
+    // Tolerance
+    osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-5;
 
-    osnspb->setMaxSize(16384);                        // max number of
-    // interactions
+    osnspb->setMaxSize(16384); // max number of interactions
 
-    osnspb->setMStorageType(NM_SPARSE_BLOCK);                      // Sparse storage
+    osnspb->setMStorageType(NM_SPARSE_BLOCK); // Sparse storage
 
-    osnspb->setNumericsVerboseMode(0);               // 0 silent, 1
-    // verbose
+    osnspb->setNumericsVerboseMode(0); // 0 silent, 1 verbose
 
-    osnspb->setKeepLambdaAndYState(true);            // inject
-    // previous
-    // solution
+    osnspb->setKeepLambdaAndYState(true); // inject previous solution
 
     // --- Simulation initialization ---
 
-    std::cout << "====> Simulation initialisation ..." << std::endl << std::endl;
+    std::cout << "====> Simulation initialisation ..." << std::endl
+              << std::endl;
 
     int N = ceil((T - t0) / h); // Number of time steps
 
@@ -145,29 +138,28 @@ int main()
     // some options for the Bullet collision manager:
     // -- defaults are okay, see SiconosBulletCollisionManager.hpp
     // -- in particular we want to leave multipoint iterations enabled
-    //    to allow Bullet to collect more points for plane-plane
-    //    collisions.
+    //    to allow Bullet to collect more points for plane-plane collisions.
     SiconosBulletOptions options;
 
     // -- The collision manager performs broadphase collision
     //    detection, we use the Bullet implementation here.
     SP::SiconosBulletCollisionManager collision_manager(
-      std::make_shared<SiconosBulletCollisionManager>(options));
+        std::make_shared<SiconosBulletCollisionManager>(options));
 
     // -- insert a non smooth law for contactors id 0
     collision_manager->insertNonSmoothLaw(nslaw, 0, 0);
 
     // -- The ground is a static object.  The collision manager
-    //    maintains a list of contact sets for static objects, so we
-    //    add one.
+    //    maintains a list of contact sets for static objects, so we add one.
     // -- We give it a group contactor id : 0
     // -- We apply the groundOffset to the SiconosContactorSet, but
-    //    equivalently it could be applied to the SiconosContactor
-    //    inside the set, this is a design choice allowing for re-use
-    //    for more complex compound contactor sets.
-    SP::SiconosContactorSet staticCtrSet(std::make_shared<SiconosContactorSet>());
+    //    equivalently it could be applied to the SiconosContactor inside the
+    //    set, this is a design choice allowing for re-use for more complex
+    //    compound contactor sets.
+    SP::SiconosContactorSet staticCtrSet(
+        std::make_shared<SiconosContactorSet>());
     staticCtrSet->push_back(std::make_shared<SiconosContactor>(ground));
-    collision_manager->insertStaticContactorSet(staticCtrSet, groundOffset);
+    collision_manager->addStaticBody(staticCtrSet, groundOffset);
 
     // -- MoreauJeanOSI Time Stepping with Bullet collision manager as
     // -- the interaction manager.
@@ -198,87 +190,116 @@ int main()
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
 
-
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
 
-    while(simulation->hasNextEvent())
-    {
+    while (simulation->hasNextEvent()) {
+      // while (k < 2) {
+
       collision_manager->resetStatistics();
       simulation->computeOneStep();
 
       // --- Get values to be plotted ---
-      dataPlot(k, 0) =  simulation->nextTime();
+      dataPlot(k, 0) = simulation->nextTime();
       dataPlot(k, 1) = (*q)(2);
       dataPlot(k, 2) = (*v)(2);
 
       // If broadphase collision detection shows some contacts then we may
       // display contact forces.
-      if((collision_manager->statistics().new_interactions_created
-          + collision_manager->statistics().existing_interactions_processed) > 0)
-      {
-        // we *must* have an indexSet0, filled by Bullet broadphase
-        // collision detection and an indexSet1, filled by
-        // TimeStepping::updateIndexSet with the help of Bullet
-        // getDistance() function
-        if(model->topology()->numberOfIndexSet() == 2)
-        {
+      if ((collision_manager->statistics().new_interactions_created +
+           collision_manager->statistics().existing_interactions_processed) >
+          0) {
+        // we *must* have an indexSet0, filled by Bullet broadphase collision
+        // detection and an indexSet1, filled by TimeStepping::updateIndexSet
+        // with the help of Bullet getDistance() function.
+        if (model->topology()->numberOfIndexSet() == 2) {
           SP::InteractionsGraph index1 = simulation->indexSet(1);
 
           // This is the narrow phase contact detection : if
           // TimeStepping::updateIndexSet has filled indexSet1 then we
           // have some contact forces to display
-          if(index1->size() > 0)
-          {
+          if (index1->size() > 0) {
 
             // Four contact points for a cube with a side facing the
             // ground. Note : changing Bullet margin for collision
             // detection may lead this assertion to be false.
-            if(index1->size() == 4)
-            {
+            if (index1->size() == 4) {
               InteractionsGraph::VIterator iur = index1->begin();
 
               // different version of bullet may not gives the same
               // contact points! So we only keep the summation.
-              dataPlot(k, 3) =
-                index1->bundle(*iur)-> lambda(1)->norm2() +
-                index1->bundle(*++iur)->lambda(1)->norm2() +
-                index1->bundle(*++iur)->lambda(1)->norm2() +
-                index1->bundle(*++iur)->lambda(1)->norm2();
+              dataPlot(k, 3) = index1->bundle(*iur)->lambda(1)->norm2() +
+                               index1->bundle(*++iur)->lambda(1)->norm2() +
+                               index1->bundle(*++iur)->lambda(1)->norm2() +
+                               index1->bundle(*++iur)->lambda(1)->norm2();
             }
           }
         }
       }
 
+      // auto &DSG =
+      // simulation->nonSmoothDynamicalSystem()->dynamicalSystems();
+      // std::weak_ptr<SimpleMatrix>
+      // work; //{nullptr};
+      // // SP::SimpleMatrix
+      // work{nullptr};
+      // DynamicalSystemsGraph::VIterator
+      // dsi, dsend; for
+      // (std::tie(dsi, dsend) =
+      // DSG->vertices(); dsi !=
+      // dsend; ++dsi) {
+
+      //   auto &osi2 =
+      //   *DSG->properties(*dsi).osi;
+      //   auto ds =
+      //   DSG->bundle(*dsi); auto
+      //   sods =
+      //   std::static_pointer_cast<SecondOrderDS>(ds);
+      //   work =
+      //   static_cast<MoreauJeanOSI
+      //   &>(osi2).Winverse(sods);
+      //   work.lock()->display();
+      //   // osi->Winverse(sods,
+      //   true);
+      //   //      work =
+      //   static_cast<MoreauJeanGOSI
+      //   &>(*osi).Winverse(sods,
+      //   true);
+      // }
+      // static_pointer_cast<MoreauJeanOSI>(osi)->Winverse(sods,
+      // true);
       simulation->nextStep();
-      progressBar((double)k/N);
+      progressBar((double)k / N);
       k++;
     }
 
-    std::cout << std::endl << "End of computation - Number of iterations done: " << k - 1 << std::endl;
+    std::cout << std::endl
+              << "End of computation - Number of iterations done: " << k - 1
+              << std::endl;
     std::cout << "Computation Time " << std::endl;
     end = std::chrono::system_clock::now();
-    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-                  (end-start).count();
+    auto elapsed =
+        std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+            .count();
     std::cout << "Computation time : " << elapsed << " ms" << std::endl;
-
-
     // --- Output files ---
     std::cout << "====> Output file writing ..." << std::endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
 
+    double error = 0.0, eps = 1e-12;
 
-    double error=0.0, eps=1e-12;
-    if((error=ioMatrix::compareRefFile(dataPlot, "result.ref", eps)) >= 0.0
-        && error > eps)
+    if ((error = ioMatrix::compareRefFile(dataPlot, "result.ref", eps)) >=
+            0.0 &&
+        error > eps)
       // return 1;
-      std::cout << "Warning the results differs from the reference file " << std::endl;
-
+      std::cout << "Warning the results "
+                   "differs from the "
+                   "reference file "
+                << std::endl;
   }
 
-  catch(...)
-  {
+  catch (...) {
     Siconos::exception::process();
     return 1;
   }

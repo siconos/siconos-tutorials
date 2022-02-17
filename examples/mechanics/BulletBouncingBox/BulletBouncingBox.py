@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -124,7 +122,7 @@ broadphase.insertNonSmoothLaw(nslaw, 0, 0)
 # we give it a group contactor id : 0
 scs = SiconosContactorSet()
 scs.append(SiconosContactor(ground))
-broadphase.insertStaticContactorSet(scs, groundOffset)
+broadphase.addStaticBody(scs, groundOffset)
 
 # (6) Simulation setup with (1) (2) (3) (4) (5)
 simulation = TimeStepping(bouncingBox, timedisc)
