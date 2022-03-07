@@ -89,10 +89,11 @@ with MechanicsHdf5Runner() as io:
     # Definition of a non smooth law. As no group ids are specified it
     # is between contactors of group id 0.
     io.add_Newton_impact_rolling_friction_nsl('contact_rolling', e= 0.0, mu=0.3, mu_r=1e-03)
-    #io.add_Newton_impact_friction_nsl('contact', e= 0.9, mu=0.3)
+    #io.add_Newton_impact_friction_nsl('contact', e= 0.0, mu=0.3)
 
 # Create solver options
 options = sk.solver_options_create(sn.SICONOS_ROLLING_FRICTION_3D_NSGS)
+#options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
 options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-4
 # Run the simulation from the inputs previously defined and add
@@ -125,4 +126,5 @@ with MechanicsHdf5Runner(mode='r+') as io:
            violation_verbose=False,
            numerics_verbose=False,
            output_frequency=10,
-           constraint_activation_threshold=1e-08)
+           #constraint_activation_threshold=1e-08,
+           output_contact_index_set=0)
