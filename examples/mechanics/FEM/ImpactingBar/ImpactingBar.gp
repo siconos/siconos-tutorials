@@ -2,21 +2,21 @@ set  term X11
 set term pdf
 set term pdf monochrome dashed size 5in,3.5in
 extension= ".pdf"
-set term tikz standalone color solid size 5in,3in
-set term tikz standalone monochrome  size 5in,3in font '\small\sf'
-extension=".tex"
+#set term tikz standalone color solid size 5in,3in
+#set term tikz standalone monochrome  size 5in,3in font '\small\sf'
+#extension=".tex"
 
 
 resultfile='ImpactingBar.dat'
 method="MoreauJean-theta05-"
 
-method="D1MinusLinear-"
-resultfile='ImpactingBarD1MinusLinear.dat'
+#method="D1MinusLinear-"
+#resultfile='ImpactingBarD1MinusLinear.dat'
 
-model="ImpactingBar-damping-"
-timestep = "1e-7"
-h=1e-7
-ndof = "1000-"
+model="ImpactingBar"
+timestep = "2e-6"
+h=2e-6
+ndof = "100-"
 
 
 file = model.method.ndof.timestep
@@ -28,6 +28,11 @@ plot \
      resultfile u 1:6 t "Potential energy" w l,\
      resultfile u 1:7 t "Kinetic energy" w l,\
      resultfile u 1:($7+$6) t "Total energy" w l
+
+set output file."-ImpactEnergy".extension
+set auto
+plot \
+     resultfile u 1:12 t "Impact energy" w l
 
 
 set output file."-Caplambda".extension

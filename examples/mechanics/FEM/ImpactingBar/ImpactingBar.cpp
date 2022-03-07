@@ -98,7 +98,6 @@ int main(int argc, char* argv[])
     bar->setKPtr(SparseStiffness);
 
 
-
     // -- Set external forces (weight) --
     //SP::SiconosVector weight(new SiconosVector(nDof,-g*rho*S/l));
     SP::SiconosVector weight(new SiconosVector(nDof,0.0));
@@ -148,7 +147,8 @@ int main(int argc, char* argv[])
 #ifdef TS_COMBINED
     SP::OneStepIntegrator OSI(new MoreauJeanCombinedProjectionOSI(theta));
 #else
-    SP::MoreauJeanOSI OSI(new MoreauJeanOSI(theta,0.5));
+    SP::MoreauJeanOSI OSI(new MoreauJeanOSI(theta,0.0));
+    //OSI->setConstraintActivationThreshold(1e-05);
 #endif
 #endif
     // -- (2) Time discretisation --
@@ -189,7 +189,7 @@ int main(int argc, char* argv[])
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
-    unsigned int outputSize = 11;
+    unsigned int outputSize = 12;
     SimpleMatrix dataPlot(N,outputSize);
 
     SP::SiconosVector q = bar->q();
@@ -214,12 +214,14 @@ int main(int argc, char* argv[])
     double potentialEnergy = inner_prod(*q,   *tmp);
     prod(*SparseMass, *v, *tmp, true);
     double kineticEnergy = inner_prod(*v,*tmp);
+    double impactEnergy = 0.0;
 
     dataPlot(0, 5) = potentialEnergy;
     dataPlot(0, 6) = kineticEnergy;
+    dataPlot(0, 11) = impactEnergy;
 
 //    std::cout <<"potentialEnergy ="<<potentialEnergy << std::endl;
-//     std::cout <<"kineticEnergy ="<<kineticEnergy << std::endl;
+//    std::cout <<"kineticEnergy ="<<kineticEnergy << std::endl;
 
 
 
@@ -235,6 +237,8 @@ int main(int argc, char* argv[])
 //    while (s->nextTime() < T)
     while(k < N)
     {
+      // if (k%100 == 0)
+      //   std::cout << "k :"  << k << std::endl;
       s->computeOneStep();
 
 //       std::cout << "position"  << std::endl;
@@ -263,6 +267,10 @@ int main(int argc, char* argv[])
       dataPlot(k, 5) = potentialEnergy;
       dataPlot(k, 6) = kineticEnergy;
 
+      double v_p_theta= theta*(*v)(0) + (1-theta) *  dataPlot(k-1,2);
+      impactEnergy = v_p_theta * (*lambda)(0);
+      dataPlot(k, 11) = impactEnergy;
+
 //      std::cout << "q" << std::endl;
 //       q->display();
 
@@ -276,6 +284,14 @@ int main(int argc, char* argv[])
 
       k++;
     }
+
+    double totalImpactEnergy=0.0;
+    for (int p =0; p < k; p++)
+    {
+      totalImpactEnergy = totalImpactEnergy + dataPlot(p, 11);
+    }
+    printf("totalImpactEnergy = %e", totalImpactEnergy);
+
     cout<<endl << "End of computation - Number of iterations done: "<<k-1<<endl;
     cout << "Computation Time " << endl;;
     end = std::chrono::system_clock::now();
