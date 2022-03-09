@@ -1,6 +1,7 @@
 set  term X11
 set term pdf
 set term pdf monochrome dashed size 5in,3.5in
+set term pdf color size 5in,3.5in
 extension= ".pdf"
 #set term tikz standalone color solid size 5in,3in
 #set term tikz standalone monochrome  size 5in,3in font '\small\sf'
@@ -19,12 +20,21 @@ ndof = "2-"
 file = model.method.ndof.timestep
 
 
-set output file."-Energy".extension
+set output file."-Beam-Energy".extension
 set auto
 plot \
-     resultfile u 1:6 t "Potential energy" w l,\
-     resultfile u 1:7 t "Kinetic energy" w l,\
-     resultfile u 1:($7+$6) t "Total energy" w l
+     resultfile u 1:6 t "Beam Potential energy" w l,\
+     resultfile u 1:7 t "Beam Kinetic energy" w l,\
+     resultfile u 1:($7+$6) t "Beam Total energy" w l
+
+set output file."-Total-Energy".extension
+set auto
+plot \
+     resultfile u 1:6 t "Beam Potential energy" w l,\
+     resultfile u 1:($7+$17) t "Kinetic energy" w l,\
+     resultfile u 1:($7+$6+$17) t "Total energy" w l
+
+
 
 set output file."-ImpactEnergy".extension
 set auto

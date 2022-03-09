@@ -170,6 +170,8 @@ int main(int argc, char* argv[])
 
     // SparseMass->display();
     // SparseStiffness->display();
+    std::cout << " SparseMass nnz :" << SparseMass->nnz() << std::endl;
+    std::cout << " SparseStiffness nnz :" << SparseStiffness->nnz() << std::endl;
 
     // -- Initial positions and velocities --
     SP::SiconosVector q0(new SiconosVector(nDof,0.));
@@ -206,7 +208,8 @@ int main(int argc, char* argv[])
     //  Impacting ball
 
     SP::SimpleMatrix ballMass(new SimpleMatrix(1,1,Siconos::SPARSE,1));
-    ballMass->setValue(0, 0, 1.);
+    double ball_mass = 1.0;
+    ballMass->setValue(0, 0, ball_mass);
 
     // SP::SimpleMatrix ballMass(new SimpleMatrix(1,1));
     // ballMass->setValue(0, 0, 1.);
@@ -257,6 +260,7 @@ int main(int argc, char* argv[])
 
     // -- (1) OneStepIntegrators --
     SP::MoreauJeanOSI OSI(new MoreauJeanOSI(theta,0.0));
+    //OSI->setIsWSymmetricDefinitePositive(true);
     //OSI->setConstraintActivationThreshold(1e-05);
 
     // -- (2) Time discretisation --
@@ -279,7 +283,7 @@ int main(int argc, char* argv[])
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
-    unsigned int outputSize = 16;
+    unsigned int outputSize = 17;
     SimpleMatrix dataPlot(N,outputSize);
 
     SP::SiconosVector q = beam->q();
@@ -307,9 +311,9 @@ int main(int argc, char* argv[])
     SP::SiconosVector tmp(new SiconosVector(nDof));
 
     prod(*SparseStiffness, *q, *tmp, true);
-    double potentialEnergy = inner_prod(*q,   *tmp);
+    double potentialEnergy = 0.5*inner_prod(*q,   *tmp);
     prod(*SparseMass, *v, *tmp, true);
-    double kineticEnergy = inner_prod(*v,*tmp);
+    double kineticEnergy = 0.5*inner_prod(*v,*tmp);
     double impactEnergy = 0.0;
 
     dataPlot(k, 5) = potentialEnergy;
@@ -325,7 +329,8 @@ int main(int argc, char* argv[])
     dataPlot(k, 13) = (*vBall)(0);
 
 
-
+    double ballKineticEnergy = 0.5 *  (*vBall)(0) * ball_mass * (*vBall)(0);
+    dataPlot(k, 16) = ballKineticEnergy;
 
 //    std::cout <<"potentialEnergy ="<<potentialEnergy << std::endl;
 //    std::cout <<"kineticEnergy ="<<kineticEnergy << std::endl;
@@ -344,7 +349,7 @@ int main(int argc, char* argv[])
     while(k < N)
     {
       if (k%100 == 0)
-        std::cout << "k :"  << k << std::endl;
+        std::cout << "k :"  << k << "/" << N << std::endl;
       s->computeOneStep();
       //osnspb->display();
       // std::cout << "\nposition "  << (*q)(0) <<  std::endl;
@@ -367,9 +372,9 @@ int main(int argc, char* argv[])
       dataPlot(k,10) = (*v)((nDof)/2);
 
       prod(*SparseStiffness, *q, *tmp, true);
-      potentialEnergy = inner_prod(*q,   *tmp);
+      potentialEnergy = 0.5*inner_prod(*q,   *tmp);
       prod(*SparseMass, *v, *tmp, true);
-      kineticEnergy = inner_prod(*v,*tmp);
+      kineticEnergy = 0.5*inner_prod(*v,*tmp);
 
       dataPlot(k, 5) = potentialEnergy;
       dataPlot(k, 6) = kineticEnergy;
@@ -377,6 +382,11 @@ int main(int argc, char* argv[])
       dataPlot(k, 12) = (*qBall)(0);
       dataPlot(k, 13) = (*vBall)(0);
       dataPlot(k, 14) = (*u)(0);
+
+      ballKineticEnergy = 0.5 *  (*vBall)(0) * ball_mass * (*vBall)(0);
+      // std::cout << "ballKineticEnergy " << ballKineticEnergy << std::endl;
+      dataPlot(k, 16) = ballKineticEnergy;
+
 
       double u_p_theta= theta*( (*vBall)(0)- (*v)(0)) + (1-theta) * (dataPlot(k-1,13)-  dataPlot(k-1,2));
       impactEnergy = (u_p_theta) * (*lambda)(0);
@@ -402,6 +412,8 @@ int main(int argc, char* argv[])
       if ((*lambda)(0) >0 )
       {
         max_impulse = fmax(max_impulse, (*lambda)(0));
+        // osnspb->display();
+        // break;
       }
 
       s->nextStep();
