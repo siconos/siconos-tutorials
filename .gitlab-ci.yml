@@ -1,9 +1,8 @@
-
 variables:
   # Default ctest model. Warning : overwritten if set in schedules variables (as we expect)
   ctest_build_model: Continuous
   # Default behavior regarding cdash submission
-  cdash_submit: 0
+  cdash_submit: 1
   # Name of the docker image used to run examples. Default = master.
   # Set by CI in siconos project for "triggered" examples.
   SICONOS_DOCKER_NAME: siconos-master
