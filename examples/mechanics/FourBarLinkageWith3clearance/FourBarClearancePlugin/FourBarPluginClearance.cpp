@@ -914,7 +914,7 @@ extern "C" void g1(unsigned int sizeOfq, const double* q, unsigned int sizeOfY, 
   double v1 = fcnExpression1(q);
   double r1 = z[3];
 
-  g[0] = (r2-r1) - v1;
+  g[0] = l1* (r2-r1) - v1;
   g[1] =0.0;
 
 }

@@ -103,8 +103,8 @@ int main(int argc, char* argv[])
     (*E)(0) = -0.5*HeightBlock;
     */
     // Impact law
-    SP::NonSmoothLaw nslaw1(new MultipleImpactNSL(e1, K1, eta));
-    SP::NonSmoothLaw nslaw2(new MultipleImpactNSL(e2, K2, eta));
+    SP::NonSmoothLaw nslaw1(new MultipleImpactNSL(e1, K1, eta, 1));
+    SP::NonSmoothLaw nslaw2(new MultipleImpactNSL(e2, K2, eta, 1));
     // Interaction at contact point 1
     //SP::Relation relation1(new LagrangianLinearTIR(H, E));
     SP::Relation relation1(new LagrangianScleronomousR("RockingBlockPlugin:h1", "RockingBlockPlugin:G1", "RockingBlockPlugin:G1dot"));

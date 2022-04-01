@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
 //*****BUILD THE NSLAW
   SP::NonSmoothLaw aNSL;
-  RelayNSL * rNSL = new RelayNSL(sNSLawSize);
+  RelayNSL * rNSL = new RelayNSL(sNSLawSize, -1., 1.);
   aNSL.reset(rNSL); //nr de lambda din pb LCP
   rNSL->setLb(-0.0);
   rNSL->setUb(1.0);

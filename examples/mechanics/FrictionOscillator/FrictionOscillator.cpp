@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
 
     // NonSmoothLaw
     unsigned int nslawSize = 1;
-    SP::NonSmoothLaw myNslaw(new RelayNSL(nslawSize));
+    SP::NonSmoothLaw myNslaw(new RelayNSL(nslawSize, -1., 1.));
 
     myNslaw->display();
 

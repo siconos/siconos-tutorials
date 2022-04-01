@@ -226,7 +226,7 @@ int main(int argc, char* argv[])
         (*E)(0) = -1.0 * ((*RadiusBalls)(j - 1) + (*RadiusBalls)(j));
       }
       //
-      nslaw = SP::NonSmoothLaw(new MultipleImpactNSL(ResCoef, Stiff, ElasPow));
+      nslaw = SP::NonSmoothLaw(new MultipleImpactNSL(ResCoef, Stiff, ElasPow, 1));
       relation = SP::Relation(new LagrangianLinearTIR(H, E));
       interaction = SP::Interaction(new Interaction(nslaw, relation));
       if(j == 0)  // for contact wall-ball
@@ -335,6 +335,7 @@ int main(int argc, char* argv[])
 
     }
 
+    
     cout << "Computation Time " << endl;
     end = std::chrono::system_clock::now();
     int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
@@ -343,10 +344,10 @@ int main(int argc, char* argv[])
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
-    ioMatrix::write("BeadColum_LZBModel.dat", "ascii", dataPlot, "noDim");
+    ioMatrix::write("BeadColumn_LZBModel.dat", "ascii", dataPlot, "noDim");
 
     double error=0.0, eps=1e-12;
-    if((error=ioMatrix::compareRefFile(dataPlot, "BeadColum_LZBModel.ref", eps))>=0.0
+    if((error=ioMatrix::compareRefFile(dataPlot, "BeadColumnED_LZBModel.ref", eps))>=0.0
         && error > eps)
       return 1;
   }

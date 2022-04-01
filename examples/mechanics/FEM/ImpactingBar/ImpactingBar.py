@@ -1,10 +1,11 @@
+import numpy as np
 from numpy.linalg import norm
 from siconos.kernel import LagrangianLinearTIDS, NewtonImpactNSL,\
     LagrangianLinearTIR, Interaction, NonSmoothDynamicalSystem, MoreauJeanOSI,\
     TimeDiscretisation, LCP, TimeStepping
 
 from siconos.kernel import SimpleMatrix, getMatrix, SPARSE
-import numpy as np
+#import numpy as np
 
 # User-defined main parameters
 nDof = 500  #degrees of freedom for the beam
