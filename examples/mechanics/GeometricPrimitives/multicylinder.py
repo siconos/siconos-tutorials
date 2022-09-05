@@ -19,9 +19,10 @@ with MechanicsHdf5Runner() as io:
     R = 0.1
     L = 2.0
     io.add_primitive_shape('Cyl', 'Cylinder', (R, L))
+    io.add_primitive_shape('Stick', 'Box', (R, L, R))
 
     # Definition of the ground shape
-    io.add_primitive_shape('Ground', 'Box', (10, 10, 1.0))
+    io.add_primitive_shape('Ground', 'Box', (20, 10, 1.0))
     
     # Definition of the ground shape
     io.add_primitive_shape('SmallBox', 'Box', (.1, .1, .1))
@@ -42,28 +43,28 @@ with MechanicsHdf5Runner() as io:
     inertia_test[2, 2] = 0.25*mass_test*R*R + 1/3.0*mass_test*L*L
     print(inertia_test)
     orientation_test = [0.14, 0.7, 0.7, 0]
-    io.add_object('cyl1', [Contactor('Cyl')],
-                  translation=[-2, 0, 1],
-                  orientation=orientation_test,
-                  velocity=[0, 0, 0, 0, 0, 0],
-                  mass=1, inertia=inertia_test)
+    # io.add_object('cyl1', [Contactor('Cyl')],
+    #               translation=[-2, 0, 1],
+    #               orientation=orientation_test,
+    #               velocity=[0, 0, 0, 0, 0, 0],
+    #               mass=1, inertia=inertia_test)
 
     import math
     cs = math.cos(math.pi/4.0)
     ss = math.sin(math.pi/4.0)
     orientation_rot_x= [cs, ss, 0, 0]
     
-    io.add_object('cyl2', [Contactor('Cyl')],
-                  translation=[0, 0, L/2.0+L],
-                  orientation= orientation_rot_x,
-                  velocity=[0, 0, 0, 0, 0, 0],
-                  mass=1, inertia=inertia_test)
+    # io.add_object('cyl2', [Contactor('Cyl')],
+    #               translation=[0, 0, L/2.0+L],
+    #               orientation= orientation_rot_x,
+    #               velocity=[0, 0, 0, 0, 0, 0],
+    #               mass=1, inertia=inertia_test)
 
-    io.add_object('cyl3', [Contactor('Cyl')],
-                  translation=[0, 0, L/2.0],
-                  orientation= orientation_rot_x,
-                  velocity=[0, 0, 0, 0, 0, 0],
-                  mass=1, inertia=inertia_test)
+    # io.add_object('cyl3', [Contactor('Cyl')],
+    #               translation=[0, 0, L/2.0],
+    #               orientation= orientation_rot_x,
+    #               velocity=[0, 0, 0, 0, 0, 0],
+    #               mass=1, inertia=inertia_test)
 
     io.add_object('cyl4', [Contactor('Cyl')],
                   translation=[1, 0, L/2.0+L-0.1],
@@ -77,30 +78,73 @@ with MechanicsHdf5Runner() as io:
                   velocity=[0, 0, 0, 0, 0, 0],
                   mass=1, inertia=inertia_test)
 
+    # io.add_object('cyl6', [Contactor('Cyl')],
+    #               translation=[2, 0, L/2.0],
+    #               orientation= orientation_rot_x,
+    #               velocity=[0, 0, 0, 0, 0, 0],
+    #               mass=1, inertia=inertia_test)
+
+    # io.add_object('smallbox', [Contactor('SmallBox')],
+    #               translation=[2, 0, L+0.1],
+    #               velocity=[0, 0, 0, 0, 0, 0],
+    #               mass=1, inertia=inertia_test)
+
+    # io.add_object('cyl7', [Contactor('Cyl')],
+    #               translation=[3, 0, L/2.0-0.1],
+    #               orientation= orientation_rot_x,
+    #               velocity=[0, 0, 0, 0, 0, 0],
+    #               mass=1, inertia=inertia_test)
+
+    # io.add_object('smallbox1', [Contactor('SmallBox')],
+    #               translation=[3, 0, L-0.1],
+    #               velocity=[0, 0, 0, 0, 0, 0],
+    #               mass=1, inertia=inertia_test)
 
 
     
-    io.add_object('cyl6', [Contactor('Cyl')],
-                  translation=[2, 0, L/2.0],
-                  orientation= orientation_rot_x,
+
+
+
+
+
+    r_ori = [cs,ss, 0, 0]
+    io.add_object('cyl_x', [Contactor('Cyl',relative_orientation=r_ori)],
+                  translation=[0, 0, L/2.0-0.1],
+                  #orientation= orientation_rot_x,
+                  velocity=[0, 0, 0, 0, 0, 0],
+                  mass=1, inertia=inertia_test)
+    io.add_object('cyl_x2', [Contactor('Cyl',relative_orientation=r_ori)],
+                  translation=[0, 0, L/2.0-0.1+L],
+                  #orientation= orientation_rot_x,
                   velocity=[0, 0, 0, 0, 0, 0],
                   mass=1, inertia=inertia_test)
 
-    io.add_object('smallbox', [Contactor('SmallBox')],
-                  translation=[2, 0, L+0.1],
-                  velocity=[0, 0, 0, 0, 0, 0],
-                  mass=1, inertia=inertia_test)
 
-    io.add_object('cyl7', [Contactor('Cyl')],
-                  translation=[3, 0, L/2.0-0.1],
-                  orientation= orientation_rot_x,
-                  velocity=[0, 0, 0, 0, 0, 0],
-                  mass=1, inertia=inertia_test)
+    
+    
 
-    io.add_object('smallbox1', [Contactor('SmallBox')],
-                  translation=[3, 0, L-0.1],
-                  velocity=[0, 0, 0, 0, 0, 0],
-                  mass=1, inertia=inertia_test)
+    # io.add_object('compound', [Contactor('Cyl', relative_translation=[-1,0,0],  relative_orientation=r_ori),
+    #                            Contactor('Cyl', relative_translation=[1,0,0], relative_orientation=r_ori),
+    #                            Contactor('Stick', relative_translation=[-1.5,0,0], relative_orientation=r_ori),
+    #                            Contactor('Stick', relative_translation=[1.5,0,0], relative_orientation=r_ori)
+    #                            ],
+    #               translation=[6, 0, L/2.0-0.1],
+    #               #orientation= orientation_rot_x,
+    #               velocity=[0, 0, 0, 0, 0, 0],
+    #               mass=1, inertia=inertia_test)
+
+    # io.add_object('compound2', [Contactor('Cyl', relative_translation=[-1,0,0],  relative_orientation=r_ori),
+    #                             Contactor('Cyl', relative_translation=[1,0,0], relative_orientation=r_ori),
+    #                             Contactor('Stick', relative_translation=[-1.5,0,0], relative_orientation=r_ori),
+    #                             Contactor('Stick', relative_translation=[1.5,0,0], relative_orientation=r_ori)
+    #                            ],
+    #               translation=[6, 0, L/2.0-0.1+L],
+    #               #orientation= orientation_rot_x,
+    #               velocity=[0, 0, 0, 0, 0, 0],
+    #               mass=1, inertia=inertia_test)
+
+
+    
 
     # the ground object made with the ground shape. As the mass is
     # not given, it is a static object only involved in contact
@@ -117,7 +161,7 @@ options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-6
 
 test= True
 if test:
-    T=2.
+    T=0.1
 else:
     T=20.0
 
