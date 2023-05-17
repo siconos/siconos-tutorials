@@ -196,6 +196,13 @@ int main(int argc, char* argv[])
     }
     // --- Output files ---
     ioMatrix::write("result.dat", "ascii", DataPlot, "noDim");
+    ioMatrix::write("CamFollower-Rheonomous.dat", "ascii", DataPlot, "noDim");
+    //ioMatrix::write("CamFollower-Rheonomous.ref", "ascii", DataPlot);
+    double error=0.0, eps=1e-12;
+    if((error=ioMatrix::compareRefFile(DataPlot, "CamFollower-Rheonomous.ref", eps)) >= 0.0
+        && error > eps)
+      return 1;
+
     cout << "End of computation - Number of iterations done: " << k << endl;
   }
 
