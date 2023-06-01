@@ -32,7 +32,7 @@ from siconos.kernel import FirstOrderLinearTIDS, FirstOrderLinearDS, RelayNSL, I
 # LagrangianLinearTIDS, NewtonImpactNSL,\
 #     LagrangianLinearTIR, Interaction, NonSmoothDynamicalSystem, MoreauJeanOSI,\
 #     TimeDiscretisation, LCP, TimeStepping
-#from siconos.kernel import SimpleMatrix, getMatrix
+from siconos.kernel import SimpleMatrix, getMatrix
 
 import siconos.numerics as sn
 
@@ -56,8 +56,8 @@ theta = 0.5  # theta scheme
 
 m = 1; stiffness = 1;
 alpha = 1
-xinit=1.
-vinit=1.
+xinit=12.
+vinit=6.
 
 x0 = [xinit, vinit]    # initial state
 
@@ -127,10 +127,10 @@ s = TimeStepping(frictionOscillator,t, OSI, osnspb)
 #
 # computation
 #
-
+import math
 
 # the number of time steps
-N = int((T - t0) / h)
+N = math.ceil((T - t0) / h)
 
 # # Get the values to be plotted
 # # ->saved in a matrix dataPlot
@@ -143,6 +143,7 @@ dataPlot = zeros((N+1, 6))
 x = oscillator.x()
 # p = ball.p(1)
 lambda_ = inter.lambda_(0)
+y = inter.y(0)
 
 
 # #
@@ -152,6 +153,7 @@ dataPlot[0, 0] = t0
 dataPlot[0, 1] = x[0]
 dataPlot[0, 2] = x[1]
 dataPlot[0, 3] = lambda_[0]
+dataPlot[0, 4] = y[0]
 
 
 k = 1
@@ -164,22 +166,18 @@ while s.hasNextEvent():
     dataPlot[k, 1] = x[0]
     dataPlot[k, 2] = x[1]
     dataPlot[k, 3] = lambda_[0]
-    
+    dataPlot[k, 4] = y[0]
     k += 1
     s.nextStep()
 
-
-
-
-    
-# #
-# # comparison with the reference file
-# #
-# ref = getMatrix(SimpleMatrix("BouncingBallTS.ref"))
-
-# if (norm(dataPlot - ref) > 1e-12):
-#     print("Warning. The result is rather different from the reference file.")
-
+#
+# comparison with the reference file (produced by the cpp version)
+#
+ref = getMatrix(SimpleMatrix("FrictionOscillator.ref"))
+if (norm(dataPlot[0:10000,0:6] - ref[0:10000,0:6]) > 1e-12):
+    print("Warning. The result is rather different from the reference file.", norm(dataPlot[0:10000,0:6] - ref[0:10000,0:6]) )
+else:
+    print("Error with the reference file.", norm(dataPlot[0:10000,0:6] - ref[0:10000,0:6]) )
 
 #
 # plots
@@ -198,6 +196,9 @@ plt.subplot(412)
 plt.title('velocity dot x1')
 plt.plot(dataPlot[:, 0], dataPlot[:, 2])
 plt.grid()
+plt.figure()
+plt.plot(dataPlot[:, 1], dataPlot[:, 2])
+plt.title('lambda')
 
 
 plt.figure()

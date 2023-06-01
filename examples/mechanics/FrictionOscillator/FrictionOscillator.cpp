@@ -23,8 +23,8 @@ int main(int argc, char* argv[])
     char  filename[50] = "simu.";
     if(argc==1)
     {
-      xinit = 1.0;
-      vinit =1.0;
+      xinit = 12.0;
+      vinit =6.0;
       strncpy(&filename[5],"1.0.1.0.log",7);
     }
     else if(argc==3)
@@ -210,16 +210,16 @@ int main(int argc, char* argv[])
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("FrictionOscillator.dat", "ascii", dataPlot, "noDim");
     ioMatrix::write(filename, "ascii", dataPlot, "noDim");
-    // // Comparison with a reference file
-    // SimpleMatrix dataPlotRef(dataPlot);
-    // dataPlotRef.zero();
-    // ioMatrix::read("RelayOscillator.ref", "ascii", dataPlotRef);
-    // std::cout << (dataPlot-dataPlotRef).normInf() <<std::endl;
-    // if ((dataPlot - dataPlotRef).normInf() > 1e-12)
-    // {
-    //   std::cout << "Warning. The results is rather different from the reference file." << std::endl;
-    //   return 1;
-    // }
+    // Comparison with a reference file
+    SimpleMatrix dataPlotRef(dataPlot);
+    dataPlotRef.zero();
+    ioMatrix::read("FrictionOscillator.ref", "ascii", dataPlotRef);
+    std::cout << (dataPlot-dataPlotRef).normInf() <<std::endl;
+    if ((dataPlot - dataPlotRef).normInf() > 1e-12)
+    {
+      std::cout << "Warning. The results is rather different from the reference file." << std::endl;
+      return 1;
+    }
 
 
   }
