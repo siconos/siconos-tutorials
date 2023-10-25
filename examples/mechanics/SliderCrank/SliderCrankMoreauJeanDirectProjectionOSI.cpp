@@ -331,6 +331,7 @@ int main(int argc, char *argv[]) {
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
+  
 
     double error = 0.0, eps = 1e-10;
     if ((error = ioMatrix::compareRefFile(
