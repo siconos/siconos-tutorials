@@ -156,7 +156,7 @@ fctmintjacq=numpy.array(['FiniteDifference',
 boundaryCondition=numpy.array(['','','','','','','prescribedvelocityB1',''])
 # we prescribe the 4th component of the velocity of the first body
 # i.e we prescribe a angular velocity around the y-axis.
-boundaryConditionIndex=numpy.array([numpy.array([]),numpy.array([]),numpy.array([]),numpy.array([]),numpy.array([]),numpy.array([]),numpy.array([0]), numpy.array([])]) # we impose the velocity
+boundaryConditionIndex=numpy.array([numpy.array([0]),numpy.array([0]),numpy.array([0]),numpy.array([0]),numpy.array([0]),numpy.array([0]),numpy.array([0]), numpy.array([0])]) # we impose the velocity
 
 ###### VISIBILITY of CAD geometry###########################################################
 bodyDraw=array.array('I',[1,

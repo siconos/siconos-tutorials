@@ -5,8 +5,7 @@ import math
 import numpy
 
 command = ['siconos', '--build-plugins', '-q']
-subprocess.run(command, check=True)
-
+print(subprocess.run(command, check=True))
 
 # REQUIRED number of bodies
 NBBODIES=1
@@ -35,10 +34,10 @@ afile=['./CAD/tube.stp']
 
 
 ## REQUIRED the library for the pluged forces.
-# if apple :
-#     plugin='TubePlugin.dylib'
-# else :
-#     plugin='TubePlugin'    
+if apple :
+    plugin='TubePlugin.dylib'
+else :
+    plugin='TubePlugin'    
 
 ## REQUIRED the external forces.
 fctfext=numpy.array(['externalForceG'])

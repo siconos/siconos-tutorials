@@ -110,8 +110,8 @@ boundaryCondition = np.array(['prescribedvelocityB1', '', ''])
  is enforced for the first body"""
 
 boundaryConditionIndex = np.array([np.array([4]),
-                                   np.array([]),
-                                   np.array([])])
+                                   np.array([0]),
+                                   np.array([0])])
 """"we prescribe the 4th component of the velocity of the first body
 i.e we prescribe a angular velocity around the y-axis."""
 
