@@ -1,7 +1,7 @@
 #[=======================================================================[.rst:
 ctest_tools.cmake
 ----
-This file contains some functions used to setup ctest config
+This file contains the functions used to setup ctest config
 
 #]=======================================================================]
 
@@ -17,10 +17,13 @@ with phase_name in (Configure, Build, Test).
 #]=======================================================================]
 function(post_ctest)
   set(oneValueArgs PHASE)
+  set(options FORCE)
   cmake_parse_arguments(run "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
   message("------> status/result : ${_STATUS}/${_RESULT}")
-  if(NOT _STATUS EQUAL 0 OR NOT _RESULT EQUAL 0)
+  # This function is supposed to submit to cdash
+  # only if cmake terminates with an error (e.g. FATAL_ERROR) or ctest fails
+  if(NOT _STATUS EQUAL 0 OR NOT _RESULT EQUAL 0 OR run_FORCE)
     if(CDASH_SUBMIT)
       ctest_submit(
         RETURN_VALUE RETURN_STATUS
@@ -33,6 +36,9 @@ function(post_ctest)
       message("- Results won't be submitted to a cdash server.\n")
       return()
     endif()
+  endif()
+  
+  if(NOT _STATUS EQUAL 0 OR NOT _RESULT EQUAL 0)
     message(FATAL_ERROR "\n\n *** ${run_PHASE} process failed *** \n\n")
   endif()
   unset(_RESULT PARENT_SCOPE)
@@ -50,29 +56,23 @@ function(set_site_name)
   cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
   cmake_host_system_information(RESULT fqdn QUERY FQDN)
 
-  if(${CMAKE_VERSION} VERSION_GREATER "3.10.3") 
-    # https://cmake.org/cmake/help/latest/command/cmake_host_system_information.html
-    cmake_host_system_information(RESULT osname QUERY OS_NAME)
-    cmake_host_system_information(RESULT osplatform QUERY OS_PLATFORM)
-    cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
-  else()
-    set(osname ${CMAKE_SYSTEM_NAME})
-    set(osplatform ${CMAKE_SYSTEM_PROCESSOR})
-  endif()
+  cmake_host_system_information(RESULT osname QUERY OS_NAME)
+  cmake_host_system_information(RESULT osplatform QUERY OS_PLATFORM)
+  cmake_host_system_information(RESULT hostname QUERY HOSTNAME)
 
   string(STRIP ${osname} osname)
   string(STRIP ${osplatform} osplatform)
 
-  if(CI_GITLAB)
-    string(FIND $ENV{CI_JOB_IMAGE} siconos length)
-    string(SUBSTRING $ENV{CI_JOB_IMAGE} ${length}+7 -1 dockerimagename)
-    string(STRIP ${dockerimagename} dockerimagename)
-    set(hostname "[ ${dockerimagename} from gitlab registry]")
-  elseif(CI_TRAVIS)
-    set(hostname "[ ${hostname} hosted on travis]") 
+  if(DEFINED ENV{GITLAB_CI})
+    if($ENV{GITLAB_CI} STREQUAL true)
+      string(SUBSTRING $ENV{CI_JOB_IMAGE} 39 -1 dockerimagename) 
+      string(STRIP ${dockerimagename} dockerimagename)
+      set(hostname "[ ${dockerimagename} from gitlab registry]")
+    endif()
   endif()
-  
-  set(_SITE "${osname}-${osplatform}${hostname}")
+
+  set(_SITE "${osname}-${osplatform}-host=${hostname}")
+
   string(STRIP _SITE ${_SITE})
   set(CTEST_SITE "${_SITE}" PARENT_SCOPE)
 endfunction()
@@ -82,10 +82,20 @@ function(set_cdash_build_name)
   # Get hash for commit of current version of Siconos
   # Saved in the file siconos-commit.txt during Siconos installation
   # (only if WITH_GIT=ON).
-  file(READ ${SICONOS_INSTALL_DIR}/share/siconos-commit.txt branch_commit)
-  string(STRIP ${branch_commit} branch_commit)
-  include(${CTEST_SOURCE_DIRECTORY}/cmake/SiconosRequiredVersion.cmake)
-  set(_name "Examples [based on Siconos-${SICONOS_REQUIRED_VERSION},${branch_commit}]")
+  
+  execute_process(COMMAND
+    siconos --configpath
+    OUTPUT_VARIABLE siconos_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  find_file(SICONOS_COMMIT siconos-commit.txt ${siconos_DIR})
+  if(SICONOS_COMMIT)
+    file(READ ${SICONOS_COMMIT} branch_commit)
+    string(STRIP ${branch_commit} branch_commit)
+    set(branch_commit "-${branch_commit}")
+  endif()
+  include(${CTEST_SOURCE_DIRECTORY}/examples/cmake/SiconosRequiredVersion.cmake)
+  set(_name "Examples [based on Siconos-${SICONOS_REQUIRED_VERSION}${branch_commit}]")
   string(STRIP ${_name} _name)
   set(CTEST_BUILD_NAME "${_name}" PARENT_SCOPE)
 endfunction()

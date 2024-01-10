@@ -5,21 +5,19 @@
 # It assumes a proper install of Siconos in ${CI_PROJECT_DIR}/install-siconos
 # 
 : ${CI_PROJECT_DIR:?"Please set environment variable CI_PROJECT_DIR with 'siconos-tutorials' repository (absolute) path."}
-: ${SICONOS_INSTALL_DIR:?"Please set environment variable SICONOS_INSTALL_DIR  with Siconos installation path (absolute)."}
-: ${ctest_build_model:?"Please set Dashboard client mode. Choose among Experimental, Continuous or Nightly."}
-: ${cdash_submit:?"Please set environment variable cdash_submit to TRUE or FALSE. If true, ctests results will be submitted to cdash server."}
 
-# -- install some extra dependencies --
-pip3 install -U -r $CI_PROJECT_DIR/ci_gitlab/requirements.txt > /dev/null
+# Default build dir, if not set
+BUILD_DIR="${BUILD_DIR:=$HOME/build-examples}" 
+# Default ctest mode
+CTEST_BUILD_MODEL="${CTEST_BUILD_MODEL:=Experimental}"
+# Set to 1 to allow -jN, 0 to restrict to -j1.
+PARALLEL_BUILD="${PARALLEL_BUILD=:=1}"
+# Default: submit to cdash
+CDASH_SUBMIT="${CDASH_SUBMIT=:=1}"
 
-# -- Create build dir --
-mkdir -p $CI_PROJECT_DIR/build/examples
-cd $CI_PROJECT_DIR/build/examples
 
 # -- Run ctest --
 # It will configure, build, and test siconos examples.
-# 
-
-ctest -S ${CI_PROJECT_DIR}/ci_gitlab/ctest_driver_examples.cmake -Dmodel=$ctest_build_model -DSICONOS_INSTALL_DIR=${SICONOS_INSTALL_DIR} -DCDASH_SUBMIT=$cdash_submit -V
+ctest -S ${CI_PROJECT_DIR}/ci_gitlab/ctest_driver_examples.cmake -Dmodel=$CTEST_BUILD_MODEL -DALLOW_PARALLEL_BUILD=$PARALLEL_BUILD -DCDASH_SUBMIT=$CDASH_SUBMIT -V --output-junit test_results.xml -DCTEST_BINARY_DIRECTORY=$BUILD_DIR -DCTEST_SOURCE_DIRECTORY=$CI_PROJECT_DIR 
 
 

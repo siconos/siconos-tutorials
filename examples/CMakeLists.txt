@@ -1,15 +1,14 @@
 # Set minimum version for cmake
-cmake_minimum_required(VERSION 3.7)
-if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.12")
-  cmake_policy(SET CMP0074 NEW)
-endif()
+cmake_minimum_required(VERSION 3.14) 
+
+cmake_policy(SET CMP0074 NEW) # find_package() uses <PackageName>_ROOT variables.
+cmake_policy(SET CMP0086 NEW) # UseSWIG honors SWIG_MODULE_NAME via -module flag.
+cmake_policy(SET CMP0079 NEW) # target_link_libraries() allows use with targets in other directories
+cmake_policy(SET CMP0067 NEW) # Honor language standard in try_compile() source-file signature.
 
 project(siconos_examples CXX C)
 
-
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
-#include(WindowsSiconosSetup) Outdated? To be reviewed
 
 set(tests_timeout 35 CACHE INTERNAL "Limit time for tests (in seconds)")
 
@@ -26,7 +25,7 @@ include(SiconosRequiredVersion)
 # 
 # Remark : we may also use the package registry magic to find siconos:
 # see https://cmake.org/cmake/help/git-master/manual/cmake-packages.7.html#creating-packages
-find_package(siconos  REQUIRED)
+find_package(siconos REQUIRED)
 
 # --- Search siconos package path ---
 # --> based on path to script siconos.
