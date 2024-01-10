@@ -12,7 +12,9 @@ variables:
 # - Pull an image (possibly from siconos-tutorials registry)
 #   named  IMAGE_NAME
 .examples-build:
-  image: $IMAGE_NAME
+  image:
+    name: $IMAGE_NAME
+    entrypoint: ["/bin/bash"]
   stage: test
   script:
     - sh ci_gitlab/build_and_run_examples.sh
