@@ -37,10 +37,12 @@ run-examples:
 # - Run only when triggered from siconos project
 # - Run on a docker image corresponding to a specific branch in siconos project.
 #   (var: SICONOS_DOCKER_NAME, automatically set by CI in siconos project)
+#
+# This job runs in multi-project pipelines only
 triggered-examples:
   extends: .examples-build
   variables:
-    # IMAGE_NAME: $CI_REGISTRY_IMAGE/$SICONOS_DOCKER_NAME
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconoslab-$CI_COMMIT_REF_SLUG
     CDASH_SUBMIT: 1
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
