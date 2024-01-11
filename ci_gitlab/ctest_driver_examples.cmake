@@ -87,21 +87,7 @@ ctest_test(
   RETURN_VALUE _RESULT
   # QUIET
   )
-post_ctest(PHASE Test)
-
-if(CDASH_SUBMIT)
-   ctest_submit(
-     RETURN_VALUE RETURN_STATUS
-     CAPTURE_CMAKE_ERROR SUBMISSION_STATUS
-     )
-   if(NOT SUBMISSION_STATUS EQUAL 0)
-     message(WARNING " *** submission failure *** ")
-   endif()
-endif()
-if(NOT _STATUS EQUAL 0 OR NOT _RESULT EQUAL 0)
-  message(FATAL_ERROR "\n\n *** ${run_PHASE} process failed *** \n\n")
-endif()
-
+post_ctest(PHASE Test FORCE)
 
 # ============= Summary =============
 message(STATUS "\n============================================ Summary ============================================")
