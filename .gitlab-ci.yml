@@ -14,7 +14,7 @@ variables:
 .examples-build:
   image:
     name: $IMAGE_NAME
-    entrypoint: ["/bin/bash"]
+    entrypoint: [""]
   stage: test
   script:
     - sh ci_gitlab/build_and_run_examples.sh
@@ -40,7 +40,7 @@ run-examples:
 triggered-examples:
   extends: .examples-build
   variables:
-    IMAGE_NAME: $CI_REGISTRY_IMAGE/$SICONOS_DOCKER_NAME
+    # IMAGE_NAME: $CI_REGISTRY_IMAGE/$SICONOS_DOCKER_NAME
     CDASH_SUBMIT: 1
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
