@@ -66,7 +66,7 @@ ctest_configure(
   CAPTURE_CMAKE_ERROR _STATUS
   #QUIET
   )
-#post_ctest(PHASE Configure FORCE)
+post_ctest(PHASE Configure)
 message("\n\n=============== Start ctest_build =============== ")
 
 cmake_host_system_information(RESULT NP QUERY NUMBER_OF_LOGICAL_CORES)
@@ -78,7 +78,7 @@ ctest_build(
   CAPTURE_CMAKE_ERROR _STATUS
   RETURN_VALUE _RESULT
 )
-#post_ctest(PHASE Build FORCE)
+post_ctest(PHASE Build)
 message("\n\n=============== Start ctest_test (nbprocs = ${NP}) =============== ")
 ctest_test(
   #PARALLEL_LEVEL NP
@@ -87,7 +87,7 @@ ctest_test(
   RETURN_VALUE _RESULT
   # QUIET
   )
-#post_ctest(PHASE Test FORCE)
+post_ctest(PHASE Test)
 
 if(CDASH_SUBMIT)
    ctest_submit(
@@ -98,6 +98,10 @@ if(CDASH_SUBMIT)
      message(WARNING " *** submission failure *** ")
    endif()
 endif()
+if(NOT _STATUS EQUAL 0 OR NOT _RESULT EQUAL 0)
+  message(FATAL_ERROR "\n\n *** ${run_PHASE} process failed *** \n\n")
+endif()
+
 
 # ============= Summary =============
 message(STATUS "\n============================================ Summary ============================================")
