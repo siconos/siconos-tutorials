@@ -23,7 +23,7 @@ variables:
         - build/
       expire_in: 3 days 
       reports:
-        junit: /home/siconos-user/build/test_results.xml
+        junit: /home/siconos-user/build-examples/test_results.xml
 
 # examples, on ubuntu20 with a standard (default)
 # Siconos installation (based on current development, master branch, version
