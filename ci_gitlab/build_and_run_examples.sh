@@ -18,6 +18,6 @@ CDASH_SUBMIT="${CDASH_SUBMIT=:=1}"
 
 # -- Run ctest --
 # It will configure, build, and test siconos examples.
-ctest -S ${CI_PROJECT_DIR}/ci_gitlab/ctest_driver_examples.cmake -Dmodel=$CTEST_BUILD_MODEL -DALLOW_PARALLEL_BUILD=$PARALLEL_BUILD -DCDASH_SUBMIT=$CDASH_SUBMIT -V --output-junit test_results.xml -DCTEST_BINARY_DIRECTORY=/home/siconos-user/build-examples -DCTEST_SOURCE_DIRECTORY=$CI_PROJECT_DIR 
+ctest -S ${CI_PROJECT_DIR}/ci_gitlab/ctest_driver_examples.cmake -Dmodel=$CTEST_BUILD_MODEL -DALLOW_PARALLEL_BUILD=$PARALLEL_BUILD -DCDASH_SUBMIT=$CDASH_SUBMIT -V --output-junit test_results.xml -DCTEST_BINARY_DIRECTORY=/home/siconos-user/build-examples -DCTEST_SOURCE_DIRECTORY=$CI_PROJECT_DIR/examples
 
 

@@ -21,7 +21,7 @@ if(NOT CTEST_CMAKE_GENERATOR)
 endif()
 
 # Warning cmake/ctest run on examples dir!
-include(${CTEST_SOURCE_DIRECTORY}/ci_gitlab/ctest_tools.cmake)
+include(${CTEST_SOURCE_DIRECTORY}/../ci_gitlab/ctest_tools.cmake)
 
 # Build name (for cdash)
 if(NOT CTEST_BUILD_NAME)
@@ -49,9 +49,9 @@ endif()
 
 ctest_start(${model})
 # Set CTEST_CONFIGURE_COMMAND to cmake followed by siconos options
-include(${CTEST_SOURCE_DIRECTORY}/examples/cmake/SiconosRequiredVersion.cmake)
+include(${CTEST_SOURCE_DIRECTORY}/cmake/SiconosRequiredVersion.cmake)
 set(ConfigPackageLocation lib/cmake/siconos-${SICONOS_REQUIRED_VERSION})
-set(CTEST_CONFIGURE_COMMAND "${CMAKE_COMMAND} ${CTEST_SOURCE_DIRECTORY}/examples")
+set(CTEST_CONFIGURE_COMMAND "${CMAKE_COMMAND} ${CTEST_SOURCE_DIRECTORY}")
 set(CTEST_MEMORYCHECK_SUPPRESSIONS_FILE ${siconos_DIR})
 
 # Remark: do not used parallel for examples. It leads to: warning: jobserver unavailable: using -j1. Add `+' to parent make rule.
