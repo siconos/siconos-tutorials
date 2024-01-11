@@ -6,7 +6,7 @@ variables:
   # Name of the docker image used to run examples. Default = master.
   # Set by CI in siconos project for "triggered" examples.
   SICONOS_DOCKER_NAME: siconoslab-master
-
+  BUILD_DIR: /home/siconos-user/build-examples
 
 # -- Template for examples build-test-install jobs --
 # - Pull an image (possibly from siconos-tutorials registry)
