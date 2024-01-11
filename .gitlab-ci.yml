@@ -18,6 +18,12 @@ variables:
   stage: test
   script:
     - sh ci_gitlab/build_and_run_examples.sh
+  artifacts:
+      paths:
+        - build/
+      expire_in: 3 days 
+      reports:
+        junit: /home/siconos-user/build/test_results.xml
 
 # examples, on ubuntu20 with a standard (default)
 # Siconos installation (based on current development, master branch, version
@@ -40,11 +46,11 @@ run-examples:
 #
 # This job runs in multi-project pipelines only
 triggered-examples:
-  extends: .examples-build
   variables:
     IMAGE_NAME: $CI_REGISTRY_IMAGE/siconoslab-$CI_COMMIT_REF_SLUG
     BUILD_DIR: /home/siconos-user/build-examples
     CDASH_SUBMIT: 1
+  extends: .examples-build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "pipeline"'
       when: always
