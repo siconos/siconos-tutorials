@@ -7,7 +7,7 @@
 : ${CI_PROJECT_DIR:?"Please set environment variable CI_PROJECT_DIR with 'siconos-tutorials' repository (absolute) path."}
 
 # Default build dir, if not set
-BUILD_DIR="${BUILD_DIR:=$HOME/build-examples}" 
+BUILD_DIR="${BUILD_DIR:=/home/siconos-user/build-examples}" 
 # Default ctest mode
 CTEST_BUILD_MODEL="${CTEST_BUILD_MODEL:=Experimental}"
 # Set to 1 to allow -jN, 0 to restrict to -j1.
