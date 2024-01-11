@@ -48,7 +48,6 @@ run-examples:
 triggered-examples:
   variables:
     IMAGE_NAME: $CI_REGISTRY_IMAGE/siconoslab-$CI_COMMIT_REF_SLUG
-    BUILD_DIR: /home/siconos-user/build-examples
     CDASH_SUBMIT: 1
   extends: .examples-build
   rules:
