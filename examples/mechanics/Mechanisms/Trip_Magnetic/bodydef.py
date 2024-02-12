@@ -2,6 +2,12 @@ import numpy
 import array
 import subprocess
 
+
+# his file is one of the configuration file of siconos/mechanisms
+
+
+
+
 # Run siconos to compile plugins.
 command = ['siconos', '--build-plugins']#, '-q']
 subprocess.run(command, check=True)
@@ -21,9 +27,16 @@ BARRE=5
 PROBE=6
 AIGUILLE=7
 
+# body:
+#   - np.array to store the name of the bodies of the mechanisms
+#   - its shape must be larger than NBODIES
 
-body=numpy.array(['manette','biellette','crochet','platine','equipage','barre','probe', 'aiguille'])
-##### Initial body positions in  ON CONDITION ########################################################
+
+body=numpy.array(['manette','biellette','crochet','platine','equipage','barre','probe', 'aiguille' ])
+
+# initPos:
+#   - np.array to store the initial positions of the bodies
+#   - its shape must be larger than NBODIES
 initPos=numpy.array([(-16.1,10,0.5,0,0,1,-19.0*my_PI/180.0),
                      (-11.659106,8.461021,10.3,   0,0,1, -5.47692     *my_PI/180.0),
                      (7.766977,7.637695,7.1,     0,0,1, 14.6953    *my_PI/180.0),
@@ -32,8 +45,11 @@ initPos=numpy.array([(-16.1,10,0.5,0,0,1,-19.0*my_PI/180.0),
                      (7,-0.25,7.1,       0,0,1, 36        *my_PI/180.0),
 		     (-5.9,-8.9,4.65,           0,1,0, -180*my_PI/180.0),#-2.429
 		     (0,0,5.1,           1,0,0, 90*my_PI/180.0),
-])
+                     ])  # Initial body positions in  ON CONDITION
 
+# initVel:
+#   - np.array to store the initial velocities of the bodies
+#   - its shape must be larger than NBODIES
 initVel=numpy.array([(0,0,0,0,0,0),
 		     (0,0,0,0,0,0),
 		     (0,0,0,0,0,0),
@@ -42,9 +58,10 @@ initVel=numpy.array([(0,0,0,0,0,0),
 		     (0,0,0,0,0,0),
                      (0.0,0,0,0,0,0), ## ON-OFF => -2 ## OFF-ON =>2
 		     (0,0,0,0,0,0),
-
-])
-###### CENTRE OF MASS of bodies  ########################################################
+                     ])
+# initCenterMass:
+#   - np.array to store the center of mass of the bodies
+#   - its shape must be larger than NBODIES
 initCenterMass=numpy.array([(1.123281e+00, 2.939292e+00, 4.001829e+00),
                             (7.562450e+00, -1.224523e+00, -1.585747e-01),
                             (-1.966777e+00, 7.198357e-01, 1.282473e+00),
@@ -58,6 +75,9 @@ initCenterMass=numpy.array([(1.123281e+00, 2.939292e+00, 4.001829e+00),
 ])
 
 ##### MASS of bodies ###############################################################
+# m:
+#   - np.array to store the mass of the bodies
+#   - its shape must be larger than NBODIES
 m=numpy.array([1.30,
                0.50,
                0.09,
@@ -66,7 +86,7 @@ m=numpy.array([1.30,
                0.77,
 	       0.8,
 	       0.1,
-])
+               ])
 ###### INERTIA MATRIX of bodies in (Ixx,Ixy,Ixz),(Iyx,Iyy,Iyz),(Izx,Izy,Izz) #################################################
 inertialMatrix=numpy.array([((3.891182e+01, -6.015089e+00, -2.8917964e-01),(-6.0150893e+00,  2.7959058e+01, -1.9219978e+00),( -2.8917964e-01, -1.9219978e+00,  4.1931367e+01)),
                             ((2.4550110e+00,  3.1330348e-01, -1.4650670e+00),(3.1330348e-01,  2.1629420e+01,  6.8441857e-01),(-1.4650670e+00,  6.8441857e-01,  2.0917600e+01)),
@@ -723,14 +743,14 @@ contacten=array.array('d',[
 ######SIMULATION PARAMETER DESCRIPTIONS#################################################################
 #3D parameters
 
-test=True
+test=False
 if test:
     with3D=0
     freqOutput=20
     stepNumber=50
     dumpGraphic=1
 else:
-    with3D=1
+    with3D=0
     freqUpdate=100
     freqOutput=2
     stepNumber=20000
