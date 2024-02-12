@@ -124,7 +124,9 @@ int main(int argc, char* argv[])
     SP::TimeDiscretisation t(new TimeDiscretisation(t0, h));
 
     // -- (3) one step non smooth problem
-    SP::OneStepNSProblem osnspb(new FrictionContact(2));
+    SP::FrictionContact osnspb(new FrictionContact(2));
+    osnspb->setMStorageType(NM_SPARSE);
+    osnspb->setAssemblyType(REDUCED_DIRECT);
 
     // -- (4) Simulation setup with (1) (2) (3)
     SP::TimeStepping s(new TimeStepping(bouncingStick, t, OSI, osnspb));
@@ -206,7 +208,7 @@ int main(int argc, char* argv[])
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("ImpactingStick.dat", "ascii", dataPlot, "noDim");
-    ioMatrix::write("ImpactingStick.ref", "ascii", dataPlot);
+    //ioMatrix::write("ImpactingStick.ref", "ascii", dataPlot);
     double error=0.0, eps=1e-12;
     if((error=ioMatrix::compareRefFile(dataPlot, "ImpactingStick.ref", eps)) >= 0.0
         && error > eps)
