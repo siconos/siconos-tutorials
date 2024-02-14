@@ -19,9 +19,8 @@
 /*!\file ImpactingStick.cpp
 */
 
-#include "FrictionContact.hpp"
-#include "TimeStepping.hpp"
 #include <SiconosKernel.hpp>
+#include <SolverOptions.h>
 #include <chrono>
 #include <cmath>
 
@@ -45,6 +44,7 @@ int main(int argc, char* argv[])
     
     double l = 1.0; // length of the stick
     double m = 1.;  // mass
+    double inertia= m*l*l/12. ;
     double g = 10.; // Gravity
 
     double pi = acos(-1);
@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
     SP::SiconosMatrix Mass(new SimpleMatrix(nDof, nDof));
     (*Mass)(0, 0) = m;
     (*Mass)(1, 1) = m;
-    (*Mass)(2, 2) = m*l*l/12.;
+    (*Mass)(2, 2) = inertia;
 
     // -- Initial positions and velocities --
     SP::SiconosVector q0(new SiconosVector(nDof));
@@ -127,7 +127,9 @@ int main(int argc, char* argv[])
     SP::FrictionContact osnspb(new FrictionContact(2));
     osnspb->setMStorageType(NM_SPARSE);
     osnspb->setAssemblyType(REDUCED_DIRECT);
-
+    osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 10000;
+    osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-10;
+    
     // -- (4) Simulation setup with (1) (2) (3)
     SP::TimeStepping s(new TimeStepping(bouncingStick, t, OSI, osnspb));
 
@@ -142,32 +144,43 @@ int main(int argc, char* argv[])
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
-    unsigned int outputSize = 15;
+    unsigned int outputSize = 21;
     SimpleMatrix dataPlot(N + 1, outputSize);
 
-    SP::SiconosVector q = stick->q();
-    SP::SiconosVector v = stick->velocity();
-    SP::SiconosVector p = stick->p(1);
-    SP::SiconosVector lambda = inter->lambda(1);
-    SP::SiconosVector y = inter->y(0);
-    SP::SiconosVector u = inter->y(1);
+    SiconosVector& q = *stick->q();
+    SiconosVector& v = *stick->velocity();
+    SiconosVector& p = *stick->p(1);
+    SiconosVector& lambda = *inter->lambda(1);
+    SiconosVector& y = *inter->y(0);
+    SiconosVector& u = *inter->y(1);
+    
 
     dataPlot(0, 0) = bouncingStick->t0();
-    dataPlot(0, 1) = (*q)(0);
-    dataPlot(0, 2) = (*q)(1);
-    dataPlot(0, 3) = (*q)(2);
+    dataPlot(0, 1) = q(0);
+    dataPlot(0, 2) = q(1);
+    dataPlot(0, 3) = q(2);
     
-    dataPlot(0, 4) = (*v)(0);
-    dataPlot(0, 5) = (*v)(1);
-    dataPlot(0, 6) = (*v)(2);
+    dataPlot(0, 4) = v(0);
+    dataPlot(0, 5) = v(1);
+    dataPlot(0, 6) = v(2);
 
-    dataPlot(0, 7) = (*p)(0);
-    dataPlot(0, 8) = (*y)(0);
-    dataPlot(0, 9) = (*y)(1);
-    dataPlot(0, 10) = (*u)(0);
-    dataPlot(0, 11) = (*u)(1);
-    dataPlot(0, 12) = (*lambda)(0);
-    dataPlot(0, 13) = (*lambda)(1);
+    dataPlot(0, 7) = p(0);
+    dataPlot(0, 8) = y(0);
+    dataPlot(0, 9) = y(1);
+    dataPlot(0, 10) = u(0);
+    dataPlot(0, 11) = u(1);
+    dataPlot(0, 12) = lambda(0);
+    dataPlot(0, 13) = lambda(1);
+
+    dataPlot(0, 14) = 0.0;
+    dataPlot(0, 15) = 0.0;
+    dataPlot(0, 16) = 0.0;
+    dataPlot(0, 17) = 0.0;
+    dataPlot(0, 18) = 0.0;
+    dataPlot(0, 19) = 0.0;
+    dataPlot(0, 20) = 0.0;
+
+    
     // --- Time loop ---
     cout << "====> Start computation ... " << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
@@ -177,23 +190,48 @@ int main(int argc, char* argv[])
     while(s->hasNextEvent())
     {
       s->computeOneStep();
+      
+      // std::cout << "OSNSP iteration : "
+      // 		<< osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_ITER_DONE]
+      // 		<< " error:  : "
+      // 		<< osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_RESIDU]
+      // 		<< std::endl;
+      
       // --- Get values to be plotted ---
       dataPlot(k, 0) =  s->nextTime();
-      dataPlot(k, 1) = (*q)(0);
-      dataPlot(k, 2) = (*q)(1);
-      dataPlot(k, 3) = (*q)(2);
+      dataPlot(k, 1) = q(0);
+      dataPlot(k, 2) = q(1);
+      dataPlot(k, 3) = q(2);
       
-      dataPlot(k, 4) = (*v)(0);
-      dataPlot(k, 5) = (*v)(1);
-      dataPlot(k, 6) = (*v)(2);
+      dataPlot(k, 4) = v(0);
+      dataPlot(k, 5) = v(1);
+      dataPlot(k, 6) = v(2);
       
-      dataPlot(k, 7) = (*p)(0);
-      dataPlot(k, 8) = (*y)(0);
-      dataPlot(k, 9) = (*y)(1);
-      dataPlot(k, 10) = (*u)(0);
-      dataPlot(k, 11) = (*u)(1);
-      dataPlot(k, 12) = (*lambda)(0);
-      dataPlot(k, 13) = (*lambda)(1);
+      dataPlot(k, 7) = p(0);
+      dataPlot(k, 8) = y(0);
+      dataPlot(k, 9) = y(1);
+      dataPlot(k, 10) = u(0);
+      dataPlot(k, 11) = u(1);
+      dataPlot(k, 12) = lambda(0);
+      dataPlot(k, 13) = lambda(1);
+
+      // compute work of contact forces
+      const  SiconosVector& u_k = inter->y_k(1);
+      double normal_work= 0.5* (u(0)+u_k(0))*lambda(0);
+      double tangential_work= 0.5* (u(1)+u_k(1))*lambda(1);
+      double dissipation= 0.5* mu * fabs((u(1)+u_k(1)))*lambda(0);
+      dataPlot(k, 14) = normal_work;
+      dataPlot(k, 15) = tangential_work;
+      dataPlot(k, 16) = dissipation;
+      
+      dataPlot(k, 17) = normal_work + dataPlot(k-1, 17);
+      dataPlot(k, 18) = tangential_work + dataPlot(k-1, 18);
+      
+      // compute kinetic energy and potential energy
+      double kinetic_energy = 0.5*m*(v(0)*v(0)+v(1)*v(1)) + 0.5*inertia*(v(2)*v(2));  
+      double potential_energy = m*g* q(1);
+      dataPlot(k, 19) = kinetic_energy;
+      dataPlot(k, 20) = potential_energy;
       
       s->nextStep();
       k++;
