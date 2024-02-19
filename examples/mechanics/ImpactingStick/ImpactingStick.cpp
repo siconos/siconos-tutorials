@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
     double T = 0.2;                  // final computation time
     double h = 1e-4;                // time step
     double theta = 0.5;              // theta for MoreauJeanOSI integrator
-    
+
     double l = 1.0; // length of the stick
     double m = 1.;  // mass
     double inertia= m*l*l/12. ;
@@ -50,8 +50,8 @@ int main(int argc, char* argv[])
     double pi = acos(-1);
     double initial_angle=pi/4.0;
 
-    
-    
+
+
     // -------------------------
     // --- Dynamical systems ---
     // -------------------------
@@ -70,16 +70,16 @@ int main(int argc, char* argv[])
     (*q0)(1) = 0.5 * l * cos(initial_angle)+0.01;
     (*q0)(2) = initial_angle;
 
-    
+
     (*v0)(0) = -0.5;
     (*v0)(1) = 0.1;
     (*v0)(2) = 0.1;
-    
+
     // -- The dynamical system --
     SP::LagrangianDS stick(new LagrangianDS(q0, v0, Mass));
 
 
-    
+
     // -- Set external forces (weight) --
     SP::SiconosVector weight(new SiconosVector(nDof));
     (*weight)(1) = -m * g;
@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
 
     // -- (1) OneStepIntegrators --
     SP::MoreauJeanOSI OSI(new MoreauJeanOSI(theta));
- 
+
 
     // -- (2) Time discretisation --
     SP::TimeDiscretisation t(new TimeDiscretisation(t0, h));
@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
     osnspb->setAssemblyType(REDUCED_DIRECT);
     osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 10000;
     osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-10;
-    
+
     // -- (4) Simulation setup with (1) (2) (3)
     SP::TimeStepping s(new TimeStepping(bouncingStick, t, OSI, osnspb));
 
@@ -144,7 +144,7 @@ int main(int argc, char* argv[])
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
-    unsigned int outputSize = 21;
+    unsigned int outputSize = 22;
     SimpleMatrix dataPlot(N + 1, outputSize);
 
     SiconosVector& q = *stick->q();
@@ -153,13 +153,13 @@ int main(int argc, char* argv[])
     SiconosVector& lambda = *inter->lambda(1);
     SiconosVector& y = *inter->y(0);
     SiconosVector& u = *inter->y(1);
-    
+
 
     dataPlot(0, 0) = bouncingStick->t0();
     dataPlot(0, 1) = q(0);
     dataPlot(0, 2) = q(1);
     dataPlot(0, 3) = q(2);
-    
+
     dataPlot(0, 4) = v(0);
     dataPlot(0, 5) = v(1);
     dataPlot(0, 6) = v(2);
@@ -179,8 +179,9 @@ int main(int argc, char* argv[])
     dataPlot(0, 18) = 0.0;
     dataPlot(0, 19) = 0.0;
     dataPlot(0, 20) = 0.0;
+    dataPlot(0, 21) = 0.0;
 
-    
+
     // --- Time loop ---
     cout << "====> Start computation ... " << endl;
     // ==== Simulation loop - Writing without explicit event handling =====
@@ -190,23 +191,23 @@ int main(int argc, char* argv[])
     while(s->hasNextEvent())
     {
       s->computeOneStep();
-      
+
       // std::cout << "OSNSP iteration : "
       // 		<< osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_ITER_DONE]
       // 		<< " error:  : "
       // 		<< osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_RESIDU]
       // 		<< std::endl;
-      
+
       // --- Get values to be plotted ---
       dataPlot(k, 0) =  s->nextTime();
       dataPlot(k, 1) = q(0);
       dataPlot(k, 2) = q(1);
       dataPlot(k, 3) = q(2);
-      
+
       dataPlot(k, 4) = v(0);
       dataPlot(k, 5) = v(1);
       dataPlot(k, 6) = v(2);
-      
+
       dataPlot(k, 7) = p(0);
       dataPlot(k, 8) = y(0);
       dataPlot(k, 9) = y(1);
@@ -223,16 +224,38 @@ int main(int argc, char* argv[])
       dataPlot(k, 14) = normal_work;
       dataPlot(k, 15) = tangential_work;
       dataPlot(k, 16) = dissipation;
-      
+
       dataPlot(k, 17) = normal_work + dataPlot(k-1, 17);
       dataPlot(k, 18) = tangential_work + dataPlot(k-1, 18);
-      
+
       // compute kinetic energy and potential energy
-      double kinetic_energy = 0.5*m*(v(0)*v(0)+v(1)*v(1)) + 0.5*inertia*(v(2)*v(2));  
+      double kinetic_energy = 0.5*m*(v(0)*v(0)+v(1)*v(1)) + 0.5*inertia*(v(2)*v(2));
       double potential_energy = m*g* q(1);
       dataPlot(k, 19) = kinetic_energy;
       dataPlot(k, 20) = potential_energy;
-      
+
+      SP::SiconosMatrix wf = OSI->computeWorkForces();
+      dataPlot(k, 21) = (*wf)(0,1) + dataPlot(k-1, 21);
+
+
+
+      // if (lambda(0) >0)
+      // 	{
+      // 	  std::cout << s->nextTime() << std::endl;
+      // 	  std::cout << "OSNSP iteration : "
+      // 		<< osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_ITER_DONE]
+      // 		<< " error:  : "
+      // 		<< osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_RESIDU]
+      // 		<< std::endl;
+      // 	  osnspb->display();
+      // 	  std::cout << lambda(0) << std::endl;
+      // 	  std::cout << u(0) << std::endl;
+      // 	  std::cout << u_k(0) << std::endl;
+      // 	  std::cout << u(0)+u_k(0) << std::endl;
+      // 	  //getchar();
+
+      // 	}
+
       s->nextStep();
       k++;
     }

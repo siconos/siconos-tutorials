@@ -134,7 +134,7 @@ int main(int argc, char* argv[])
     // -- (4) Simulation setup with (1) (2) (3)
     SP::TimeStepping s(new TimeStepping(bouncingStick, t, OSI, osnspb));
 
-    s->setNewtonOptions(SICONOS_TS_LINEAR);
+    //s->setNewtonOptions(SICONOS_TS_LINEAR);
     //OSI->setGamma(3/2.0);
     // =========================== End of model definition ===========================
 
@@ -145,7 +145,7 @@ int main(int argc, char* argv[])
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
-    unsigned int outputSize = 21;
+    unsigned int outputSize = 22;
     SimpleMatrix dataPlot(N + 1, outputSize);
 
     SiconosVector& q = *stick->q();
@@ -180,6 +180,8 @@ int main(int argc, char* argv[])
     dataPlot(0, 18) = 0.0;
     dataPlot(0, 19) = 0.0;
     dataPlot(0, 20) = 0.0;
+    dataPlot(0, 21) = 0.0;
+	
 
 
     
@@ -192,12 +194,6 @@ int main(int argc, char* argv[])
     while(s->hasNextEvent())
     {
       s->computeOneStep();
-      // std::cout << "OSNSP iteration : "
-      // 		<< osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_ITER_DONE]
-      // 		<< " error:  : "
-      // 		<< osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_RESIDU]
-      // 		<< std::endl;
-
       
       // --- Get values to be plotted ---
       dataPlot(k, 0) =  s->nextTime();
@@ -220,6 +216,7 @@ int main(int argc, char* argv[])
       // compute work of contact forces
       const SiconosVector& u_k = inter->y_k(1);
       double normal_work= 0.5* (u(0)+u_k(0))*lambda(0);
+
       double tangential_work= 0.5* (u(1)+u_k(1))*lambda(1);
       double dissipation= 0.5* mu * fabs((u(1)+u_k(1)))*lambda(0);
       dataPlot(k, 14) = normal_work;
@@ -234,7 +231,25 @@ int main(int argc, char* argv[])
       double potential_energy = m*g* q(1);
       dataPlot(k, 19) = kinetic_energy;
       dataPlot(k, 20) = potential_energy;
+
+      SP::SiconosMatrix wf = OSI->computeWorkForces();
+      dataPlot(k, 21) = (*wf)(0,1) + dataPlot(k-1, 21);
       
+      // if (lambda(0) >0)
+      // 	{
+      // 	  std::cout << s->nextTime() << std::endl;
+      // 	  std::cout << "OSNSP iteration : "
+      // 		<< osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_ITER_DONE]
+      // 		<< " error:  : "
+      // 		<< osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_RESIDU]
+      // 		<< std::endl;
+      // 	  osnspb->display();
+      // 	  std::cout << lambda(0) << std::endl;
+      // 	  std::cout << u(0) << std::endl;
+      // 	  std::cout << u_k(0) << std::endl;
+      // 	  std::cout << u(0)+u_k(0) << std::endl;
+      // 	  //getchar();
+      // 	}
       
       s->nextStep();
       k++;
@@ -249,7 +264,7 @@ int main(int argc, char* argv[])
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("ImpactingStick-FremondNSL.dat", "ascii", dataPlot, "noDim");
-    //ioMatrix::write("ImpactingStick-FremondNSL.ref", "ascii", dataPlot);
+    ioMatrix::write("ImpactingStick-FremondNSL.ref", "ascii", dataPlot);
     double error=0.0, eps=1e-12;
     if((error=ioMatrix::compareRefFile(dataPlot, "ImpactingStick-FremondNSL.ref", eps)) >= 0.0
         && error > eps)
