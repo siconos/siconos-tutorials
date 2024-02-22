@@ -18,7 +18,7 @@ resultfile every ::2 u 2:3 t "position y vs x " w l
 
 
 set term aqua 1
-set size 1,1
+set size 1,1	
 set origin	0,0
 set multiplot layout 3,1 columnsfirst scale 1.0,1.0
 plot \
@@ -43,7 +43,7 @@ resultfile every ::2 u 13:14 t "cone " w p
 
 set term aqua 5
 
-set size 1,1
+set size 1,1	
 set origin	0,0
 set multiplot layout 3,1 columnsfirst scale 1.0,1.0
 #     [ up to 6 plot commands here ]
@@ -58,7 +58,7 @@ unset multiplot
 
 set term aqua 6
 
-set size 1,1
+set size 1,1	
 set origin	0,0
 set multiplot layout 3,1 columnsfirst scale 1.0,1.0
 #     [ up to 6 plot commands here ]
@@ -73,3 +73,5 @@ resultfile every ::2 u 1:($20+$21) t "mechanical energy" w l,\
 resultfile every ::2 u 1:22 t "work forces" w l
 
 unset multiplot
+
+

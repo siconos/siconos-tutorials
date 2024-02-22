@@ -264,7 +264,7 @@ int main(int argc, char* argv[])
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("ImpactingStick-FremondNSL.dat", "ascii", dataPlot, "noDim");
-    ioMatrix::write("ImpactingStick-FremondNSL.ref", "ascii", dataPlot);
+    //ioMatrix::write("ImpactingStick-FremondNSL.ref", "ascii", dataPlot);
     double error=0.0, eps=1e-12;
     if((error=ioMatrix::compareRefFile(dataPlot, "ImpactingStick-FremondNSL.ref", eps)) >= 0.0
         && error > eps)
