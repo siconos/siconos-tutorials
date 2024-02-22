@@ -99,7 +99,7 @@ with MechanicsHdf5Runner() as io:
     # Definition of a non smooth law. We put the objects and heightmap
     # into different collision groups so that there are object-terrain
     # collisions but no object-object collisions.
-    io.add_Newton_impact_friction_nsl('contact', mu=0.3, e=0.0,
+    io.add_Fremond_impact_friction_nsl('contact', mu=0.3, e=0.0,
                                       collision_group1=0, collision_group2=1)
     
     # Add a  polyhedron 
