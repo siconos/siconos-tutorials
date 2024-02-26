@@ -444,6 +444,7 @@ int main(int argc, char* argv[])
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("NE_3DS_3Knee_1Prism_MLCP_MoreauJeanCombinedProjection.dat", "ascii", dataPlot, "noDim");
+    //ioMatrix::write("NE_3DS_3Knee_1Prism_MLCP_MoreauJeanCombinedProjection.ref", "ascii", dataPlot);
     ioMatrix::write("NE_3DS_3Knee_1Prism_beam1.dat", "ascii", beam1Plot, "noDim");
     ioMatrix::write("NE_3DS_3Knee_1Prism_beam2.dat", "ascii", beam2Plot, "noDim");
     ioMatrix::write("NE_3DS_3Knee_1Prism_beam3.dat", "ascii", beam3Plot, "noDim");
@@ -454,20 +455,6 @@ int main(int argc, char* argv[])
     if((error=ioMatrix::compareRefFile(dataPlot, "NE_3DS_3Knee_1Prism_MLCP_MoreauJeanCombinedProjection.ref", eps)) >= 0.0
         && error > eps)
       return 1;
-
-    // SimpleMatrix dataPlotRef(dataPlot);
-    // dataPlotRef.zero();
-    // ioMatrix::read("NE_3DS_3Knee_1Prism_MLCP_MoreauJeanCombinedProjection.ref", "ascii", dataPlotRef);
-    // std::cout << "Error w.r.t. reference file : " << (dataPlot - dataPlotRef).normInf() << std::endl;
-
-
-
-    // if ((dataPlot - dataPlotRef).normInf() > 1e-10)
-    // {
-    //   (dataPlot - dataPlotRef).display();
-    //   std::cout << "Warning. The results is rather different from the reference file." << std::endl;
-    //   return 1;
-    // }
 
     fclose(pFile);
   }
