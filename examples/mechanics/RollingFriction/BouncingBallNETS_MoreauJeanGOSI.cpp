@@ -296,7 +296,7 @@ int main(int argc, char* argv[])
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("BouncingBallNETS_MoreauJeanGOSI.dat", "ascii", dataPlot, "noDim");
-
+    ioMatrix::write("BouncingBallNETS_MoreauJeanGOSI.ref", "ascii", dataPlot);
     // Comparison with a reference file
     double error=0.0, eps=1e-12;
     if((error=ioMatrix::compareRefFile(dataPlot, "BouncingBallNETS_MoreauJeanGOSI.ref", eps)) >= 0.0

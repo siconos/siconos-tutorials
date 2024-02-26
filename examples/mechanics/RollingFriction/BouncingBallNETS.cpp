@@ -295,7 +295,8 @@ int main(int argc, char* argv[])
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
-    ioMatrix::write("BouncingBallNETS.ref", "ascii", dataPlot);
+    ioMatrix::write("BouncingBallNETS.dat", "ascii", dataPlot, "noDim");
+    //ioMatrix::write("BouncingBallNETS.ref", "ascii", dataPlot);
 
     // Comparison with a reference file
 
