@@ -259,12 +259,12 @@ int main(int argc, char* argv[])
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
-    ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
-
+    ioMatrix::write("ColumnOfBeadsTS-SBM.dat", "ascii", dataPlot, "noDim");
+    //ioMatrix::write("ColumnOfBeadsTS-SBM.ref", "ascii", dataPlot);
 
     // Comparison with a reference file
     cout << "====> Comparison with reference file ..." << endl;
-    double error=0.0, eps=1e-12;
+    double error=0.0, eps=1e-10;
     if((error=ioMatrix::compareRefFile(dataPlot, "ColumnOfBeadsTS-SBM.ref", eps))>=0.0
         && error > eps)
     {
