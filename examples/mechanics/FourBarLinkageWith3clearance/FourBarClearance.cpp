@@ -462,6 +462,7 @@ int main(int argc, char* argv[])
     // --- Output files ---
     dataPlot.resize(kk, outputSize);
     ioMatrix::write(filename, "ascii", dataPlot, "noDim");
+    //ioMatrix::write("FourBarClearance.ref", "ascii", dataPlot);
     ioMatrix::write("Link1.dat", "ascii", beam1Plot, "noDim");
     ioMatrix::write("Link2.dat", "ascii", beam2Plot, "noDim");
     ioMatrix::write("Link3.dat", "ascii", beam3Plot, "noDim");
