@@ -301,7 +301,8 @@ int main(int argc, char *argv[]) {
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.resize(k, outputSize);
-    ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
+    ioMatrix::write("SliderCrankMoreauJeanCombinedProjectionOSI.dat", "ascii", dataPlot, "noDim");
+    //ioMatrix::write("SliderCrankMoreauJeanCombinedProjectionOSI.ref", "ascii", dataPlot);
     double error = 0.0, eps = 1e-10;
     if ((error = ioMatrix::compareRefFile(
              dataPlot, "SliderCrankMoreauJeanCombinedProjectionOSI.ref",
