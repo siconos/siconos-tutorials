@@ -97,4 +97,5 @@ with MechanicsHdf5Runner(mode='r+') as io:
            projection_tolerance_unilateral=1e-5,
            time_stepping=Kernel.TimeSteppingDirectProjection,
            osi=Kernel.MoreauJeanDirectProjectionOSI,
+           verbose=True
     )
