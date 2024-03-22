@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+import subprocess
+command = "cd /Users/vincent/siconos; git symbolic-ref --short HEAD ; git lg -1; cd - ;"
+ret = subprocess.run(command, capture_output=True, shell=True)
+print(ret.stdout.decode())
+
+
 from siconos.mechanics.collision.tools import Contactor
 from siconos.mechanics.collision.convexhull import ConvexHull
 from siconos.io.mechanics_run import MechanicsHdf5Runner, MechanicsHdf5Runner_run_options
@@ -11,7 +17,72 @@ import numpy as np
 # A collection of box stacks for stress-testing Siconos solver with
 # chains of contacts.
 
+
 Fremond=True
+
+T = 2.0
+#T = 3e-2
+h_step = 5e-3
+
+bullet_options = SiconosBulletOptions()
+bullet_options.worldScale = 1.
+bullet_options.contactBreakingThreshold = 0.04*bullet_options.worldScale
+bullet_options.perturbationIterations = 3.
+bullet_options.minimumPointsPerturbationThreshold = 3.
+
+options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
+options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-04
+#options.iparam[sn.SICONOS_FRICTION_3D_NSGS_FREEZING_CONTACT] = 100
+
+
+
+#options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_ADMM)
+#options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 5000
+#options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-10
+#options.iparam[sn.SICONOS_FRICTION_3D_ADMM_IPARAM_SYMMETRY] = sn.SICONOS_FRICTION_3D_ADMM_FORCED_ASYMMETRY
+run_options=MechanicsHdf5Runner_run_options()
+run_options['t0']=0
+run_options['T']=T
+run_options['h']=h_step
+run_options['theta']=0.5
+
+#run_options['constraints_activation_threshold']=-1e-01
+run_options['activate_with_negative_relative_velocity']=True
+run_options['constraint_activation_threshold_velocity']=1e-03
+
+
+run_options['Newton_max_iter'] =5
+run_options['Newton_tolerance'] =1e-08
+
+run_options['bullet_options']=bullet_options
+run_options['solver_options']=options
+
+
+#run_options['skip_last_update_output']=True
+#run_options['skip_reset_lambdas']=True
+run_options['osns_assembly_type']= sk.REDUCED_DIRECT
+
+
+run_options['verbose']=True
+run_options['with_timer']=True
+#run_options['explode_Newton_solve']=True
+#run_options['explode_computeOneStep']=True
+#run_options['numerics_verbose']=True
+#run_options['numerics_verbose_level']=1
+#run_options['violation_verbose'] = True
+run_options['output_frequency']=1
+
+
+run_options['output_energy_work']=True
+run_options['osi_explicit_Jacobians_of_relations']=True
+
+
+
+
+
+
+
 
 #configuration = 'pyramid_wall'
 configuration = 'wide_wall'
@@ -20,7 +91,7 @@ configuration = 'tall_wall_with_buttress'
 #configuration = 'tall_wall'
 #configuration = 'one_brick'
 
-rock_velocity = [-10,0,-35.,0.5,0.1,0.1]
+rock_velocity = [-10,0,-35.,0.5,10.,0.1]
 #rock_velocity = [-10,0,-35.,0.0,0.0,0.0]
 #rock_velocity = [-0,0,-0.,0.0,0.0,0.0]
 rock_tob = 0.01
@@ -93,8 +164,10 @@ else:
 with MechanicsHdf5Runner(io_filename=fn) as io:
 
     width, depth, height = 1, 2, 1
-    io.add_primitive_shape('Box', 'Box', [width, depth, height])
-    io.add_primitive_shape('Half_Box', 'Box', [width, depth/2.0, height])
+
+    margin =0.
+    io.add_primitive_shape('Box', 'Box', [width, depth, height], outsideMargin=margin)
+    io.add_primitive_shape('Half_Box', 'Box', [width, depth/2.0, height], outsideMargin=margin)
 
     k = 0
     sep = 0.01
@@ -264,54 +337,12 @@ with MechanicsHdf5Runner(io_filename=fn) as io:
     # Definition of a non smooth law. As no group ids are specified it
     # is between contactors of group id 0.
     if Fremond:
-        io.add_Fremond_impact_friction_nsl('contact', mu=0.6, e=0.0)
+        io.add_Fremond_impact_friction_nsl('contact', mu=0.6, e=0.2)
     else:
-        io.add_Newton_impact_friction_nsl('contact', mu=0.6, e=0.0)
-T = 2.0
-#T = 3e-2
-h_step = 5e-3
-
-bullet_options = SiconosBulletOptions()
-bullet_options.worldScale = 100.
-bullet_options.contactBreakingThreshold = 0.4
-bullet_options.perturbationIterations = 3.
-bullet_options.minimumPointsPerturbationThreshold = 3.
-
-options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
-options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
-options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-04
-options.iparam[sn.SICONOS_FRICTION_3D_NSGS_FREEZING_CONTACT] = 100
-
-run_options=MechanicsHdf5Runner_run_options()
-run_options['t0']=0
-run_options['T']=T
-run_options['h']=h_step
-run_options['theta']=0.5
+        io.add_Newton_impact_friction_nsl('contact', mu=0.6, e=0.2)
 
 
-run_options['Newton_max_iter'] =5
-run_options['Newton_tolerance'] =1e-08
 
-run_options['bullet_options']=bullet_options
-run_options['solver_options']=options
-
-
-#run_options['skip_last_update_output']=True
-#run_options['skip_reset_lambdas']=True
-run_options['osns_assembly_type']= sk.REDUCED_DIRECT
-
-
-run_options['verbose']=True
-run_options['with_timer']=True
-#run_options['explode_Newton_solve']=True
-#run_options['explode_computeOneStep']=True
-
-#run_options['violation_verbose'] = True
-run_options['output_frequency']=1
-
-
-run_options['output_energy_work']=True
-run_options['osi_explicit_Jacobians_of_relations']=True
 
 run_options['time_stepping']=None
 
@@ -467,18 +498,21 @@ class kinetic_iteration_hook():
 
         cf_work = self._io._io.contactContactWork(self._io._nsds,
                                                   1)
+        cf = self._io._io.contactPoints(self._io._nsds,
+                                                  1)
+        
         if cf_work is not None:
-
             #print('cf_work', cf_work)
-
+            #print('cf', cf[:,22])
             interactions_idx= cf_work[:,0]
-
+            
             contact_force=[]
             work=[]
             work_new=[]
             work_gen=0.
 
             P = np.zeros(6)
+            #idx = 0
             for i in interactions_idx:
 
                 i_interaction = int(i)
@@ -489,19 +523,34 @@ class kinetic_iteration_hook():
                 u_k=inter.y_k(1)
                 u = inter.y(1)
                 p = inter.lambda_(1)
+                
+                work_tot=np.dot(0.5*(u+u_k), p  )
+                work_n = 0.5*(u[0]+u_k[0])* p[0]
+                work_t = np.dot(0.5*(u+u_k)[1:], p[1:])
+                                    
+                work.append(work_tot)
+              
+                if work_n > 2000.:
+                    print('u[0]',inter.y(1)[0])
+                    print('u_k[0]',inter.y_k(1)[0])
+                    print('impact law', u[0]+0.2*u_k[0])
+                    print('p[0]',p[0])
+                    print('work n ', work_n )
+                    #input()
 
-                #print('\n inter', i_interaction)
-                #inter.display()
-                #inter.relation().display()
-                #print('H', H)
-                #print('contact force', np.dot(H.T,inter.lambda_(1) ) )
-                #print('u_k ',inter.y_k(1))
-                #print('u ',inter.y(1))
-                #print('work ', np.dot(0.5*(u+u_k), p  ))
-                #print('work n ', np.dot(0.5*(u+u_k)[0], p[0]  ))
-                #print('work t ', np.dot(0.5*(u+u_k)[1:], p[1:]  ))
-
-                work.append(np.dot(0.5*(u+u_k), p  ))
+                if work_t > 100. :
+                    print('inter ', i_interaction )
+                    print('u[0]',inter.y(1)[0])
+                    print('u_k[0]',inter.y_k(1)[0])
+                    print('impact law', u[0]+0.2*u_k[0])
+                    print('p[0]',p[0])
+                    idx = np.argwhere(cf_work[:,0] == float(i_interaction))[0][0]
+                    print('work n ', work_n, cf_work[idx,1], idx )
+                    print('work t ', work_t, cf_work[idx,2])
+                    print('cf_work[idx,:]', cf_work[idx,:])
+                    idx_cf= np.argwhere(cf[:,22] == float(i_interaction))
+                    print('cf', idx_cf, cf[idx_cf,:])
+                    #input()
 
                 # if positions is not None:
                 #     # print('vold', vold)
@@ -509,26 +558,25 @@ class kinetic_iteration_hook():
                 #     #print(' u_k = Hvold', np.dot(H,vold))
                 #     #print(' u = Hv', np.dot(H,v))
                 #     work_new.append(np.dot(0.5*np.dot(H,v+vold), p ))
-
-
                 #     work_gen= np.dot(0.5*(v+vold),contact_force[-1]) +work_gen
-
+                #idx = idx+1
 
 
             #print('work', work)
-            #print('work new', work_new)
-            #print('work gen', work_gen)
-            # print('diff cf_work vs. recomputation', np.sum(work)-np.sum(work_new))
+            # print('work new', work_new)
+            # print('work gen', work_gen)
+            # print('\n diff cf_work vs. recomputation', np.sum(work)-np.sum(work_new))
             # print('diff cf_work vs. generalized', np.sum(work)- work_gen)
+
             # p_1 = np.zeros_like(contact_force[0])
 
             # for f in contact_force:
             #     p_1 = p_1 + f
 
-            #print('p_1', p_1)
+            # print('p_1', p_1)
             # print('diff P', np.linalg.norm(p_1-neds.p(1)))
 
-
+            #input()
 
             normal_work = cf_work[:,1]
             normal_work_negative = np.where( normal_work < 0, normal_work, 0)
@@ -610,7 +658,7 @@ class kinetic_iteration_hook():
 before_next_step_hook=kinetic_iteration_hook(obj_projectile_id)
 
 
-run_options['before_next_step_iteration_hook'] = before_next_step_hook
+#run_options['before_next_step_iteration_hook'] = before_next_step_hook
 
 
 
@@ -618,26 +666,26 @@ run_options['before_next_step_iteration_hook'] = before_next_step_hook
 with MechanicsHdf5Runner(mode='r+',io_filename=fn) as io:
     io.run(run_options)
 
-import os
-if Fremond:
-    directory='energy_results_FremondNSL'
-else:
-    directory='energy_results_NewtonNSL'
+# import os
+# if Fremond:
+#     directory='energy_results_FremondNSL'
+# else:
+#     directory='energy_results_NewtonNSL'
 
-if not os.path.exists(directory):
-    os.makedirs(directory)
+# if not os.path.exists(directory):
+#     os.makedirs(directory)
 
-import numpy as np
-np.save(os.path.join(directory,'kinetic_energy.npy'), before_next_step_hook._kinetic_sum)
-np.save(os.path.join(directory,'kinetic_energy_wall.npy'), before_next_step_hook._kinetic_sum_wall)
-np.save(os.path.join(directory,'potential_energy.npy'), before_next_step_hook._potential_sum)
-
-
-
-np.save(os.path.join(directory,'normal_work.npy'), before_next_step_hook._normal_work_sum)
-np.save(os.path.join(directory,'tangent_work.npy'), before_next_step_hook._tangent_work_sum)
-np.save(os.path.join(directory,'friction_work.npy'), before_next_step_hook._friction_work_sum)
+# import numpy as np
+# np.save(os.path.join(directory,'kinetic_energy.npy'), before_next_step_hook._kinetic_sum)
+# np.save(os.path.join(directory,'kinetic_energy_wall.npy'), before_next_step_hook._kinetic_sum_wall)
+# np.save(os.path.join(directory,'potential_energy.npy'), before_next_step_hook._potential_sum)
 
 
-np.save(os.path.join(directory,'normal_work_negative.npy'), before_next_step_hook._normal_work_negative_sum)
-np.save(os.path.join(directory,'tangent_work_negative.npy'), before_next_step_hook._tangent_work_negative_sum)
+
+# np.save(os.path.join(directory,'normal_work.npy'), before_next_step_hook._normal_work_sum)
+# np.save(os.path.join(directory,'tangent_work.npy'), before_next_step_hook._tangent_work_sum)
+# np.save(os.path.join(directory,'friction_work.npy'), before_next_step_hook._friction_work_sum)
+
+
+# np.save(os.path.join(directory,'normal_work_negative.npy'), before_next_step_hook._normal_work_negative_sum)
+# np.save(os.path.join(directory,'tangent_work_negative.npy'), before_next_step_hook._tangent_work_negative_sum)
