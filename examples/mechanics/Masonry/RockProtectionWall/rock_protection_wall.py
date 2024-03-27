@@ -18,22 +18,23 @@ import numpy as np
 # chains of contacts.
 
 
-Fremond=True
+Fremond=False
 
 T = 2.0
 #T = 3e-2
-h_step = 5e-3
+h_step = 5e-4
 
 bullet_options = SiconosBulletOptions()
 bullet_options.worldScale = 1.
 bullet_options.contactBreakingThreshold = 0.04*bullet_options.worldScale
 bullet_options.perturbationIterations = 3.
 bullet_options.minimumPointsPerturbationThreshold = 3.
+bullet_options.extrapolationCoefficient = 0.5*h_step
 
 options = sk.solver_options_create(sn.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.SICONOS_IPARAM_MAX_ITER] = 1000
-options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-04
-#options.iparam[sn.SICONOS_FRICTION_3D_NSGS_FREEZING_CONTACT] = 100
+options.dparam[sn.SICONOS_DPARAM_TOL] = 1e-06
+options.iparam[sn.SICONOS_FRICTION_3D_NSGS_FREEZING_CONTACT] = 100
 
 
 
@@ -47,9 +48,9 @@ run_options['T']=T
 run_options['h']=h_step
 run_options['theta']=0.5
 
-#run_options['constraints_activation_threshold']=-1e-01
+run_options['constraints_activation_threshold']=1e-01
 run_options['activate_with_negative_relative_velocity']=True
-run_options['constraint_activation_threshold_velocity']=1e-03
+run_options['constraint_activation_threshold_velocity']=1e-05
 
 
 run_options['Newton_max_iter'] =5
@@ -165,7 +166,7 @@ with MechanicsHdf5Runner(io_filename=fn) as io:
 
     width, depth, height = 1, 2, 1
 
-    margin =0.
+    margin =0.01
     io.add_primitive_shape('Box', 'Box', [width, depth, height], outsideMargin=margin)
     io.add_primitive_shape('Half_Box', 'Box', [width, depth/2.0, height], outsideMargin=margin)
 
