@@ -20,7 +20,7 @@ import numpy as np
 
 Fremond=False
 
-T = 2.0
+T = 4.0
 #T = 3e-2
 h_step = 5e-4
 
