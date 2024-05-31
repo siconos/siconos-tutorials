@@ -1,20 +1,20 @@
 /* Siconos is a program dedicated to modeling, simulation and control
-* of non smooth dynamical systems.
-*
-* Copyright 2021 INRIA.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * of non smooth dynamical systems.
+ *
+ * Copyright 2021 INRIA.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 /*!\file BouncingBallTS.cpp
   \brief \ref EMBouncingBall - C++ input file, Time-Stepping version -
@@ -25,34 +25,32 @@
   Simulation with a Time-Stepping scheme.
 */
 
+#include <chrono>
+
 #include "SiconosKernel.hpp"
 #include "SolverOptions.h"
-#include <chrono>
 using namespace std;
 
-int main(int argc, char* argv[])
-{
-  try
-  {
-
+int main(int argc, char* argv[]) {
+  try {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    unsigned int nDof = 3;           // degrees of freedom for the ball
-    double t0 = 0;                   // initial computation time
-    double T = 10;                  // final computation time
-    double h = 0.005;                // time step
-    double position_init = 1.0;      // initial position for lowest bead.
-    double velocity_init = 0.0;      // initial velocity for lowest bead.
-    double theta = 0.5;              // theta for MoreauJeanOSI integrator
-    double R = 0.1; // Ball radius
-    double m = 1; // Ball mass
-    double g = 9.81; // Gravity
+    unsigned int nDof = 3;       // degrees of freedom for the ball
+    double t0 = 0;               // initial computation time
+    double T = 10;               // final computation time
+    double h = 0.005;            // time step
+    double position_init = 1.0;  // initial position for lowest bead.
+    double velocity_init = 0.0;  // initial velocity for lowest bead.
+    double theta = 0.5;          // theta for MoreauJeanOSI integrator
+    double R = 0.1;              // Ball radius
+    double m = 1;                // Ball mass
+    double g = 9.81;             // Gravity
     // -------------------------
     // --- Dynamical systems ---
     // -------------------------
 
-    cout << "====> Model loading ..." <<  endl;
+    cout << "====> Model loading ..." << endl;
 
     SP::SiconosMatrix Mass(new SimpleMatrix(nDof, nDof));
     (*Mass)(0, 0) = m;
@@ -66,7 +64,7 @@ int main(int argc, char* argv[])
     (*v0)(0) = velocity_init;
 
     // -- The dynamical system --
-    //SP::LagrangianDS ball(new LagrangianDS(q0, v0, Mass));
+    // SP::LagrangianDS ball(new LagrangianDS(q0, v0, Mass));
 
     SP::LagrangianLinearTIDS ball(new LagrangianLinearTIDS(q0, v0, Mass));
 
@@ -112,23 +110,21 @@ int main(int argc, char* argv[])
     // -- (1) OneStepIntegrators --
     SP::MoreauJeanGOSI OSI(new MoreauJeanGOSI(theta));
 
-
     // -- (2) Time discretisation --
     SP::TimeDiscretisation t(new TimeDiscretisation(t0, h));
 
     // -- (3) one step non smooth problem
     SP::OneStepNSProblem osnspb(new GlobalFrictionContact(3));
-    osnspb->numericsSolverOptions()->dparam[0]=1e-12;
+    osnspb->numericsSolverOptions()->dparam[0] = 1e-12;
 
     // -- (4) Simulation setup with (1) (2) (3)
-    SP::TimeStepping s(new TimeStepping(bouncingBall,t, OSI, osnspb));
+    SP::TimeStepping s(new TimeStepping(bouncingBall, t, OSI, osnspb));
 
     // =========================== End of model definition ===========================
 
     // ================================= Computation =================================
 
-
-    int N = ceil((T - t0) / h); // Number of time steps
+    int N = ceil((T - t0) / h);  // Number of time steps
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
@@ -153,12 +149,10 @@ int main(int argc, char* argv[])
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
 
-
-    while(s->hasNextEvent())
-    {
+    while (s->hasNextEvent()) {
       s->computeOneStep();
       // --- Get values to be plotted ---
-      dataPlot(k, 0) =  s->nextTime();
+      dataPlot(k, 0) = s->nextTime();
       dataPlot(k, 1) = (*q)(0);
       dataPlot(k, 2) = (*v)(0);
       dataPlot(k, 3) = (*p)(0);
@@ -168,9 +162,8 @@ int main(int argc, char* argv[])
       k++;
     }
     end = std::chrono::system_clock::now();
-    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-                  (end-start).count();
-    cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
     cout << "Computation time : " << elapsed << " ms" << endl;
 
     // --- Output files ---
@@ -178,26 +171,20 @@ int main(int argc, char* argv[])
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
     std::cout << "Comparison with a reference file" << std::endl;
-    double error=0.0, eps=1e-12;
-    if((error=ioMatrix::compareRefFile(dataPlot, "BouncingBallTS-MoreauJeanGOSI.ref",
-                                       eps)) >= 0.0
-        && error > eps)
+    double error = 0.0, eps = 1e-12;
+    if ((error = ioMatrix::compareRefFile(dataPlot, "BouncingBallTS-MoreauJeanGOSI.ref",
+                                          eps)) >= 0.0 &&
+        error > eps)
       return 1;
     std::cout << "Comparison with a reference file" << std::endl;
-    if((error=ioMatrix::compareRefFile(dataPlot, "BouncingBallTS.ref",
-                                       eps)) >= 0.0
-        && error > eps)
+    if ((error = ioMatrix::compareRefFile(dataPlot, "BouncingBallTS.ref", eps)) >= 0.0 &&
+        error > eps)
       return 1;
-
 
   }
 
-  catch(...)
-  {
+  catch (...) {
     Siconos::exception::process();
     return 1;
   }
-
-
-
 }
