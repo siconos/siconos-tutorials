@@ -58,6 +58,7 @@
 #include "SolverOptions.h"
 #include "Friction_cst.h"
 #include "fc3d_Solvers.h"
+#include "NumericsVerbose.h"
 #include <float.h>
 
 
@@ -71,28 +72,13 @@ int main(int argc, char* argv[])
   double q[9] = { -1, 1, 3, -1, 1, 3, -1, 1, 3};
   double mu[3] = {0.1, 0.1, 0.1};
 
-  int k;
-  /*  for (j =0 ; j<9; j++){ */
-  /*  for (k =0 ; k<9; k++) */
-  /*      M[j][k]=0.0; */
-  /*     } */
-  /*     for (i =0 ; i<NC; i++) */
-  /*  { */
-  /*      mu[i]=0.1; */
-  /*      for (j =0 ; j<3; j++){ */
-  /*      q[3*i+j] =-1.0+j*2.0;  */
-  /*    M[3*i+j][3*i+j]=1.0;    */
-  /*      } */
-  /*  } */
-
-
   FrictionContactProblem NumericsProblem;
   NumericsProblem.numberOfContacts = NC;
   NumericsProblem.dimension = 3;
   NumericsProblem.mu = mu;
   NumericsProblem.q = q;
 
-  NumericsMatrix *MM = (NumericsMatrix*)malloc(sizeof(*MM));
+  NumericsMatrix *MM = (NumericsMatrix*)malloc(sizeof(NumericsMatrix));
   MM->storageType = NM_DENSE;
   MM->matrix0 = M;
   MM->size0 = 3 * NC;
@@ -100,19 +86,18 @@ int main(int argc, char* argv[])
 
   NumericsProblem.M = MM;
 
-  // Unknown Declaration
+  // Variable declaration
 
   double *reaction = (double*)calloc(3 * NC, sizeof(double));
   double *velocity = (double*)calloc(3 * NC, sizeof(double));
+
   // Numerics and Solver Options
-
-
   SolverOptions *numerics_solver_options = solver_options_create(SICONOS_FRICTION_3D_NSGS);
+  numerics_solver_options->iparam[SICONOS_IPARAM_MAX_ITER] = 1000;
+  numerics_solver_options->dparam[SICONOS_DPARAM_TOL] = 100*DBL_EPSILON;
+  //numerics_set_verbose(2);
 
-  numerics_solver_options->dparam[0] = 100*DBL_EPSILON;
-
-
-  //Driver call
+  // Driver call
   fc3d_driver(&NumericsProblem,
               reaction, velocity,
               numerics_solver_options);
@@ -122,11 +107,13 @@ int main(int argc, char* argv[])
 
   // Solver output
   printf("\n");
-  for(k = 0 ; k < 3 * NC; k++) printf("Velocity[%i] = %12.8e \t \t Reaction[%i] = %12.8e \n ", k, velocity[k], k, reaction[k]);
+  
+  for(int k = 0 ; k < 3 * NC; k++) printf("Velocity[%i] = %12.8e \t \t Reaction[%i] = %12.8e \n ", k, velocity[k], k, reaction[k]);
   printf("\n");
 
   free(reaction);
   free(velocity);
+ 
   free(MM);
 
 
