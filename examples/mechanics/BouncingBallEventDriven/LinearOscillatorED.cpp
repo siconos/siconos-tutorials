@@ -225,7 +225,6 @@ int main(int argc, char* argv[])
     cout << "====> Output file writing ..." << endl << endl;
     dataPlot.resize(k, outputSize);
     ioMatrix::write("LinearOscillatorED.dat", "ascii", dataPlot, "noDim");
-    ioMatrix::write("LinearOscillatorED.ref", "ascii", dataPlot);
 
     double error=0.0, eps=1e-10;
     if((error=ioMatrix::compareRefFile(dataPlot, "LinearOscillatorED.ref", eps)) >= 0.0
