@@ -50,8 +50,8 @@ int main(int argc, char* argv[])
 
     cout << "bar length" << l <<  endl;
 
-    SP::SiconosMatrix SparseMass(new SimpleMatrix(nDof,nDof,Siconos::SPARSE,nDof));
-    SP::SiconosMatrix SparseStiffness(new SimpleMatrix(nDof,nDof,Siconos::SPARSE,3*nDof));
+    SP::SiconosMatrix SparseMass(new SimpleMatrix(nDof,nDof,siconos::SPARSE,nDof));
+    SP::SiconosMatrix SparseStiffness(new SimpleMatrix(nDof,nDof,siconos::SPARSE,3*nDof));
 
 
     SparseMass->setValue(0,0,1.0/3.0);
@@ -320,7 +320,7 @@ int main(int argc, char* argv[])
 
   catch(...)
   {
-    Siconos::exception::process();
+    siconos::exception::process();
     return 1;
   }
 

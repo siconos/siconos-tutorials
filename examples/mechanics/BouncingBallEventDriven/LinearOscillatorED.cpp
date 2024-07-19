@@ -235,7 +235,7 @@ int main(int argc, char* argv[])
 
   catch(...)
   {
-    Siconos::exception::process();
+    siconos::exception::process();
     return 1;
   }
 }

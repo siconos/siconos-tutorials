@@ -308,7 +308,7 @@ int main(int argc, char* argv[])
   //============================== Catch exceptions ===================================================================
   catch(...)
   {
-    Siconos::exception::process();
+    siconos::exception::process();
     return 1;
   }
 }

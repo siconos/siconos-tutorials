@@ -60,14 +60,14 @@ SimpleMatrix* compute_reference(double h)
         std::cout<<"Reference: " << k << " steps !\n";    
         return dataPlot;  
     }
-    catch(Siconos::exception& e)
+    catch(siconos::exception& e)
       {
-        Siconos::exception::process(e);
+        siconos::exception::process(e);
         return NULL;
       }
     catch (...)
       {
-        Siconos::exception::process();
+        siconos::exception::process();
         std::cerr << "Exception caught in Computeref()" << std::endl;
         return NULL;
       }

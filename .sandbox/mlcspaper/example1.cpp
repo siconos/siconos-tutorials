@@ -106,14 +106,14 @@ SimpleMatrix* compute_reference(double h, SolverOptions * options, NumericsMatri
         free(q);
         return dataPlot;  
     }
-    catch(Siconos::exception& e)
+    catch(siconos::exception& e)
       {
-        Siconos::exception::process(e);
+        siconos::exception::process(e);
         return NULL;
       }
     catch (...)
       {
-        Siconos::exception::process();
+        siconos::exception::process();
         std::cerr << "Exception caught in Computeref()" << std::endl;
         return NULL;
       }
@@ -241,14 +241,14 @@ double compute_error2ref(double h, SimpleMatrix* reference, SolverOptions * opti
         free(q);
         return error;  
     }   
-    catch(Siconos::exception& e)
+    catch(siconos::exception& e)
       {
-        Siconos::exception::process(e);
+        siconos::exception::process(e);
         return 1e9;
       }
     catch (...)
       {
-        Siconos::exception::process();
+        siconos::exception::process();
         std::cerr << "Exception caught in Computeref()" << std::endl;
         return 1e9;
       }

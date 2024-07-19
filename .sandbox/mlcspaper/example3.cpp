@@ -92,14 +92,14 @@ SimpleMatrix* compute_reference(double h, SolverOptions * options, NumericsMatri
         free(q);
         return dataPlot;  
     }
-    catch(Siconos::exception& e)
+    catch(siconos::exception& e)
       {
-        Siconos::exception::process(e);
+        siconos::exception::process(e);
         return NULL;
       }
     catch (...)
       {
-        Siconos::exception::process();
+        siconos::exception::process();
         cerr << "Exception caught in Computeref()" << endl;
         return NULL;
       }
@@ -247,14 +247,14 @@ int compute_WeiestrassDiscretization(double h)
         return 0;
     }
 
-    catch(Siconos::exception& e)
+    catch(siconos::exception& e)
       {
-         Siconos::exception::process(e);
+         siconos::exception::process(e);
          return -1;
       }
     catch(...)
       {
-        Siconos::exception::process();
+        siconos::exception::process();
         cerr << "Exception caught in example3.cpp / compute_WeiestrassDiscretization" << endl;
         return -1;
       }
@@ -382,14 +382,14 @@ double compute_error2ref(double h, SimpleMatrix* reference, SolverOptions * opti
         free(q);
         return error;  
     }   
-    catch(Siconos::exception& e)
+    catch(siconos::exception& e)
       {
-        Siconos::exception::process(e);
+        siconos::exception::process(e);
         return 1e9;
       }
     catch (...)
       {
-        Siconos::exception::process();
+        siconos::exception::process();
         cerr << "Exception caught in Computeref()" << endl;
         return 1e9;
       }
@@ -549,14 +549,14 @@ double compute_error_weiestrass2ref(double h, SimpleMatrix* reference)
         std::cout << "\n error = " << error << std::endl;  
         return error;  
     }   
-    catch(Siconos::exception& e)
+    catch(siconos::exception& e)
       {
-        Siconos::exception::process(e);
+        siconos::exception::process(e);
         return 1e9;
       }
     catch (...)
       {
-        Siconos::exception::process();
+        siconos::exception::process();
         cerr << "Exception caught in Computeref()" << endl;
         return 1e9;
       }

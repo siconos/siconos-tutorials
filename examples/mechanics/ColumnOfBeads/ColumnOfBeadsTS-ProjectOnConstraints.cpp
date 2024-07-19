@@ -286,7 +286,7 @@ int withLevel(unsigned int mylevel)
 
   catch(...)
   {
-    Siconos::exception::process();
+    siconos::exception::process();
     return 1;
   }
 

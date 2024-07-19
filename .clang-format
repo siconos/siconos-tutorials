@@ -1,0 +1,6 @@
+# Doc: https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+# Rules: https://google.github.io/styleguide/cppguide.html
+BasedOnStyle: Google
+# BreakBeforeBraces: Microsoft
+IncludeBlocks: Regroup
+ColumnLimit: 95 # To avoid reformating that breaks doxy2swig

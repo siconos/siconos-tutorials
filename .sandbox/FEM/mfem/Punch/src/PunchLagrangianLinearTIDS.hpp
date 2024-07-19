@@ -77,7 +77,7 @@ class PunchLagrangianLinearTIDS : public LagrangianLinearTIDS
 
     int nnz = Ai[size];
 
-    SP::SimpleMatrix M(new SimpleMatrix(size,size,Siconos::SPARSE,nnz));
+    SP::SimpleMatrix M(new SimpleMatrix(size,size,siconos::SPARSE,nnz));
 
     for (int row =0; row < size ; row++)
     {

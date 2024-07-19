@@ -294,7 +294,7 @@ void Disks::compute()
   {
     simulation()->advanceToEvent();
     simulation()->processEvents();
-    //    Siconos::save(_model, "Disks.bin");
+    //    siconos::save(_model, "Disks.bin");
   }
 
   catch (SiconosException e)
