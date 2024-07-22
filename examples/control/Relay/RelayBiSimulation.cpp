@@ -1,27 +1,40 @@
+/* Siconos is a program dedicated to modeling, simulation and control
+ * of non smooth dynamical systems.
+ *
+ * Copyright 2023 INRIA.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#include <SiconosAlgebraProd.hpp>
+#include <SiconosKernel.hpp>
 #include <chrono>
-#include "SiconosKernel.hpp"
-
 using namespace std;
 
 // main program
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
   // Exception handling
-  try
-  {
+  try {
     // == User-defined parameters ==
     unsigned int ndof = 2;  // number of degrees of freedom of your system
     double t0 = 0.0;
-    double T = 1;        // Total simulation time
-    double h = 1.0e-4;      // Time step
-    double hcontroller = 1.0e-2;      // Time step
+    double T = 1;                 // Total simulation time
+    double h = 1.0e-4;            // Time step
+    double hcontroller = 1.0e-2;  // Time step
     double Vinit = 1.0;
 
-    if(h > hcontroller)
-    {
+    if (h > hcontroller) {
       THROW_EXCEPTION("hcontroller must be larger than h");
     }
-
 
     // ================= Creation of the model =======================
     // Steps:
@@ -60,7 +73,7 @@ int main(int argc, char* argv[])
     // --------------------
     // --- Interactions ---
     // --------------------
-    unsigned int ninter = 2; // dimension of your Interaction = size of y and lambda vectors
+    unsigned int ninter = 2;  // dimension of your Interaction = size of y and lambda vectors
 
     // First relation, related to the process
     // y = Cx + Dlambda
@@ -83,10 +96,9 @@ int main(int argc, char* argv[])
     (*D)(1, 0) = 0.0;
     (*D)(1, 1) = 0.0;
 
-
     //     SP::FirstOrderLinearR myProcessRelation(new FirstOrderLinearR(C,B));
     //     myProcessRelation->setDPtr(D);
-    //myProcessRelation->setComputeEFunction("ObserverLCSPlugin","computeE");
+    // myProcessRelation->setComputeEFunction("ObserverLCSPlugin","computeE");
 
     SP::FirstOrderLinearR myControllerRelation(new FirstOrderLinearR(C, B));
     myControllerRelation->setDPtr(D);
@@ -97,7 +109,7 @@ int main(int argc, char* argv[])
     myNslaw->display();
 
     // The Interaction which involves the first DS (the process)
-    string nameInter = "processInteraction"; // Name
+    string nameInter = "processInteraction";  // Name
 
     SP::Interaction myControllerInteraction(new Interaction(myNslaw, myControllerRelation));
 
@@ -146,32 +158,27 @@ int main(int argc, char* argv[])
     SP::Relay controllerOSNSPB(new Relay(SICONOS_RELAY_PGS));
     controllerSimulation->insertNonSmoothProblem(controllerOSNSPB);
 
-
     // coupling the simulation
 
     SP::SiconosVector sampledControl(new SiconosVector(2));
     processDS->setzPtr(sampledControl);
 
-
-
-
     // =========================== End of model definition ===========================
 
     // ================================= Computation =================================
 
-
     // --- Get the values to be plotted ---
-    unsigned int outputSize = 10; // number of required data
-    unsigned int N = ceil((T - t0) / h) + 10; // Number of time steps
+    unsigned int outputSize = 10;              // number of required data
+    unsigned int N = ceil((T - t0) / h) + 10;  // Number of time steps
     SimpleMatrix dataPlot(N, outputSize);
 
     SP::SiconosVector xProc = processDS->x();
 
     // -> saved in a matrix dataPlot
-    dataPlot(0, 0) = process->t0(); // Initial time of the model
+    dataPlot(0, 0) = process->t0();  // Initial time of the model
     dataPlot(0, 1) = (*xProc)(0);
 
-    unsigned int Ncontroller = ceil((T - t0) / hcontroller) + 10; // Number of time steps
+    unsigned int Ncontroller = ceil((T - t0) / hcontroller) + 10;  // Number of time steps
     SimpleMatrix dataPlotController(Ncontroller, outputSize);
 
     SP::SiconosVector xController = controllerDS->x();
@@ -179,7 +186,7 @@ int main(int argc, char* argv[])
     SP::SiconosVector y = myControllerInteraction->y(0);
 
     // -> saved in a matrix dataPlot
-    dataPlotController(0, 0) = controller->t0(); // Initial time of the model
+    dataPlotController(0, 0) = controller->t0();  // Initial time of the model
     dataPlotController(0, 1) = (*xController)(0);
     dataPlotController(0, 2) = (*xController)(1);
     dataPlotController(0, 5) = (*lambda)(0);
@@ -187,22 +194,20 @@ int main(int argc, char* argv[])
     dataPlotController(0, 7) = (*y)(0);
     dataPlotController(0, 8) = (*y)(1);
 
-
-
     // ==== Simulation loop =====
     cout << "====> Start computation ... " << endl << endl;
 
     // *z = *(myProcessInteraction->y(0)->getVectorPtr(0));
-    int k = 0; // Current step
+    int k = 0;  // Current step
     int kcontroller = 0;
     // Simulation loop
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
 
-    while(controllerSimulation->hasNextEvent())
-    {
-      kcontroller ++ ;
-//      cout << "step controller--> " << kcontroller << " at time t =" << controllerSimulation->nextTime() << endl;
+    while (controllerSimulation->hasNextEvent()) {
+      kcontroller++;
+      //      cout << "step controller--> " << kcontroller << " at time t =" <<
+      //      controllerSimulation->nextTime() << endl;
 
       // Computation of the controller over the sampling time
       controllerSimulation->computeOneStep();
@@ -210,10 +215,11 @@ int main(int argc, char* argv[])
       //  input of the controller in the process thanks to z and sampledControl
       prod(1.0, *B, *lambda, *sampledControl, true);
 
-      while(processSimulation->hasNextEvent() && processSimulation->nextTime() < controllerSimulation->nextTime())
-      {
+      while (processSimulation->hasNextEvent() &&
+             processSimulation->nextTime() < controllerSimulation->nextTime()) {
         k++;
-//        cout << "         step --> " << k  << " at time t =" << processSimulation->nextTime() << endl;
+        //        cout << "         step --> " << k  << " at time t =" <<
+        //        processSimulation->nextTime() << endl;
 
         processSimulation->computeOneStep();
         dataPlot(k, 0) = processSimulation->nextTime();
@@ -221,7 +227,8 @@ int main(int argc, char* argv[])
         dataPlot(k, 2) = (*xProc)(1);
         processSimulation->nextStep();
       }
-      dataPlotController(kcontroller, 0) = controllerSimulation->nextTime() ; // Initial time of the model
+      dataPlotController(kcontroller, 0) =
+          controllerSimulation->nextTime();  // Initial time of the model
       dataPlotController(kcontroller, 1) = (*xController)(0);
       dataPlotController(kcontroller, 2) = (*xController)(1);
       dataPlotController(kcontroller, 5) = (*lambda)(0);
@@ -235,22 +242,28 @@ int main(int argc, char* argv[])
       controllerSimulation->nextStep();
     }
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << endl;;
+    cout << "Computation Time \n";
+    ;
     end = std::chrono::system_clock::now();
-    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-                  (end-start).count();
-    cout << "Computation time : " << elapsed << " ms" << endl;
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    cout << "Computation time : " << elapsed << " ms\n";
     // --- Output files ---
-    cout << "====> Output file writing ..." << endl;
+    cout << "====> Output file writing ...\n";
     dataPlot.resize(k, outputSize);
     dataPlotController.resize(kcontroller, outputSize);
     ioMatrix::write("RelayBiSimulation-Controller.dat", "ascii", dataPlotController, "noDim");
     ioMatrix::write("RelayBiSimulation.dat", "ascii", dataPlot, "noDim");
 
+    double error = 0.0, eps = 1e-12;
+    if ((error = ioMatrix::compareRefFile(dataPlotController, "RBS-Controller.ref", eps)) >
+        eps)
+      return 1;
+    if ((error = ioMatrix::compareRefFile(dataPlot, "RBS.ref", eps)) > eps) return 1;
+    return 0;
+
   }
 
-  catch(...)
-  {
+  catch (...) {
     siconos::exception::process();
     return 1;
   }

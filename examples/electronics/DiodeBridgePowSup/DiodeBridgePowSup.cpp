@@ -27,29 +27,26 @@
 //    lambda (derived from the Kirchhoff laws)
 //
 //-----------------------------------------------------------------------
-
-#include "SiconosKernel.hpp"
+#include <SiconosKernel.hpp>
 #include <chrono>
-#include "SiconosAlgebraProd.hpp" // for prod
+#include <string>
+#include <SiconosAlgebraProd.hpp>  // for prod
 
 using namespace std;
 
-int main(int argc, char* argv[])
-{
-
+int main(int argc, char* argv[]) {
   double t0 = 0.0;
-  double T = 5e-3;           // Total simulation time
-  double h_step = 1.0e-6;    // Time step
-  double Rvalue = 1e3;       // load resistance
-  double Cfilt  = 300.0e-9;  // filtering capacitor
-  double VinitLS = 0.0;     // initial voltage Cfilt
-  double DiodeThreshold = 0.21; // Guess what ???
-  string Modeltitle = "DiodeBridgePowSup";
+  double T = 5e-3;               // Total simulation time
+  double h_step = 1.0e-6;        // Time step
+  double Rvalue = 1e3;           // load resistance
+  double Cfilt = 300.0e-9;       // filtering capacitor
+  double VinitLS = 0.0;          // initial voltage Cfilt
+  double DiodeThreshold = 0.21;  // Guess what ???
+  std::string Modeltitle = "DiodeBridgePowSup";
   double tinst;
   int k = 0;
 
-  try
-  {
+  try {
     // --- Dynamical system creation ---
     // --- Linear system  (load and filter) specification ---
     SP::SiconosVector init_stateLS(new SiconosVector(1));
@@ -69,17 +66,17 @@ int main(int argc, char* argv[])
     // --- Interaction between linear system and non smooth system ---
 
     SP::SimpleMatrix Int_C(new SimpleMatrix(4, 1));
-    (*Int_C)(0, 0) =  1.0;
-    (*Int_C)(2, 0) =  1.0;
+    (*Int_C)(0, 0) = 1.0;
+    (*Int_C)(2, 0) = 1.0;
 
     SP::SimpleMatrix Int_D(new SimpleMatrix(4, 4));
 
     (*Int_D)(0, 1) = -1.0;
-    (*Int_D)(1, 0) =  1.0;
-    (*Int_D)(1, 2) =  1.0;
+    (*Int_D)(1, 0) = 1.0;
+    (*Int_D)(1, 2) = 1.0;
     (*Int_D)(1, 3) = -1.0;
     (*Int_D)(2, 1) = -1.0;
-    (*Int_D)(3, 1) =  1.0;
+    (*Int_D)(3, 1) = 1.0;
 
     SP::SiconosVector Offset_y(new SiconosVector(4));
     (*Offset_y)(0) = 1.0;
@@ -92,7 +89,7 @@ int main(int argc, char* argv[])
     *Offset_lambda = -DiodeThreshold * (*Offset_lambda);
 
     SP::SiconosVector Int_z(new SiconosVector(5));
-    SP::SiconosVector tmp(new SiconosVector(4)) ;
+    SP::SiconosVector tmp(new SiconosVector(4));
     prod(*Int_D, *Offset_lambda, *tmp);
     *tmp -= *Offset_y;
     Int_z->setBlock(0, *tmp);
@@ -119,11 +116,9 @@ int main(int argc, char* argv[])
     // link the interaction and the dynamical system
     DiodeBridgePowSup->link(InterDiodeBridgePowSup, LSDiodeBridgePowSup);
 
-
     // ------------------
     // --- Simulation ---
     // ------------------
-
 
     // -- (1) OneStepIntegrators --
     double theta = 0.5;
@@ -140,8 +135,8 @@ int main(int argc, char* argv[])
 
     k = 0;
     double h = aTS->timeStep();
-    int N = ceil((T - t0) / h); // Number of time steps
-    cout << "Number of time steps = " << N << endl;
+    int N = ceil((T - t0) / h);  // Number of time steps
+    std::cout << "Number of time steps = " << N << "\n";
     tinst = k * h_step;
 
     // --- Get the values to be plotted ---
@@ -191,13 +186,11 @@ int main(int argc, char* argv[])
     // diode R2 current
     dataPlot(k, 8) = i_DR2;
 
-
     // --- Compute elapsed time ---
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
     // --- Time loop  ---
-    while(k < N - 1)
-    {
+    while (k < N - 1) {
       // get current time step
       k++;
       tinst = k * h_step;
@@ -246,42 +239,24 @@ int main(int argc, char* argv[])
       aTS->nextStep();
     }
 
-
     // --- elapsed time computing ---
-    cout << "time = " << endl;
+    std::cout << "time = \n";
     end = std::chrono::system_clock::now();
-    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-                  (end-start).count();
-    cout << "Computation time : " << elapsed << " ms" << endl;
-
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    std::cout << "Computation time : " << elapsed << " ms\n";
 
     // Number of time iterations
-    cout << "Number of iterations done: " << k << endl;
+    std::cout << "Number of iterations done: " << k << "\n";
 
+    ioMatrix::write("DiodeBridgePowSup.dat", "ascii", dataPlot, "noDim");
 
-    // open the file
-    char buffer[30];
-    ofstream outFile("DiodeBridgePowSup.dat");          // checks that it's opened
-    if(!outFile.is_open())
-      THROW_EXCEPTION("function write error : Fail to open \"DiodeBridgePowSup.dat\"");
-    for(int i = 0; i < N + 1; i++)
-    {
-      sprintf(buffer, "%1.10e ", dataPlot(i, 0)); // /!\ depends on machine precision
-      outFile << buffer;
-      for(int j = 1; j < (int)nbPlot; j++)
-      {
-        sprintf(buffer, "%1.6e ", dataPlot(i, j)); // /!\ depends on machine precision
-        outFile << buffer;
-      }
-      outFile << endl;
-    }
-    outFile.close();
-
+    double error = 0.0, eps = 1e-12;
+    if ((error = ioMatrix::compareRefFile(dataPlot, "DB.ref", eps)) >= 0.0 && error > eps)
+      return 1;
   }
 
   // --- Exceptions handling ---
-  catch(...)
-  {
+  catch (...) {
     siconos::exception::process();
     return 1;
   }

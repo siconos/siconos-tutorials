@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2021 INRIA.
+ * Copyright 2024 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,40 +14,38 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 #include <SiconosKernel.hpp>
 #include <chrono>
+#include <string>
 
 using namespace std;
 
-int main(int argc, char* argv[])
-{
-
+int main(int argc, char* argv[]) {
   double t0 = 0.0;
-  double T = 2e-3;    // Total simulation time
-  double h_step = 5.0e-8;  // Time step
-  double Lfvalue = 0.4e-3;   // inductance
-  double Cfvalue = 2.2e-6;   // capacitance
-  double Lrvalue = 150e-6;   // inductance
+  double T = 2e-3;          // Total simulation time
+  double h_step = 5.0e-8;   // Time step
+  double Lfvalue = 0.4e-3;  // inductance
+  double Cfvalue = 2.2e-6;  // capacitance
+  double Lrvalue = 150e-6;  // inductance
   double Crvalue = 68e-9;   // capacitance
-  double Rvalue = 33.0; // resistance
-  string Modeltitle = "PRC";
-  string Author = "Ivan Merillas Santos";
-  string Description = " ";
-  string Date = "February 2006";
-  string Bnamefunction = "Vgen";
-  //double Vgen = sin(2*M_PI*55000*0)/fabs(sin(2*M_PI*55000*0));
+  double Rvalue = 33.0;     // resistance
+  std::string Modeltitle = "PRC";
+  std::string Author = "Ivan Merillas Santos";
+  std::string Description = " ";
+  std::string Date = "February 2006";
+  std::string Bnamefunction = "Vgen";
+  // double Vgen = sin(2*M_PI*55000*0)/fabs(sin(2*M_PI*55000*0));
 
   // Chrono
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
 
-  try
-  {
-
+  try {
     // --- Dynamical system specification ---
 
-    cout << "====> Model loading ..." << endl << endl;
+    std::cout << "====> Model loading ..." << "\n"
+              << "\n";
     SP::SiconosVector init_state(new SiconosVector(4));
     (*init_state)(0) = 0.0;
     (*init_state)(1) = 0.0;
@@ -99,7 +97,6 @@ int main(int argc, char* argv[])
 
     SP::Interaction InterPRC(new Interaction(nslaw, LTIRPRC));
 
-
     // --- Model creation ---
     SP::NonSmoothDynamicalSystem PRC(new NonSmoothDynamicalSystem(t0, T));
     PRC->setTitle(Modeltitle);
@@ -132,13 +129,13 @@ int main(int argc, char* argv[])
     // ================================= Computation =================================
 
     double h = aTS->timeStep();
-    int N = ceil((T - t0) / h); // Number of time steps
+    int N = ceil((T - t0) / h);  // Number of time steps
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
     SimpleMatrix dataPlot(N, 5);
 
-    SP::SiconosVector x =  LSPRC->x();
+    SP::SiconosVector x = LSPRC->x();
 
     // For the initial time step:
     int k = 0;
@@ -158,9 +155,8 @@ int main(int argc, char* argv[])
     dataPlot(k, 4) = (*x)(3);
 
     // --- Time loop  ---
-    cout << "====> Start computation ... " << endl << endl;
-    for(k = 1 ; k < N ; ++k)
-    {
+    std::cout << "====> Start computation ... \n";
+    for (k = 1; k < N; ++k) {
       aTS->computeOneStep();
       // --- Get values to be plotted ---
       dataPlot(k, 0) = aTS->nextTime();
@@ -172,16 +168,20 @@ int main(int argc, char* argv[])
       aTS->nextStep();
     }
     // Number of time iterations
-    cout << "End of computation - Number of iterations done: " << k - 1 << endl;
+    std::cout << "End of computation - Number of iterations done: " << k - 1 << "\n";
 
     // dataPlot (ascii) output
     cout << "====> Output file writing ..." << endl;
     ioMatrix::write("PRC.dat", "ascii", dataPlot, "noDim");
+
+    double error = 0.0, eps = 1e-12;
+    if ((error = ioMatrix::compareRefFile(dataPlot, "PRC.ref", eps)) >= 0.0 && error > eps)
+      return 1;
+
   }
 
   // --- Exceptions handling ---
-  catch(...)
-  {
+  catch (...) {
     siconos::exception::process();
     return 1;
   }
