@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2021 INRIA.
+ * Copyright 2024 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 /*!\file BouncingBallTS.cpp
   \brief \ref EMBouncingBall - C++ input file, Time-Stepping version -
@@ -25,35 +25,32 @@
   Simulation with a Time-Stepping scheme.
 */
 
-#include "SiconosKernel.hpp"
+#include <SiconosKernel.hpp>
 #include <chrono>
 
 using namespace std;
 
-int main(int argc, char* argv[])
-{
-  try
-  {
-
+int main(int argc, char* argv[]) {
+  try {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    unsigned int nDof = 3;           // degrees of freedom for the ball
-    double t0 = 0;                   // initial computation time
-    double T = 10;                  // final computation time
-    double h = 0.0005;                // time step
-    double position_init = 1.0;      // initial position for lowest bead.
-    double velocity_init = 0.0;      // initial velocity for lowest bead.
-    double theta = 0.5;              // theta for MoreauJeanOSI integrator
-    double R = 0.1; // Ball radius
-    double height = 1.0; // height to the roof
-    double m = 1; // Ball mass
-    double g = 9.81; // Gravity
+    unsigned int nDof = 3;       // degrees of freedom for the ball
+    double t0 = 0;               // initial computation time
+    double T = 10;               // final computation time
+    double h = 0.0005;           // time step
+    double position_init = 1.0;  // initial position for lowest bead.
+    double velocity_init = 0.0;  // initial velocity for lowest bead.
+    double theta = 0.5;          // theta for MoreauJeanOSI integrator
+    double R = 0.1;              // Ball radius
+    double height = 1.0;         // height to the roof
+    double m = 1;                // Ball mass
+    double g = 9.81;             // Gravity
     // -------------------------
     // --- Dynamical systems ---
     // -------------------------
 
-    cout << "====> Model loading ..." <<  endl;
+    std::cout << "====> Model loading ...\n";
 
     SP::SiconosMatrix Mass(new SimpleMatrix(nDof, nDof));
     (*Mass)(0, 0) = m;
@@ -86,10 +83,10 @@ int main(int argc, char* argv[])
     SP::SimpleMatrix H(new SimpleMatrix(1, nDof));
     (*H)(0, 0) = -1.0;
     SP::SiconosVector b(new SiconosVector(1));
-    (*b)(0) = height - R- .2;
+    (*b)(0) = height - R - .2;
 
     SP::NonSmoothLaw nslaw(new NewtonImpactNSL(e));
-    SP::Relation relation(new LagrangianLinearTIR(H,b));
+    SP::Relation relation(new LagrangianLinearTIR(H, b));
 
     SP::Interaction inter(new Interaction(nslaw, relation));
 
@@ -103,19 +100,16 @@ int main(int argc, char* argv[])
     (*Kfloor)(0, 0) = compliance;
 
     SP::SiconosVector bfloor(new SiconosVector(1));
-    (*bfloor)(0) = - R;
+    (*bfloor)(0) = -R;
     SP::NonSmoothLaw nslawfloor(new ComplementarityConditionNSL(1));
 
-    SP::Relation relationfloor(new LagrangianCompliantLinearTIR(Hfloor,Kfloor, bfloor));
+    SP::Relation relationfloor(new LagrangianCompliantLinearTIR(Hfloor, Kfloor, bfloor));
 
     SP::Interaction interfloor(new Interaction(nslawfloor, relationfloor));
 
-
-
-
-    // -------------
-    // --- Model ---
-    // -------------
+    // --------------------------------
+    // --- NonSmoothDynamicalSystem ---
+    // --------------------------------
     SP::NonSmoothDynamicalSystem bouncingBall(new NonSmoothDynamicalSystem(t0, T));
 
     // add the dynamical system in the non smooth dynamical system
@@ -134,7 +128,6 @@ int main(int argc, char* argv[])
     // -- (1) OneStepIntegrators --
     SP::MoreauJeanOSI OSI(new MoreauJeanOSI(theta));
 
-
     // -- (2) Time discretisation --
     SP::TimeDiscretisation t(new TimeDiscretisation(t0, h));
 
@@ -142,13 +135,13 @@ int main(int argc, char* argv[])
     SP::OneStepNSProblem osnspb(new LCP());
 
     // -- (4) Simulation setup with (1) (2) (3)
-    SP::TimeStepping s(new TimeStepping(bouncingBall,t, OSI, osnspb));
+    SP::TimeStepping s(new TimeStepping(bouncingBall, t, OSI, osnspb));
 
     // =========================== End of model definition ===========================
 
     // ================================= Computation =================================
 
-    int N = ceil((T - t0) / h); // Number of time steps
+    int N = ceil((T - t0) / h);  // Number of time steps
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
@@ -166,48 +159,42 @@ int main(int argc, char* argv[])
     dataPlot(0, 3) = (*p)(0);
     dataPlot(0, 4) = (*lambda)(0);
     // --- Time loop ---
-    cout << "====> Start computation ... " << endl;
+    std::cout << "====> Start computation ... \n";
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
-    while(s->hasNextEvent())
-    {
+    auto start = std::chrono::system_clock::now();
+    while (s->hasNextEvent()) {
       s->computeOneStep();
       // --- Get values to be plotted ---
-      dataPlot(k, 0) =  s->nextTime();
+      dataPlot(k, 0) = s->nextTime();
       dataPlot(k, 1) = (*q)(0);
       dataPlot(k, 2) = (*v)(0);
       dataPlot(k, 3) = (*p)(0);
       dataPlot(k, 4) = (*lambda)(0);
       s->nextStep();
-      progressBar((double)k/N);
+      progressBar((double)k / N);
       k++;
     }
-    end = std::chrono::system_clock::now();
-    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-                  (end-start).count();
-    cout << endl <<  "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation time : " << elapsed << " ms" << endl;
+    auto end = std::chrono::system_clock::now();
+    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    std::cout << "\nEnd of computation - Number of iterations done: " << k - 1;
+    std::cout << "\nComputation time : " << elapsed << " ms\n";
+
     // --- Output files ---
-    cout << "====> Output file writing ..." << endl;
+    std::cout << "====> Output file writing ...\n";
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
     ioMatrix::write("BouncingBallTS-CompliantContact.dat", "ascii", dataPlot, "noDim");
-    //ioMatrix::write("BouncingBallTS-CompliantContact.ref", "ascii", dataPlot);
-    double error=0.0, eps=1e-12;
-    if((error=ioMatrix::compareRefFile(dataPlot, "BouncingBallTS-CompliantContact.ref", eps)) >= 0.0
-        && error > eps)
+    // ioMatrix::write("BouncingBallTS-CompliantContact.ref", "ascii", dataPlot);
+    double error = 0.0, eps = 1e-12;
+    if ((error = ioMatrix::compareRefFile(dataPlot, "BouncingBallTS-CompliantContact.ref",
+                                          eps)) >= 0.0 &&
+        error > eps)
       return 1;
   }
 
-  catch(...)
-  {
+  catch (...) {
     siconos::exception::process();
     return 1;
   }
-
-
-
 }

@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2021 INRIA.
+ * Copyright 2024 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-// =============================== Cam Follower (1DOF Impact System) ===============================
+// =============================== Cam Follower (1DOF Impact System)
+// ===============================
 //
-// The Cam Follower system is modelled as a Generalised Langrangian System impacting against a fixed wall
-// the moving constraint (i.e. a rotational cam) is modelled as an input force
+// The Cam Follower system is modelled as a Generalised Langrangian System impacting against a
+// fixed wall the moving constraint (i.e. a rotational cam) is modelled as an input force
 //
 // Direct description of the model.
 //
@@ -27,43 +28,42 @@
 //
 // ======================================================================================================
 
-#include "SiconosKernel.hpp"
-#include "CamState.h"
+#include <SolverOptions.h>
+
+#include <SiconosKernel.hpp>
 #include <chrono>
-#include "SolverOptions.h"
+
+#include "CamState.h"
 
 using namespace std;
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
   double rpm = 358;
-  try
-  {
-
+  try {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    unsigned int dsNumber = 1;       // the Follower and the ground
-    unsigned int nDof = 1;           // degrees of freedom for the ball
-    double t0 = 0;                   // initial computation time
-    double T = 1;                   // final computation time
-    double h = 0.0001;                // time step
-    double position_init = 0.40;      // initial position for lowest bead.
-    double velocity_init = 0.4;      // initial velocity for lowest bead.
-    double theta = 0.5;              // theta for MoreauJeanOSI integrator
+    unsigned int dsNumber = 1;    // the Follower and the ground
+    unsigned int nDof = 1;        // degrees of freedom for the ball
+    double t0 = 0;                // initial computation time
+    double T = 1;                 // final computation time
+    double h = 0.0001;            // time step
+    double position_init = 0.40;  // initial position for lowest bead.
+    double velocity_init = 0.4;   // initial velocity for lowest bead.
+    double theta = 0.5;           // theta for MoreauJeanOSI integrator
     // -------------------------
     // --- Dynamical systems ---
     // -------------------------
 
     SP::SimpleMatrix Mass(new SimpleMatrix(nDof, nDof));
     SP::SimpleMatrix K(new SimpleMatrix(nDof, nDof));
-    SP::SimpleMatrix C(new SimpleMatrix(nDof, nDof));       // mass/rigidity/viscosity
+    SP::SimpleMatrix C(new SimpleMatrix(nDof, nDof));  // mass/rigidity/viscosity
     (*Mass)(0, 0) = 1.221;
     (*K)(0, 0) = 1430.8;
 
     // -- Initial positions and velocities --
-    vector<SP::SiconosVector> q0;
-    vector<SP::SiconosVector> velocity0;
+    std::vector<SP::SiconosVector> q0;
+    std::vector<SP::SiconosVector> velocity0;
     q0.resize(dsNumber);
     velocity0.resize(dsNumber);
     q0[0].reset(new SiconosVector(nDof));
@@ -75,13 +75,15 @@ int main(int argc, char* argv[])
 
     // Example to set a list of parameters in FExt function.
     // 1 - Create a simple vector that contains the required parameters.
-    SP::SiconosVector param(new SiconosVector(1)); // Here we only set one parameter, the DS number.
+    SP::SiconosVector param(
+        new SiconosVector(1));  // Here we only set one parameter, the DS number.
     //    (*param)(0) = vectorDS[0]->getNumber();
     (*param)(0) = rpm;
     // 2 - Assign this param to the function FExt
     lds->setzPtr(param);
-    // 2 corresponds to the position of FExt in the stl vector of possible parameters. 0 is mass, 1 FInt and so on.
-    // Now the DS number will be available in FExt plugin.
+    // 2 corresponds to the position of FExt in the stl vector of possible parameters. 0 is
+    // mass, 1 FInt and so on. Now the DS number will be available in FExt plugin.
+
     // --------------------
     // --- Interactions ---
     // --------------------
@@ -96,10 +98,9 @@ int main(int argc, char* argv[])
     SP::NonSmoothLaw nslaw0(new NewtonImpactNSL(e));
     vector<string> listofG2(1);
     listofG2[0] = "FollowerPlugin:FollowerComputeG0";
-    SP::Relation relation0(new LagrangianRheonomousR("FollowerPlugin:FollowerComputeH1", "FollowerPlugin:FollowerComputeG10", "FollowerPlugin:FollowerComputeG11"));
-
-    SP::SiconosVector param2(new SiconosVector(1)); // Here we only set one parameter, the DS number.
-    (*param2)(0) = rpm;
+    SP::Relation relation0(new LagrangianRheonomousR("FollowerPlugin:FollowerComputeH1",
+                                                     "FollowerPlugin:FollowerComputeG10",
+                                                     "FollowerPlugin:FollowerComputeG11"));
 
     SP::Interaction inter(new Interaction(nslaw0, relation0));
     // -------------
@@ -108,7 +109,7 @@ int main(int argc, char* argv[])
 
     SP::NonSmoothDynamicalSystem Follower(new NonSmoothDynamicalSystem(t0, T));
     Follower->insertDynamicalSystem(lds);
-    Follower->link(inter,lds);
+    Follower->link(inter, lds);
 
     // ----------------
     // --- Simulation ---
@@ -122,7 +123,7 @@ int main(int argc, char* argv[])
     SP::OneStepNSProblem osnspb(new LCP(SICONOS_LCP_QP));
 
     // solver
-    //osnspb->numericsSolverOptions()->solverId=SICONOS_LCP_QP;
+    // osnspb->numericsSolverOptions()->solverId=SICONOS_LCP_QP;
 
     // max number of iterations
     osnspb->numericsSolverOptions()->iparam[0] = 101;
@@ -135,15 +136,13 @@ int main(int argc, char* argv[])
 
     SP::TimeStepping S(new TimeStepping(Follower, t, OSI, osnspb));
 
-    cout << "=== End of model loading === " << endl;
+    cout << "=== End of model loading === \n";
     // =========================== End of model definition ===========================
 
     // ================================= Computation =================================
 
-
-
     int k = 0;
-    int N = ceil((T - t0) / h); // Number of time steps
+    int N = ceil((T - t0) / h);  // Number of time steps
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
@@ -168,12 +167,10 @@ int main(int argc, char* argv[])
     DataPlot(k, 6) = CamVelocity;
     // Acceleration of the Cam
     DataPlot(k, 7) = CamPosition + (*lds->q())(0);
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+    auto start = std::chrono::system_clock::now();
     // --- Time loop ---
-    cout << "Start computation ... " << endl;
-    while(k < N)
-    {
+    cout << "Start computation ... \n";
+    while (k < N) {
       // get current time step
       k++;
       // solve ...
@@ -194,20 +191,23 @@ int main(int argc, char* argv[])
       // transfer of state i+1 into state i and time incrementation
       S->nextStep();
     }
+    auto end = std::chrono::system_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
+    cout << "Computation time : " << elapsed << " ms\n";
+
     // --- Output files ---
     ioMatrix::write("result.dat", "ascii", DataPlot, "noDim");
     ioMatrix::write("CamFollower-Rheonomous.dat", "ascii", DataPlot, "noDim");
-    //ioMatrix::write("CamFollower-Rheonomous.ref", "ascii", DataPlot);
-    double error=0.0, eps=1e-12;
-    if((error=ioMatrix::compareRefFile(DataPlot, "CamFollower-Rheonomous.ref", eps)) >= 0.0
-        && error > eps)
+    double error = 0.0, eps = 1e-12;
+    if ((error = ioMatrix::compareRefFile(DataPlot, "CamFollower-Rheonomous.ref", eps)) >=
+            0.0 &&
+        error > eps)
       return 1;
-
-    cout << "End of computation - Number of iterations done: " << k << endl;
+    return 0;
   }
 
-  catch(...)
-  {
+  catch (...) {
     siconos::exception::process();
     return 1;
   }

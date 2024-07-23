@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2021 INRIA.
+ * Copyright 2024 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 /*!\file BallOnMovingPlane.cpp
   \brief \ref EMBallOnMovingPlane - C++ input file, Time-Stepping version -
@@ -24,39 +24,37 @@
   This example shows how some precribed boundary conditions can be imposed.
   Simulation with a Time-Stepping scheme.
 */
-#include "SiconosKernel.hpp"
+
+#include <SiconosKernel.hpp>
 #include <chrono>
 
 using namespace std;
 
-int main(int argc, char* argv[])
-{
-  try
-  {
-
+int main(int argc, char* argv[]) {
+  try {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    unsigned int nDof = 3;           // degrees of freedom for the ball
-    double t0 = 0;                   // initial computation time
-    double T = 10.0;                  // final computation time
-    double h = 0.005;                // time step
-    double position_init = 1.0;      // initial position for lowest bead.
-    double velocity_init = 0.0;      // initial velocity for lowest bead.
-    double theta = 0.5;              // theta for MoreauJeanOSI integrator
-    double R = 0.1; // Ball radius
-    double m = 1; // Ball mass
-    double g = 9.81; // Gravity
+    unsigned int nDof = 3;       // degrees of freedom for the ball
+    double t0 = 0;               // initial computation time
+    double T = 10.0;             // final computation time
+    double h = 0.005;            // time step
+    double position_init = 1.0;  // initial position for lowest bead.
+    double velocity_init = 0.0;  // initial velocity for lowest bead.
+    double theta = 0.5;          // theta for MoreauJeanOSI integrator
+    double R = 0.1;              // Ball radius
+    double m = 1;                // Ball mass
+    double g = 9.81;             // Gravity
     // -------------------------
     // --- Dynamical systems ---
     // -------------------------
 
-    cout << "====> Model loading ..." << endl << endl;
+    std::cout << "====> Model loading ...\n";
 
     SP::SiconosMatrix Mass(new SimpleMatrix(nDof, nDof));
     (*Mass)(0, 0) = m;
     (*Mass)(1, 1) = m;
-    (*Mass)(2, 2) = 3. / 5 * m * R * R;
+    (*Mass)(2, 2) = 2. / 5 * m * R * R;
 
     // -- Initial positions and velocities --
     SP::SiconosVector q0(new SiconosVector(nDof));
@@ -74,12 +72,11 @@ int main(int argc, char* argv[])
 
     // -- Moving Plane --
 
-
     // -- Initial positions and velocities --
     SP::SiconosVector q02(new SiconosVector(nDof));
     SP::SiconosVector v02(new SiconosVector(nDof));
     (*q02)(0) = 0.0;
-    (*v02)(0) = - velocity_init;
+    (*v02)(0) = -velocity_init;
 
     // -- The dynamical system --
     SP::LagrangianDS movingplane(new LagrangianDS(q02, v02, Mass));
@@ -90,18 +87,14 @@ int main(int argc, char* argv[])
     SP::IndexInt bdindex(new IndexInt(1));
     (*bdindex)[0] = 0;
 
-    //SP::SiconosVector bdPrescribedVelocity(new SiconosVector(1));
-    //bdPrescribedVelocity->setValue(0,0.5);
-    //SP::BoundaryCondition bd (new BoundaryCondition(bdindex,bdPrescribedVelocity));
-
+    // SP::SiconosVector bdPrescribedVelocity(new SiconosVector(1));
+    // bdPrescribedVelocity->setValue(0,0.5);
+    // SP::BoundaryCondition bd (new BoundaryCondition(bdindex,bdPrescribedVelocity));
 
     SP::BoundaryCondition bd(new BoundaryCondition(bdindex));
     bd->setComputePrescribedVelocityFunction("BallOnMovingPlanePlugin", "prescribedvelocity");
 
-
     movingplane->setBoundaryConditions(bd);
-
-
 
     // --------------------
     // --- Interactions ---
@@ -133,8 +126,6 @@ int main(int argc, char* argv[])
     // link the interaction and the dynamical systems
     bouncingBall->link(inter, ball, movingplane);
 
-
-
     // ------------------
     // --- Simulation ---
     // ------------------
@@ -154,23 +145,23 @@ int main(int argc, char* argv[])
 
     // ================================= Computation =================================
 
-    int N = ceil((T - t0) / h); // Number of time steps
+    int N = ceil((T - t0) / h);  // Number of time steps
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
     unsigned int outputSize = 12;
-    SimpleMatrix dataPlot(N+1, outputSize);
+    SimpleMatrix dataPlot(N + 1, outputSize);
 
-    SP::SiconosVector q = ball->q();
-    SP::SiconosVector v = ball->velocity();
-    SP::SiconosVector p = ball->p(1);
-    SP::SiconosVector qplane = movingplane->q();
-    SP::SiconosVector vplane = movingplane->velocity();
-    SP::SiconosVector pplane = movingplane->p(1);
-    SP::SiconosVector lambda = inter->lambda(1);
-    SP::SiconosVector y = inter->y(0);
+    auto q = ball->q();
+    auto v = ball->velocity();
+    auto p = ball->p(1);
+    auto qplane = movingplane->q();
+    auto vplane = movingplane->velocity();
+    auto pplane = movingplane->p(1);
+    auto lambda = inter->lambda(1);
+    auto y = inter->y(0);
 
-    SP::SiconosVector reaction = movingplane->reactionToBoundaryConditions();
+    auto reaction = movingplane->reactionToBoundaryConditions();
 
     dataPlot(0, 0) = bouncingBall->t0();
     dataPlot(0, 1) = (*q)(0);
@@ -189,18 +180,15 @@ int main(int argc, char* argv[])
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
 
+    auto start = std::chrono::system_clock::now();
 
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
-
-    while(s->hasNextEvent() && k <5000)
-    {
+    while (s->hasNextEvent() && k < 5000) {
       s->computeOneStep();
       // std::cout << "y :"<< std::endl;
       // y->display();
       // osnspb->display();
       // --- Get values to be plotted ---
-      dataPlot(k, 0) =  s->nextTime();
+      dataPlot(k, 0) = s->nextTime();
       dataPlot(k, 1) = (*q)(0);
       dataPlot(k, 2) = (*v)(0);
       dataPlot(k, 3) = (*p)(0);
@@ -217,30 +205,24 @@ int main(int argc, char* argv[])
 
       k++;
     }
-    cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << endl;;
-    end = std::chrono::system_clock::now();
-    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-                  (end-start).count();
-    cout << "Computation time : " << elapsed << " ms" << endl;
+    auto end = std::chrono::system_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    std::cout << "\nEnd of computation - Number of iterations done: " << k - 1;
+    std::cout << "\nComputation time : " << elapsed << " ms\n";
+
     // --- Output files ---
-    cout << "====> Output file writing ..." << endl;
+    std::cout << "====> Output file writing ...\n";
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
 
-    double error=0.0, eps=1e-10;
-    if((error=ioMatrix::compareRefFile(dataPlot, "BallOnMovingPlane.ref", eps))>=0.0
-        && error > eps)
+    double error = 0.0, eps = 1e-10;
+    if ((error = ioMatrix::compareRefFile(dataPlot, "BallOnMovingPlane.ref", eps)) >= 0.0 &&
+        error > eps)
       return 1;
-
-
+    return 0;
   }
 
-  catch(...)
-  {
+  catch (...) {
     siconos::exception::process();
     return 1;
   }
-
-
-
 }

@@ -14,31 +14,29 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
-
+ */
 
 /*!\file
  *C++ input file, MoreauJeanOSI-Time-Stepping version
  */
 
+#include <SolverOptions.h>
+
+#include <SiconosKernel.hpp>
 #include <chrono>
-#include "SiconosKernel.hpp"
-#include "SolverOptions.h"
 #define WITH_FRICTION
-//#define DISPLAY_INTER
+// #define DISPLAY_INTER
 using namespace std;
 
-int main(int argc, char* argv[])
-{
-  try
-  {
+int main(int argc, char* argv[]) {
+  try {
     // ================= Creation of the model =======================
 
     // parameters according to Table 1
-    unsigned int nDof = 3; // degrees of freedom for robot arm
-    double t0 = 0;         // initial computation time
-    double T = 3.0;       // final computation time
-    double h = 1e-3;       // time step : do not decrease, because of strong penetrations
+    unsigned int nDof = 3;  // degrees of freedom for robot arm
+    double t0 = 0;          // initial computation time
+    double T = 3.0;         // final computation time
+    double h = 1e-3;        // time step : do not decrease, because of strong penetrations
 
     // contact parameters
     double eN = 0.5;
@@ -71,16 +69,19 @@ int main(int argc, char* argv[])
     // --- Interactions---
     // -------------------
     SP::NonSmoothLaw nslaw1(new NewtonImpactFrictionNSL(eN, eT, mu, 2));
-    SP::Relation relation1(new LagrangianScleronomousR("PendulumPlugin:g1", "PendulumPlugin:W1"));
+    SP::Relation relation1(
+        new LagrangianScleronomousR("PendulumPlugin:g1", "PendulumPlugin:W1"));
     SP::Interaction inter1(new Interaction(nslaw1, relation1));
 
     SP::NonSmoothLaw nslaw2(new NewtonImpactFrictionNSL(eN, 0.0, 0.0, 2));
-    //SP::NonSmoothLaw nslaw2(new NewtonImpactNSL(eN));
-    SP::Relation relation2(new LagrangianScleronomousR("PendulumPlugin:g2", "PendulumPlugin:W2"));
+    // SP::NonSmoothLaw nslaw2(new NewtonImpactNSL(eN));
+    SP::Relation relation2(
+        new LagrangianScleronomousR("PendulumPlugin:g2", "PendulumPlugin:W2"));
     SP::Interaction inter2(new Interaction(nslaw2, relation2));
 
     SP::NonSmoothLaw nslaw3(new NewtonImpactFrictionNSL(eN, 0.0, 0.0, 2));
-    SP::Relation relation3(new LagrangianScleronomousR("PendulumPlugin:g3", "PendulumPlugin:W3"));
+    SP::Relation relation3(
+        new LagrangianScleronomousR("PendulumPlugin:g3", "PendulumPlugin:W3"));
     SP::Interaction inter3(new Interaction(nslaw3, relation3));
 
     // -------------
@@ -99,11 +100,11 @@ int main(int argc, char* argv[])
 
     SP::TimeDiscretisation t(new TimeDiscretisation(t0, h));
     SP::OneStepNSProblem impact(new FrictionContact(2, SICONOS_FRICTION_2D_ENUM));
-    //SP::OneStepNSProblem impact(new LCP(SICONOS_LCP_ENUM));
+    // SP::OneStepNSProblem impact(new LCP(SICONOS_LCP_ENUM));
 
     impact->numericsSolverOptions()->dparam[0] = 1e-08;
     impact->numericsSolverOptions()->iparam[0] = 100;
-    impact->numericsSolverOptions()->iparam[2] = 1; // random
+    impact->numericsSolverOptions()->iparam[2] = 1;  // random
     SP::TimeStepping s(new TimeStepping(pendulumWithSlider, t));
     s->insertIntegrator(OSI);
     s->insertNonSmoothProblem(impact, SICONOS_OSNSP_TS_VELOCITY);
@@ -114,15 +115,15 @@ int main(int argc, char* argv[])
 
     // ================================= Computation =================================
 
-    int N = ceil((T - t0) / h) + 1; // Number of time steps
+    int N = ceil((T - t0) / h) + 1;  // Number of time steps
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
     unsigned int outputSize = 14;
     SimpleMatrix dataPlot(N + 1, outputSize);
 
-    SP::SiconosVector q = pendulum->q();
-    SP::SiconosVector v = pendulum->velocity();
+    auto q = pendulum->q();
+    auto v = pendulum->velocity();
 
     dataPlot(0, 0) = pendulumWithSlider->t0();
     dataPlot(0, 1) = (*q)(0);
@@ -131,9 +132,9 @@ int main(int argc, char* argv[])
     dataPlot(0, 4) = (*v)(0);
     dataPlot(0, 5) = (*v)(1);
     dataPlot(0, 6) = (*v)(2);
-    dataPlot(0, 7) = (*inter1->y(0))(0) ; // g1
-    dataPlot(0, 8) = (*inter2->y(0))(0) ; // g2
-    dataPlot(0, 9) = (*inter3->y(0))(0) ; // g3
+    dataPlot(0, 7) = (*inter1->y(0))(0);  // g1
+    dataPlot(0, 8) = (*inter2->y(0))(0);  // g2
+    dataPlot(0, 9) = (*inter3->y(0))(0);  // g3
 
     // --- Time loop ---
     cout << "====> Start computation ... " << endl << endl;
@@ -141,13 +142,10 @@ int main(int argc, char* argv[])
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
 
+    auto start = std::chrono::system_clock::now();
 
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
-
-
-    while((s->hasNextEvent()) && (k<= 3000))
-//    while ((s->hasNextEvent()))
+    while ((s->hasNextEvent()) && (k <= 3000))
+    //    while ((s->hasNextEvent()))
     {
       // std::cout <<"t = " <<s->nextTime()-h  <<std::endl;
       // //std::cout <<"=====================================================" <<std::endl;
@@ -158,24 +156,22 @@ int main(int argc, char* argv[])
       // cout << "v[1] = " << (*v)(1)  << endl;
       // cout << "v[2] = " << (*v)(2)  << endl;
 
-
-
-      //std::cout << "=============== Step k ="<< k<< std::endl;
+      // std::cout << "=============== Step k ="<< k<< std::endl;
       s->advanceToEvent();
       impact->setNumericsVerboseMode(0);
       // --- Get values to be plotted ---
       dataPlot(k, 0) = s->nextTime();
-      dataPlot(k, 1) = (*q)(0) ;
+      dataPlot(k, 1) = (*q)(0);
       dataPlot(k, 2) = (*q)(1);
       dataPlot(k, 3) = (*q)(2);
       dataPlot(k, 4) = (*v)(0);
       dataPlot(k, 5) = (*v)(1);
       dataPlot(k, 6) = (*v)(2);
-      dataPlot(k, 7) = (*inter1->y(0))(0) ; // g1
-      dataPlot(k, 8) = (*inter2->y(0))(0) ; // g2
-      dataPlot(k, 9) = (*inter3->y(0))(0) ; // g3
+      dataPlot(k, 7) = (*inter1->y(0))(0);  // g1
+      dataPlot(k, 8) = (*inter2->y(0))(0);  // g2
+      dataPlot(k, 9) = (*inter3->y(0))(0);  // g3
       dataPlot(k, 10) = s->getNewtonNbIterations();
-      SP::InteractionsGraph indexSet1 = topo->indexSet(1);
+      auto indexSet1 = topo->indexSet(1);
       dataPlot(k, 11) = indexSet1->size();
 
       // if (indexSet1->size() > 5)
@@ -188,29 +184,31 @@ int main(int argc, char* argv[])
       std::cout << "Time " << s->nextTime() << std::endl;
 
       impact->display();
-      std::cout << " (*inter1->lambda(1))(0) " << (*inter1->lambda(1))(0) << std:: endl;
-      std::cout << " (*inter2->lambda(1))(0) " << (*inter2->lambda(1))(0) << std:: endl;
+      std::cout << " (*inter1->lambda(1))(0) " << (*inter1->lambda(1))(0) << std::endl;
+      std::cout << " (*inter2->lambda(1))(0) " << (*inter2->lambda(1))(0) << std::endl;
 #endif
 
       s->processEvents();
 
       k++;
     }
+    auto end = std::chrono::system_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    std::cout << "\nEnd of computation - Number of iterations done: " << k - 1;
+    std::cout << "\nComputation time : " << elapsed << " ms\n";
 
-    cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << endl;;
-    end = std::chrono::system_clock::now();
-    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-                  (end-start).count();
-    cout << "Computation time : " << elapsed << " ms" << endl;
     // --- Output files ---
-    cout << "====> Output file writing ..." << endl;
+    std::cout << "====> Output file writing ...\n";
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
+    double error = 0.0, eps = 1e-12;
+    if ((error = ioMatrix::compareRefFile(dataPlot, "PendulumSlider.ref", eps)) >= 0.0 &&
+        error > eps)
+      return 1;
+    return 0;
   }
 
-  catch(...)
-  {
+  catch (...) {
     siconos::exception::process();
     return 1;
   }

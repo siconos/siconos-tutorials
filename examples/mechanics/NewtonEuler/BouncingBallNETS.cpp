@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2021 INRIA.
+ * Copyright 2024 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 /*!\file BouncingBallNETS.cpp
   \brief \ref EMBouncingBall - C++ input file, Time-Stepping version -
@@ -24,7 +24,8 @@
   Direct description of the model.
   Simulation with a Time-Stepping scheme.
 */
-#include "SiconosKernel.hpp"
+
+#include <SiconosKernel.hpp>
 #include <chrono>
 
 #define WITH_PROJ
@@ -36,17 +37,13 @@ using namespace std;
 #define R_CLASS NewtonEuler1DR
 #endif
 
-class my_NewtonEulerR : public R_CLASS
-{
+class my_NewtonEulerR : public R_CLASS {
+  double _sBallRadius;
 
-  double _sBallRadius ;
+ public:
+  my_NewtonEulerR(double radius) : R_CLASS(), _sBallRadius(radius) {};
 
-public:
-
-  my_NewtonEulerR(double radius): R_CLASS(), _sBallRadius(radius) { };
-
-  void computeh(double time, const BlockVector& q0, SiconosVector& y)
-  {
+  void computeh(double time, const BlockVector& q0, SiconosVector& y) {
     double height = fabs(q0.getValue(0)) - _sBallRadius;
     // std::cout <<"my_NewtonEulerR:: computeh _jachq" << std:: endl;
     // _jachq->display();
@@ -61,46 +58,37 @@ public:
     //_Pc2->setValue(0,hpc);
     //_Pc2->setValue(1,data[q0]->getValue(1));
     //_Pc2->setValue(2,data[q0]->getValue(2));
-    //printf("my_NewtonEulerR N, Pc\n");
+    // printf("my_NewtonEulerR N, Pc\n");
     //_Nc->display();
     //_Pc1->display();
   }
-  //ACCEPT_VISITORS();
 };
 TYPEDEF_SPTR(my_NewtonEulerR);
 
-
-
-
-
-int main(int argc, char* argv[])
-{
-  try
-  {
-
-
+int main(int argc, char* argv[]) {
+  try {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    unsigned int nDof = 3;           // degrees of freedom for the ball
-    unsigned int qDim = 7;           // degrees of freedom for the ball
-    unsigned int nDim = 6;           // degrees of freedom for the ball
-    double t0 = 0;                   // initial computation time
-    double T = 10.0;                  // final computation time
-    double h = 0.005;                // time step
-    double position_init = 1.0;      // initial position for lowest bead.
-    double velocity_init = 2.0;      // initial velocity for lowest bead.
+    unsigned int nDof = 3;       // degrees of freedom for the ball
+    unsigned int qDim = 7;       // degrees of freedom for the ball
+    unsigned int nDim = 6;       // degrees of freedom for the ball
+    double t0 = 0;               // initial computation time
+    double T = 10.0;             // final computation time
+    double h = 0.005;            // time step
+    double position_init = 1.0;  // initial position for lowest bead.
+    double velocity_init = 2.0;  // initial velocity for lowest bead.
     double omega_initx = 0.0;
-    double omega_initz = 0.0;// initial velocity for lowest bead.
-    double theta = 0.5;              // theta for MoreauJeanOSI integrator
-    double m = 1; // Ball mass
-    double g = 9.81; // Gravity
+    double omega_initz = 0.0;  // initial velocity for lowest bead.
+    double theta = 0.5;        // theta for MoreauJeanOSI integrator
+    double m = 1;              // Ball mass
+    double g = 9.81;           // Gravity
     double radius = 0.1;
     // -------------------------
     // --- Dynamical systems ---
     // -------------------------
 
-    cout << "====> Model loading ..." << endl << endl;
+    std::cout << "====> Model loading ...\n";
 
     // -- Initial positions and velocities --
     SP::SiconosVector q0(new SiconosVector(qDim));
@@ -148,7 +136,6 @@ int main(int argc, char* argv[])
 #else
     SP::NonSmoothLaw nslaw0(new NewtonImpactNSL(e));
 #endif
-
 
     //     Version with NewtonEulerR()
     //
@@ -201,7 +188,8 @@ int main(int argc, char* argv[])
 #endif
     // -- (4) Simulation setup with (1) (2) (3)
 #ifdef WITH_PROJ
-    SP::TimeSteppingDirectProjection s(new TimeSteppingDirectProjection(bouncingBall, t, OSI, osnspb, osnspb_pos));
+    SP::TimeSteppingDirectProjection s(
+        new TimeSteppingDirectProjection(bouncingBall, t, OSI, osnspb, osnspb_pos));
     s->setProjectionMaxIteration(20);
     s->setConstraintTolUnilateral(1e-08);
     s->setConstraintTol(1e-08);
@@ -214,17 +202,17 @@ int main(int argc, char* argv[])
 
     // ================================= Computation =================================
 
-    int N = ceil((T - t0) / h); // Number of time steps
+    int N = ceil((T - t0) / h);  // Number of time steps
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
     unsigned int outputSize = 16;
     SimpleMatrix dataPlot(N + 1, outputSize);
 
-    SP::SiconosVector q = ball->q();
-    SP::SiconosVector v = ball->twist();
-    SP::SiconosVector p = ball->p(1);
-    SP::SiconosVector lambda = inter->lambda(1);
+    auto q = ball->q();
+    auto v = ball->twist();
+    auto p = ball->p(1);
+    auto lambda = inter->lambda(1);
 
     dataPlot(0, 0) = bouncingBall->t0();
     dataPlot(0, 1) = (*q)(0);
@@ -244,20 +232,17 @@ int main(int argc, char* argv[])
     dataPlot(0, 15) = (*v)(2);
 
     // --- Time loop ---
-    cout << "====> Start computation ... " << endl << endl;
+    std::cout << "====> Start computation ... \n";
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
 
-
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+    auto start = std::chrono::system_clock::now();
     dataPlot(k, 6) = relation0->contactForce()->norm2();
-    while(s->hasNextEvent())
-    {
+    while (s->hasNextEvent()) {
       //      s->computeOneStep();
       s->advanceToEvent();
       // --- Get values to be plotted ---
-      dataPlot(k, 0) =  s->nextTime();
+      dataPlot(k, 0) = s->nextTime();
       dataPlot(k, 1) = (*q)(0);
       dataPlot(k, 2) = (*v)(0);
       dataPlot(k, 3) = (*p)(0);
@@ -277,37 +262,34 @@ int main(int argc, char* argv[])
 
       k++;
     }
-    cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << endl;;
-    end = std::chrono::system_clock::now();
-    int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>
-                  (end-start).count();
-    cout << "Computation time : " << elapsed << " ms" << endl;
+    auto end = std::chrono::system_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    std::cout << "\nEnd of computation - Number of iterations done: " << k - 1;
+    std::cout << "\nComputation time : " << elapsed << " ms\n";
+
     // --- Output files ---
-    cout << "====> Output file writing ..." << endl;
+    std::cout << "====> Output file writing ...\n";
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
 
     // Comparison with a reference file
 #ifdef WITH_PROJ
-    double error=0.0, eps=1e-12;
-    if((error=ioMatrix::compareRefFile(dataPlot, "BouncingBallNETS-WITHPROJ.ref",
-                                       eps)) >= 0.0
-        && error > eps)
+    double error = 0.0, eps = 1e-12;
+    if ((error = ioMatrix::compareRefFile(dataPlot, "BouncingBallNETS-WITHPROJ.ref", eps)) >=
+            0.0 &&
+        error > eps)
       return 1;
 #else
-    double error=0.0, eps=1e-12;
-    if((error=ioMatrix::compareRefFile(dataPlot, "BouncingBallNETS.ref", eps)) >= 0.0
-        && error > eps)
+    double error = 0.0, eps = 1e-12;
+    if ((error = ioMatrix::compareRefFile(dataPlot, "BouncingBallNETS.ref", eps)) >= 0.0 &&
+        error > eps)
       return 1;
 #endif
-
+    return 0;
   }
 
-  catch(...)
-  {
+  catch (...) {
     siconos::exception::process();
     return 1;
   }
-
 }

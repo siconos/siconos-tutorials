@@ -1,7 +1,7 @@
 /* Siconos is a program dedicated to modeling, simulation and control
  * of non smooth dynamical systems.
  *
- * Copyright 2021 INRIA.
+ * Copyright 2024 INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,10 @@
   Simulation with a Time-Stepping scheme.
 */
 
-#include <chrono>
+#include <SolverOptions.h>
 
-#include "SiconosKernel.hpp"
-#include "SolverOptions.h"
+#include <SiconosKernel.hpp>
+#include <chrono>
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
     // --- Dynamical systems ---
     // -------------------------
 
-    cout << "====> Model loading ..." << endl;
+    std::cout << "====> Model loading ...\n";
 
     SP::SiconosMatrix Mass(new SimpleMatrix(nDof, nDof));
     (*Mass)(0, 0) = m;
@@ -64,8 +64,6 @@ int main(int argc, char* argv[]) {
     (*v0)(0) = velocity_init;
 
     // -- The dynamical system --
-    // SP::LagrangianDS ball(new LagrangianDS(q0, v0, Mass));
-
     SP::LagrangianLinearTIDS ball(new LagrangianLinearTIDS(q0, v0, Mass));
 
     // -- Set external forces (weight) --
@@ -92,9 +90,9 @@ int main(int argc, char* argv[]) {
 
     SP::Interaction inter(new Interaction(nslaw, relation));
 
-    // -------------
-    // --- Model ---
-    // -------------
+    // --------------------------------
+    // --- NonSmoothDynamicalSystem ---
+    // --------------------------------
     SP::NonSmoothDynamicalSystem bouncingBall(new NonSmoothDynamicalSystem(t0, T));
 
     // add the dynamical system in the non smooth dynamical system
@@ -131,10 +129,10 @@ int main(int argc, char* argv[]) {
     unsigned int outputSize = 5;
     SimpleMatrix dataPlot(N + 1, outputSize);
 
-    SP::SiconosVector q = ball->q();
-    SP::SiconosVector v = ball->velocity();
-    SP::SiconosVector p = ball->p(1);
-    SP::SiconosVector lambda = inter->lambda(1);
+    auto q = ball->q();
+    auto v = ball->velocity();
+    auto p = ball->p(1);
+    auto lambda = inter->lambda(1);
 
     dataPlot(0, 0) = bouncingBall->t0();
     dataPlot(0, 1) = (*q)(0);
@@ -142,13 +140,10 @@ int main(int argc, char* argv[]) {
     dataPlot(0, 3) = (*p)(0);
     dataPlot(0, 4) = (*lambda)(0);
     // --- Time loop ---
-    cout << "====> Start computation ... " << endl;
+    std::cout << "====> Start computation ... \n";
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
-
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
-
+    auto start = std::chrono::system_clock::now();
     while (s->hasNextEvent()) {
       s->computeOneStep();
       // --- Get values to be plotted ---
@@ -158,16 +153,15 @@ int main(int argc, char* argv[]) {
       dataPlot(k, 3) = (*p)(0);
       dataPlot(k, 4) = (*lambda)(0);
       s->nextStep();
-
       k++;
     }
-    end = std::chrono::system_clock::now();
+    auto end = std::chrono::system_clock::now();
     int elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation time : " << elapsed << " ms" << endl;
+    std::cout << "\nEnd of computation - Number of iterations done: " << k - 1;
+    std::cout << "\nComputation time : " << elapsed << " ms\n";
 
     // --- Output files ---
-    cout << "====> Output file writing ..." << endl;
+    std::cout << "====> Output file writing ...\n";
     dataPlot.resize(k, outputSize);
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
     std::cout << "Comparison with a reference file" << std::endl;
