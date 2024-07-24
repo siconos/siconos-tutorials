@@ -26,12 +26,13 @@ variables:
       reports:
         junit: $CI_PROJECT_DIR/build-examples/test_results.xml
 
-# examples, on ubuntu20 with a standard (default)
-# Siconos installation (based on current development, master branch, version
+# Examples, executed on a "ready-to-use" image containing a
+# full Siconos installation, based on the last version
+# of a branch with the same name as the current example branch.
 # Run only when a push has been done to this project.
 run-examples:
   variables:
-    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconoslab-master
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconoslab-occ-$CI_COMMIT_REF_SLUG
     CDASH_SUBMIT: 1
   extends: .examples-build
   rules:
@@ -39,16 +40,18 @@ run-examples:
       when: always
     - when: never
 
-# examples, on ubuntu20 with a standard (default)
-# Siconos installation (based on the last commit in siconos)
+# Examples, executed on a "ready-to-use" image containing a
+# full Siconos installation, based on the last version
+# of a branch with the same name as the current example branch.
 # - Run only when triggered from siconos project
-# - Run on a docker image corresponding to a specific branch in siconos project.
-#   (var: SICONOS_DOCKER_NAME, automatically set by CI in siconos project)
-#
+# - Run on a docker image $LAB_NAME-$CI_COMMIT_REF_SLUG
+# LAB_NAME comes from parent pipeline and $CI_COMMIT_REF_SLUG
+# is the current branch name in lowercase 
 # This job runs in  multi-project pipelines only
+# Required: same branch name in siconos and siconos-tutorials
 triggered-examples:
   variables:
-    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconoslab-$CI_COMMIT_REF_SLUG
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/$LAB_NAME-$CI_COMMIT_REF_SLUG
     CDASH_SUBMIT: 1
     BUILD_DIR: ${CI_PROJECT_DIR}/build-examples
   extends: .examples-build
