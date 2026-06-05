@@ -27,9 +27,9 @@ set size winratio,winheight
 set origin 0.0,winheight*2.0+heightoff
 set ylabel 'm'
 
+#resultfile="BallOnMovingPlane.dat"
+resultfile="BallOnMovingPlane_python.dat"
 
-resultfile="BallNewtonEuler.dat"
-#resultfile ="BallNewtonEulerOnMovingPlane.dat"
 plot \
 resultfile u 1:2 t "Ball position" w l,\
 resultfile u 1:8 t "Plane position " w l

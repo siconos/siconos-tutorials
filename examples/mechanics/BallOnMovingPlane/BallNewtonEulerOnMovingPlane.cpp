@@ -222,7 +222,7 @@ int main(int argc, char* argv[]) {
       dataPlot(k, 1) = (*q)(0);
       dataPlot(k, 2) = (*v)(0);
       dataPlot(k, 3) = (*p)(0);
-      // dataPlot(k, 4) = (*lambda)(0);
+      dataPlot(k, 4) = (*lambda)(0);
       dataPlot(k, 5) = acos((*q)(3));
       dataPlot(k, 6) = relation0->contactForce().norm();
       dataPlot(k, 7) = (*q)(0);
