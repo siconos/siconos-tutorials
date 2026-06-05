@@ -56,12 +56,12 @@ int main(int argc, char* argv[]) {
       if (dim == 2)
       {
         nodal_forces.resize(3);
-        nodal_forces <<  -2e4, 0. ,0. ;
+        nodal_forces <<  -2e9, 0.  ,0. ;
       }
       else
       {
         nodal_forces.resize(6);
-        nodal_forces <<  -2e4, 0. ,0. ,0. ,0. ,0. ;
+        nodal_forces <<  -2e9, 0. ,0. ,0. ,0. ,0. ;
 
       }
       beam->applyNodalForces(tags[siconos::mechanics::fem::MeshTags::applied_forces],
@@ -119,7 +119,6 @@ int main(int argc, char* argv[]) {
     auto osnspb = std::make_shared<
         siconos::mechanics::fem::nonsmooth_formulations::GlobalFrictionContact>(
         dim, SOLVER);
-    osnspb->setNumericsVerboseLevel(3);
 
 
     // -- (4) Simulation setup with (1) (2) (3)
@@ -145,20 +144,11 @@ int main(int argc, char* argv[]) {
     siconos::algebra::SiconosDenseMatrix pos{N + 1, 10};
     pos.setZero();
 
-    int vcnt = 0;
-    // for (auto v : mesh->vertices()) {
-    //   std::cout << v->num() << std::endl;
-    //   pos(0,(vcnt)*2) = v->x() + q((vcnt)*3);
-    //   pos(0,(vcnt)*2+1) = v->y() + q((vcnt)*3+1);
-    //   vcnt++;
-    // }
-
     dataPlot(0, 0) = beamNSDS->t0();
     dataPlot(0, 1) = q(beam->dimension() - 3);
     dataPlot(0, 2) = q(beam->dimension() - 2);
     dataPlot(0, 3) = q(beam->dimension() - 1);
 
-    std::cout << "About to start simulation" << std::endl;
     while (s->hasNextEvent()) {
       s->computeOneStep();
       //  --- Get values to be plotted ---
@@ -166,14 +156,6 @@ int main(int argc, char* argv[]) {
       dataPlot(k, 1) = q(beam->dimension() - 3);
       dataPlot(k, 2) = q(beam->dimension() - 2);
       dataPlot(k, 3) = q(beam->dimension() - 1);
-      vcnt = 0;
-      // for (auto v : mesh->vertices()) {
-      //   std::cout << v->num() << std::endl;
-
-      //   pos(k,(vcnt)*2) = v->x() + q((vcnt)*3);
-      //   pos(k,(vcnt)*2+1) = v->y() + q((vcnt)*3+1);
-      //   vcnt++;
-      // }
       siconos::mechanics::fem::writeBeamPositionforSOFA(*mesh, *beam->FEModel(), q,
                                                         SOFAfilename, k * 0.01);
 
