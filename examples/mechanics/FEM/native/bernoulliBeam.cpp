@@ -143,19 +143,34 @@ int main(int argc, char* argv[]) {
 
     siconos::algebra::SiconosDenseMatrix pos{N + 1, 10};
     pos.setZero();
+    int lastXposition, lastYposition, lastOrientation;
+    if (dim == 2)
+    {
+     lastXposition = beam->dimension() - 3;
+      lastYposition = beam->dimension() - 2;
+     lastOrientation = beam->dimension() - 1;
+    }
+    else
+    {
+      lastXposition = beam->dimension() - 6;
+      lastYposition = beam->dimension() - 5;
+      lastOrientation = beam->dimension() - 1;
+    }
 
     dataPlot(0, 0) = beamNSDS->t0();
-    dataPlot(0, 1) = q(beam->dimension() - 3);
-    dataPlot(0, 2) = q(beam->dimension() - 2);
-    dataPlot(0, 3) = q(beam->dimension() - 1);
+    dataPlot(0, 1) = q(lastXposition);
+    dataPlot(0, 2) = q(lastYposition);
+    dataPlot(0, 3) = q(lastOrientation);
 
     while (s->hasNextEvent()) {
+      std::cout << "beam->dimension(): " << beam->dimension() << std::endl;
       s->computeOneStep();
       //  --- Get values to be plotted ---
       dataPlot(k, 0) = s->nextTime();
-      dataPlot(k, 1) = q(beam->dimension() - 3);
-      dataPlot(k, 2) = q(beam->dimension() - 2);
-      dataPlot(k, 3) = q(beam->dimension() - 1);
+      dataPlot(k, 1) = q(lastXposition);
+      dataPlot(k, 2) = q(lastYposition);
+      dataPlot(k, 3) = q(lastOrientation);
+      siconos::algebra::print(q);
       siconos::mechanics::fem::writeBeamPositionforSOFA(*mesh, *beam->FEModel(), q,
                                                         SOFAfilename, k * 0.01);
 
