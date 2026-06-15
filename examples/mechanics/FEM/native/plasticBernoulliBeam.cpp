@@ -101,7 +101,6 @@ int main(int argc, char* argv[]) {
     // --- Plasticity Interaction ---
     // ------------------------------
 
-    // double c = 5.0e8;  // Used only to specify elastic bounds
     double c = 2.0e9;  // Used only to specify elastic bounds
 
     double phi = M_PI / 4;  // Not used at the moment
@@ -160,13 +159,15 @@ int main(int argc, char* argv[]) {
     std::string SOFAfilename = "beam";
     int k = 1;
 
-    siconos::algebra::Index outputSize = 4;
+    siconos::algebra::Index outputSize = 5;
     siconos::algebra::SiconosDenseMatrix dataPlot{N + 1, outputSize};
     dataPlot.setZero();
     auto start = std::chrono::system_clock::now();
     auto q = beam->q_read();
     auto v = beam->velocity_read();
     auto sigma = beam->stress_read();
+    auto epsilonp = beam->plasticDeformation_read();
+    auto dotEpsilonp = beam->plasticRate_read();
     auto femodel = beam->FEModel();
     siconos::mechanics::fem::prepareWriteBeamPositionforSOFA(SOFAfilename + ".state");
     siconos::mechanics::fem::writeBeamPositionforSOFA(*mesh, *femodel, q,
@@ -174,7 +175,8 @@ int main(int argc, char* argv[]) {
     dataPlot(0, 0) = beamNSDS->t0();
     dataPlot(0, 1) = sigma(beam->stressDimension() - 8);
     dataPlot(0, 2) = sigma(beam->stressDimension() - 7);
-    dataPlot(0, 3) = sigma(beam->stressDimension() - 10);
+    dataPlot(0, 3) = epsilonp(beam->stressDimension() - 7);
+    dataPlot(0, 4) = dotEpsilonp(beam->stressDimension() - 7);
 
     auto filename = siconos::mechanics::fem::prepareWriteDisplacementforPython("beam");
 
@@ -185,7 +187,8 @@ int main(int argc, char* argv[]) {
       dataPlot(k, 0) = s->nextTime();
       dataPlot(k, 1) = sigma(beam->stressDimension() - 8);
       dataPlot(k, 2) = sigma(beam->stressDimension() - 7);
-      dataPlot(k, 3) = sigma(beam->stressDimension() - 10);
+      dataPlot(k, 3) = epsilonp(beam->stressDimension() - 7);
+      dataPlot(k, 4) = dotEpsilonp(beam->stressDimension() - 7);
 
       siconos::mechanics::fem::writeBeamPositionforSOFA(*mesh, *femodel, q,
                                                         SOFAfilename + ".state", k * 0.01);
@@ -204,10 +207,10 @@ int main(int argc, char* argv[]) {
                                 siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
 
-    double error = 0.0, eps = 1e-12;
-    // if ((error = siconos::algebra::io::compareRefFile(
-    //          dataPlot, "bernoulliBeam.ref", eps)) >= eps)
-    //   return 1;
+    double error = 0.0, eps = 1e-6;
+    if ((error = siconos::algebra::io::compareRefFile(
+             dataPlot, "plasticBernoulliBeam.ref", eps)) >= eps)
+      return 1;
 
     return 0;
   } catch (...) {
