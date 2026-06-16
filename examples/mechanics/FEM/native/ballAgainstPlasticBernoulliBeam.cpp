@@ -20,8 +20,13 @@
 
 #include <FEM-GlobalFrictionContact.hpp>
 #include <FEM-MoreauJeanGOSI.hpp>
+#include <LagrangianSparseLinearTIDS.hpp>
 #include <SiconosKernel.hpp>
-#include <StressLinearTIR.hpp>
+#include <SiconosMatrix.hpp>
+#include <SiconosVector.hpp>
+#include <StorageTools.hpp>
+#include <SiconosFEM.h>
+// #include <StressLinearTIR.hpp>
 #include <chrono>
 #include <cmath>  // for fabs
 
@@ -44,7 +49,7 @@ int main(int argc, char* argv[]) {
     tags[siconos::mechanics::fem::MeshTags::boundary_conditions] = 2;
     tags[siconos::mechanics::fem::MeshTags::applied_forces] = 3;
 
-    siconos::mechanics::fem::Material mat{1080, 500e7, 1. / 3, 2.};
+    siconos::mechanics::fem::Material mat{1080, 500e7, 1. / 3};
 
     // Same material for all tags.
     // Same material for all tags.
@@ -54,21 +59,14 @@ int main(int argc, char* argv[]) {
     // Create the beam
     auto beam = std::make_shared<siconos::mechanics::fem::SolidLinearTIDS>(mesh, materials);
 
-    // Apply nodal forces
-    if (tags.find(siconos::mechanics::fem::MeshTags::applied_forces) != tags.end()) {
-      siconos::algebra::SiconosVector nodal_forces{3};
-      nodal_forces << -2e9, 0., 0.;
-
-      beam->applyNodalForces(tags[siconos::mechanics::fem::MeshTags::applied_forces],
-                             nodal_forces);
-    }
-    // Boundary Conditions
-
     if (tags.find(siconos::mechanics::fem::MeshTags::boundary_conditions) != tags.end()) {
-      std::vector<int> bc_dof_index(3);
+      std::vector<int> bc_dof_index(6);
       bc_dof_index[0] = 0;
       bc_dof_index[1] = 1;
-      bc_dof_index[1] = 2;
+      bc_dof_index[2] = 2;
+      bc_dof_index[3] = 3;
+      bc_dof_index[4] = 4;
+      bc_dof_index[5] = 5;
       beam->applyDirichletBoundaryConditions(
           tags[siconos::mechanics::fem::MeshTags::boundary_conditions], bc_dof_index);
     }
@@ -78,7 +76,7 @@ int main(int argc, char* argv[]) {
     // ------- Now the block -------
 
     double R = 3;      // Ball radius
-    double m1 = 3500;  // Ball mass
+    double m1 = 300;  // Ball mass
     siconos::algebra::SiconosSparseMatrix mass{3, 3};
     mass.insert(0, 0) = m1;
     mass.insert(1, 1) = m1;
@@ -90,7 +88,7 @@ int main(int argc, char* argv[]) {
     double velocity_init = -1000.0;  // initial velocity for the block.
     siconos::algebra::SiconosVector3 q0;
     siconos::algebra::SiconosVector3 v0;
-    q0 << position_init, 0., 0.;
+    q0 << position_init, 4., 0.;
     v0 << velocity_init, 0., 0.;
 
     auto block = std::make_shared<siconos::modeling::LagrangianSparseLinearTIDS>(
@@ -102,28 +100,27 @@ int main(int argc, char* argv[]) {
     auto ndof_ball = block->dimension();
     // -- nslaw --
     auto nslaw = std::make_shared<siconos::modeling::NewtonImpactFrictionNSL>(0, 0, 0, 3);
-    // Interaction ball-floor
+    // Interaction block-tree
+
     siconos::algebra::SiconosDenseMatrix H_bb{ndof_ball, ndof_ball + ndof_beam};
-    double conditionning = 1.0;
-
     H_bb.setZero();
-    double blockHeight = 4.0;
-    size_t Hindex = (size_t)(blockHeight / (4 / nb_elements)) * dimBeamDOFs;
+    H_bb(0, 24) = -1.0;
+    H_bb(1, 25) = -1.0;
+    H_bb(2, 26) = -1.0;
+    H_bb(0, 30) = 1.0;
+    H_bb(1, 31) = 1.0;
+    H_bb(2, 32) = 1.0;
 
-    H_bb(0, Hindex) = -1.0 / conditionning;
-    H_bb(1, Hindex + 1) = -1.0 / conditionning;
-    H_bb(2, Hindex + 2) = -1.0 / conditionning;
-    int pos = (nb_elements + 1) * dimBeamDOFs;
-    H_bb(0, pos) = 1.0 / conditionning;
-    H_bb(1, pos + 1) = 1.0 / conditionning;
-    H_bb(2, pos + 2) = 1.0 / conditionning;
-
-    auto relation_bb = std::make_shared<siconos::modeling::LagrangianLinearTIR>(H_bb);
+    siconos::algebra::SiconosVector initialGap{3};
+    initialGap(0) = 0;
+    initialGap(1) = -4.0;
+    initialGap(0) = 0;
+    auto relation_bb = std::make_shared<siconos::modeling::LagrangianLinearTIR>(H_bb, initialGap);
     auto inter_bb = std::make_shared<siconos::modeling::Interaction>(nslaw, relation_bb);
 
     // ------- NSDS -------
     double t0 = 0;     // initial computation time
-    double T = 4e-02;  // final computation time
+    double T = 1.5e-02;  // final computation time
     auto beamNSDS = std::make_shared<siconos::modeling::NonSmoothDynamicalSystem>(t0, T);
     beamNSDS->insertDynamicalSystem(beam);
     beamNSDS->insertDynamicalSystem(block);
@@ -136,69 +133,50 @@ int main(int argc, char* argv[]) {
     // --- Plasticity Interaction ---
     // ------------------------------
 
-    // double c = 1.0e8;  // Used only to specify elastic bounds
-    double c = 1.0e9;  // Used only to specify elastic bounds
-
+    double c = 8.0e7;  // Used only to specify elastic bounds
     double phi = M_PI / 4;  // Not used at the moment
 
     auto nslawPlasticity =
         std::make_shared<siconos::modeling::MohrCoulombPlasticityNSL>(c, phi, nslawdimension);
 
-    std::vector<siconos::algebra::SiconosDenseMatrix> Hv;
-    std::vector<siconos::algebra::SiconosDenseMatrix> Hminus_v;
-    std::vector<siconos::algebra::SiconosDenseMatrix> H2v;
-    std::vector<siconos::algebra::SiconosDenseMatrix> Hminus2_v;
-    for (int elNum = 3; elNum < 4; elNum++) {
-      Hv.emplace_back(nslawdimension, beam->stressDimension());
+    siconos::algebra::SiconosDenseMatrix H{nslawdimension,beam->stressDimension()};
+    siconos::algebra::SiconosDenseMatrix Hminus{nslawdimension,beam->stressDimension()};
+    siconos::algebra::SiconosDenseMatrix H2{nslawdimension,beam->stressDimension()};
+    siconos::algebra::SiconosDenseMatrix Hminus2{nslawdimension,beam->stressDimension()};
 
-      Hminus_v.emplace_back(nslawdimension, beam->stressDimension());
-      H2v.emplace_back(nslawdimension, beam->stressDimension());
-      Hminus2_v.emplace_back(nslawdimension, beam->stressDimension());
+    H.setZero();
+    Hminus.setZero();
+    int dimStressPerElement = 6;
+    for (int elNum = 2; elNum < 3; elNum++) {
+      H(0, elNum * dimStressPerElement + 5) = 1.0;
+      H(1, elNum * dimStressPerElement ) = 1.0;
+      H(2, elNum * dimStressPerElement + 1) = 1.0;
+      Hminus(0, elNum * dimStressPerElement + 5) = -1.0;
+      Hminus(1, elNum * dimStressPerElement ) = -1.0;
+      Hminus(2, elNum * dimStressPerElement + 1) = -1.0;
 
-      Hv.back().setZero();
-      Hv.back()(0, elNum * 3 + 1) = 1.0;
-      Hv.back()(1, elNum * 3 + 2) = 1.0;
-      if (nslawdimension == 3) Hv.back()(2, elNum * 3) = 1.0;
-      Hminus_v.back()(0, elNum * 3 + 1) = -1.0;
-      Hminus_v.back()(1, elNum * 3 + 2) = -1.0;
-      if (nslawdimension == 3) Hminus_v.back()(2, elNum * 3) = -1.0;
-      H2v.back()(0, elNum * 3 + 2) = 1.0;
-      H2v.back()(1, elNum * 3) = 1.0;
-      if (nslawdimension == 3) H2v.back()(2, elNum * 3 + 1) = 1.0;
-      Hminus2_v.back()(0, elNum * 3 + 2) = -1.0;
-      Hminus2_v.back()(1, elNum * 3) = -1.0;
-      if (nslawdimension == 3) Hminus2_v.back()(2, elNum * 3 + 1) = -1.0;
-
-      auto relation = std::make_shared<siconos::mechanics::fem::StressLinearTIR>(Hv.back());
+      auto relation = std::make_shared<siconos::mechanics::fem::StressLinearTIR>(H);
       auto inter = std::make_shared<siconos::modeling::Interaction>(nslawPlasticity, relation);
       auto relationMinus =
-          std::make_shared<siconos::mechanics::fem::StressLinearTIR>(Hminus_v.back());
+          std::make_shared<siconos::mechanics::fem::StressLinearTIR>(Hminus);
       auto interMinus =
           std::make_shared<siconos::modeling::Interaction>(nslawPlasticity, relationMinus);
-      auto relation2 = std::make_shared<siconos::mechanics::fem::StressLinearTIR>(H2v.back());
-      auto inter2 =
-          std::make_shared<siconos::modeling::Interaction>(nslawPlasticity, relation2);
-      auto relationMinus2 =
-          std::make_shared<siconos::mechanics::fem::StressLinearTIR>(Hminus2_v.back());
-      auto interMinus2 =
-          std::make_shared<siconos::modeling::Interaction>(nslawPlasticity, relationMinus2);
 
-      // beamNSDS->link(inter, beam);
-      // beamNSDS->link(interMinus, beam);
-      // beamNSDS->link(inter2, beam);
-      // beamNSDS->link(interMinus2, beam);
+      beamNSDS->link(inter, beam);
+      beamNSDS->link(interMinus, beam);
+
     }
-    std::cout << "Out loop plsticity" << std::endl;
 
     // ---------------------------
     // --- Integration and solver Setup ---
     // ---------------------------
     // ------- Simulation -------
     // -- (1) integrator --
-    double theta = 0.5;  // theta for MoreauJeanOSI integrator
+    double theta = 1.0;  // theta for MoreauJeanOSI integrator
     auto osi_fem =
         std::make_shared<siconos::mechanics::fem::integrators::MoreauJeanGOSI>(theta);
-    // osi_fem->setIsWSymmetricDefinitePositive(true);
+    auto osi_block = std::make_shared<siconos::integrators::MoreauJeanGOSI>(theta);
+    osi_fem->setIsWSymmetricDefinitePositive(false);
 
     // -- (2) Time discretisation --
     double h = 1e-05;  // time step
@@ -209,22 +187,20 @@ int main(int argc, char* argv[]) {
         siconos::mechanics::fem::nonsmooth_formulations::GlobalFrictionContact>(
         nslawdimension, SICONOS_GLOBAL_FRICTION_3D_NSGS_WR);
 
-    osnspb->setNumericsVerboseLevel(1);
+    // osnspb->setNumericsVerboseLevel(1);
+    // osnspb->numericsSolverOptions()->iparam[SICONOS_FRICTION_3D_IPARAM_ERROR_EVALUATION] =
+    //     SICONOS_NSGS_ERROR_EVALUATION_FULL;
 
-    osnspb->numericsSolverOptions()->iparam[SICONOS_FRICTION_3D_IPARAM_ERROR_EVALUATION] =
-        SICONOS_NSGS_ERROR_EVALUATION_FULL;
-    // osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1.0e-1;
-
-    // auto osnspb = std::make_shared<siconos::nonsmooth_formulations::LCP>();
-
-    std::cout << "beam->stressDimension() - 2: " << beam->stressDimension() - 2 << std::endl;
     auto s = std::make_shared<siconos::simulation::TimeStepping>(beamNSDS, t, osi_fem, osnspb);
+    s->insertIntegrator(osi_block);
+    s->associate(osi_block, block);
+    s->associate(osi_fem, beam);
 
     int N = ceil((T - t0) / h);  // Number of time steps
     std::string SOFAfilename = "beam";
     int k = 1;
 
-    siconos::algebra::Index outputSize = 11;
+    siconos::algebra::Index outputSize = 10;
     siconos::algebra::SiconosDenseMatrix dataPlot{N + 1, outputSize};
 
     auto start = std::chrono::system_clock::now();
@@ -241,8 +217,11 @@ int main(int argc, char* argv[]) {
     siconos::algebra::SiconosVector vTotal{beam->dimension() + block->velocity()->size()};
     vTotal.segment(0, beam->dimension()) = v;
     vTotal.segment(beam->dimension(), block->velocity()->size()) = vball;
-    // vTotal = [vTree; vBlock]
-    siconos::algebra::SiconosVector vContactOld = H_bb * vTotal;
+    siconos::algebra::SiconosVector vContactOld{ndof_ball};
+    vContactOld.setZero();
+    siconos::algebra::SiconosVector vContact{ndof_ball};
+    vContact.setZero();
+    vContactOld = H_bb * vTotal;
 
     auto femodel = beam->FEModel();
     siconos::mechanics::fem::prepareWriteBeamPositionforSOFA(SOFAfilename + ".state");
@@ -251,26 +230,30 @@ int main(int argc, char* argv[]) {
 
     siconos::mechanics::fem::prepareWriteBlockPositionforSOFA(SOFAfilename + "_block.state");
 
-    q0(1) = blockHeight;
     siconos::mechanics::fem::writeBlockPositionforSOFA(q0, SOFAfilename + "_block.state", 0);
 
     dataPlot(0, 0) = beamNSDS->t0();
-    dataPlot(0, 1) = sigma(beam->stressDimension() - 2);
-    dataPlot(0, 2) = sigma(beam->stressDimension() - 1);
-    dataPlot(0, 3) = epsilonPointP(beam->stressDimension() - 2);
-    dataPlot(0, 4) = epsilonPointP(beam->stressDimension() - 1);
+    dataPlot(0, 1) = sigma(beam->stressDimension() - 7);
+    dataPlot(0, 2) = epsilonPointP(beam->stressDimension() - 7);
+    dataPlot(0, 3) = p1(0);
+    dataPlot(0, 4) = 0.5 * (block->mass() * vball).dot(vball);
     dataPlot(0, 5) = 0;
     dataPlot(0, 6) = 0;
     dataPlot(0, 7) = 0;
     dataPlot(0, 8) = 0;
-    dataPlot(0, 9) = dataPlot(0, 4);
-    dataPlot(0, 10) = p1(0);
+    dataPlot(0, 9) = 0;
 
     double dissipationContact = 0, dissipationPlastique = 0, energieMecanique,
-           energieCinetiqueTree;
+           energieCinetiqueTree, energieCinetiqueBlock;
     auto filename = siconos::mechanics::fem::prepareWriteDisplacementforPython("beam");
     siconos::algebra::SiconosVector epsilonPointPOld{epsilonPointP.size()};
     epsilonPointPOld.setZero();
+    siconos::algebra::SiconosVector epsilon{epsilonPointP.size()};
+    epsilon.setZero();
+    siconos::algebra::SiconosVector epsilonE{epsilonPointP.size()};
+    epsilonE.setZero();
+    siconos::algebra::SiconosVector diff{epsilonPointP.size()};
+    diff.setZero();
     siconos::algebra::SiconosVector sigmaOld{beam->stressDimension()};
     sigmaOld.setZero();
 
@@ -279,39 +262,38 @@ int main(int argc, char* argv[]) {
       s->computeOneStep();
       //  --- Get values to be plotted ---
       dataPlot(k, 0) = s->nextTime();
-      dataPlot(k, 1) = sigma(beam->stressDimension() - 2);
-      dataPlot(k, 2) = sigma(beam->stressDimension() - 1);
-      dataPlot(k, 3) = epsilonPointP(beam->stressDimension() - 2);
-      auto energieCinetiqueBlock = 0.5 * (block->mass() * vball).dot(vball);
+      dataPlot(k, 1) = sigma(beam->stressDimension() - 7);
+      dataPlot(k, 2) = epsilonPointP(beam->stressDimension() - 7);
+      dataPlot(k, 3) = p1(0);
+
+      energieCinetiqueBlock = 0.5 * (block->mass() * vball).dot(vball);
 
       energieCinetiqueTree = 0.5 * (beam->mass() * v).dot(v);
-      auto diff = epsilonPointP - epsilonPointPOld;
+      diff = epsilonPointP - epsilonPointPOld;
       epsilonPointPOld = epsilonPointP;
       sigmaOld = theta * sigma + (1. - theta) * sigmaOld;
 
       dissipationPlastique += sigmaOld.dot(diff);
       sigmaOld = sigma;
-      auto epsilonE = beam->BMatrix() * q;
-      auto epsilon = epsilonE - epsilonPointP;
+      epsilonE = beam->BMatrix() * q;
+      epsilon = epsilonE - epsilonPointP;
+
       energieMecanique = 0.5 * sigma.dot(epsilon);
 
       vTotal.segment(0, beam->dimension()) = v;
       vTotal.segment(beam->dimension(), block->velocity()->size()) = vball;
-      // vTotal = [vTree; vBlock]
-      auto vContact = H_bb * vTotal;
+      vContact = H_bb * vTotal;
       vContactOld = theta * vContact + (1. - theta) * vContactOld;
       dissipationContact -= vContactOld.dot(p1);
       vContactOld = vContact;
 
-      dataPlot(k, 4) = epsilonPointP(beam->stressDimension() - 1);
+      dataPlot(k, 4) = energieCinetiqueBlock;
       dataPlot(k, 5) = energieCinetiqueTree;
       dataPlot(k, 6) = energieMecanique;
       dataPlot(k, 7) = dissipationPlastique;
       dataPlot(k, 8) = dissipationContact;
       dataPlot(k, 9) = energieCinetiqueBlock + energieMecanique + energieCinetiqueTree +
                        dissipationPlastique + dissipationContact;
-      dataPlot(k, 10) = p1(0);
-
       siconos::mechanics::fem::writeBeamPositionforSOFA(*mesh, *femodel, q,
                                                         SOFAfilename + ".state", k * 0.01);
       siconos::mechanics::fem::writeBlockPositionforSOFA(qball, SOFAfilename + "_block.state",
