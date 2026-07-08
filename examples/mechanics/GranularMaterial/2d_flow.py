@@ -21,7 +21,6 @@ import siconos.simulation as simu
 import siconos.nonsmooth_formulations as nsf
 
 
-
 bullet_options = siconos.mechanics.collision.bullet.SiconosBulletOptions()
 bullet_options.worldScale = 1.0
 bullet_options.contactBreakingThreshold = 0.04
@@ -196,10 +195,10 @@ with MechanicsHdf5Runner() as io:
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
 
-options = sn.solver_options_create(sn.solver_ids.SICONOS_FRICTION_3D_NSGS)
+options = sn.SolverOptions(sn.solver_ids.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = 1000
 options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-8
-fclocal = sn.solver_options_get_internal_solver(options, 0)
+fclocal = options.get_internal_solver(0)
 fclocal.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = 100
 
 
@@ -207,12 +206,12 @@ run_options = MechanicsHdf5Runner_run_options()
 run_options["t0"] = 0
 run_options["T"] = T
 run_options["h"] = hstep
-#run_options["theta"] = 1.0
+# run_options["theta"] = 1.0
 
 run_options["bullet_options"] = bullet_options
 run_options["solver_options"] = options
 
-#run_options['Newton_options']=simu.LINEAR
+# run_options['Newton_options']=simu.LINEAR
 run_options["Newton_options"] = simu.NONLINEAR
 run_options["Newton_max_iter"] = 1
 
@@ -227,8 +226,8 @@ run_options["with_timer"] = True
 run_options["explode_computeOneStep_in_python"] = True
 run_options["explode_computeOneStepNSProblem_in_python"] = True
 
-run_options['numerics_verbose']=False
-run_options['numerics_verbose_level']=0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 run_options["output_frequency"] = 1
 run_options["output_energy_work"] = True

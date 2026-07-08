@@ -59,8 +59,8 @@ int main(int argc, char* argv[]) {
 
     siconos::algebra::SiconosVector q01{nDof};
     siconos::algebra::SiconosVector v01{nDof};
-    q01(0) = position_init + 2 * R + 0.1;
-    v01(0) = velocity_init;
+    q01 << position_init + 2 * R + 0.1, 0., 0.;
+    v01 << velocity_init, 0., 0.;
 
     auto ball1 = std::make_shared<siconos::collision::RigidBody2dDS>(q01, v01, m, inertia);
 

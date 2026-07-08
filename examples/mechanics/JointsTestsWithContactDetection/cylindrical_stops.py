@@ -147,12 +147,10 @@ class Ctrl(object):
         print("joint linear position, %f, angle, %f" % tuple(self.yDoF))
 
 
-options = sn.solver_options_create(sn.solver_ids.SICONOS_GENERIC_MECHANICAL_NSGS)
+options = sn.SolverOptions(sn.solver_ids.SICONOS_GENERIC_MECHANICAL_NSGS)
 options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = 100000
 options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-10
-sn.solver_options_update_internal(
-    options, 1, sn.solver_ids.SICONOS_FRICTION_3D_ONECONTACT_NSN
-)
+options.update_internal(1, sn.solver_ids.SICONOS_FRICTION_3D_ONECONTACT_NSN)
 
 
 run_options = MechanicsHdf5Runner_run_options()

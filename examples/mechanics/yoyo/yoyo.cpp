@@ -20,7 +20,6 @@
 #include <cassert>
 #include <chrono>
 #include <cmath>
-#include <numbers>
 
 #include "donnees.h"
 
@@ -103,6 +102,8 @@ int main(int argc, char* argv[]) {
     Vector fext2{nDof};
     fext2.setZero();
     fext2(1) = -m * g;
+
+    std::shared_ptr<siconos::integrators::MoreauJeanOSI> OSI = nullptr;
 
     std::shared_ptr<Vector> q, v;
     auto start = std::chrono::system_clock::now();
@@ -191,8 +192,7 @@ int main(int argc, char* argv[]) {
       auto t = std::make_shared<siconos::simulation::TimeDiscretisation>(t0, h);
 
       // -- OneStepIntegrators --
-      auto OSI = std::make_shared<siconos::integrators::MoreauJeanOSI>(theta);
-
+      OSI = std::make_shared<siconos::integrators::MoreauJeanOSI>(theta);
       // -- OneStepNsProblem --
       auto osnspb = std::make_shared<siconos::nonsmooth_formulations::LCP>();
 

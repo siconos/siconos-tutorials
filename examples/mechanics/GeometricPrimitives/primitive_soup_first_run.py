@@ -84,7 +84,7 @@ with MechanicsHdf5Runner() as io:
     # is between contactors of group id 0.
     io.add_Newton_impact_friction_nsl("contact", mu=0.3)
 
-options = sn.solver_options_create(sn.solver_ids.SICONOS_FRICTION_3D_NSGS)
+options = sn.SolverOptions(sn.solver_ids.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = 100
 options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-8
 

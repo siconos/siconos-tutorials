@@ -59,9 +59,9 @@ bullet_options.perturbationIterations = 3
 bullet_options.minimumPointsPerturbationThreshold = 3
 
 
-options = sn.solver_options_create(sn.solver_ids.SICONOS_ROLLING_FRICTION_2D_NSGS)
+options = sn.SolverOptions(sn.solver_ids.SICONOS_ROLLING_FRICTION_2D_NSGS)
 
-# options = sn.solver_options_create(sn.solver_ids.SICONOS_FRICTION_2D_NSGS)
+# options = sn.SolverOptions(sn.solver_ids.SICONOS_FRICTION_2D_NSGS)
 options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = 100000
 options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-8
 

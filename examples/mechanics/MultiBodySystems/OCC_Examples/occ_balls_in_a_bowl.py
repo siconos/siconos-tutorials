@@ -235,7 +235,7 @@ with MechanicsHdf5Runner(config=config_occ) as io:
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
 
-options = sn.solver_options_create(sn.solver_ids.SICONOS_FRICTION_3D_NSGS)
+options = sn.SolverOptions(sn.solver_ids.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = 100000
 options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-7
 

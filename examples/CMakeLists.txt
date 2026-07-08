@@ -235,6 +235,10 @@ foreach(current_dir IN LISTS EXAMPLES_DIRECTORIES)
     list(FILTER current_example_files EXCLUDE REGEX "${pattern}")
   endforeach()
 
+  if(NOT ${mechanics_installed} GREATER -1)
+    list(FILTER current_example_files EXCLUDE REGEX "mechanics/2DRigidBodies/Ball2D.cpp")
+  endif()
+
   # Create a working directory for the current example.
   set(working_dir ${CMAKE_CURRENT_BINARY_DIR}/${current_dir})
   file(MAKE_DIRECTORY ${working_dir})

@@ -52,13 +52,13 @@ bullet_options.perturbationIterations = 3.0
 bullet_options.minimumPointsPerturbationThreshold = 3.0
 bullet_options.extrapolationCoefficient = 0.5 * h_step
 
-options = sn.solver_options_create(sn.solver_ids.SICONOS_FRICTION_3D_NSGS)
+options = sn.SolverOptions(sn.solver_ids.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = 1000
 options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-06
 options.iparam[sn.params.SICONOS_NSGS_FREEZING_CONTACT] = 100
 
 
-# options = sn.solver_options_create(sn.solver_ids.SICONOS_FRICTION_3D_ADMM)
+# options = sn.SolverOptions(sn.solver_ids.SICONOS_FRICTION_3D_ADMM)
 # options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = 5000
 # options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-10
 # options.iparam[sn.solver_ids.SICONOS_FRICTION_3D_ADMM_IPARAM_SYMMETRY] =

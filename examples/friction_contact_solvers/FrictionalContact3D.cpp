@@ -14,11 +14,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 /*!\file FrictionalContact3D.cpp
-  A very simple example to chow how to use SiconosNumerics to solve the time--discretized FrictionalContact3D problem with a dense storage.
-  The problem: Find \f$(reaction,velocity)\f$ such that:\n
+  A very simple example to chow how to use SiconosNumerics to solve the time--discretized
+  FrictionalContact3D problem with a dense storage. The problem: Find \f$(reaction,velocity)\f$
+  such that:\n
 
   \f$
   \left\lbrace
@@ -31,45 +32,49 @@
   \right.
   \f$
 
-  \f$ reaction, velocity, q\f$ are vectors of size n and \f$ M \f$ is a nXn matrix, with \f$ n = 2*nc or 3*nc \f$, nc being the number of contacts. \n
-  \f$ reaction_n\f$ represents the normal part of the reaction while \f$ reaction_t\f$ is its tangential part.
+  \f$ reaction, velocity, q\f$ are vectors of size n and \f$ M \f$ is a nXn matrix, with \f$ n
+  = 2*nc or 3*nc \f$, nc being the number of contacts. \n \f$ reaction_n\f$ represents the
+  normal part of the reaction while \f$ reaction_t\f$ is its tangential part.
 
   \f$ \mu \f$ is the friction coefficient (it may be different for each contact).
 
-  Use the generic function frictionContact3D_driver() to call one the the specific solvers listed below:
+  Use the generic function frictionContact3D_driver() to call one the the specific solvers
+  listed below:
 
   - frictionContact3D_nsgs() : non-smooth Gauss-Seidel solver
 
   (see the functions/solvers list in FrictionContact3D_Solvers.h)
 
-  FrictionContact3D problems needs some specific parameters, given to the FrictionContact3D_driver() function thanks to a SolverOptions structure. \n
-  They are:\n
+  FrictionContact3D problems needs some specific parameters, given to the
+  FrictionContact3D_driver() function thanks to a SolverOptions structure. \n They are:\n
      - the name of the solver (ex: NSGS), used to switch to the right solver function
 
-     - isStorageSparse: 1 if a SparseBlockStructuredMatrix is used for M, else 0 (double* storage)
+     - isStorageSparse: 1 if a SparseBlockStructuredMatrix is used for M, else 0 (double*
+  storage)
 
 
   \brief
 */
 
-#include "SiconosNumerics.h"
-#include "FrictionContactProblem.h"
-#include "NumericsMatrix.h"
-#include "SolverOptions.h"
-#include "FrictionContact_options.h"
-#include "fc3d_Solvers.h"
-#include "NumericsVerbose.h"
 #include <float.h>
 
+#include <iostream>
 
-int main(int argc, char* argv[])
-{
-
-
+#include "FrictionContactProblem.h"
+#include "FrictionContact_options.h"
+#include "NumericsMatrix.h"
+#include "NumericsVerbose.h"
+#include "SiconosNumerics.h"
+#include "SolverOptions.h"
+// #include "fc3d_Solvers.h"
+int main(int argc, char *argv[]) {
   // Problem Definition
-  int NC = 3;//Number of contacts
-  double M[81] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-  double q[9] = { -1, 1, 3, -1, 1, 3, -1, 1, 3};
+  int NC = 3;  // Number of contacts
+  double M[81] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                  0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+                  0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+                  0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+  double q[9] = {-1, 1, 3, -1, 1, 3, -1, 1, 3};
   double mu[3] = {0.1, 0.1, 0.1};
 
   FrictionContactProblem NumericsProblem;
@@ -78,7 +83,7 @@ int main(int argc, char* argv[])
   NumericsProblem.mu = mu;
   NumericsProblem.q = q;
 
-  NumericsMatrix *MM = (NumericsMatrix*)malloc(sizeof(NumericsMatrix));
+  NumericsMatrix *MM = (NumericsMatrix *)malloc(sizeof(NumericsMatrix));
   MM->storageType = NM_DENSE;
   MM->matrix0 = M;
   MM->size0 = 3 * NC;
@@ -88,33 +93,29 @@ int main(int argc, char* argv[])
 
   // Variable declaration
 
-  double *reaction = (double*)calloc(3 * NC, sizeof(double));
-  double *velocity = (double*)calloc(3 * NC, sizeof(double));
+  double *reaction = (double *)calloc(3 * NC, sizeof(double));
+  double *velocity = (double *)calloc(3 * NC, sizeof(double));
 
   // Numerics and Solver Options
   SolverOptions *numerics_solver_options = solver_options_create(SICONOS_FRICTION_3D_NSGS);
   numerics_solver_options->iparam[SICONOS_IPARAM_MAX_ITER] = 1000;
-  numerics_solver_options->dparam[SICONOS_DPARAM_TOL] = 100*DBL_EPSILON;
-  //numerics_set_verbose(2);
+  numerics_solver_options->dparam[SICONOS_DPARAM_TOL] = 100 * DBL_EPSILON;
+  // numerics_set_verbose(2);
 
   // Driver call
-  fc3d_driver(&NumericsProblem,
-              reaction, velocity,
-              numerics_solver_options);
-
+  fc3d_driver(&NumericsProblem, reaction, velocity, numerics_solver_options);
 
   solver_options_delete(numerics_solver_options);
 
   // Solver output
   printf("\n");
-  
-  for(int k = 0 ; k < 3 * NC; k++) printf("Velocity[%i] = %12.8e \t \t Reaction[%i] = %12.8e \n ", k, velocity[k], k, reaction[k]);
+
+  for (int k = 0; k < 3 * NC; k++)
+    printf("Velocity[%i] = %12.8e \t \t Reaction[%i] = %12.8e \n ", k, velocity[k], k,
+           reaction[k]);
   printf("\n");
 
   free(reaction);
   free(velocity);
- 
   free(MM);
-
-
 }

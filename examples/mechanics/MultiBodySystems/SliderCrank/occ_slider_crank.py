@@ -450,12 +450,10 @@ with MechanicsHdf5Runner(config=config_occ) as io:
 h_step = 1e-4
 n_step = 2000
 
-options = sn.solver_options_create(sn.solver_ids.SICONOS_GENERIC_MECHANICAL_NSGS)
+options = sn.SolverOptions(sn.solver_ids.SICONOS_GENERIC_MECHANICAL_NSGS)
 options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = 10000
 options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-4
-sn.solver_options_update_internal(
-    options, 1, sn.solver_ids.SICONOS_FRICTION_3D_ONECONTACT_NSN
-)
+options.update_internal(1, sn.solver_ids.SICONOS_FRICTION_3D_ONECONTACT_NSN)
 
 with MechanicsHdf5Runner(config=config_occ, mode="r+") as io:
 

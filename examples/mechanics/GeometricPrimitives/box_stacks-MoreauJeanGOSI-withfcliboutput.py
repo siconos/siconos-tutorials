@@ -127,7 +127,7 @@ friction_contact_trace_params = FrictionContactTraceParams(
     mathInfo=mathInfo,
 )
 
-options = sn.solver_options_create(solver)
+options = sn.SolverOptions(solver)
 options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = itermax
 options.dparam[sn.params.SICONOS_DPARAM_TOL] = tolerance
 

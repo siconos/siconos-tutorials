@@ -45,8 +45,6 @@ if float(mu) < 0.1 or float(mu) > 2.0:
     print("mu = [0.1 .. 2.0]")
     sys.exit(1)
 
-
-
 random.seed(0)
 
 box_height = 3.683
@@ -58,12 +56,12 @@ density = 2500
 planethickness_ = 0.2
 cube_size = 0.1
 
-rock_shape = 'roca'
-#rock_shape = 'esfera'
-#rock_shape = 'cubo'
+rock_shape = "roca"
+# rock_shape = 'esfera'
+# rock_shape = 'cubo'
 
 # hdf5 file name
-if rock_shape == 'roca':
+if rock_shape == "roca":
     fn = "chute_con_rocas-{0}-mu-{1}.hdf5".format(dist, mu)
 else:
     fn = "chute_con_rocas-{0}-mu-{1}_{2}.hdf5".format(dist, mu, rock_shape)
@@ -143,11 +141,11 @@ class death_hook:
 dh = death_hook()
 
 # Create solver options
-options = sn.solver_options_create(sn.solver_ids.SICONOS_FRICTION_3D_NSGS)
+options = sn.SolverOptions(sn.solver_ids.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = 1000
 options.iparam[sn.params.SICONOS_NSGS_FREEZING_CONTACT] = 100
 options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-3
-
+sn.numerics_set_verbose(2)
 with MechanicsHdf5Runner(mode="w", io_filename=fn) as io:
     ch = chute.create_chute(
         io,
@@ -169,7 +167,7 @@ with MechanicsHdf5Runner(mode="w", io_filename=fn) as io:
         top=3,
         rate=0.2,
         density=density,
-        rock_shape = rock_shape
+        rock_shape=rock_shape,
     )
 
     io.add_Newton_impact_friction_nsl("contact", mu=1.0, e=0.01)

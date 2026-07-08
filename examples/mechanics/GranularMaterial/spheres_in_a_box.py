@@ -137,7 +137,7 @@ friction_contact_trace_params = FrictionContactTraceParams(
 )
 
 # Create solver options
-options = sn.solver_options_create(sn.solver_ids.SICONOS_FRICTION_3D_NSGS)
+options = sn.SolverOptions(sn.solver_ids.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = itermax
 options.dparam[sn.params.SICONOS_DPARAM_TOL] = tolerance
 options.iparam[sn.params.SICONOS_NSGS_FREEZING_CONTACT] = 100

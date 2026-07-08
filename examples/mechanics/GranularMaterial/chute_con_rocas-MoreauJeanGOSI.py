@@ -76,7 +76,7 @@ if not os.path.exists("Chute"):
 
 sid = sn.solver_ids.SICONOS_GLOBAL_FRICTION_3D_ADMM
 
-options = sn.solver_options_create(sid)
+options = sn.SolverOptions(sid)
 options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = itermax
 options.dparam[sn.params.SICONOS_DPARAM_TOL] = tolerance
 fileName = "./Chute/Chute"

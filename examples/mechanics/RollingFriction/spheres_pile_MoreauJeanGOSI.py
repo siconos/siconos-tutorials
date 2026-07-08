@@ -127,11 +127,11 @@ with MechanicsHdf5Runner() as io:
     # io.add_Newton_impact_friction_nsl('contact', e= 0.0, mu=0.3)
 
 # Create solver options
-options = sn.solver_options_create(
+options = sn.SolverOptions(
     sn.solver_ids.SICONOS_GLOBAL_ROLLING_FRICTION_3D_NSGS_WR
 )
-# options = sn.solver_options_create(sn.solver_ids.SICONOS_GLOBAL_FRICTION_3D_ADMM)
-# options = sn.solver_options_create(sn.solver_ids.SICONOS_GLOBAL_FRICTION_3D_NSGS_WR)
+# options = sn.SolverOptions(sn.solver_ids.SICONOS_GLOBAL_FRICTION_3D_ADMM)
+# options = sn.SolverOptions(sn.solver_ids.SICONOS_GLOBAL_FRICTION_3D_NSGS_WR)
 options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = 10000
 options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-04
 options.iparam[sn.params.SICONOS_NSGS_FREEZING_CONTACT] = 20

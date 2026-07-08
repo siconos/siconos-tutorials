@@ -43,9 +43,9 @@ int main(int argc, char* argv[]) {
     int nDofBall = 1;      // degrees of freedom of ball 1
     double Height = 0.05;  // Distance between impactor balls and monodisperse balls
     // Balls in the tapered chain
-    unsigned int NumberBalls = 10;  // Number
-    double R_base_taper = 0.005;    // Base radii of the tapered chain
-    double q_taper = 0.0;           // Tapering factor
+    size_t NumberBalls = 10;      // Number
+    double R_base_taper = 0.005;  // Base radii of the tapered chain
+    double q_taper = 0.0;         // Tapering factor
     // Material properties of balls
     double mass_density = 7780;  // mass density
     double Res_BallBall = 1.0;   // Restitution coefficient at contacts ball-ball
@@ -151,7 +151,7 @@ int main(int argc, char* argv[]) {
 
     Vector InitPosBalls{NumberBalls};
     InitPosBalls(0) = Height + RadiusBalls(0);
-    for (unsigned int j = 1; j < NumberBalls; ++j) {
+    for (size_t j = 1; j < NumberBalls; ++j) {
       InitPosBalls(j) = InitPosBalls(j - 1) + RadiusBalls(j - 1) + RadiusBalls(j);
     }
     std::vector<Vector> FextBall(NumberBalls, Vector::Zero(nDofBall));
@@ -170,6 +170,7 @@ int main(int argc, char* argv[]) {
       VecOfallDS[id]->setConstantFext(FextBall[id], siconos::algebra::alias_t);
       BallChain->insertDynamicalSystem(VecOfallDS[id]);
     }
+
     // --------------------
     // --- Interactions ---
     // --------------------
@@ -255,27 +256,27 @@ int main(int argc, char* argv[]) {
     bool nonSmooth = false;
     unsigned int NumberOfEvents = 0;
     unsigned int NumberOfNSEvents = 0;
-    unsigned int k = 0;
+    siconos::algebra::Index k = 0;
     siconos::graphs::DynamicalSystemsGraph::VIterator ui, uiend;
     auto start = std::chrono::system_clock::now();
 
+    size_t col_pos = 1;
+    size_t col_vel = NumberBalls + 1;
+    dataPlot(k, 0) = s->startingTime();
+
+    for (auto id = 1; id < NumberContacts; ++id) {
+      auto ds = VecOfallDS[id];
+      auto lag_ds = std::dynamic_pointer_cast<siconos::modeling::LagrangianDS>(ds);
+      auto q = lag_ds->q_read();
+      auto v = lag_ds->velocity_read();
+      dataPlot(k, col_pos) = q(0);
+      dataPlot(k, col_vel) = v(0);
+      col_pos++;
+      col_vel++;
+    }
+
     //====================================================================
     while ((k < Npointsave) & (s->hasNextEvent())) {
-      dataPlot(k, 0) = s->startingTime();
-      // Save state of the balls
-      unsigned int col_pos = 1;
-      unsigned int col_vel = NumberBalls + 1;
-      for (boost::tie(ui, uiend) = DSG0->vertices(); ui != uiend; ++ui) {
-        auto ds = DSG0->bundle(*ui);
-        auto lag_ds = std::dynamic_pointer_cast<siconos::modeling::LagrangianDS>(ds);
-        auto q = lag_ds->q();
-        auto v = lag_ds->velocity();
-        dataPlot(k, col_pos) = (*q)(0);
-        dataPlot(k, col_vel) = (*v)(0);
-        col_pos++;
-        col_vel++;
-      }
-      ++k;
       s->advanceToEvent();  // run simulation from one event to the next
       if (eventsManager->nextEvent()->getType() == siconos::simulation::EventType::NS) {
         nonSmooth = true;
@@ -286,8 +287,8 @@ int main(int argc, char* argv[]) {
         // siconos::algebra::print(*multiple_impact);
         dataPlot(k, 0) = s->startingTime();
         // Save state of the balls
-        unsigned int col_pos = 1;
-        unsigned int col_vel = NumberBalls + 1;
+        col_pos = 1;
+        col_vel = NumberBalls + 1;
         for (boost::tie(ui, uiend) = DSG0->vertices(); ui != uiend; ++ui) {
           auto ds = DSG0->bundle(*ui);
           auto lag_ds = std::dynamic_pointer_cast<siconos::modeling::LagrangianDS>(ds);
@@ -304,6 +305,21 @@ int main(int argc, char* argv[]) {
 
         ++k;
       }
+
+      col_pos = 1;
+      col_vel = NumberBalls + 1;
+      dataPlot(k, 0) = s->startingTime();
+      for (boost::tie(ui, uiend) = DSG0->vertices(); ui != uiend; ++ui) {
+        auto ds = DSG0->bundle(*ui);
+        auto lag_ds = std::dynamic_pointer_cast<siconos::modeling::LagrangianDS>(ds);
+        auto q = lag_ds->q_read();
+        auto v = lag_ds->velocity_read();
+        dataPlot(k, col_pos) = q(0);
+        dataPlot(k, col_vel) = v(0);
+        col_pos++;
+        col_vel++;
+      }
+      ++k;
       // --- Get values to be plotted ---
       ++NumberOfEvents;
     }
