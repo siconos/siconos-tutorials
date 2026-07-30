@@ -3,9 +3,11 @@ variables:
   CTEST_BUILD_MODEL: Continuous
   # Default behavior regarding cdash submission
   CDASH_SUBMIT: 0
-  # Name of the docker image used to run examples.
+  # Name of the docker image used to run examples. Default = main.
   # Set by CI in siconos project for "triggered" examples.
-  LAB_NAME: siconoslab # use siconoslab-occ to access to a full install including opencascade
+  BUILD_EXAMPLES_DIR: ${CI_PROJECT_DIR}/build-examples
+  # Default build path
+  PARALLEL_BUILD: 1
   
 
 # -- Template for examples build-test-install jobs --
@@ -30,30 +32,45 @@ variables:
 # (based on current siconos-tutorials branch --> it assumes that a branch of the same name exists in siconos repo)
 run-examples:
   variables:
-    IMAGE_NAME: $CI_REGISTRY_IMAGE/$LAB_NAME-$CI_COMMIT_REF_SLUG
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconoslab-$CI_COMMIT_REF_SLUG
     CDASH_SUBMIT: 1
+    BUILD_EXAMPLES_DIR: ${CI_PROJECT_DIR}/build-examples
   extends: .examples-build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push"'
-    - if: '$CI_PIPELINE_SOURCE == "pipeline"' # - Run when triggered from siconos project
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"' # no job when triggered by upstream
+      when: never          # <-- ne crée pas le job dans ce cas
+    - when: manual
+      allow_failure: true
  
+# Examples, executed on a "ready-to-use" image containing a
+# full Siconos installation, based on the last version
+# of a branch with the same name as the current example branch.
+# - Run only when triggered from siconos project
+# - Run on a docker image siconoslab-$CI_COMMIT_REF_SLUG
+# $CI_COMMIT_REF_SLUG
+# is the current branch name in lowercase 
+# This job runs in  multi-project pipelines only
+# Required: same branch name in siconos and siconos-tutorials
+triggered-examples:
+  variables:
+    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconoslab-$CI_COMMIT_REF_SLUG
+    CDASH_SUBMIT: 1
+    BUILD_EXAMPLES_DIR: ${CI_PROJECT_DIR}/build-examples
+  extends: .examples-build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+      when: always
+    - when: manual
+      allow_failure: true
+
 # examples, with a standard (default) Siconos installation
 # with version from release 4.4 (latest)
 # Triggered manualy.
 run-examples:release:
   variables:
     IMAGE_NAME: $CI_REGISTRY_IMAGE/siconoslab-release-4.4
-    CDASH_SUBMIT: 1
-  extends: .examples-build
-  when: manual
-
-
-# examples, with a standard (default) Siconos installation
-# with version from master (public last available version)
-# Triggered manualy.
-run-examples:master:
-  variables:
-    IMAGE_NAME: $CI_REGISTRY_IMAGE/siconoslab-occ-master
     CDASH_SUBMIT: 1
   extends: .examples-build
   when: manual
