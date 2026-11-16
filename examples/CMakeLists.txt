@@ -126,6 +126,16 @@ if(${kernel_installed} GREATER -1)
 
 endif()
 
+# === vkernel ===
+# the vkernel examples sit beside the kernel ones they are compared with
+# (mechanics/BouncingBall: *Vkernel*.cpp)
+string(FIND "${installed_targets}" "vkernel" vkernel_installed)
+if(${vkernel_installed} GREATER -1)
+  message(STATUS "vkernel component found")
+else()
+  list(APPEND EXCLUDE_PATTERN_FROM_TESTS Vkernel)
+endif()
+
 
 # === control ===
 string(FIND "${installed_targets}" "control" control_installed)
