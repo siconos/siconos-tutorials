@@ -85,14 +85,14 @@ int main(int argc, char* argv[]) {
       y(0) = pow(L, 2) - (pow(q(0), 2) + pow(q(1), 2));
     });
 
-    relation->setComputeJacobianhOver_qFunction(
+    relation->setComputeHFunction(
         [](const siconos::algebra::BlockVector& q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result(0, 0) = -2.0 * q(0);
           result(0, 1) = -2.0 * q(1);
         });
 
-    relation->setComputejacobianhOver_q_dotFunction(
+    relation->setComputeHdotFunction(
         [](const siconos::algebra::BlockVector& q, const siconos::algebra::BlockVector& qdot,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result(0, 0) = -2.0 * qdot(0);

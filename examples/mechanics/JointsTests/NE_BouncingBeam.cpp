@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
     H(0, 2) = 1.0;
     auto nslaw0 = std::make_shared<siconos::modeling::NewtonImpactNSL>(e);
     auto relation0 = std::make_shared<siconos::modeling::NewtonEulerR>();
-    relation0->setConstantH_NE(H);
+    relation0->setConstantG(H);
     relation0->setConstanteVector(eR);
 
     // Interactions

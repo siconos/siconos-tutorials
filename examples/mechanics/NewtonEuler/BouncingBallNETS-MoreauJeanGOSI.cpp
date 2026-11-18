@@ -35,9 +35,9 @@ using Vector = siconos::algebra::SiconosVector;
 #define WITH_FC3D
 using namespace std;
 #ifdef WITH_FC3D
-#define R_CLASS NewtonEuler3DR
+#define R_CLASS NewtonEulerVelocityR
 #else
-#define R_CLASS NewtonEuler1DR
+#define R_CLASS NewtonEulerNormalVelocityR
 #endif
 
 class my_NewtonEulerR : public siconos::modeling::R_CLASS {
@@ -143,7 +143,7 @@ int main(int argc, char* argv[]) {
     //     //    relation0->setJacQH(H_block);
     //     //    relation0->setJacQHT(HT_block);
     //     //cout<<"main jacQH"<<endl;
-    //     //siconos::algebra::print(*relation0->H_NE());
+    //     //siconos::algebra::print(*relation0->G());
 
     // Version with my_NewtonEulerR()
     auto relation0 = std::make_shared<my_NewtonEulerR>(radius);

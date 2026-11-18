@@ -45,7 +45,7 @@ class MyCollisionManager : public siconos::simulation::InteractionManager {
       // siconos::algebra::print(*inter);
       if (inter->number() == 0) {
         auto relation =
-            std::static_pointer_cast<siconos::modeling::Lagrangian2d2DR>(inter->relation());
+            std::static_pointer_cast<siconos::modeling::Lagrangian2dVelocityR>(inter->relation());
         auto ds1(std::dynamic_pointer_cast<siconos::modeling::LagrangianLinearTIDS>(
             indexSet0->properties(*ui).source));
         // double angle = q(2);
@@ -116,7 +116,7 @@ int main(int argc, char* argv[]) {
 
     auto nslaw = std::make_shared<siconos::modeling::NewtonImpactFrictionNSL>(e, 0.0, 0.1, 2);
 
-    auto relation = std::make_shared<siconos::modeling::Lagrangian2d2DR>();
+    auto relation = std::make_shared<siconos::modeling::Lagrangian2dVelocityR>();
 
     auto inter = std::make_shared<siconos::modeling::Interaction>(nslaw, relation);
 

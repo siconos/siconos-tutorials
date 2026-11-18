@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
         [](const siconos::algebra::BlockVector &q,
            Eigen::Ref<siconos::algebra::SiconosVector> y) { y(0) = l1 * sin(q(0)); });
 
-    relation->setComputeJacobianhOver_qFunction(
+    relation->setComputeHFunction(
         [](const siconos::algebra::BlockVector &q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result(0, 0) = l1 * cos(q(0));
@@ -174,7 +174,7 @@ int main(int argc, char *argv[]) {
       y(0) = l1 * sin(q(0)) + l2 * sin(q(1));
     });
 
-    relation1->setComputeJacobianhOver_qFunction(
+    relation1->setComputeHFunction(
         [](const siconos::algebra::BlockVector &q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result(0, 0) = l1 * cos(q(0));

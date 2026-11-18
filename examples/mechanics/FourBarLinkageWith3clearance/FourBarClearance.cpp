@@ -234,7 +234,7 @@ int main(int argc, char* argv[]) {
       y(0) = l1 * (r2 - r1) - v1;
     });
 
-    relation->setComputeJacobianhOver_qFunction(
+    relation->setComputeHFunction(
         [params](const siconos::algebra::BlockVector& q,
                  Eigen::Ref<siconos::algebra::MapType> result) {
           double v1 = fcnExpression1(*q.vector(0));
@@ -277,7 +277,7 @@ int main(int argc, char* argv[]) {
       y(0) = (r4 - r3) - v2;
     });
 
-    relation1->setComputeJacobianhOver_qFunction(
+    relation1->setComputeHFunction(
         [params](const siconos::algebra::BlockVector& q,
                  Eigen::Ref<siconos::algebra::MapType> result) {
           double v2 = fcnExpression2(*q.vector(0));
@@ -337,7 +337,7 @@ int main(int argc, char* argv[]) {
       y(0) = (r6 - r5) - v3;
     });
 
-    relation2->setComputeJacobianhOver_qFunction(
+    relation2->setComputeHFunction(
         [params](const siconos::algebra::BlockVector& q,
                  Eigen::Ref<siconos::algebra::MapType> result) {
           double v3 = fcnExpression3(*q.vector(0));

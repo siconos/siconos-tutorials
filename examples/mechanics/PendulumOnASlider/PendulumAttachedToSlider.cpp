@@ -142,8 +142,8 @@ int main(int argc, char *argv[]) {
     Jhq1.setZero();
     Jhq1(1, 0) = 1.;
     Jhq1(0, 1) = 1.;
-    //    relation1->setConstantJacobianhOver_q(Jhq1);
-    relation1->setComputeJacobianhOver_qFunction(
+    //    relation1->setConstantH(Jhq1);
+    relation1->setComputeHFunction(
         [](const siconos::algebra::BlockVector &q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result.setZero();
@@ -165,8 +165,8 @@ int main(int argc, char *argv[]) {
     Matrix Jhq2{2, nDof};
     Jhq2.setZero();
     Jhq2(0, 0) = -1.;
-    // relation2->setConstantJacobianhOver_q(Jhq2);
-    relation2->setComputeJacobianhOver_qFunction(
+    // relation2->setConstantH(Jhq2);
+    relation2->setComputeHFunction(
         [](const siconos::algebra::BlockVector &q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result.setZero();
@@ -185,8 +185,8 @@ int main(int argc, char *argv[]) {
     Matrix Jhq3{2, nDof};
     Jhq3.setZero();
     Jhq3(0, 0) = 1.;
-    //    relation3->setConstantJacobianhOver_q(Jhq3);
-    relation3->setComputeJacobianhOver_qFunction(
+    //    relation3->setConstantH(Jhq3);
+    relation3->setComputeHFunction(
         [](const siconos::algebra::BlockVector &q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result.setZero();

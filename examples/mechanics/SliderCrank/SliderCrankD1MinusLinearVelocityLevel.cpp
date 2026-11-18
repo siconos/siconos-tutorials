@@ -161,7 +161,7 @@ int main(int argc, char *argv[]) {
              (l1 * sin(q(0)) + l2 * sin(q(1)) - a * sin(q(2)) + b * cos(q(2)));  // normal
     });
 
-    relation1->setComputeJacobianhOver_qFunction(
+    relation1->setComputeHFunction(
         [](const siconos::algebra::BlockVector &q,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob(0, 0) = -l1 * cos(q(0));
@@ -169,7 +169,7 @@ int main(int argc, char *argv[]) {
           jacob(0, 2) = a * cos(q(2)) + b * sin(q(2));
         });
 
-    relation1->setComputejacobianhOver_q_dotFunction(
+    relation1->setComputeHdotFunction(
         [](const siconos::algebra::BlockVector &q, const siconos::algebra::BlockVector &qdot,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob(0, 0) = parameters::l1 * sin(q(0)) * qdot(0);
@@ -188,7 +188,7 @@ int main(int argc, char *argv[]) {
              (l1 * sin(q(0)) + l2 * sin(q(1)) + a * sin(q(2)) + b * cos(q(2)));  // normal
     });
 
-    relation2->setComputeJacobianhOver_qFunction(
+    relation2->setComputeHFunction(
         [](const siconos::algebra::BlockVector &q,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob(0, 0) = -l1 * cos(q(0));
@@ -196,7 +196,7 @@ int main(int argc, char *argv[]) {
           jacob(0, 2) = -a * cos(q(2)) + b * sin(q(2));
         });
 
-    relation2->setComputejacobianhOver_q_dotFunction(
+    relation2->setComputeHdotFunction(
         [](const siconos::algebra::BlockVector &q, const siconos::algebra::BlockVector &qdot,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob(0, 0) = parameters::l1 * sin(q(0)) * qdot(0);
@@ -215,7 +215,7 @@ int main(int argc, char *argv[]) {
           0.5 * d + l1 * sin(q(0)) + l2 * sin(q(1)) - a * sin(q(2)) - b * cos(q(2));  // normal
     });
 
-    relation3->setComputeJacobianhOver_qFunction(
+    relation3->setComputeHFunction(
         [](const siconos::algebra::BlockVector &q,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob(0, 0) = l1 * cos(q(0));
@@ -223,7 +223,7 @@ int main(int argc, char *argv[]) {
           jacob(0, 2) = -a * cos(q(2)) + b * sin(q(2));
         });
 
-    relation3->setComputejacobianhOver_q_dotFunction(
+    relation3->setComputeHdotFunction(
         [](const siconos::algebra::BlockVector &q, const siconos::algebra::BlockVector &qdot,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob(0, 0) = -parameters::l1 * sin(q(0)) * qdot(0);
@@ -242,14 +242,14 @@ int main(int argc, char *argv[]) {
           0.5 * d + l1 * sin(q(0)) + l2 * sin(q(1)) + a * sin(q(2)) - b * cos(q(2));  // normal
     });
 
-    relation4->setComputeJacobianhOver_qFunction(
+    relation4->setComputeHFunction(
         [](const siconos::algebra::BlockVector &q,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob(0, 0) = l1 * cos(q(0));
           jacob(0, 1) = l2 * cos(q(1));
           jacob(0, 2) = a * cos(q(2)) + b * sin(q(2));
         });
-    relation4->setComputejacobianhOver_q_dotFunction(
+    relation4->setComputeHdotFunction(
         [](const siconos::algebra::BlockVector &q, const siconos::algebra::BlockVector &qdot,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob(0, 0) = -parameters::l1 * sin(q(0)) * qdot(0);

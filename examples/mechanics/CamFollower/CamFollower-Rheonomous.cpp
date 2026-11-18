@@ -104,9 +104,9 @@ int main(int argc, char *argv[]) {
 
     auto jachq = [](const siconos::algebra::BlockVector &pos, double time,
                     Eigen::Ref<siconos::algebra::MapType> result) { result(0, 0) = 1; };
-    relation0->setComputeJacobianhOver_qFunction(jachq);
+    relation0->setComputeHFunction(jachq);
 
-    auto hdot = [rpm](const siconos::algebra::BlockVector &pos, double time,
+    auto dhdt = [rpm](const siconos::algebra::BlockVector &pos, double time,
                       Eigen::Ref<siconos::algebra::MapVectorType> result) {
       // double CamEqForce, CamPosition, CamVelocity, CamAcceleration;
 
@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
       // result[0] = -CamVelocity;
       result.setZero();
     };
-    relation0->setComputehdotFunction(hdot);
+    relation0->setComputedhdtFunction(dhdt);
 
     auto inter = std::make_shared<siconos::modeling::Interaction>(nslaw0, relation0);
 

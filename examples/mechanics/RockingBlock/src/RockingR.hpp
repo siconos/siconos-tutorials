@@ -29,7 +29,7 @@ class RockingBlockR : public siconos::modeling::LagrangianScleronomousR {
   double LengthBlock = 0.2;
   double HeightBlock = 0.1;
 
-  RockingBlockR() : LagrangianScleronomousR{} { hasJacobianhOver_q_dot_ = true; };
+  RockingBlockR() : LagrangianScleronomousR{} { hasHdot_ = true; };
 
   void computeh(const siconos::algebra::BlockVector& q,
                 Eigen::Ref<siconos::algebra::SiconosVector> y) {
@@ -38,11 +38,11 @@ class RockingBlockR : public siconos::modeling::LagrangianScleronomousR {
     y(0) = q1 - 0.5 * LengthBlock * sin(q2) - 0.5 * HeightBlock * cos(q2);
   }
 
-  void computeJacobianhOver_q(const siconos::algebra::BlockVector& q) {
+  void computeH(const siconos::algebra::BlockVector& q) {
     double q2 = q(2);
-    jacobianhOver_q_view_->setValue(0, 0, 0.0);
-    jacobianhOver_q_view_->setValue(0, 1, 1.0);
-    jacobianhOver_q_view_->setValue(
+    H_view_->setValue(0, 0, 0.0);
+    H_view_->setValue(0, 1, 1.0);
+    H_view_->setValue(
         0, 2, -0.5 * LengthBlock * cos(q2) + 0.5 * HeightBlock * sin(q2));
   }
 
@@ -50,9 +50,9 @@ class RockingBlockR : public siconos::modeling::LagrangianScleronomousR {
                                   const siconos::algebra::BlockVector& qdot) {
     double q2 = q(2);
     double qdot2 = qdot(2);
-    jacobianhOver_q_dot_->setValue(0, 0, 0.0);
-    jacobianhOver_q_dot_->setValue(0, 1, 0.0);
-    jacobianhOver_q_dot_->setValue(
+    Hdot_->setValue(0, 0, 0.0);
+    Hdot_->setValue(0, 1, 0.0);
+    Hdot_->setValue(
         0, 2, (0.5 * LengthBlock * sin(q2) + 0.5 * HeightBlock * cos(q2)) * qdot2);
   }
 };
@@ -62,7 +62,7 @@ class RockingBlockR2 : public siconos::modeling::LagrangianScleronomousR {
   double LengthBlock = 0.2;
   double HeightBlock = 0.1;
 
-  RockingBlockR2() : LagrangianScleronomousR{} { hasJacobianhOver_q_dot_ = true; };
+  RockingBlockR2() : LagrangianScleronomousR{} { hasHdot_ = true; };
 
   void computeh(const siconos::algebra::BlockVector& q,
                 Eigen::Ref<siconos::algebra::SiconosVector> y) {
@@ -71,11 +71,11 @@ class RockingBlockR2 : public siconos::modeling::LagrangianScleronomousR {
     y(0) = q1 + 0.5 * LengthBlock * sin(q2) - 0.5 * HeightBlock * cos(q2);
   }
 
-  void computeJacobianhOver_q(const siconos::algebra::BlockVector& q) {
+  void computeH(const siconos::algebra::BlockVector& q) {
     double q2 = q(2);
-    jacobianhOver_q_view_->setValue(0, 0, 0.0);
-    jacobianhOver_q_view_->setValue(0, 1, 1.0);
-    jacobianhOver_q_view_->setValue(0, 2,
+    H_view_->setValue(0, 0, 0.0);
+    H_view_->setValue(0, 1, 1.0);
+    H_view_->setValue(0, 2,
                                     0.5 * LengthBlock * cos(q2) + 0.5 * HeightBlock * sin(q2));
   }
 
@@ -83,9 +83,9 @@ class RockingBlockR2 : public siconos::modeling::LagrangianScleronomousR {
                                                  const siconos::algebra::BlockVector& qdot) {
     double q2 = q(2);
     double qdot2 = qdot(2);
-    jacobianhOver_q_dot_->setValue(0, 0, 0.0);
-    jacobianhOver_q_dot_->setValue(0, 1, 0.0);
-    jacobianhOver_q_dot_->setValue(
+    Hdot_->setValue(0, 0, 0.0);
+    Hdot_->setValue(0, 1, 0.0);
+    Hdot_->setValue(
         0, 2, (-0.5 * LengthBlock * sin(q2) + 0.5 * HeightBlock * cos(q2)) * qdot2);
   }
 };

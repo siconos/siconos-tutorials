@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
       y(0) = q(1) - r * q(0) + L - q(2);
     });
 
-    relation->setComputeJacobianhOver_qFunction(
+    relation->setComputeHFunction(
         [](const siconos::algebra::BlockVector& pos, double time,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result.setZero();

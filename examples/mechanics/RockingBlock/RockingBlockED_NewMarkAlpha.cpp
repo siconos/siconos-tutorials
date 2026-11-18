@@ -132,7 +132,7 @@ int main(int argc, char* argv[]) {
       y(0) = q(1) - 0.5 * LengthBlock * sin(q(2)) - 0.5 * HeightBlock * cos(q(2));
     });
 
-    relation1->setComputeJacobianhOver_qFunction(
+    relation1->setComputeHFunction(
         [](const siconos::algebra::BlockVector& q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result(0, 0) = 0.0;
@@ -140,7 +140,7 @@ int main(int argc, char* argv[]) {
           result(0, 2) = -0.5 * LengthBlock * cos(q(2)) + 0.5 * HeightBlock * sin(q(2));
         });
 
-    relation1->setComputejacobianhOver_q_dotFunction(
+    relation1->setComputeHdotFunction(
         [](const siconos::algebra::BlockVector& q, const siconos::algebra::BlockVector& qdot,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result.setZero();
@@ -156,14 +156,14 @@ int main(int argc, char* argv[]) {
       y(0) = q(1) + 0.5 * LengthBlock * sin(q(2)) - 0.5 * HeightBlock * cos(q(2));
     });
 
-    relation2->setComputeJacobianhOver_qFunction(
+    relation2->setComputeHFunction(
         [](const siconos::algebra::BlockVector& q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result(0, 0) = 0.0;
           result(0, 1) = 1.0;
           result(0, 2) = 0.5 * LengthBlock * cos(q(2)) + 0.5 * HeightBlock * sin(q(2));
         });
-    relation2->setComputejacobianhOver_q_dotFunction(
+    relation2->setComputeHdotFunction(
         [](const siconos::algebra::BlockVector& q, const siconos::algebra::BlockVector& qdot,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result.setZero();

@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 
     // Matrix H1{relation1->numberOfConstraints(), qDim};
     // H1.setZero();
-    // relation1->setConstantH_NE(H1);
+    // relation1->setConstantG(H1);
 
     auto nslaw1 = std::make_shared<siconos::modeling::EqualityConditionNSL>(
         relation1->numberOfConstraints());

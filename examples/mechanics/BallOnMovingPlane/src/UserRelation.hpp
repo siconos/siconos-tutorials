@@ -28,9 +28,9 @@
 #include <SiconosKernel.hpp>
 
 #ifdef WITH_FC3D
-#define R_CLASS NewtonEuler3DR
+#define R_CLASS NewtonEulerVelocityR
 #else
-#define R_CLASS NewtonEuler1DR
+#define R_CLASS NewtonEulerNormalVelocityR
 #endif
 
 #ifndef USER_REL

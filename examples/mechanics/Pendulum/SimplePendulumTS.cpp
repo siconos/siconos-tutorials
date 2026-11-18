@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
         [](const siconos::algebra::BlockVector &q,
            Eigen::Ref<siconos::algebra::SiconosVector> y) { y(0) = l1 * sin(q(0)); });
 
-    relation->setComputeJacobianhOver_qFunction(
+    relation->setComputeHFunction(
         [](const siconos::algebra::BlockVector &q,
            Eigen::Ref<siconos::algebra::MapType> result) { result(0, 0) = l1 * cos(q(0)); });
 

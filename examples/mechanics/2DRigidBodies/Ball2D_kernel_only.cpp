@@ -82,11 +82,11 @@ int main(int argc, char* argv[]) {
 
     auto nslaw = std::make_shared<siconos::modeling::NewtonImpactNSL>(e);
 
-    auto relation = std::make_shared<siconos::modeling::Lagrangian2d1DR>();
+    auto relation = std::make_shared<siconos::modeling::Lagrangian2dNormalVelocityR>();
 
     auto inter = std::make_shared<siconos::modeling::Interaction>(nslaw, relation);
 
-    auto relation1 = std::make_shared<siconos::modeling::Lagrangian2d1DR>();
+    auto relation1 = std::make_shared<siconos::modeling::Lagrangian2dNormalVelocityR>();
 
     auto inter1 = std::make_shared<siconos::modeling::Interaction>(nslaw, relation1);
 
