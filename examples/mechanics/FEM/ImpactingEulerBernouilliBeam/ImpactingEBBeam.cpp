@@ -24,94 +24,82 @@
 */
 
 #include <chrono>
+#include <cmath>
 
-#include "SiconosAlgebraProd.hpp"
 #include "SiconosKernel.hpp"
 
 using namespace std;
 
-static void addElementaryStiffnessMatrix(
-    std::shared_ptr<siconos::algebra::SiconosMatrix> SparseStiffness, int elementNumber,
-    int nDof, double elementLength) {
+using Matrix = siconos::algebra::SiconosDenseMatrix;
+using Vector = siconos::algebra::SiconosVector;
+
+/** add the stiffness matrix of element elementNumber (Euler-Bernoulli beam, 2 dofs per node)
+ *  to the global stiffness matrix */
+static void addElementaryStiffnessMatrix(Matrix& stiffness, int elementNumber,
+                                         double elementLength) {
   int dofStart = elementNumber * 2;
   int ndof_per_element = 4;
 
-  std::shared_ptr<siconos::algebra::SiconosMatrix> Ke(new SiconosMatrix(4, 4));
-  (*Ke)(0, 0) = 12.;
-  (*Ke)(0, 1) = 6. * elementLength;
-  (*Ke)(0, 2) = -12.;
-  (*Ke)(0, 3) = 6. * elementLength;
+  Matrix Ke{4, 4};
+  Ke.setZero();
+  Ke(0, 0) = 12.;
+  Ke(0, 1) = 6. * elementLength;
+  Ke(0, 2) = -12.;
+  Ke(0, 3) = 6. * elementLength;
 
-  (*Ke)(1, 1) = 4. * elementLength * elementLength;
-  (*Ke)(1, 2) = -6. * elementLength;
-  (*Ke)(1, 3) = 2. * elementLength * elementLength;
+  Ke(1, 1) = 4. * elementLength * elementLength;
+  Ke(1, 2) = -6. * elementLength;
+  Ke(1, 3) = 2. * elementLength * elementLength;
 
-  (*Ke)(2, 2) = 12.;
-  (*Ke)(2, 3) = -6. * elementLength;
+  Ke(2, 2) = 12.;
+  Ke(2, 3) = -6. * elementLength;
 
-  (*Ke)(3, 3) = 4. * elementLength * elementLength;
+  Ke(3, 3) = 4. * elementLength * elementLength;
 
   for (unsigned int i = 0; i < 4; i++) {
-    for (unsigned int j = 1; j < 4; j++) (*Ke)(j, i) = (*Ke)(i, j);
+    for (unsigned int j = 1; j < 4; j++) Ke(j, i) = Ke(i, j);
   }
 
-  // siconos::algebra::print(*Ke);
-  std::shared_ptr<siconos::algebra::SiconosMatrix> ElementStiffness(
-      new SiconosMatrix(nDof, nDof, siconos::SPARSE, 10 * nDof));
-  for (unsigned int i = 0; i < ndof_per_element; i++) {
-    for (unsigned int j = 0; j < ndof_per_element; j++)
-      ElementStiffness->setValue(i + dofStart, j + dofStart, (*Ke)(i, j));
-  }
-  // siconos::algebra::print(*ElementStiffness);
-
-  (*SparseStiffness) += (*ElementStiffness);
+  stiffness.block(dofStart, dofStart, ndof_per_element, ndof_per_element) += Ke;
 }
 
-static void addElementaryMassMatrix(
-    std::shared_ptr<siconos::algebra::SiconosMatrix> SparseMass, int elementNumber, int nDof,
-    double elementLength, bool lumpedMass) {
+/** add the mass matrix (consistent or lumped) of element elementNumber to the global mass
+ *  matrix */
+static void addElementaryMassMatrix(Matrix& mass, int elementNumber, double elementLength,
+                                    bool lumpedMass) {
   int dofStart = elementNumber * 2;
   int ndof_per_element = 4;
 
-  std::shared_ptr<siconos::algebra::SiconosMatrix> Me(new SiconosMatrix(4, 4));
+  Matrix Me{4, 4};
+  Me.setZero();
 
   if (!lumpedMass) {
-    (*Me)(0, 0) = 156.;
-    (*Me)(0, 1) = 22. * elementLength;
-    (*Me)(0, 2) = 54.;
-    (*Me)(0, 3) = -13. * elementLength;
+    Me(0, 0) = 156.;
+    Me(0, 1) = 22. * elementLength;
+    Me(0, 2) = 54.;
+    Me(0, 3) = -13. * elementLength;
 
-    (*Me)(1, 1) = 4. * elementLength * elementLength;
-    (*Me)(1, 2) = 13. * elementLength;
-    (*Me)(1, 3) = -3. * elementLength * elementLength;
+    Me(1, 1) = 4. * elementLength * elementLength;
+    Me(1, 2) = 13. * elementLength;
+    Me(1, 3) = -3. * elementLength * elementLength;
 
-    (*Me)(2, 2) = 156.;
-    (*Me)(2, 3) = -22. * elementLength;
+    Me(2, 2) = 156.;
+    Me(2, 3) = -22. * elementLength;
 
-    (*Me)(3, 3) = 4. * elementLength * elementLength;
+    Me(3, 3) = 4. * elementLength * elementLength;
 
     for (unsigned int i = 0; i < 4; i++) {
-      for (unsigned int j = 1; j < 4; j++) (*Me)(j, i) = (*Me)(i, j);
+      for (unsigned int j = 1; j < 4; j++) Me(j, i) = Me(i, j);
     }
   } else {
     double alpha = 1 / 50.;
-    (*Me)(0, 0) = 0.5 * 420.;
-    (*Me)(1, 1) = alpha * elementLength * elementLength * 420.;
-    (*Me)(2, 2) = 0.5 * 420.;
-    (*Me)(3, 3) = alpha * elementLength * elementLength * 420.;
+    Me(0, 0) = 0.5 * 420.;
+    Me(1, 1) = alpha * elementLength * elementLength * 420.;
+    Me(2, 2) = 0.5 * 420.;
+    Me(3, 3) = alpha * elementLength * elementLength * 420.;
   }
 
-  // siconos::algebra::print(*Me);
-
-  std::shared_ptr<siconos::algebra::SiconosMatrix> ElementMass(
-      new SiconosMatrix(nDof, nDof, siconos::SPARSE, 6 * nDof));
-  for (unsigned int i = 0; i < ndof_per_element; i++) {
-    for (unsigned int j = 0; j < ndof_per_element; j++)
-      ElementMass->setValue(i + dofStart, j + dofStart, (*Me)(i, j));
-  }
-  // siconos::algebra::print(*ElementStiffness);
-
-  (*SparseMass) += (*ElementMass);
+  mass.block(dofStart, dofStart, ndof_per_element, ndof_per_element) += Me;
 }
 
 int main(int argc, char* argv[]) {
@@ -135,80 +123,60 @@ int main(int argc, char* argv[]) {
     cout << "number of element = " << nElement << endl;
     cout << "number of dof = " << nDof << endl;
 
-    std::shared_ptr<siconos::algebra::SiconosMatrix> SparseMass(
-        new SiconosMatrix(nDof, nDof, siconos::SPARSE, 6 * nDof));
-    std::shared_ptr<siconos::algebra::SiconosMatrix> SparseStiffness(
-        new SiconosMatrix(nDof, nDof, siconos::SPARSE, 6 * nDof));
+    Matrix massMatrix{nDof, nDof};
+    massMatrix.setZero();
+    Matrix stiffnessMatrix{nDof, nDof};
+    stiffnessMatrix.setZero();
     bool lumpedMass = false;
-    for (int e = 0; e < nElement; e++) {
-      addElementaryStiffnessMatrix(SparseStiffness, e, nDof, l);
-      addElementaryMassMatrix(SparseMass, e, nDof, l, lumpedMass);
+    for (int e = 0; e < static_cast<int>(nElement); e++) {
+      addElementaryStiffnessMatrix(stiffnessMatrix, e, l);
+      addElementaryMassMatrix(massMatrix, e, l, lumpedMass);
     }
-    // std::cout << "E " << E << std::endl;
 
-    *SparseMass *= rho * S * l / 420.;
-    *SparseStiffness *= E * I / (l * l * l);
-    cout << "(*SparseMass)(0,0) = " << (*SparseMass)(0, 0) << endl;
-    cout << "(*SparseMass)(0,1) = " << (*SparseMass)(0, 1) << endl;
-    cout << "(*SparseMass)(1,0) = " << (*SparseMass)(1, 0) << endl;
-    cout << "(*SparseMass)(1,1) = " << (*SparseMass)(1, 1) << endl;
-
-    // siconos::algebra::print(*SparseMass);
-    // siconos::algebra::print(*SparseStiffness);
-    std::cout << " SparseMass nnz :" << SparseMass->nonZeros() << std::endl;
-    std::cout << " SparseStiffness nnz :" << SparseStiffness->nonZeros() << std::endl;
+    massMatrix *= rho * S * l / 420.;
+    stiffnessMatrix *= E * I / (l * l * l);
+    cout << "massMatrix(0,0) = " << massMatrix(0, 0) << endl;
+    cout << "massMatrix(0,1) = " << massMatrix(0, 1) << endl;
+    cout << "massMatrix(1,0) = " << massMatrix(1, 0) << endl;
+    cout << "massMatrix(1,1) = " << massMatrix(1, 1) << endl;
 
     // -- Initial positions and velocities --
-    std::shared_ptr<siconos::algebra::SiconosVector> q0(new SiconosVector(nDof, 0.));
-    std::shared_ptr<siconos::algebra::SiconosVector> v0(new SiconosVector(nDof, 0.));
-    // (*v0)(0) = -.1;
+    Vector q0{nDof};
+    q0.setZero();
+    Vector v0{nDof};
+    v0.setZero();
     //  -- The dynamical system --
-    auto beam(new LagrangianLinearTIDS(q0, v0, SparseMass));
+    auto beam = std::make_shared<siconos::modeling::LagrangianLinearTIDS>(
+        q0, v0, massMatrix, siconos::algebra::alias_t);
 
-    // -- Set stiffness matrix (weight) --
-    beam->setStiffnessMatrix(SparseStiffness);
+    // -- Set stiffness matrix --
+    beam->setStiffnessMatrix(stiffnessMatrix, siconos::algebra::alias_t);
 
-    // -- Set external forces (weight) --
-    // std::shared_ptr<siconos::algebra::SiconosVector> weight(new SiconosVector(nDof,0.));
-    // for (int i =0; i < nDof; i++)
-    // {
-    //   (*weight)(i) = -g*rho*S/l;
-    //   i++;
-    // }
-    // siconos::algebra::print(*weight);
+    // -- Set external forces (no weight) --
     Vector weight{nDof};
     weight.setZero();
-    beam->etConstantFExt(weight);
+    beam->setConstantFext(weight, siconos::algebra::alias_t);
 
-    auto bdindex(new IndexInt(2));
-    (*bdindex)[0] = nDof - 1;
-    (*bdindex)[1] = nDof - 2;
-
-    std::shared_ptr<siconos::algebra::SiconosVector> bdPrescribedVelocity(
-        new SiconosVector(2));
-    (*bdPrescribedVelocity)(0) = 0.0;
-    (*bdPrescribedVelocity)(1) = 0.0;
-    auto bd(new BoundaryCondition(bdindex, bdPrescribedVelocity));
-
+    // -- Clamped end: zero prescribed velocity on the last two dofs --
+    auto bd = std::make_shared<siconos::modeling::BoundaryCondition>(
+        siconos::modeling::BoundaryCondition::Indices{
+            static_cast<siconos::algebra::SiconosVector::Index>(nDof - 1),
+            static_cast<siconos::algebra::SiconosVector::Index>(nDof - 2)});
     beam->setBoundaryConditions(bd);
 
     //  Impacting ball
-
-    std::shared_ptr<siconos::algebra::SiconosMatrix> ballMass(
-        new SiconosMatrix(1, 1, siconos::SPARSE, 1));
     double ball_mass = 1.0;
-    ballMass->setValue(0, 0, ball_mass);
+    Matrix ballMass{1, 1};
+    ballMass(0, 0) = ball_mass;
 
-    // std::shared_ptr<siconos::algebra::SiconosMatrix> ballMass(new SiconosMatrix(1,1));
-    // ballMass->setValue(0, 0, 1.);
-
-    std::shared_ptr<siconos::algebra::SiconosVector> q0_ball(
-        new SiconosVector(1, position_init));
-    std::shared_ptr<siconos::algebra::SiconosVector> v0_ball(
-        new SiconosVector(1, velocity_init));
+    Vector q0_ball{1};
+    q0_ball(0) = position_init;
+    Vector v0_ball{1};
+    v0_ball(0) = velocity_init;
 
     // -- The dynamical system --
-    auto ball(new LagrangianLinearTIDS(q0_ball, v0_ball, ballMass));
+    auto ball = std::make_shared<siconos::modeling::LagrangianLinearTIDS>(
+        q0_ball, v0_ball, ballMass, siconos::algebra::alias_t);
 
     // --------------------
     // --- Interactions ---
@@ -219,19 +187,20 @@ int main(int argc, char* argv[]) {
 
     // Interaction beam-ball
     //
-    std::shared_ptr<siconos::algebra::SiconosMatrix> H(new SiconosMatrix(1, nDof + 1));
-    (*H)(0, 0) = -1.0;
-    (*H)(0, nDof) = 1.0;
+    Matrix H{1, nDof + 1};
+    H.setZero();
+    H(0, 0) = -1.0;
+    H(0, nDof) = 1.0;
 
-    auto nslaw(new NewtonImpactNSL(e));
-    auto relation(new LagrangianLinearTIR(H));
+    auto nslaw = std::make_shared<siconos::modeling::NewtonImpactNSL>(e);
+    auto relation = std::make_shared<siconos::modeling::LagrangianLinearTIR>(H);
 
-    auto inter(new Interaction(nslaw, relation));
+    auto inter = std::make_shared<siconos::modeling::Interaction>(nslaw, relation);
 
     // -------------
     // --- Model ---
     // -------------
-    auto impactingBeam(new NonSmoothDynamicalSystem(t0, T));
+    auto impactingBeam = std::make_shared<siconos::modeling::NonSmoothDynamicalSystem>(t0, T);
 
     // add the dynamical system in the non smooth dynamical system
     impactingBeam->insertDynamicalSystem(beam);
@@ -245,150 +214,118 @@ int main(int argc, char* argv[]) {
     // ------------------
 
     // -- (1) OneStepIntegrators --
-    auto OSI(new MoreauJeanOSI(theta, 0.0));
+    auto OSI = std::make_shared<siconos::integrators::MoreauJeanOSI>(theta, 0.0);
     // OSI->setIsWSymmetricDefinitePositive(true);
     // OSI->setConstraintActivationThreshold(1e-05);
 
     // -- (2) Time discretisation --
-    auto t(new TimeDiscretisation(t0, h));
+    auto t = std::make_shared<siconos::simulation::TimeDiscretisation>(t0, h);
 
     // -- (3) one step non smooth problem
-    auto osnspb(new LCP());
+    auto osnspb = std::make_shared<siconos::nonsmooth_formulations::LCP>();
 
     // -- (4) Simulation setup with (1) (2) (3)
-    auto s(new TimeStepping(impactingBeam, t, OSI, osnspb));
+    auto s = std::make_shared<siconos::simulation::TimeStepping>(impactingBeam, t, OSI, osnspb);
 
     // =========================== End of model definition ===========================
 
     // ================================= Computation =================================
-
-    // --- Simulation initialization ---
 
     int N = floor((T - t0) / h);  // Number of time steps
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
     unsigned int outputSize = 17;
-    SiconosMatrix dataPlot(N, outputSize);
+    Matrix dataPlot{N, outputSize};
+    dataPlot.setZero();
 
-    std::shared_ptr<siconos::algebra::SiconosVector> q = beam->q();
-    std::shared_ptr<siconos::algebra::SiconosVector> v = beam->velocity();
-    std::shared_ptr<siconos::algebra::SiconosVector> p = beam->p(1);
-    std::shared_ptr<siconos::algebra::SiconosVector> lambda = inter->lambda(1);
-    std::shared_ptr<siconos::algebra::SiconosVector> u = inter->y(1);
+    auto q = beam->q_read();
+    auto v = beam->velocity_read();
+    auto p = beam->p_read(1);
+    auto lambda = inter->lambda(1);
+    auto u = inter->y(1);
 
     int k = 0;
 
     dataPlot(k, 0) = impactingBeam->t0();
 
-    dataPlot(k, 1) = (*q)(0);
-    dataPlot(k, 2) = (*v)(0);
-    dataPlot(k, 3) = (*p)(0);
+    dataPlot(k, 1) = q(0);
+    dataPlot(k, 2) = v(0);
+    dataPlot(k, 3) = p(0);
     dataPlot(k, 4) = (*lambda)(0);
-    dataPlot(k, 7) = (*q)(nDof - 2);
-    dataPlot(k, 8) = (*v)(nDof - 2);
+    dataPlot(k, 7) = q(nDof - 2);
+    dataPlot(k, 8) = v(nDof - 2);
 
-    dataPlot(k, 9) = (*q)((nDof) / 2);
-    dataPlot(k, 10) = (*v)((nDof) / 2);
+    dataPlot(k, 9) = q((nDof) / 2);
+    dataPlot(k, 10) = v((nDof) / 2);
 
-    std::shared_ptr<siconos::algebra::SiconosVector> tmp(new SiconosVector(nDof));
+    Vector tmp{nDof};
 
-    *tmp = *SparseStiffness * *q;
-    double potentialEnergy = 0.5 * q->dot(tmp);
-    *tmp = *SparseMass * *v;
-    double kineticEnergy = 0.5 * v->dot(tmp);
+    tmp = stiffnessMatrix * q;
+    double potentialEnergy = 0.5 * q.dot(tmp);
+    tmp = massMatrix * v;
+    double kineticEnergy = 0.5 * v.dot(tmp);
     double impactEnergy = 0.0;
 
     dataPlot(k, 5) = potentialEnergy;
     dataPlot(k, 6) = kineticEnergy;
     dataPlot(k, 11) = impactEnergy;
 
-    std::shared_ptr<siconos::algebra::SiconosVector> qBall = ball->q();
-    std::shared_ptr<siconos::algebra::SiconosVector> vBall = ball->velocity();
-    std::shared_ptr<siconos::algebra::SiconosVector> pBall = ball->p(1);
+    auto qBall = ball->q_read();
+    auto vBall = ball->velocity_read();
 
-    dataPlot(k, 12) = (*qBall)(0);
-    dataPlot(k, 13) = (*vBall)(0);
+    dataPlot(k, 12) = qBall(0);
+    dataPlot(k, 13) = vBall(0);
 
-    double ballKineticEnergy = 0.5 * (*vBall)(0) * ball_mass * (*vBall)(0);
+    double ballKineticEnergy = 0.5 * vBall(0) * ball_mass * vBall(0);
     dataPlot(k, 16) = ballKineticEnergy;
-
-    //    std::cout <<"potentialEnergy ="<<potentialEnergy << std::endl;
-    //    std::cout <<"kineticEnergy ="<<kineticEnergy << std::endl;
 
     // --- Time loop ---
     cout << "====> Start computation ... \n\n";
     // ==== Simulation loop - Writing without explicit event handling =====
     k++;
 
-    std::chrono::time_point<std::chrono::system_clock> start, end;
-    start = std::chrono::system_clock::now();
+    auto start = std::chrono::system_clock::now();
     double max_impulse = 0.0;
-    //    while (s->nextTime() < T)
     while (k < N) {
       if (k % 100 == 0) std::cout << "k :" << k << "/" << N << std::endl;
       s->computeOneStep();
-      // siconos::algebra::print(*osnspb);
-      //  std::cout << "\nposition "  << (*q)(0) <<  std::endl;
-      //  std::cout << "velocity "  << (*v)(0) <<  std::endl;
-
-      // std::cout << "ball position "  << (*qBall)(0) <<  std::endl;
-      // std::cout << "ball velocity "  << (*vBall)(0) <<  std::endl;
 
       // --- Get values to be plotted ---
       dataPlot(k, 0) = s->nextTime();
-      dataPlot(k, 1) = (*q)(0);
-      dataPlot(k, 2) = (*v)(0);
-      dataPlot(k, 3) = (*p)(0);
+      dataPlot(k, 1) = q(0);
+      dataPlot(k, 2) = v(0);
+      dataPlot(k, 3) = p(0);
       dataPlot(k, 4) = (*lambda)(0);
-      dataPlot(k, 7) = (*q)(nDof - 2);
-      dataPlot(k, 8) = (*v)(nDof - 2);
+      dataPlot(k, 7) = q(nDof - 2);
+      dataPlot(k, 8) = v(nDof - 2);
 
-      dataPlot(k, 9) = (*q)((nDof) / 2);
-      dataPlot(k, 10) = (*v)((nDof) / 2);
+      dataPlot(k, 9) = q((nDof) / 2);
+      dataPlot(k, 10) = v((nDof) / 2);
 
-      *tmp = *SparseStiffness * *q;
-      potentialEnergy = 0.5 * q->dot(tmp);
-      *tmp = *SparseMass * *v;
-      kineticEnergy = 0.5 * v->dot(tmp);
+      tmp = stiffnessMatrix * q;
+      potentialEnergy = 0.5 * q.dot(tmp);
+      tmp = massMatrix * v;
+      kineticEnergy = 0.5 * v.dot(tmp);
 
       dataPlot(k, 5) = potentialEnergy;
       dataPlot(k, 6) = kineticEnergy;
 
-      dataPlot(k, 12) = (*qBall)(0);
-      dataPlot(k, 13) = (*vBall)(0);
+      dataPlot(k, 12) = qBall(0);
+      dataPlot(k, 13) = vBall(0);
       dataPlot(k, 14) = (*u)(0);
 
-      ballKineticEnergy = 0.5 * (*vBall)(0) * ball_mass * (*vBall)(0);
-      // std::cout << "ballKineticEnergy " << ballKineticEnergy << std::endl;
+      ballKineticEnergy = 0.5 * vBall(0) * ball_mass * vBall(0);
       dataPlot(k, 16) = ballKineticEnergy;
 
-      double u_p_theta = theta * ((*vBall)(0) - (*v)(0)) +
-                         (1 - theta) * (dataPlot(k - 1, 13) - dataPlot(k - 1, 2));
+      double u_p_theta =
+          theta * (vBall(0) - v(0)) + (1 - theta) * (dataPlot(k - 1, 13) - dataPlot(k - 1, 2));
       impactEnergy = (u_p_theta) * (*lambda)(0);
       dataPlot(k, 11) = impactEnergy;
       dataPlot(k, 15) = u_p_theta;
-      // std::cout <<"\npotentialEnergy ="<<potentialEnergy << std::endl;
-      // std::cout <<"kineticEnergy ="<<kineticEnergy << std::endl;
-      // std::cout <<"impactEnergy ="<<impactEnergy << std::endl;
-      // if ((*lambda)(0) >0 )
-      //  {
-      //   std::cout <<"(*lambda)(0) ="<<(*lambda)(0) << std::endl;
-      //   std::cout <<"u_p_theta ="<<u_p_theta << std::endl;
-      //   std::cout <<"v beam ="<<(*v)(0) << std::endl;
-      //   std::cout <<"v ball ="<<(*vBall)(0) << std::endl;
 
-      //   std::cout <<"v beam before ="<<dataPlot(k-1,2) << std::endl;
-      //   std::cout <<"v ball before="<<dataPlot(k-1,13) << std::endl;
-
-      //   getchar();
-      // siconos::algebra::print(*osnspb);
-      // getchar();
-      // }
       if ((*lambda)(0) > 0) {
         max_impulse = fmax(max_impulse, (*lambda)(0));
-        // siconos::algebra::print(*osnspb);
-        // break;
       }
 
       s->nextStep();
@@ -397,35 +334,22 @@ int main(int argc, char* argv[]) {
     }
 
     double totalImpactEnergy = 0.0;
-    for (int p = 0; p < k; p++) {
-      totalImpactEnergy = totalImpactEnergy + dataPlot(p, 11);
+    for (int i = 0; i < k; i++) {
+      totalImpactEnergy = totalImpactEnergy + dataPlot(i, 11);
     }
     printf("totalImpactEnergy = %e\n", totalImpactEnergy);
     printf("max_impulse = %e\n", max_impulse);
 
     cout << endl << "End of computation - Number of iterations done: " << k - 1 << endl;
-    cout << "Computation Time " << endl;
-    ;
-    end = std::chrono::system_clock::now();
+    auto end = std::chrono::system_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
     cout << "Computation time : " << elapsed << " ms" << endl;
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
-    ioMatrix::write("ImpactingEBBeam.dat", "ascii", dataPlot, "noDim");
-    // cout << " Comparison with a reference file" << endl;
-    // SiconosMatrix dataPlotRef(dataPlot);
-    // dataPlotRef.setZero();
-    // ioMatrix::read("ImpactingBeam.ref", "ascii", dataPlotRef);
-
-    // double error = siconos::algebra::normInf(dataPlot - dataPlotRef) ;
-    // cout << "Error = " << error << endl;
-    // if(error > 1e-11)
-    // {
-    //   std::cout << "Warning. The result is rather different from the reference file." <<
-    //   std::endl; std::cout << "Error = "<< siconos::algebra::normInf(dataPlot - dataPlotRef)<<std::endl;
-    //   return 1;
-    // }
-
+    siconos::algebra::io::write("ImpactingEBBeam.dat", dataPlot,
+                                siconos::algebra::io::ASCII_OUT,
+                                siconos::algebra::io::WriteType::nodim);
+    return 0;
   }
 
   catch (...) {
