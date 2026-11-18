@@ -31,6 +31,7 @@
 #include <SiconosKernel.hpp>
 #include <chrono>
 #include <numbers>
+#include <string>
 
 #include "SCConst.h"  // Simulation parameters
 
@@ -38,15 +39,20 @@ using Matrix = siconos::algebra::SiconosMatrix;
 using Vector = siconos::algebra::SiconosVector;
 using namespace parameters;
 
-int main(int argc, char *argv[]) {
+using ImpactDetection = siconos::integrators::D1MinusLinearOSI::ImpactDetection;
+
+/* Run the simulation with a given impact rule and active set tolerance.
+   Results are written in name.dat and compared with name.ref.
+   Return 0 if the results match the reference file. */
+int simulate(ImpactDetection impact_detection, double tolerance, const std::string& name) {
   try {
     // ================= Creation of the model =======================
 
     // parameters according to Table 1
-    int nDof = 3;  // degrees of freedom for the slider crank
-    double t0 = 0.;         // initial computation time
-    double T = 0.2;         // final computation time
-    double h = 1e-5;        // time step : do not decrease, because of strong penetrations
+    int nDof = 3;     // degrees of freedom for the slider crank
+    double t0 = 0.;   // initial computation time
+    double T = 0.2;   // final computation time
+    double h = 1e-5;  // time step : do not decrease, because of strong penetrations
 
     // contact parameters
     double eN1 = 0.4;
@@ -84,9 +90,10 @@ int main(int argc, char *argv[]) {
     // -------------------------
     std::cout << "====> Model loading ...\n\n";
 
-    auto slider = std::make_shared<siconos::modeling::LagrangianDS>(q0, v0, siconos::algebra::alias_t);
+    auto slider =
+        std::make_shared<siconos::modeling::LagrangianDS>(q0, v0, siconos::algebra::alias_t);
     slider->setComputeMassFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
            Eigen::Ref<siconos::algebra::MapType> mass) {
           mass.setZero();
           mass(0, 0) = J1 + (0.25 * m1 + m2 + m3) * l1 * l1;
@@ -98,8 +105,8 @@ int main(int argc, char *argv[]) {
         });
 
     slider->setComputeFgyrFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
            Eigen::Ref<siconos::algebra::MapVectorType> fgyr) {
           fgyr(0) = (0.5 * m2 + m3) * l1 * l2 * sin(q(0) - q(1)) * velocity(1) * velocity(1);
           fgyr(1) = -(0.5 * m2 + m3) * l1 * l2 * sin(q(0) - q(1)) * velocity(0) * velocity(0);
@@ -108,8 +115,8 @@ int main(int argc, char *argv[]) {
 
     // set 'random' value for jacobians, whatever fgyr is, just for tests
     slider->setComputeJacobianFgyrOver_qFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob.setZero();
           jacob(0, 0) =
@@ -124,8 +131,8 @@ int main(int argc, char *argv[]) {
         });
 
     slider->setComputeJacobianFgyrOver_velocityFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob.setZero();
           jacob(1, 0) = -2. * (0.5 * m2 + m3) * l1 * l2 * sin(q(0) - q(1)) * velocity(0);
@@ -133,16 +140,16 @@ int main(int argc, char *argv[]) {
         });
 
     slider->setComputeFintFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q, double time,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q, double time,
            Eigen::Ref<siconos::algebra::MapVectorType> fint) {
           fint(0) = (0.5 * m1 + m2 + m3) * gravity * l1 * cos(q(0));
           fint(1) = (0.5 * m2 + m3) * gravity * l2 * cos(q(1));
         });
 
     slider->setComputeJacobianFintOver_qFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q, double time,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q, double time,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob.setZero();
           jacob(0, 0) = -(0.5 * m1 + m2 + m3) * gravity * l1 * sin(q(0));
@@ -155,107 +162,103 @@ int main(int argc, char *argv[]) {
     // -- corner 1 --
     auto nslaw1 = std::make_shared<siconos::modeling::NewtonImpactNSL>(eN1);
     auto relation1 = std::make_shared<siconos::modeling::LagrangianScleronomousR>();
-    relation1->setComputehFunction([](const siconos::algebra::BlockVector &q,
+    relation1->setComputehFunction([](const siconos::algebra::BlockVector& q,
                                       Eigen::Ref<siconos::algebra::SiconosVector> y) {
       y(0) = 0.5 * d -
              (l1 * sin(q(0)) + l2 * sin(q(1)) - a * sin(q(2)) + b * cos(q(2)));  // normal
     });
 
-    relation1->setComputeHFunction(
-        [](const siconos::algebra::BlockVector &q,
-           Eigen::Ref<siconos::algebra::MapType> jacob) {
-          jacob(0, 0) = -l1 * cos(q(0));
-          jacob(0, 1) = -l2 * cos(q(1));
-          jacob(0, 2) = a * cos(q(2)) + b * sin(q(2));
-        });
+    relation1->setComputeHFunction([](const siconos::algebra::BlockVector& q,
+                                      Eigen::Ref<siconos::algebra::MapType> jacob) {
+      jacob(0, 0) = -l1 * cos(q(0));
+      jacob(0, 1) = -l2 * cos(q(1));
+      jacob(0, 2) = a * cos(q(2)) + b * sin(q(2));
+    });
 
-    relation1->setComputeHdotFunction(
-        [](const siconos::algebra::BlockVector &q, const siconos::algebra::BlockVector &qdot,
-           Eigen::Ref<siconos::algebra::MapType> jacob) {
-          jacob(0, 0) = parameters::l1 * sin(q(0)) * qdot(0);
-          jacob(0, 1) = parameters::l2 * sin(q(1)) * qdot(1);
-          jacob(0, 2) = (-parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
-        });
+    relation1->setComputeHdotFunction([](const siconos::algebra::BlockVector& q,
+                                         const siconos::algebra::BlockVector& qdot,
+                                         Eigen::Ref<siconos::algebra::MapType> jacob) {
+      jacob(0, 0) = parameters::l1 * sin(q(0)) * qdot(0);
+      jacob(0, 1) = parameters::l2 * sin(q(1)) * qdot(1);
+      jacob(0, 2) = (-parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
+    });
 
     auto inter1 = std::make_shared<siconos::modeling::Interaction>(nslaw1, relation1);
 
     // -- corner 2 --
     auto nslaw2 = std::make_shared<siconos::modeling::NewtonImpactNSL>(eN2);
     auto relation2 = std::make_shared<siconos::modeling::LagrangianScleronomousR>();
-    relation2->setComputehFunction([](const siconos::algebra::BlockVector &q,
+    relation2->setComputehFunction([](const siconos::algebra::BlockVector& q,
                                       Eigen::Ref<siconos::algebra::SiconosVector> y) {
       y(0) = 0.5 * d -
              (l1 * sin(q(0)) + l2 * sin(q(1)) + a * sin(q(2)) + b * cos(q(2)));  // normal
     });
 
-    relation2->setComputeHFunction(
-        [](const siconos::algebra::BlockVector &q,
-           Eigen::Ref<siconos::algebra::MapType> jacob) {
-          jacob(0, 0) = -l1 * cos(q(0));
-          jacob(0, 1) = -l2 * cos(q(1));
-          jacob(0, 2) = -a * cos(q(2)) + b * sin(q(2));
-        });
+    relation2->setComputeHFunction([](const siconos::algebra::BlockVector& q,
+                                      Eigen::Ref<siconos::algebra::MapType> jacob) {
+      jacob(0, 0) = -l1 * cos(q(0));
+      jacob(0, 1) = -l2 * cos(q(1));
+      jacob(0, 2) = -a * cos(q(2)) + b * sin(q(2));
+    });
 
-    relation2->setComputeHdotFunction(
-        [](const siconos::algebra::BlockVector &q, const siconos::algebra::BlockVector &qdot,
-           Eigen::Ref<siconos::algebra::MapType> jacob) {
-          jacob(0, 0) = parameters::l1 * sin(q(0)) * qdot(0);
-          jacob(0, 1) = parameters::l2 * sin(q(1)) * qdot(1);
-          jacob(0, 2) = (-parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
-        });
+    relation2->setComputeHdotFunction([](const siconos::algebra::BlockVector& q,
+                                         const siconos::algebra::BlockVector& qdot,
+                                         Eigen::Ref<siconos::algebra::MapType> jacob) {
+      jacob(0, 0) = parameters::l1 * sin(q(0)) * qdot(0);
+      jacob(0, 1) = parameters::l2 * sin(q(1)) * qdot(1);
+      jacob(0, 2) = (-parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
+    });
 
     auto inter2 = std::make_shared<siconos::modeling::Interaction>(nslaw2, relation2);
 
     // -- corner 3 --
     auto nslaw3 = std::make_shared<siconos::modeling::NewtonImpactNSL>(eN3);
     auto relation3 = std::make_shared<siconos::modeling::LagrangianScleronomousR>();
-    relation3->setComputehFunction([](const siconos::algebra::BlockVector &q,
+    relation3->setComputehFunction([](const siconos::algebra::BlockVector& q,
                                       Eigen::Ref<siconos::algebra::SiconosVector> y) {
       y(0) =
           0.5 * d + l1 * sin(q(0)) + l2 * sin(q(1)) - a * sin(q(2)) - b * cos(q(2));  // normal
     });
 
-    relation3->setComputeHFunction(
-        [](const siconos::algebra::BlockVector &q,
-           Eigen::Ref<siconos::algebra::MapType> jacob) {
-          jacob(0, 0) = l1 * cos(q(0));
-          jacob(0, 1) = l2 * cos(q(1));
-          jacob(0, 2) = -a * cos(q(2)) + b * sin(q(2));
-        });
+    relation3->setComputeHFunction([](const siconos::algebra::BlockVector& q,
+                                      Eigen::Ref<siconos::algebra::MapType> jacob) {
+      jacob(0, 0) = l1 * cos(q(0));
+      jacob(0, 1) = l2 * cos(q(1));
+      jacob(0, 2) = -a * cos(q(2)) + b * sin(q(2));
+    });
 
-    relation3->setComputeHdotFunction(
-        [](const siconos::algebra::BlockVector &q, const siconos::algebra::BlockVector &qdot,
-           Eigen::Ref<siconos::algebra::MapType> jacob) {
-          jacob(0, 0) = -parameters::l1 * sin(q(0)) * qdot(0);
-          jacob(0, 1) = -parameters::l2 * sin(q(1)) * qdot(1);
-          jacob(0, 2) = (parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
-        });
+    relation3->setComputeHdotFunction([](const siconos::algebra::BlockVector& q,
+                                         const siconos::algebra::BlockVector& qdot,
+                                         Eigen::Ref<siconos::algebra::MapType> jacob) {
+      jacob(0, 0) = -parameters::l1 * sin(q(0)) * qdot(0);
+      jacob(0, 1) = -parameters::l2 * sin(q(1)) * qdot(1);
+      jacob(0, 2) = (parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
+    });
 
     auto inter3 = std::make_shared<siconos::modeling::Interaction>(nslaw3, relation3);
 
     // -- corner 4 --
     auto nslaw4 = std::make_shared<siconos::modeling::NewtonImpactNSL>(eN4);
     auto relation4 = std::make_shared<siconos::modeling::LagrangianScleronomousR>();
-    relation4->setComputehFunction([](const siconos::algebra::BlockVector &q,
+    relation4->setComputehFunction([](const siconos::algebra::BlockVector& q,
                                       Eigen::Ref<siconos::algebra::SiconosVector> y) {
       y(0) =
           0.5 * d + l1 * sin(q(0)) + l2 * sin(q(1)) + a * sin(q(2)) - b * cos(q(2));  // normal
     });
 
-    relation4->setComputeHFunction(
-        [](const siconos::algebra::BlockVector &q,
-           Eigen::Ref<siconos::algebra::MapType> jacob) {
-          jacob(0, 0) = l1 * cos(q(0));
-          jacob(0, 1) = l2 * cos(q(1));
-          jacob(0, 2) = a * cos(q(2)) + b * sin(q(2));
-        });
-    relation4->setComputeHdotFunction(
-        [](const siconos::algebra::BlockVector &q, const siconos::algebra::BlockVector &qdot,
-           Eigen::Ref<siconos::algebra::MapType> jacob) {
-          jacob(0, 0) = -parameters::l1 * sin(q(0)) * qdot(0);
-          jacob(0, 1) = -parameters::l2 * sin(q(1)) * qdot(1);
-          jacob(0, 2) = (parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
-        });
+    relation4->setComputeHFunction([](const siconos::algebra::BlockVector& q,
+                                      Eigen::Ref<siconos::algebra::MapType> jacob) {
+      jacob(0, 0) = l1 * cos(q(0));
+      jacob(0, 1) = l2 * cos(q(1));
+      jacob(0, 2) = a * cos(q(2)) + b * sin(q(2));
+    });
+    relation4->setComputeHdotFunction([](const siconos::algebra::BlockVector& q,
+                                         const siconos::algebra::BlockVector& qdot,
+                                         Eigen::Ref<siconos::algebra::MapType> jacob) {
+      jacob(0, 0) = -parameters::l1 * sin(q(0)) * qdot(0);
+      jacob(0, 1) = -parameters::l2 * sin(q(1)) * qdot(1);
+      jacob(0, 2) = (parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
+    });
 
     auto inter4 = std::make_shared<siconos::modeling::Interaction>(nslaw4, relation4);
 
@@ -276,6 +279,8 @@ int main(int argc, char *argv[]) {
     auto ositype =
         siconos::integrators::D1MinusLinearOSI::Type::halfexplicit_acceleration_level;
     auto OSI = std::make_shared<siconos::integrators::D1MinusLinearOSI>(ositype);
+    OSI->setImpactDetection(impact_detection);
+    OSI->setActiveSetTolerance(tolerance);
     auto t = std::make_shared<siconos::simulation::TimeDiscretisation>(t0, h);
     auto impact = std::make_shared<siconos::nonsmooth_formulations::LCP>();
     auto force = std::make_shared<siconos::nonsmooth_formulations::LCP>();
@@ -434,12 +439,10 @@ int main(int argc, char *argv[]) {
 
     // --- Output files ---
     std::cout << "====> Output file writing ...\n";
-    siconos::algebra::io::write("SliderCrankD1MinusLinearOSI.dat", dataPlot,
-                                siconos::algebra::io::ASCII_OUT,
+    siconos::algebra::io::write(name + ".dat", dataPlot, siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
     double error = 0.0, eps = 1e-9;
-    if ((error = siconos::algebra::io::compareRefFile(
-             dataPlot, "SliderCrankD1MinusLinearOSI.ref", eps)) > eps)
+    if ((error = siconos::algebra::io::compareRefFile(dataPlot, name + ".ref", eps)) > eps)
       return 1;
     return 0;
   }
@@ -448,4 +451,23 @@ int main(int argc, char *argv[]) {
     siconos::exception::process();
     return 1;
   }
+}
+
+int main(int argc, char* argv[]) {
+  // The gaps are of order 1e-9 when contacts reopen and close again: use the sign of the
+  // gap (tolerance = 0) to build the active sets (the default tolerance 1e-8 misses some
+  // impacts).
+  const double tolerance = 0.0;
+
+  // 1 - impulses only for contacts closing in the step: same results as the reference
+  //     implementation of Schindler & Acary 2014 (python/matlab).
+  std::cout << "\n====> D1MinusLinearOSI, impact detection: closing contacts\n";
+  int res =
+      simulate(ImpactDetection::closing_contacts, tolerance, "SliderCrankD1MinusLinearOSI");
+
+  // 2 - impulses for all closed contacts (closing or approaching), default rule.
+  std::cout << "\n====> D1MinusLinearOSI, impact detection: closed contacts\n";
+  res += simulate(ImpactDetection::closed_contacts, tolerance,
+                  "SliderCrankD1MinusLinearOSI-ClosedContacts");
+  return res;
 }
