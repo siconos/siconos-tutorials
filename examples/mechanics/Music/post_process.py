@@ -1,11 +1,11 @@
-"""Tools and functions to post-process bass guitar simulations results
-"""
+"""Tools and functions to post-process bass guitar simulations results"""
 
-from model_tools import load_model
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 import scipy.io as sio
+from model_tools import load_model
 
 
 def save_dof(fileslist, dof, outputfile):
@@ -26,7 +26,7 @@ def save_dof(fileslist, dof, outputfile):
     files = list(fileslist.values())
     freqs = list(fileslist.keys())
     nbfiles = len(files)
-    current_model, current_string, current_frets, e = load_model(files[0])
+    current_model, current_string, _current_frets, _e = load_model(files[0])
     # Number of time instants taken into account
     nbtimes = current_model.data_ds[current_string].shape[1]
     print(nbtimes)
@@ -34,19 +34,15 @@ def save_dof(fileslist, dof, outputfile):
     # files = [f for f in files if f != reference_file]
     # Number of freqs taken into account
     nbfiles = len(files)
-    # Number of dofs where errors are computed
-    nbpoints = 1
     # Number of time instants taken into account
     nbtimes = current_model.data_ds[current_string].shape[1]
-    # Number of contact points
-    nbfrets = len(current_frets)
 
     # Results buffers:
     dof_val = np.zeros((nbfiles, nbtimes), dtype=np.float64)
 
     # Compute errors for all freqs
     for i in range(nbfiles):
-        current_model, current_string, current_frets, e = load_model(files[i])
+        current_model, current_string, _current_frets, _e = load_model(files[i])
         dof_val[i, :] = current_model.data_ds[current_string][dof, :]
 
     dofname = "dof_" + str(dof)
@@ -75,10 +71,10 @@ def compute_errors(fileslist, dofs=None, shift=1, savedofs=None, ifref=-1):
     print("compute errors with reference freq = " + str(fref))
     # Load reference and current simulations,
     reference_file = fileslist[fref]
-    ref_model, ref_string, ref_frets, e = load_model(reference_file)
+    ref_model, ref_string, ref_frets, _e = load_model(reference_file)
     # if indices is none, errors are computed for all degrees of freedom.
     if dofs is None:
-        dofs = [i for i in range(ref_string.dimension())]
+        dofs = [i for i in range(ref_string.dimension)]
 
     sref = ref_model.data_ds[ref_string][dofs, ::shift]
     sum_ref = (sref**2).sum(1)
@@ -112,10 +108,9 @@ def compute_errors(fileslist, dofs=None, shift=1, savedofs=None, ifref=-1):
 
     # Compute errors for all freqs
     for i in range(nbfiles):
-        current_model, current_string, current_frets, e = load_model(files[i])
+        current_model, current_string, current_frets, _e = load_model(files[i])
         scurrent = current_model.data_ds[current_string][dofs, :]
         # Ensure time instants are the same for both models (ref an current)
-        time_step = current_model.time_step
         tcurrent = current_model.time
         assert np.allclose(tref, tcurrent), "Error: time instants are different."
         xcurrent = current_string.x[dofs]
@@ -148,10 +143,10 @@ def compute_errors_rel(fileslist, dofs=None, shift=1):
 
     # Load reference and current simulations,
     reference_file = fileslist[fref]
-    ref_model, ref_string, ref_frets, e = load_model(reference_file)
+    ref_model, ref_string, ref_frets, _e = load_model(reference_file)
     # if dofs is none, errors are computed for all degrees of freedom.
     if dofs is None:
-        dofs = [i for i in range(ref_string.dimension())]
+        dofs = [i for i in range(ref_string.dimension)]
 
     sref = ref_model.data_ds[ref_string][dofs, ::shift]
     # sum_ref = (sref ** 2).sum(1)
@@ -178,10 +173,9 @@ def compute_errors_rel(fileslist, dofs=None, shift=1):
 
     # Compute errors for all freqs
     for i in range(nbfiles):
-        current_model, current_string, current_frets, e = load_model(files[i])
+        current_model, current_string, current_frets, _e = load_model(files[i])
         scurrent = current_model.data_ds[current_string][dofs, :]
         # Ensure time instants are the same for both models (ref an current)
-        time_step = current_model.time_step
         tcurrent = current_model.time
         assert np.allclose(tref, tcurrent), "Error: time instants are different."
 
@@ -199,12 +193,12 @@ def check_time_vectors(filelist):
 
     # Load reference and current simulations,
     reference_file = filelist[-1]
-    ref_model, ref_string, ref_frets, e = load_model(reference_file)
+    ref_model, _ref_string, _ref_frets, _e = load_model(reference_file)
     tref = ref_model.time
     nbfiles = len(filelist) - 1
     for i in range(nbfiles):
         if os.path.exists(filelist[i]):
-            current_model, current_string, current_frets, e = load_model(filelist[i])
+            current_model, _current_string, _current_frets, _e = load_model(filelist[i])
             tcurrent = current_model.time[:]
             print("check i ... ", i)
             assert np.allclose(tcurrent, tref)
@@ -232,15 +226,13 @@ def plot_campaign(campaign, dofs, fig=39):
 def plot_errors(errors, freqs, dof, xref, iplot=0, figures_path=None):
     plt.figure(iplot, figsize=(17, 17))
     tickslabels = ["o:", "^:", "*:"] * 3
-    i = 0
     leg = []
-    for name in errors:
+    for i, name in enumerate(errors):
         ref_error = errors[name]
         ref_freqs = freqs[name]
         plt.loglog(ref_freqs, ref_error[:, dof], tickslabels[i])
         leg.append(name)
         plt.grid(True, which="both", ls="-")
-        i += 1
     plt.title("Convergence, x=" + str(xref[name][dof]))  # ...
     # ax.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.1))
     # ax.yaxis.set_ticks(np.arange(-2, 2, 0.025))
@@ -280,16 +272,14 @@ def plot_y(ymin, freqs, iplot=0):
 def plot_durations(timers):
     tick1 = ["o--", "^--", "x--"]
     tick2 = ["o", "^", "x"]
-    fig0, ax1 = plt.subplots(figsize=(17, 8))
+    _fig0, ax1 = plt.subplots(figsize=(17, 8))
 
     ax2 = ax1.twinx()
     leg = []
-    i = 0
-    for name in timers:
+    for i, name in enumerate(timers):
         timers[name].sort(0)
         ax1.semilogx(timers[name][:, 0], timers[name][:, 1] / 60.0, tick1[i])
         ax2.semilogx(timers[name][:, 0], timers[name][:, 2], tick2[i])
-        i += 1
         leg.append(name)
     ax1.legend(leg)
     ax1.grid("on")
@@ -301,11 +291,12 @@ def plot_durations(timers):
 
 
 if __name__ == "__main__":
-
     # Get results files names from a campaign
     try:
         from simulation_campaigns import (
             campaign_14112017 as campaign09,
+        )
+        from simulation_campaigns import (
             campaign_16112017 as campaign0,
         )
 
@@ -328,5 +319,5 @@ if __name__ == "__main__":
         plt.ylabel("$L^2$ error")
         plt.savefig("convergence_study.pdf")
 
-    except:
+    except (ImportError, OSError):
         print("Pass. No results available.")

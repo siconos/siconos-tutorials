@@ -62,8 +62,9 @@ int main(int argc, char* argv[]) {
     auto femodel = FEsolid->FEModel();
     double e = 0.0;
     auto nslaw = std::make_shared<siconos::modeling::NewtonImpactFrictionNSL>(e, e, 0, 2);
-    siconos::algebra::SiconosVector initial_gap{1};
-    initial_gap << Ly * 5e-4;
+    siconos::algebra::SiconosVector initial_gap{
+        2};  // normal gap, tangential offset (2D friction contact)
+    initial_gap << Ly * 5e-4, 0.0;
     std::vector<siconos::algebra::SiconosDenseMatrix> Hv;
     for (auto node : femodel->nodes()) {
       if (fabs(node->y()) <= 1e-16 and fabs(node->x()) >= 1e-16) {

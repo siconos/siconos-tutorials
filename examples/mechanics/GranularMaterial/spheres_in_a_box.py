@@ -21,23 +21,22 @@
 # for n spheres:
 # ./mkspheres.py <n>
 # ./spheres_in_a_box.py coors-<n>.txt radii-<n>.txt
+import sys
+from math import pi
+
+import mkspheres
+import numpy
+import siconos.modeling as sm
+import siconos.nonsmooth_formulations as nsf
+import siconos.numerics as sn
+import siconos.simulation as simu
+from siconos.io.friction_contact_trace import FrictionContactTraceParams
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-from siconos.mechanics.collision.tools import Contactor
-from siconos.io.FrictionContactTrace import FrictionContactTraceParams
-
-import siconos.numerics as sn
-import siconos.modeling as sm
-import siconos.simulation as simu
-import siconos.nonsmooth_formulations as nsf
-
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
-from math import pi
-import numpy
-import sys
-import mkspheres
+from siconos.mechanics.collision.tools import Contactor
 
 bullet_options = SiconosBulletOptions()
 bullet_options.worldScale = 1000
@@ -46,7 +45,7 @@ bullet_options.perturbationIterations = 0
 bullet_options.minimumPointsPerturbationThreshold = 0
 
 
-T = 1.
+T = 1.0
 hstep = 1e-3
 theta = 0.5
 
@@ -99,31 +98,19 @@ if coors.shape == (nb_laid_particles, 3):
 print(nb_laid_particles)
 
 solver = sn.solver_ids.SICONOS_FRICTION_3D_NSGS
-fileName = "spheres-in-a-box-{0}".format(nb_laid_particles)
+fileName = f"spheres-in-a-box-{nb_laid_particles}"
 title = "SpheresBox"
-description = """
+description = f"""
 Spheres in a box, generation with lmgc90 granulo_Random
-number of spheres: {0}
-radius min       : {1}
-radius max       : {2}
-box size x       : {3}
-box size y       : {4}
-box size z       : {5}
-Moreau TimeStepping: h={6}, theta={7}
-One Step non smooth problem: {8}, maxiter={9}, tol={10}
-""".format(
-    nb_laid_particles,
-    mkspheres.radius_min,
-    mkspheres.radius_max,
-    lx,
-    ly,
-    lz,
-    hstep,
-    theta,
-    solver,
-    itermax,
-    tolerance,
-)
+number of spheres: {nb_laid_particles}
+radius min       : {mkspheres.radius_min}
+radius max       : {mkspheres.radius_max}
+box size x       : {lx}
+box size y       : {ly}
+box size z       : {lz}
+Moreau TimeStepping: h={hstep}, theta={theta}
+One Step non smooth problem: {solver}, maxiter={itermax}, tol={tolerance}
+"""
 
 mathInfo = ""
 
@@ -143,7 +130,7 @@ options.dparam[sn.params.SICONOS_DPARAM_TOL] = tolerance
 options.iparam[sn.params.SICONOS_NSGS_FREEZING_CONTACT] = 100
 
 
-with MechanicsHdf5Runner(io_filename="siab-{0}.hdf5".format(nb_laid_particles)) as io:
+with MechanicsHdf5Runner(io_filename=f"siab-{nb_laid_particles}.hdf5") as io:
     # Definition of the ground shape
     io.add_primitive_shape(
         "Ground",
@@ -191,7 +178,7 @@ with MechanicsHdf5Runner(io_filename="siab-{0}.hdf5".format(nb_laid_particles)) 
         rad = radii[i]
         margin = rad * margin_ratio
         io.add_primitive_shape(
-            "Sphere-{0}".format(i),
+            f"Sphere-{i}",
             "Sphere",
             (rad,),
             insideMargin=margin,
@@ -200,8 +187,8 @@ with MechanicsHdf5Runner(io_filename="siab-{0}.hdf5".format(nb_laid_particles)) 
         mass = (4.0 / 3) * pi * (radii[i] ** 3) * density
         I_ = (2.0 / 5) * mass * (radii[i] * radii[i])
         io.add_object(
-            "sphere-{0}".format(i),
-            [Contactor("Sphere-{0}".format(i))],
+            f"sphere-{i}",
+            [Contactor(f"Sphere-{i}")],
             translation=[coors[3 * i], coors[3 * i + 1], coors[3 * i + 2]],
             velocity=[0, 0, 0, 0, 0, 0],
             inertia=[I_, I_, I_],
@@ -259,10 +246,7 @@ run_options["output_energy_work"] = True
 
 run_options["set_external_forces"] = my_forces
 
-with MechanicsHdf5Runner(
-    io_filename="siab-{0}.hdf5".format(nb_laid_particles), mode="r+"
-) as io:
-
+with MechanicsHdf5Runner(io_filename=f"siab-{nb_laid_particles}.hdf5", mode="r+") as io:
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     io.run(run_options)

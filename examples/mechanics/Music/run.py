@@ -5,22 +5,20 @@ simulation.
 The possible setups for
 guitar simulation :
 
-- single contact case : one string, one contact. 
+- single contact case : one string, one contact.
 - bass guitar : one string, a list of frets.
 - fretless guitar : one string, no frets, contacts allowed everywhere on the neck.
 
 """
 
+import os
 import sys
 import time
-import os
-from model_tools import save_simu_to_hdf5, build_frets_from_file
-
-from guitar import StringDS, Guitar
 
 # Default parameters of the model (string and contacts) and of the simulation
 import parameters
-
+from guitar import Guitar, StringDS
+from model_tools import build_frets_from_file, save_simu_to_hdf5
 
 # ---- Read (command line inputs) parameters ---
 # - sample freq
@@ -119,10 +117,10 @@ if guitar_model.save_interactions:
     buff = guitar_model.data_interactions
     for i in range(nb_frets):
         buff[frets[i]][0][0] = frets[i].y(0)
-        buff[frets[i]][1][0] = frets[i].lambda_(1)
+        buff[frets[i]][1][0] = frets[i].lambda_python(1)
 
-print("Ready to start simulation for frequency {0}.".format(fs))
-print("Save output every {0} time steps.".format(output_freq))
+print(f"Ready to start simulation for frequency {fs}.")
+print(f"Save output every {output_freq} time steps.")
 msg = "Read data from files :\n"
 msg += "- neck profile:" + frets_file
 msg += "\n- eigenfrequencies: " + matlab_input + "_frequs.mat\n"
@@ -155,7 +153,7 @@ while simu.hasNextEvent() and k < 200:
             buff = guitar_model.data_interactions
             for i in range(nb_frets):
                 buff[frets[i]][0][pos] = frets[i].y(0)
-                buff[frets[i]][1][pos] = frets[i].lambda_(1)
+                buff[frets[i]][1][pos] = frets[i].lambda_python(1)
                 # buff[frets[i]][2][pos = frets[i].y(1)
 
         pos += 1
@@ -180,4 +178,4 @@ save_simu_to_hdf5(
     restit=restit,
 )
 
-print("write (hdf5) file " + filename + ": {0}.".format(time.perf_counter() - start))
+print("write (hdf5) file " + filename + f": {time.perf_counter() - start}.")

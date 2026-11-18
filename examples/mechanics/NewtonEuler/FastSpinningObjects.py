@@ -18,13 +18,13 @@
 #
 
 import numpy as np
-import siconos.modeling as sm
-import siconos.simulation
-import siconos.integrators
-import siconos.nonsmooth_formulations
-import siconos.geometry as sg
 import numpy.linalg as LA
+import siconos.geometry as sg
+import siconos.integrators
+import siconos.modeling as sm
+import siconos.nonsmooth_formulations
 import siconos.plot_config as sicoplot
+import siconos.simulation
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)
@@ -85,7 +85,7 @@ def centermass(q):
     r = np.zeros(3)
     E3 = np.zeros(3)
     E3[2] = 1.0
-    rotateAbsToBody(q, E3)
+    sg.rotateVectorFromInertialToBodyFrame(q, E3)
     r[0] = E3[0]
     r[1] = E3[1]
     r[2] = E3[2]
@@ -95,7 +95,7 @@ def centermass(q):
 def compute_mint(twist, pos, time, mint):
     r = centermass(pos)
     mint[...] = np.asarray(Mg * length * np.cross(r, [0, 0, 1.0]))
-    sg.rewriteVectorFromAbsoluteToBodyFrame(q, mint)
+    sg.rotateVectorFromInertialToBodyFrame(pos, mint)
     print("mInt", mint)
 
 
@@ -181,7 +181,7 @@ dataPlot[k, 13] = v[5]
 omega = v[3:6]
 inertia = ds.totalInertiaMatrix
 angular_momentum = np.dot(inertia[3:6, 3:6], omega)
-sg.rewriteVectorFromBodyToAbsoluteFrame(q, angular_momentum)
+sg.rotateVectorFromBodyToInertialFrame(q, angular_momentum)
 
 dataPlot[k, 14] = angular_momentum[0]
 dataPlot[k, 15] = angular_momentum[1]
@@ -231,7 +231,7 @@ while s.hasNextEvent() and k < N:
     omega = v[3:6]
     inertia = ds.totalInertiaMatrix
     angular_momentum = np.dot(inertia[3:6, 3:6], omega)
-    sg.rewriteVectorFromBodyToAbsoluteFrame(q, angular_momentum)
+    sg.rotateVectorFromBodyToInertialFrame(q, angular_momentum)
     a = np.zeros(1)
     a[0] = angular_momentum[0]
     # a[1] = am(1)

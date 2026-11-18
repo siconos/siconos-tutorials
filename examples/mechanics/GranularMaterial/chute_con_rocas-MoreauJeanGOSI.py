@@ -1,11 +1,12 @@
-from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as sn
-import siconos.integrators
+import os
+import random
+
 import chute
 import rocas
-import random
-import os
-from siconos.io.FrictionContactTrace import FrictionContactTraceParams
+import siconos.integrators
+import siconos.numerics as sn
+from siconos.io.friction_contact_trace import FrictionContactTraceParams
+from siconos.io.mechanics_run import MechanicsHdf5Runner
 
 random.seed(0)
 

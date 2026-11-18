@@ -1,14 +1,14 @@
-"""Functions and tools to create, save and/or load a model to/from hdf files
-"""
+"""Functions and tools to create, save and/or load a model to/from hdf files"""
 
-from guitar import StringDS, Fret, Guitar
+import os
+
+import h5py
+import matplotlib.pyplot as plt
+import numpy as np
 
 # For matlab to python input file conversion
 import scipy.io
-import numpy as np
-import matplotlib.pyplot as plt
-import h5py
-import os
+from guitar import Fret, Guitar, StringDS
 
 
 def build_frets_from_file(
@@ -95,8 +95,8 @@ def save_simu_to_hdf5(model, ds, filename, matlab_data, filt_frets, restit):
     h5file.attrs["number_of_modes"] = ds.n_modes
     h5file.attrs["max_coords"] = ds.max_coords
     h5file.attrs["frequency"] = model.fs
-    h5file.attrs["initial_time"] = model.nsds.t0()
-    h5file.attrs["final_time"] = model.nsds.finalT()
+    h5file.attrs["initial_time"] = model.time_range[0]
+    h5file.attrs["final_time"] = model.time_range[1]
     h5file.attrs["output_freq"] = model.output_freq
     h5file.attrs["matlab_data"] = matlab_data
     h5file.attrs["filter frets"] = filt_frets
@@ -122,7 +122,6 @@ def save_simu_to_hdf5(model, ds, filename, matlab_data, filt_frets, restit):
         )  # assume inter size == 1
         for ic in range(nb_inter):
             interaction = interactions[ic]
-            nbc = interaction.dimension()
             inter_states[ic] = h5file.create_dataset(
                 "contact_" + str(ic), ishape, dtype=np.float64
             )
@@ -275,7 +274,7 @@ def load_convert_and_save(filename):
     nodal and save new model into h5 file.
     """
     # Load hdf5 file to set model and string
-    ref_model, ref_string, ref_frets, restit = load_model(filename)
+    ref_model, ref_string, _ref_frets, restit = load_model(filename)
     # Convert (modal to real) displacements
     ref_model.convert_modal_output(ref_string)
     outputfilename = "converted_" + os.path.basename(filename)
@@ -350,7 +349,6 @@ def compute_dtsigmastar(omega2, sigma, dt):
 def compute_iteration_matrix(omega2, sigma, dt):
 
     # thetak
-    sigdt = sigma * dt
     omega2dt2 = omega2 * (dt**2)
     dtsigmastar, thetak = compute_dtsigmastar(omega2, sigma, dt)
     wkk = 1 + dtsigmastar + 0.5 * (1 - thetak) * omega2dt2

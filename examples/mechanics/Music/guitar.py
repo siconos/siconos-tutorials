@@ -4,18 +4,19 @@ from Siconos classes.
 """
 
 import math
+import os
+
 import numpy as np
-import siconos.modeling as sm
 
 # import scipy.sparse as scs
 import numpywrappers as npw
-import siconos.integrators
-import siconos.nonsmooth_formulations
-
-from matplotlib import animation
 import scipy.io
-import os
+import siconos.integrators
+import siconos.modeling as sm
+import siconos.nonsmooth_formulations
 import siconos.plot_config as sicoplot
+import siconos.simulation
+from matplotlib import animation
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)
@@ -28,7 +29,7 @@ class StringDS(sm.LagrangianLinearDiagonalDS):
     Operators formulas from JSV Issanchou paper.
     """
 
-    __damping_parameters_names = ["eta_air", "rho_air", "delta_ve", "1/qte"]
+    __damping_parameters_names = ("eta_air", "rho_air", "delta_ve", "1/qte")
     CLAMPED = 1
 
     def __init__(
@@ -86,7 +87,7 @@ class StringDS(sm.LagrangianLinearDiagonalDS):
             self.damping_parameters = damping_parameters
             msg = "StringDS : missing parameter value for damping."
             for name in self.__damping_parameters_names:
-                assert name in self.damping_parameters.keys(), msg
+                assert name in self.damping_parameters, msg
 
             self.c0 = math.sqrt(self.tension / self.density)
             self.diameter = geometry_and_material["diameter"]
@@ -108,7 +109,8 @@ class StringDS(sm.LagrangianLinearDiagonalDS):
         # -- initial conditions --
         qmod0 = self.compute_initial_state_modal(max_coords)
         v0 = npw.zeros_like(qmod0)
-        super(StringDS, self).__init__(qmod0, v0, stiffness_mat, damping_mat)
+        super().__init__(qmod0, v0, stiffness_mat, sm.copy_t)
+        self.setDampingMatrix(damping_mat, sm.copy_t)
         self.ic_status = self.check_initial_conditions()
 
     def check_initial_conditions(self):
@@ -123,7 +125,7 @@ class StringDS(sm.LagrangianLinearDiagonalDS):
         ic_filename = self.matlab_input + "_q2.mat"
         if os.path.exists(ic_filename):
             q0 = scipy.io.loadmat(ic_filename)["q2"][:, 0]
-            return np.allclose(q0, self.q0(), atol=1e-6)
+            return np.allclose(q0, self.q0, atol=1e-6)
         else:
             return True
 
@@ -134,7 +136,7 @@ class StringDS(sm.LagrangianLinearDiagonalDS):
         umax = max_coords[0]
         # index of the max
         dx = self.space_step
-        imax = int(round(max_coords[1] / dx))
+        imax = round(max_coords[1] / dx)
         slope = umax / (imax * dx)
         u0 = [slope * i * dx for i in range(imax)]
         slope = umax / (imax * dx - self.length)
@@ -289,17 +291,17 @@ class Fret(sm.Interaction):
         e = restitution_coeff
         nslaw = sm.NewtonImpactNSL(e)
         dist = -contact_positions[1]
-        relation = sm.LagrangianLinearTIR(hmat, [dist])
-        super(Fret, self).__init__(nslaw, relation)
+        relation = sm.LagrangianLinearTIR(hmat, npw.asrealarray([dist]))
+        super().__init__(nslaw, relation)
 
 
-class Guitar(object):
+class Guitar:
     """DS (strings) and interaction (frets)
     'assembly' to build a NSDS
     """
 
     # Available settings for interactions outputs
-    __authorized_outputs__ = [1, 2, 3]
+    __authorized_outputs__ = (1, 2, 3)
 
     def __init__(
         self,
@@ -355,6 +357,8 @@ class Guitar(object):
         # - insert ds into the nonsmooth dynamical system
         # - link each ds to its interaction
         self.nsds = sm.NonSmoothDynamicalSystem(time_range[0], time_range[1])
+        # NonSmoothDynamicalSystem does not expose t0/T in python anymore
+        self.time_range = (time_range[0], time_range[1])
         if None in strings_and_frets:
             # No interactions in the model
             ds = strings_and_frets[None]
@@ -403,7 +407,7 @@ class Guitar(object):
         # A dict of buffers to save ds variables for all time steps
         self.data_ds = {}
         for ds in self.strings_and_frets.values():
-            ndof = ds.dimension()
+            ndof = ds.dimension
             self.data_ds[ds] = npw.zeros((ndof, self.nb_time_steps_output + 1))
         if None in self.strings_and_frets:
             self.strings_and_frets = {}
@@ -469,7 +473,7 @@ class Guitar(object):
         # current interaction
         # number of contact points
         # distance(s) string/fret
-        ndof = ds.dimension()
+        ndof = ds.dimension
         x = np.linspace(0, ds.length, ndof + 2)
         x = x[1:-1]
         # Plot string displacements, at contact points, according to time
@@ -541,7 +545,7 @@ class Guitar(object):
             plot_x = plot_shape[0]
             plot_y = plot_shape[1]
 
-        # ndof = ds.dimension()
+        # ndof = ds.dimension
         plt.figure(iplot, figsize=(17, 8))
         # plt.subplot(342)
         # #f, t, Sxx = signal.spectrogram(pos[0], self.fs)
@@ -596,7 +600,7 @@ class Guitar(object):
         data = self.data_interactions[interaction]
         # current interaction
         # number of contact points
-        nbc = interaction.dimension()
+        nbc = interaction.y(0).size
         # distance(s) string/fret
         dist = data[:, :nbc]
         vel = data[:, nbc : 2 * nbc]
@@ -626,7 +630,7 @@ class Guitar(object):
         interactions = self.interactions_linked_to_ds(ds)
         nbc = len(interactions)
         fig = plt.figure()
-        # ndof = ds.dimension()
+        # ndof = ds.dimension
         length = ds.length
         ax = plt.axes(xlim=(0, length), ylim=ylimits)
         (line,) = ax.plot([], [], lw=2)

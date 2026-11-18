@@ -22,7 +22,7 @@ include(SiconosRequiredVersion)
 #
 # If siconos is not installed in a standard place, cmake searches in directories listed in CMAKE_PREFIX_PATH.
 # This variable must contains the path to siconos installation.
-# 
+#
 # Remark : we may also use the package registry magic to find siconos:
 # see https://cmake.org/cmake/help/git-master/manual/cmake-packages.7.html#creating-packages
 find_package(siconos REQUIRED)
@@ -193,6 +193,18 @@ if(${mechanics_installed} GREATER -1)
       list(APPEND EXCLUDE_PATTERN_FROM_TESTS mkspheres)
     endif()
 
+    # RockFall examples depending on optional python packages
+    if(HAS_PYTHON_WRAPPER OR HAS_PYB11_WRAPPER)
+      find_python_module(stl)      # numpy-stl
+      find_python_module(trimesh)
+    endif()
+    if(NOT stl_file)
+      list(APPEND EXCLUDE_PATTERN_FROM_TESTS NSCD_model_adapted_energy_1702_FB)
+    endif()
+    if(NOT trimesh_file)
+      list(APPEND EXCLUDE_PATTERN_FROM_TESTS simu_rockfall_biplan)
+    endif()
+
   endif()
   if(SICONOS_HAS_OpenCASCADE)
     message(STATUS "add examples requiring occt")
@@ -301,8 +313,11 @@ foreach(current_dir IN LISTS EXAMPLES_DIRECTORIES)
         WORKING_DIRECTORY ${working_dir}
       )
 
+      # python drivers of a directory share its .siconos/ and addons/
+      # (built on the fly by the siconos script): never run them concurrently.
       set_tests_properties(py_${test_name} PROPERTIES
-        TIMEOUT ${tests_timeout})
+        TIMEOUT ${tests_timeout}
+        RESOURCE_LOCK ${test_dir_name})
     else()
       # -- C++ --
       # A test for the build part (siconos --no-exec)
