@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
   NumericsProblem.M = MM;
 
   SparseBlockStructuredMatrix *MBlockMatrix = SBM_new();
-  MM->matrix1 = MBlockMatrix;
+  MM->sparse_block = MBlockMatrix;
   MBlockMatrix->nbblocks = 3;
   double *block[3] = {M11, M22, M33};
   MBlockMatrix->block = block;
@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
 
   // Driver call
   FILE *ff = fopen("FC3D_Example1_SBM.dat", "w");
-  frictionContact_printInFile(&NumericsProblem, ff);
+  frictionContactProblem_printInFile(&NumericsProblem, ff);
   fclose(ff);
 
   SolverOptions *numerics_solver_options = solver_options_create(SICONOS_FRICTION_3D_NSGS);

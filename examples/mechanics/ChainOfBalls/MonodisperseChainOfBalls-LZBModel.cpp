@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
     // ---- Configuration of chaines
     //--------------------------------------
     //************* Balls ******************
-    double NumberContacts = NumberBalls - 1;  // Number of contacts
+    unsigned int NumberContacts = NumberBalls - 1;  // Number of contacts
     //(1) Radius of balls
     auto RadiusBalls = std::make_shared<Vector>(NumberBalls);
     for (unsigned int k = 0; k < NumberBalls; ++k) {
@@ -159,7 +159,8 @@ int main(int argc, char* argv[]) {
       (*v0Ball)(0) = _Vel0Ball;
       // -- The dynamical system --
       auto ball =
-          std::make_shared<siconos::modeling::LagrangianLinearTIDS>(q0Ball, v0Ball, MassBall);
+          std::make_shared<siconos::modeling::LagrangianLinearTIDS>(
+          *q0Ball, *v0Ball, *MassBall, siconos::algebra::copy_t);
       // -- Set external forces (weight1) --
 
       Vector FextBall{nDofBall};

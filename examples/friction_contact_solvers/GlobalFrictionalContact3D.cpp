@@ -133,23 +133,13 @@ int main(int argc, char* argv[])
   numericsProblem->q = q;
   numericsProblem->b = b;
 
-  numericsProblem->M = NM_new();
-  NumericsMatrix *MM = numericsProblem->M ;
-  MM->storageType = NM_DENSE;
-  MM->matrix0 = M;
-  MM->size0 = n;
-  MM->size1 = n;
-
-  numericsProblem->H  = NM_new();
-  NumericsMatrix *HH = numericsProblem->H;
-  HH->storageType = NM_DENSE;
-  HH->matrix0 = H;
-  HH->size0 = n;
-  HH->size1 = m;
+  // M and H are attached as-is (not copied): they stay owned by main()
+  numericsProblem->M = NM_create_with_data(NM_DENSE, n, n, M);
+  numericsProblem->H = NM_create_with_data(NM_DENSE, n, m, H);
 
 
   /*     FILE * foutput = fopen("Example_GlobalFrictionContact.dat", "w"); */
-  /*     globalFrictionContact_printInFile(&numericsProblem,  foutput ); */
+  /*     globalFrictionContactProblem_printInFile(&numericsProblem,  foutput ); */
   /*     fclose(foutput); */
 
 
@@ -187,7 +177,7 @@ int main(int argc, char* argv[])
   numericsProblem->q = NULL;
   numericsProblem->b = NULL;
 
-  globalFrictionContact_free(numericsProblem);
+  globalFrictionContactProblem_free(numericsProblem);
 
   return info;
 

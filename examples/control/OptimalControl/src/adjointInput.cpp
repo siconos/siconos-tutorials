@@ -2,6 +2,7 @@
 #define ADJOINTINPUT_CPP
 
 #include "adjointInput.hpp"
+#include "BlockVector.hpp"
 // #define SICONOS_DEBUG
 
 user_defined::adjointInput::adjointInput() : FirstOrderNonLinearR{} {

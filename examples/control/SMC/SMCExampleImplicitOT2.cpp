@@ -73,7 +73,9 @@ int main(int argc, char* argv[]) {
   (*Brel)(1, 0) = 2;
 
   // Dynamical Systems
-  auto processDS = std::make_shared<siconos::modeling::FirstOrderLinearDS>(*x0);
+  auto processDS = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        *x0, siconos::algebra::SiconosDenseMatrix::Zero(x0->size(), x0->size()),
+        siconos::algebra::SiconosVector::Zero(x0->size()), siconos::algebra::copy_t);
   processDS->setComputebVectorFunction(
       [](double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {
         auto t = sin(50 * time);

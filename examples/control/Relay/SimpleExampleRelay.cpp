@@ -55,7 +55,9 @@ int main(int argc, char* argv[]) {
     auto x0 = std::make_shared<Vector>(ndof);
     (*x0)(0) = Vinit;
     (*x0)(1) = -Vinit;
-    auto process = std::make_shared<siconos::modeling::FirstOrderLinearDS>(*x0);
+    auto process = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        *x0, siconos::algebra::SiconosDenseMatrix::Zero(x0->size(), x0->size()),
+        siconos::algebra::SiconosVector::Zero(x0->size()), siconos::algebra::copy_t);
 
     // --------------------
     // --- Interactions ---
@@ -84,7 +86,7 @@ int main(int argc, char* argv[]) {
     unsigned int nslawSize = 2;
     auto myNslaw = std::make_shared<siconos::modeling::RelayNSL>(nslawSize);
 
-    siconos::algebra::print(*myNslaw);
+    myNslaw->display();
 
     // The Interaction which involves the first DS (the process)
     auto myProcessInteraction =

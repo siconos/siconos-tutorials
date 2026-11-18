@@ -61,7 +61,9 @@ int main(int argc, char* argv[]) {
     (*x0)(0) = Vinit;
     (*x0)(1) = -Vinit;
 
-    auto processDS = std::make_shared<siconos::modeling::FirstOrderLinearDS>(*x0);
+    auto processDS = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        *x0, siconos::algebra::SiconosDenseMatrix::Zero(x0->size(), x0->size()),
+        siconos::algebra::SiconosVector::Zero(x0->size()), siconos::algebra::copy_t);
 
     Vector sampledControl{2};
     sampledControl.setZero();  // Will be updated in the time loop.
@@ -73,7 +75,9 @@ int main(int argc, char* argv[]) {
           result(1) = -input + sampledControl(1);
         });
 
-    auto controllerDS = std::make_shared<siconos::modeling::FirstOrderLinearDS>(*x0);
+    auto controllerDS = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        *x0, siconos::algebra::SiconosDenseMatrix::Zero(x0->size(), x0->size()),
+        siconos::algebra::SiconosVector::Zero(x0->size()), siconos::algebra::copy_t);
 
     // --------------------
     // --- Interactions ---
@@ -100,7 +104,7 @@ int main(int argc, char* argv[]) {
     unsigned int nslawSize = 2;
     auto myNslaw = std::make_shared<siconos::modeling::RelayNSL>(nslawSize);
 
-    siconos::algebra::print(*myNslaw);
+    myNslaw->display();
 
     // The Interaction which involves the first DS (the process)
     auto myControllerInteraction =

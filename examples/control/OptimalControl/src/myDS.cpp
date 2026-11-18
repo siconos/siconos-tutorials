@@ -21,7 +21,7 @@
 // #define SICONOS_DEBUG
 
 user_defined::MyDS::MyDS(Eigen::Ref<siconos::algebra::SiconosVector> x0)
-    : FirstOrderNonLinearDS(x0) {
+    : FirstOrderNonLinearDS(x0, siconos::algebra::copy_t) {
   setComputefVectorFunction(
       [this](const Eigen::Ref<const siconos::algebra::SiconosVector>& state, double time,
              Eigen::Ref<siconos::algebra::MapVectorType> result) {

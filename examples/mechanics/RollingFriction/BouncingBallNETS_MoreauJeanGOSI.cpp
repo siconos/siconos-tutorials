@@ -32,7 +32,7 @@ using Matrix = siconos::algebra::SiconosMatrix;
 using Vector = siconos::algebra::SiconosVector;
 
 using namespace std;
-#define R_CLASS NewtonEuler5DR
+#define R_CLASS NewtonEulerVelocityAngularVelocityR
 
 class my_NewtonEulerR : public siconos::modeling::R_CLASS {
   double _sBallRadius;

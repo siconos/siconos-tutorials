@@ -83,11 +83,8 @@ int main(int argc, char *argv[]) {
   NumericsProblem.mu = mu;
   NumericsProblem.q = q;
 
-  NumericsMatrix *MM = (NumericsMatrix *)malloc(sizeof(NumericsMatrix));
-  MM->storageType = NM_DENSE;
-  MM->matrix0 = M;
-  MM->size0 = 3 * NC;
-  MM->size1 = 3 * NC;
+  // M is attached as-is (not copied): it stays owned by main()
+  NumericsMatrix *MM = NM_create_with_data(NM_DENSE, 3 * NC, 3 * NC, M);
 
   NumericsProblem.M = MM;
 
@@ -117,5 +114,6 @@ int main(int argc, char *argv[]) {
 
   free(reaction);
   free(velocity);
-  free(MM);
+  MM->dense = NULL;  // M is a local array, not owned by MM
+  NM_free(MM);
 }

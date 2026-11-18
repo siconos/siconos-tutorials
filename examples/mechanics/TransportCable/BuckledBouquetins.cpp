@@ -25,6 +25,12 @@
 #include <fstream>
 #include <string>
 
+// Siconos names used unqualified in this example
+using siconos::fem::cable::TransportCableManager;
+using siconos::fem::cable::TransportCableModel;
+using siconos::fem::cable::TransportCableProfile;
+using siconos::fem::cable::TransportCableResult;
+
 int main()
 
 {
@@ -32,7 +38,8 @@ int main()
     // Reads model parameters from a json file
     // Mechanical params, geometry, supports positions ...
     std::string modelFile = "buckled_bouquetins.json";
-    auto model = std::make_shared<TransportCableModel>(modelFile);
+    std::ifstream modelStream(modelFile);
+    auto model = std::make_shared<TransportCableModel>(nlohmann::json::parse(modelStream));
 
     // Creates the result object: it handles two ropeways (sequence of ropes),
     // the supports (pylons and pulleys), and some extra variables related to
@@ -77,7 +84,7 @@ int main()
 
     // -- Fem part --
 
-    numberOfElements = 1400;  // FEM number of nodes
+    int numberOfElements = 1400;  // FEM number of nodes
     double eps = 0.1;
     tol = 1e-3;  // tolerance used to activate constraints
     profil->initializeFEM(numberOfElements, eps, tol);
@@ -87,15 +94,15 @@ int main()
     std::ofstream out_ropes_fem("ropes_fem.json");
     out_ropes_fem << std::setw(4) << out << std::endl;
 
-    auto positions = ioVector::readVectorFromJson(out["q"]);
-    std::cout << positions->norm() << " " << positions->size() << std::endl;
+    auto positions = siconos::algebra::io::readVectorFromJson(out["q"]);
+    std::cout << positions.norm() << " " << positions.size() << std::endl;
 
     std::cout << "PAR 2 \n";
     auto manager = std::make_shared<TransportCableManager>(modelFile);
     std::string outFile = "results.json";
     nlohmann::ordered_json out2;
-    json args;
-    auto res = manager->computeFEM(args, outFile, out2);
+    nlohmann::json args;
+    manager->computeFEM(args, outFile, out2);
 
     return 0;
   }

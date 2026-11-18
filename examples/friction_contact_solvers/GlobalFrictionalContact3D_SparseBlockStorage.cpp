@@ -151,8 +151,8 @@ int main(int argc, char *argv[]) {
   MM->size0 = Ndof;
   MM->size1 = Ndof;
 
-  MM->matrix1 = SBM_new();
-  SparseBlockStructuredMatrix *MBlockMatrix = MM->matrix1;
+  MM->sparse_block = SBM_new();
+  SparseBlockStructuredMatrix *MBlockMatrix = MM->sparse_block;
   MBlockMatrix->nbblocks = 3;
   double *block[3] = {M11, M22, M33};
   MBlockMatrix->block = block;
@@ -174,8 +174,8 @@ int main(int argc, char *argv[]) {
   HH->size0 = Ndof;
   HH->size1 = 3 * NC;
 
-  HH->matrix1 = (SparseBlockStructuredMatrix *)malloc(sizeof(SparseBlockStructuredMatrix));
-  SparseBlockStructuredMatrix *HBlockMatrix = HH->matrix1;
+  HH->sparse_block = (SparseBlockStructuredMatrix *)malloc(sizeof(SparseBlockStructuredMatrix));
+  SparseBlockStructuredMatrix *HBlockMatrix = HH->sparse_block;
   HBlockMatrix->nbblocks = 2;
   double *hblock[3] = {H00, H20};
   HBlockMatrix->block = hblock;
@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
   HBlockMatrix->index2_data = hindex2_data;
 
   FILE *foutput = fopen("Example_GlobalFrictionContact_SBM.dat", "w");
-  globalFrictionContact_printInFile(numericsProblem, foutput);
+  globalFrictionContactProblem_printInFile(numericsProblem, foutput);
   fclose(foutput);
 
   // Unknown Declaration
@@ -223,12 +223,12 @@ int main(int argc, char *argv[]) {
   free(velocity);
   free(globalVelocity);
 
-  //     SBM_free(MM->matrix1);
-  //     SBM_free(HH->matrix1);
-  free(MM->matrix1);
-  MM->matrix1 = NULL;
-  free(HH->matrix1);
-  HH->matrix1 = NULL;
+  //     SBM_free(MM->sparse_block);
+  //     SBM_free(HH->sparse_block);
+  free(MM->sparse_block);
+  MM->sparse_block = NULL;
+  free(HH->sparse_block);
+  HH->sparse_block = NULL;
   NM_clear(MM);
   NM_clear(HH);
   free(MM);

@@ -25,6 +25,20 @@
 #include <chrono>
 #include <cmath>
 
+// Siconos names used unqualified in this example
+using Vector = siconos::algebra::SiconosVector;
+using siconos::algebra::SiconosMatrix;
+using siconos::algebra::SiconosVector;
+using siconos::integrators::MoreauJeanOSI;
+using siconos::modeling::Interaction;
+using siconos::modeling::LagrangianDS;
+using siconos::modeling::LagrangianScleronomousR;
+using siconos::modeling::NewtonImpactFrictionNSL;
+using siconos::modeling::NonSmoothDynamicalSystem;
+using siconos::nonsmooth_formulations::FrictionContact;
+using siconos::simulation::TimeDiscretisation;
+using siconos::simulation::TimeStepping;
+
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -53,6 +67,7 @@ int main(int argc, char* argv[]) {
     cout << "====> Model loading ..." << endl;
 
     siconos::algebra::SiconosMatrix mass{3, 3};
+    mass.setZero();
     mass(0, 0) = m;
     mass(1, 1) = m;
     mass(2, 2) = inertia;
@@ -72,10 +87,12 @@ int main(int argc, char* argv[]) {
     v0(2) = 0.1;
 
     // -- The dynamical system --
-    auto stick(new LagrangianDS(q0, v0, mass));
+    auto stick = std::make_shared<LagrangianDS>(q0, v0, siconos::algebra::copy_t);
+    stick->setConstantMass(mass, siconos::algebra::copy_t);
 
     // -- Set external forces (weight) --
     Vector weight{nDof};
+    weight.setZero();
     weight(1) = -m * g;
     stick->setConstantFext(weight, siconos::algebra::alias_t);
 
@@ -89,17 +106,30 @@ int main(int argc, char* argv[]) {
     // Interaction stick-floor
     //
 
-    auto nslaw(new NewtonImpactFrictionNSL(e, 0.0, mu, 2));
+    auto nslaw = std::make_shared<NewtonImpactFrictionNSL>(e, 0.0, mu, 2);
 
-    auto relation(
-        new LagrangianScleronomousR("ImpactingStickPlugin:h1", "ImpactingStickPlugin:G1"));
+    auto relation = std::make_shared<LagrangianScleronomousR>();
+    // h and H, formerly in ImpactingStickPlugin (h1, G1)
+    relation->setComputehFunction([l](const siconos::algebra::BlockVector& q,
+                                       Eigen::Ref<siconos::algebra::MapVectorType> y) {
+      y(0) = q(1) - 0.5 * l * cos(q(2));
+    });
+    relation->setComputeHFunction([l](const siconos::algebra::BlockVector& q,
+                                       Eigen::Ref<siconos::algebra::MapType> H) {
+      H(0, 0) = 0.0;
+      H(1, 0) = -1.0;
+      H(0, 1) = 1.0;
+      H(1, 1) = 0.0;
+      H(0, 2) = 0.5 * l * sin(q(2));
+      H(1, 2) = -0.5 * l * cos(q(2));
+    });
 
-    auto inter(new Interaction(nslaw, relation));
+    auto inter = std::make_shared<Interaction>(nslaw, relation);
 
     // -------------
     // --- Model ---
     // -------------
-    auto bouncingStick(new NonSmoothDynamicalSystem(t0, T));
+    auto bouncingStick = std::make_shared<NonSmoothDynamicalSystem>(t0, T);
 
     // add the dynamical system in the non smooth dynamical system
     bouncingStick->insertDynamicalSystem(stick);
@@ -112,22 +142,22 @@ int main(int argc, char* argv[]) {
     // ------------------
 
     // -- (1) OneStepIntegrators --
-    auto OSI(new MoreauJeanOSI(theta));
+    auto OSI = std::make_shared<MoreauJeanOSI>(theta);
 
     // -- (2) Time discretisation --
-    auto t(new TimeDiscretisation(t0, h));
+    auto t = std::make_shared<TimeDiscretisation>(t0, h);
 
     // -- (3) one step non smooth problem
-    auto osnspb(new FrictionContact(2));
+    auto osnspb = std::make_shared<FrictionContact>(2);
     osnspb->setMStorageType(NM_SPARSE);
-    osnspb->setAssemblyType(REDUCED_DIRECT);
+    osnspb->setAssemblyType(siconos::nonsmooth_formulations::LinearOSNSAssemblyType::REDUCED_DIRECT);
     osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 10000;
     osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-10;
 
     // -- (4) Simulation setup with (1) (2) (3)
-    auto s(new TimeStepping(bouncingStick, t, OSI, osnspb));
+    auto s = std::make_shared<TimeStepping>(bouncingStick, t, OSI, osnspb);
 
-    s->setNewtonOptions(SICONOS_TS_LINEAR);
+    s->setNewtonOptions(siconos::simulation::TimeSteppingType::LINEAR);
     // OSI->setGamma(3/2.0);
     //  =========================== End of model definition ===========================
 
@@ -225,8 +255,8 @@ int main(int argc, char* argv[]) {
       dataPlot(k, 19) = kinetic_energy;
       dataPlot(k, 20) = potential_energy;
 
-      std::shared_ptr<siconos::algebra::SiconosMatrix> wf = OSI->computeWorkForces();
-      dataPlot(k, 21) = (*wf)(0, 1) + dataPlot(k - 1, 21);
+      const auto wf = OSI->computeWorkForces();
+      dataPlot(k, 21) = wf(0, 1) + dataPlot(k - 1, 21);
 
       // if (lambda(0) >0)
       // 	{
@@ -255,11 +285,12 @@ int main(int argc, char* argv[]) {
 
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
-    dataPlot.resize(k, outputSize);
-    ioMatrix::write("ImpactingStick.dat", "ascii", dataPlot, "noDim");
-    // ioMatrix::write("ImpactingStick.ref", "ascii", dataPlot);
+    dataPlot.conservativeResize(k, outputSize);
+    siconos::algebra::io::write("ImpactingStick.dat", dataPlot, siconos::algebra::io::ASCII_OUT,
+                                siconos::algebra::io::WriteType::nodim);
+    // siconos::algebra::io::write("ImpactingStick.ref", dataPlot);
     double error = 0.0, eps = 1e-12;
-    if ((error = ioMatrix::compareRefFile(dataPlot, "ImpactingStick.ref", eps)) >= 0.0 &&
+    if ((error = siconos::algebra::io::compareRefFile(dataPlot, "ImpactingStick.ref", eps)) >= 0.0 &&
         error > eps)
       return 1;
 

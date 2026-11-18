@@ -205,7 +205,7 @@ int main(int argc, char* argv[]) {
 
             columnOfBeads->link(interOfBeads[i], beads[i], beads[i + 1]);
 
-            assert(*interOfBeads[i]->y(0)(0) >= 0);
+            assert((*interOfBeads[i]->y(0))(0) >= 0);
           }
         }
       }
