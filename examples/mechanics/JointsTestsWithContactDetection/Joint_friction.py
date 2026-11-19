@@ -15,9 +15,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from siconos.mechanics.collision.tools import Contactor
-from siconos.io.mechanics_run import MechanicsHdf5Runner
+import os
+
 import siconos.numerics as sn
+from siconos.io.mechanics_run import MechanicsHdf5Runner
+from siconos.mechanics.collision.tools import Contactor
+
+# ctest sets SICONOS_EXAMPLES_SHORT_RUN: shorter simulation for the tests,
+# full simulation otherwise.
+short_run = "SICONOS_EXAMPLES_SHORT_RUN" in os.environ
 
 
 with MechanicsHdf5Runner() as io:
@@ -66,7 +72,7 @@ options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-4
 with MechanicsHdf5Runner(mode="r+") as io:
     io.run(
         t0=0,
-        T=8,
+        T=1.0 if short_run else 8,
         h=0.001,
         theta=0.50001,
         Newton_max_iter=2,

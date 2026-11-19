@@ -19,21 +19,23 @@
 # Example of one object under gravity with one contactor and a ground
 # using the Siconos proposed mechanics API
 #
+import os
+
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
+from siconos.mechanics.collision.convexhull import ConvexHull
 from siconos.mechanics.collision.tools import Contactor
 
-
-import siconos.numerics as sn
-
-from siconos.mechanics.collision.convexhull import ConvexHull
+# ctest sets SICONOS_EXAMPLES_SHORT_RUN: shorter simulation for the tests,
+# full simulation otherwise.
+short_run = "SICONOS_EXAMPLES_SHORT_RUN" in os.environ
 
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a tetrahedron as a convex shape
     import numpy
 
@@ -99,10 +101,10 @@ options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-8
 
 run_options = MechanicsHdf5Runner_run_options()
 run_options["t0"] = 0
-run_options["T"] = 20.
+run_options["T"] = 2.0 if short_run else 20.0
 run_options["h"] = 0.005
 
-run_options['bullet_options'] = bullet_options
+run_options["bullet_options"] = bullet_options
 run_options["solver_options"] = options
 
 # run_options['constraint_activation_threshold']=1e-05
@@ -114,12 +116,11 @@ run_options["output_frequency"] = None
 # run_options["verbose"] = False
 run_options["with_timer"] = False
 # run_options["violation_verbose"] = True
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

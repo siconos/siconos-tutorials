@@ -15,17 +15,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from siconos.mechanics.collision.tools import Contactor
+import os
+
+import numpy as np
+import siconos.integrators
+import siconos.numerics as sn
+import siconos.simulation
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-import siconos.simulation
-import siconos.integrators
+from siconos.mechanics.collision.tools import Contactor
 
+# ctest sets SICONOS_EXAMPLES_SHORT_RUN: shorter simulation for the tests,
+# full simulation otherwise.
+short_run = "SICONOS_EXAMPLES_SHORT_RUN" in os.environ
 
-import siconos.numerics as sn
-import numpy as np
 
 # Configuration of two stops, at 3/4 pi on either side of the initial position.
 # The values are [axis, position, direction], where direction must be -1 or 1.
@@ -114,7 +119,7 @@ with MechanicsHdf5Runner() as io:
 
 # We define a "controller" here to show how to measure the angle of
 # the joint using computehDoF.
-class Ctrl(object):
+class Ctrl:
     def initialize(self, io):
         self.nsds = io._nsds
         self.topo = self.nsds.topology()
@@ -146,7 +151,7 @@ options = None
 
 run_options = MechanicsHdf5Runner_run_options()
 run_options["t0"] = 0
-run_options["T"] = 5.0
+run_options["T"] = 1.0 if short_run else 5.0
 run_options["h"] = 0.001
 run_options["theta"] = 0.50001
 run_options["Newton_max_iter"] = 1

@@ -19,19 +19,23 @@
 # Example of one object under gravity with one contactor and a ground
 # using the Siconos proposed mechanics API
 #
+import os
+
+import numpy as np
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
 from siconos.mechanics.collision.tools import Contactor
 
-import siconos.numerics as sn
+# ctest sets SICONOS_EXAMPLES_SHORT_RUN: shorter simulation for the tests,
+# full simulation otherwise.
+short_run = "SICONOS_EXAMPLES_SHORT_RUN" in os.environ
 
-import numpy as np
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a cylinder
     R = 0.1
     L = 2.0
@@ -78,9 +82,9 @@ options = sn.SolverOptions(sn.solver_ids.SICONOS_FRICTION_3D_NSGS)
 options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = 100000
 options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-6
 
-test = True
+test = short_run
 if test:
-    T = 2.0
+    T = 0.5
 else:
     T = 20.0
 
@@ -102,12 +106,11 @@ run_options["output_frequency"] = None
 run_options["with_timer"] = False
 # run_options["violation_verbose"] = True
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     io.run(run_options)

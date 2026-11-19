@@ -14,12 +14,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import numpy as np
+import os
 
-from siconos.mechanics.collision.tools import Contactor
-from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as sn
+import numpy as np
 import siconos.modeling as sm
+import siconos.numerics as sn
+from siconos.io.mechanics_run import MechanicsHdf5Runner
+from siconos.mechanics.collision.tools import Contactor
+
+# ctest sets SICONOS_EXAMPLES_SHORT_RUN: shorter simulation for the tests,
+# full simulation otherwise.
+short_run = "SICONOS_EXAMPLES_SHORT_RUN" in os.environ
+
 
 # An example of applying force to the axis of a joint, and applying
 # spring and virtual damping by measuring position and velocity along
@@ -35,7 +41,6 @@ import siconos.modeling as sm
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of two bars connected by a prismatic joint
     io.add_primitive_shape("Bar", "Box", (1, 0.1, 0.1))
     io.add_object(
@@ -72,7 +77,7 @@ with MechanicsHdf5Runner() as io:
     io.add_Newton_impact_friction_nsl("contact", mu=0.3, e=0.0)
 
 
-class Ctrl(object):
+class Ctrl:
     def initialize(self, io):
         self.count = 0
         self.topo = io._nsds.topology()
@@ -124,7 +129,7 @@ options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-12
 with MechanicsHdf5Runner(mode="r+") as io:
     io.run(
         t0=0,
-        T=2.0,
+        T=0.5 if short_run else 2.0,
         h=0.001,
         theta=0.5,
         Newton_max_iter=1,

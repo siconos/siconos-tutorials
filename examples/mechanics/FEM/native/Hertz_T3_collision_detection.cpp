@@ -31,7 +31,8 @@
 #include <SiconosMatrix.hpp>
 #include <SiconosVector.hpp>
 #include <chrono>
-#include <cmath>  // for fabs
+#include <cmath>    // for fabs
+#include <cstdlib>  // for getenv
 
 int main(int argc, char* argv[]) {
   try {
@@ -54,8 +55,12 @@ int main(int argc, char* argv[]) {
     // -------------
     // --- Model ---
     // -------------
-    double t0 = 0;     // initial computation time
-    double T = 5e-03;  // final computation time
+    // ctest sets SICONOS_EXAMPLES_SHORT_RUN: shorter simulation (and its own ref) for the
+    // tests, full simulation otherwise. The short one stops just after the impact (~3.5e-3),
+    // before the long resting contact phase, which is the expensive part (~2 min).
+    const bool short_run = std::getenv("SICONOS_EXAMPLES_SHORT_RUN") != nullptr;
+    double t0 = 0;                           // initial computation time
+    double T = short_run ? 3.7e-03 : 5e-03;  // final computation time
 
     auto solid = std::make_shared<siconos::modeling::NonSmoothDynamicalSystem>(t0, T);
 
@@ -119,6 +124,7 @@ int main(int argc, char* argv[]) {
     // -> saved in a matrix dataPlot
     unsigned int outputSize = 5;
     siconos::algebra::SiconosDenseMatrix dataPlot(N + 1, outputSize);
+    dataPlot.setZero();
 
     auto q = FEsolid->q_read();
     auto v = FEsolid->velocity_read();
@@ -180,7 +186,9 @@ int main(int argc, char* argv[]) {
                                 siconos::algebra::io::WriteType::nodim);
     double error = 0.0, eps = 1e-12;
     if ((error = siconos::algebra::io::compareRefFile(
-             dataPlot, "Hertz_T3_1612_with_friction.ref", eps)) >= 0.0 &&
+             dataPlot,
+             short_run ? "Hertz_T3_1612-short.ref" : "Hertz_T3_1612_with_friction.ref",
+             eps)) >= 0.0 &&
         error > eps)
       return 1;
   } catch (...) {

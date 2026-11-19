@@ -16,16 +16,22 @@
 # limitations under the License.
 #
 # A tippe-top with Coulomb friction only & JeanMoreau time stepping.
+import os
+from math import pi
+
+import siconos.mechanics.quaternions
+from matplotlib import pyplot as plt
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-from siconos.mechanics.collision.tools import Contactor
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
+from siconos.mechanics.collision.tools import Contactor
 
-import siconos.mechanics.quaternions
-from math import pi
-from matplotlib import pyplot as plt
+# ctest sets SICONOS_EXAMPLES_SHORT_RUN: shorter simulation for the tests,
+# full simulation otherwise.
+short_run = "SICONOS_EXAMPLES_SHORT_RUN" in os.environ
+
 
 # Cf A set-valued force law for spatial Coulomb-Contensou friction
 # R.I. Leine, Ch. Glocker, European Journal of Mechanics, 2003
@@ -61,7 +67,6 @@ bullet_options.perturbationIterations = 0
 bullet_options.minimumPointsPerturbationThreshold = 0
 
 with MechanicsHdf5Runner() as io:
-
     io.add_primitive_shape("Body1", "Sphere", (r1,))
     io.add_primitive_shape("Body2", "Cylinder", (r2, a2))
     io.add_primitive_shape("Body3", "Sphere", (r2,))
@@ -93,9 +98,9 @@ with MechanicsHdf5Runner() as io:
         mass=m,
     )
 
-test = True
+test = short_run
 if test:
-    T = 0.2
+    T = 0.05
 else:
     T = 20.0
 
@@ -113,12 +118,11 @@ run_options["verbose"] = True
 run_options["violation_verbose"] = False
 run_options["with_timer"] = True
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 run_options["output_frequency"] = None
 with MechanicsHdf5Runner(mode="r+") as io:
-
     io.run(run_options)
 
     # plot of theta Euler angle.

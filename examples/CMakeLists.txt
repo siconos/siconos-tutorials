@@ -297,6 +297,9 @@ foreach(current_dir IN LISTS EXAMPLES_DIRECTORIES)
   #   COMMENT "Clean ${working_dir}")
 
   # -- For each collected source file, create a test --
+  # The tests run with SICONOS_EXAMPLES_SHORT_RUN set: the longest examples read it to
+  # run a shorter simulation (and compare it with their -short.ref file, if any).
+  # Run directly, without this variable, they do the full simulation.
   foreach(driver IN LISTS current_example_files)
     # Set test name (based on example dir name)
     get_filename_component(filename_we ${driver} NAME_WE)
@@ -317,7 +320,8 @@ foreach(current_dir IN LISTS EXAMPLES_DIRECTORIES)
       # (built on the fly by the siconos script): never run them concurrently.
       set_tests_properties(py_${test_name} PROPERTIES
         TIMEOUT ${tests_timeout}
-        RESOURCE_LOCK ${test_dir_name})
+        RESOURCE_LOCK ${test_dir_name}
+        ENVIRONMENT "SICONOS_EXAMPLES_SHORT_RUN=1")
     else()
       # -- C++ --
       # A test for the build part (siconos --no-exec)
@@ -334,7 +338,8 @@ foreach(current_dir IN LISTS EXAMPLES_DIRECTORIES)
 
       set_tests_properties(run_${test_name} PROPERTIES
         DEPENDS build_${test_name}
-        TIMEOUT ${tests_timeout})
+        TIMEOUT ${tests_timeout}
+        ENVIRONMENT "SICONOS_EXAMPLES_SHORT_RUN=1")
 
     endif()
   endforeach()
