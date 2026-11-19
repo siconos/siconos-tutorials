@@ -294,12 +294,10 @@ int main(int argc, char* argv[]) {
 
     // --- Output files ---
     std::cout << "====> Output file writing ...\n";
-    siconos::algebra::io::write("RockingBlockED.dat", DataPlot,
-                                siconos::algebra::io::ASCII_OUT,
+    siconos::algebra::io::write("RBED.dat", DataPlot, siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
     double error = 0.0, eps = 1e-12;
-    if ((error = siconos::algebra::io::compareRefFile(DataPlot, "RockingBlockED.ref", eps)) >
-        eps)
+    if ((error = siconos::algebra::io::compareRefFile(DataPlot, "RBED.ref", eps)) > eps)
       return 1;
     return 0;
   } catch (...) {

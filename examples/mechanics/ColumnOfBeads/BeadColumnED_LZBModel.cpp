@@ -260,12 +260,12 @@ int main(int argc, char* argv[]) {
     siconos::graphs::DynamicalSystemsGraph::VIterator ui, uiend;
     auto start = std::chrono::system_clock::now();
 
+    // Initial state of the balls (same column order as in the loop below)
     size_t col_pos = 1;
     size_t col_vel = NumberBalls + 1;
     dataPlot(k, 0) = s->startingTime();
-
-    for (auto id = 1; id < NumberContacts; ++id) {
-      auto ds = VecOfallDS[id];
+    for (boost::tie(ui, uiend) = DSG0->vertices(); ui != uiend; ++ui) {
+      auto ds = DSG0->bundle(*ui);
       auto lag_ds = std::dynamic_pointer_cast<siconos::modeling::LagrangianDS>(ds);
       auto q = lag_ds->q_read();
       auto v = lag_ds->velocity_read();
@@ -274,6 +274,7 @@ int main(int argc, char* argv[]) {
       col_pos++;
       col_vel++;
     }
+    ++k;
 
     //====================================================================
     while ((k < Npointsave) & (s->hasNextEvent())) {
