@@ -36,15 +36,15 @@ double m2 = 1.0;
 double l1 = 1.0;
 double l2 = 1.0;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   try {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    int nDof = 2;  // degrees of freedom for robot arm
-    double t0 = 0;          // initial computation time
-    double T = 5.0;         // final computation time
-    double h = 0.0005;      // time step
+    int nDof = 2;       // degrees of freedom for robot arm
+    double t0 = 0;      // initial computation time
+    double T = 5.0;     // final computation time
+    double h = 0.0005;  // time step
     double criterion = 0.05;
     unsigned int maxIter = 20000;
     double e = 1.0;  // nslaw
@@ -77,9 +77,10 @@ int main(int argc, char *argv[]) {
     q0(1) = 0.2;
 
     /*REGULAR PLUGINS - uncomment to use*/
-    auto doublependulum = std::make_shared<siconos::modeling::LagrangianDS>(q0, v0, siconos::algebra::alias_t);
+    auto doublependulum =
+        std::make_shared<siconos::modeling::LagrangianDS>(q0, v0, siconos::algebra::alias_t);
     doublependulum->setComputeMassFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
            Eigen::Ref<siconos::algebra::MapType> mass) {
           mass(0, 0) = (m1 + m2) * l1;
           mass(1, 0) = m2 * l1 * cos(q(0) - q(1));
@@ -88,8 +89,8 @@ int main(int argc, char *argv[]) {
         });
 
     doublependulum->setComputeFgyrFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
            Eigen::Ref<siconos::algebra::MapVectorType> fgyr) {
           fgyr(0) = m2 * l2 * velocity(1) * velocity(1) * sin(q(0) - q(1));
           fgyr(1) = -m2 * l1 * velocity(0) * velocity(0) * sin(q(0) - q(1));
@@ -97,8 +98,8 @@ int main(int argc, char *argv[]) {
 
     // set 'random' value for jacobians, whatever fgyr is, just for tests
     doublependulum->setComputeJacobianFgyrOver_qFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob(0, 0) = m2 * l2 * velocity(1) * velocity(0) * cos(q(0) - q(1));
           jacob(1, 0) = -m2 * l1 * velocity(0) * velocity(0) * cos(q(0) - q(1));
@@ -107,8 +108,8 @@ int main(int argc, char *argv[]) {
         });
 
     doublependulum->setComputeJacobianFgyrOver_velocityFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob(0, 0) = 0.0;
           jacob(1, 0) = -2.0 * m2 * l1 * velocity(0) * sin(q(0) - q(1));
@@ -117,16 +118,16 @@ int main(int argc, char *argv[]) {
         });
 
     doublependulum->setComputeFintFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &v,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q, double time,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& v,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q, double time,
            Eigen::Ref<siconos::algebra::MapVectorType> fint) {
           fint(0) = sin(q(0)) * gravity * (m1 + m2);
           fint(1) = sin(q(1)) * gravity * m2;
         });
 
     doublependulum->setComputeJacobianFintOver_qFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &v,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q, double time,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& v,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q, double time,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob(0, 0) = cos(q(0)) * gravity * (m1 + m2);
           jacob(1, 0) = 0.0;
@@ -154,11 +155,11 @@ int main(int argc, char *argv[]) {
     auto relation = std::make_shared<siconos::modeling::LagrangianScleronomousR>();
 
     relation->setComputehFunction(
-        [](const siconos::algebra::BlockVector &q,
+        [](const siconos::algebra::BlockVector& q,
            Eigen::Ref<siconos::algebra::SiconosVector> y) { y(0) = l1 * sin(q(0)); });
 
-    relation->setComputeHFunction(
-        [](const siconos::algebra::BlockVector &q,
+    relation->setComputeContactMatrixFunction(
+        [](const siconos::algebra::BlockVector& q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result(0, 0) = l1 * cos(q(0));
           result(0, 1) = 0.0;
@@ -169,13 +170,13 @@ int main(int argc, char *argv[]) {
     auto nslaw1 = std::make_shared<siconos::modeling::NewtonImpactNSL>(e1);
     auto relation1 = std::make_shared<siconos::modeling::LagrangianScleronomousR>();
 
-    relation1->setComputehFunction([](const siconos::algebra::BlockVector &q,
+    relation1->setComputehFunction([](const siconos::algebra::BlockVector& q,
                                       Eigen::Ref<siconos::algebra::SiconosVector> y) {
       y(0) = l1 * sin(q(0)) + l2 * sin(q(1));
     });
 
-    relation1->setComputeHFunction(
-        [](const siconos::algebra::BlockVector &q,
+    relation1->setComputeContactMatrixFunction(
+        [](const siconos::algebra::BlockVector& q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result(0, 0) = l1 * cos(q(0));
           result(0, 1) = l2 * cos(q(1));

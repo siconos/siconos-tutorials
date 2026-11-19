@@ -39,7 +39,7 @@ using Vector = siconos::algebra::SiconosVector;
 
 using namespace std;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   double rpm = 358;
   try {
     // ================= Creation of the model =======================
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
     auto nslaw0 = std::make_shared<siconos::modeling::NewtonImpactNSL>(e);
     auto relation0 = std::make_shared<siconos::modeling::LagrangianRheonomousR>();
 
-    auto hfunc = [rpm](const siconos::algebra::BlockVector &pos, double time,
+    auto hfunc = [rpm](const siconos::algebra::BlockVector& pos, double time,
                        Eigen::Ref<siconos::algebra::MapVectorType> y) {
       double CamEqForce, CamPosition, CamVelocity, CamAcceleration;
       // CamEqForce =
@@ -102,11 +102,11 @@ int main(int argc, char *argv[]) {
     };
     relation0->setComputehFunction(hfunc);
 
-    auto jachq = [](const siconos::algebra::BlockVector &pos, double time,
+    auto jachq = [](const siconos::algebra::BlockVector& pos, double time,
                     Eigen::Ref<siconos::algebra::MapType> result) { result(0, 0) = 1; };
-    relation0->setComputeHFunction(jachq);
+    relation0->setComputeContactMatrixFunction(jachq);
 
-    auto dhdt = [rpm](const siconos::algebra::BlockVector &pos, double time,
+    auto dhdt = [rpm](const siconos::algebra::BlockVector& pos, double time,
                       Eigen::Ref<siconos::algebra::MapVectorType> result) {
       // double CamEqForce, CamPosition, CamVelocity, CamAcceleration;
 

@@ -28,7 +28,7 @@
 using Matrix = siconos::algebra::SiconosMatrix;
 using Vector = siconos::algebra::SiconosVector;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   try {
     // ================= Creation of the model =======================
 
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
     // --- Dynamical systems ---
     // -------------------------
 
-    FILE *pFile;
+    FILE* pFile;
     pFile = fopen("data.h", "w");
     if (pFile == NULL) {
       printf("fopen exampleopen filed!\n");
@@ -86,15 +86,16 @@ int main(int argc, char *argv[]) {
     q10(6) = V1(2) * sin(angle * 0.5);
 
     // -- The dynamical system --
-    auto beam1 = std::make_shared<siconos::modeling::NewtonEulerDS>(q10, v10, m, I1, siconos::algebra::alias_t);
+    auto beam1 = std::make_shared<siconos::modeling::NewtonEulerDS>(q10, v10, m, I1,
+                                                                    siconos::algebra::alias_t);
     // -- Set external forces (weight) --
     Vector weight{nDof};
     weight.setZero();
     weight(2) = -m * g;
     beam1->setConstantFext(weight, siconos::algebra::alias_t);
     beam1->setComputeFintFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &twist,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q, double time,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& twist,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q, double time,
            Eigen::Ref<siconos::algebra::MapVectorType> fint) {
           auto i = 0;
           fint(0) = 1e4 * q(0);
@@ -103,8 +104,8 @@ int main(int argc, char *argv[]) {
         });
 
     beam1->setComputeJacobianFintOver_qFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &twist,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q, double time,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& twist,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q, double time,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result.setZero();
 
@@ -142,7 +143,7 @@ int main(int argc, char *argv[]) {
     H(0, 2) = 1.0;
     auto nslaw0 = std::make_shared<siconos::modeling::NewtonImpactNSL>(e);
     auto relation0 = std::make_shared<siconos::modeling::NewtonEulerR>();
-    relation0->setConstantG(H);
+    relation0->setConstantConstraintJacobian(H);
     relation0->setConstanteVector(eR);
     // auto nslaw3=
     // std::make_shared<siconos::modeling::EqualityConditionNSL>KneeJointR::numberOfConstraints()());

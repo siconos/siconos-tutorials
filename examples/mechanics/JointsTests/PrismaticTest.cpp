@@ -25,7 +25,7 @@
 using Matrix = siconos::algebra::SiconosMatrix;
 using Vector = siconos::algebra::SiconosVector;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   try {
     // ================= Creation of the model =======================
 
@@ -66,7 +66,8 @@ int main(int argc, char *argv[]) {
     q10(5) = V1(1) * sin(angle);
     q10(6) = V1(2) * sin(angle);
     // -- The dynamical system --
-    auto beam1 = std::make_shared<siconos::modeling::NewtonEulerDS>(q10, v10, m, I1, siconos::algebra::alias_t);
+    auto beam1 = std::make_shared<siconos::modeling::NewtonEulerDS>(q10, v10, m, I1,
+                                                                    siconos::algebra::alias_t);
     // -- Set external forces (weight) --
     Vector weight{nDof};
     weight.setZero();
@@ -86,7 +87,7 @@ int main(int argc, char *argv[]) {
 
     // Matrix H1{relation1->numberOfConstraints(), qDim};
     // H1.setZero();
-    // relation1->setConstantG(H1);
+    // relation1->setConstantConstraintJacobian(H1);
 
     auto nslaw1 = std::make_shared<siconos::modeling::EqualityConditionNSL>(
         relation1->numberOfConstraints());

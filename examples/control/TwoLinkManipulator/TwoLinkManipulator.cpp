@@ -35,7 +35,7 @@ using Vector = siconos::algebra::SiconosVector;
 
 using namespace two_links_plugins;  // Where plugin functions (lambdas) are defined
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   try {
     // ================= Creation of the model =======================
 
@@ -75,9 +75,10 @@ int main(int argc, char *argv[]) {
     param[3] = v0(1);
     param[11] = std::numbers::pi;
 
-    auto arm = std::make_shared<siconos::modeling::LagrangianDS>(q0, v0, siconos::algebra::alias_t);
+    auto arm =
+        std::make_shared<siconos::modeling::LagrangianDS>(q0, v0, siconos::algebra::alias_t);
 
-    arm->setComputeMassFunction([](const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+    arm->setComputeMassFunction([](const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
                                    Eigen::Ref<siconos::algebra::MapType> mass) {
       mass(0, 0) =
           m1 * (l1 * l1 / 4) + I1 + I2 + m2 * (l1 * l1 + (l2 * l2 / 4) + l1 * l2 * cos(q(1)));
@@ -87,8 +88,8 @@ int main(int argc, char *argv[]) {
     });
 
     arm->setComputeFgyrFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
            Eigen::Ref<siconos::algebra::MapVectorType> result) {
           result(0) = -m2 * l1 * l2 * sin(q(1)) *
                       (velocity(0) * velocity(1) + velocity(1) * velocity(1) / 2);
@@ -97,8 +98,8 @@ int main(int argc, char *argv[]) {
 
     // set 'random' value for jacobians, whatever fgyr is, just for tests
     arm->setComputeJacobianFgyrOver_qFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result(0, 0) = 0;
           result(1, 0) = 0;
@@ -108,8 +109,8 @@ int main(int argc, char *argv[]) {
         });
 
     arm->setComputeJacobianFgyrOver_velocityFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result(0, 0) = -m2 * l1 * l2 * sin(q(1)) * velocity(1);
           result(1, 0) = m2 * l1 * l2 * sin(q(1)) * velocity(0);
@@ -134,21 +135,20 @@ int main(int argc, char *argv[]) {
     auto nslaw = std::make_shared<siconos::modeling::NewtonImpactNSL>(e);
     auto relation01 = std::make_shared<siconos::modeling::LagrangianScleronomousR>();
     auto inter01 = std::make_shared<siconos::modeling::Interaction>(nslaw, relation01);
-    relation01->setComputehFunction([](const siconos::algebra::BlockVector &q,
+    relation01->setComputehFunction([](const siconos::algebra::BlockVector& q,
                                        Eigen::Ref<siconos::algebra::SiconosVector> y) {
       y(0) = 2 + l1 * cos(q(0)) + l2 * cos(q(0) + q(1));
     });
 
     auto relation02 = std::make_shared<siconos::modeling::LagrangianScleronomousR>();
 
-    relation02->setComputehFunction(
-        [](const siconos::algebra::BlockVector &q,
-           Eigen::Ref<siconos::algebra::SiconosVector> y) {
-          y(0) = l1 * sin(q(0)) + l2 * sin(q(0) + q(1));
-        });
+    relation02->setComputehFunction([](const siconos::algebra::BlockVector& q,
+                                       Eigen::Ref<siconos::algebra::SiconosVector> y) {
+      y(0) = l1 * sin(q(0)) + l2 * sin(q(0) + q(1));
+    });
 
-    relation02->setComputeHFunction(
-        [](const siconos::algebra::BlockVector &q,
+    relation02->setComputeContactMatrixFunction(
+        [](const siconos::algebra::BlockVector& q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result(0, 0) = l1 * cos(q(0)) + l2 * cos(q(0) + q(1));
           result(0, 1) = l2 * cos(q(0) + q(1));

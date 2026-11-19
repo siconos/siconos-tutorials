@@ -132,7 +132,7 @@ int main(int argc, char* argv[]) {
       y(0) = q(1) - 0.5 * LengthBlock * sin(q(2)) - 0.5 * HeightBlock * cos(q(2));
     });
 
-    relation1->setComputeHFunction(
+    relation1->setComputeContactMatrixFunction(
         [](const siconos::algebra::BlockVector& q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result(0, 0) = 0.0;
@@ -140,7 +140,7 @@ int main(int argc, char* argv[]) {
           result(0, 2) = -0.5 * LengthBlock * cos(q(2)) + 0.5 * HeightBlock * sin(q(2));
         });
 
-    relation1->setComputeHdotFunction(
+    relation1->setComputeContactMatrixDotFunction(
         [](const siconos::algebra::BlockVector& q, const siconos::algebra::BlockVector& qdot,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result.setZero();
@@ -156,14 +156,14 @@ int main(int argc, char* argv[]) {
       y(0) = q(1) + 0.5 * LengthBlock * sin(q(2)) - 0.5 * HeightBlock * cos(q(2));
     });
 
-    relation2->setComputeHFunction(
+    relation2->setComputeContactMatrixFunction(
         [](const siconos::algebra::BlockVector& q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result(0, 0) = 0.0;
           result(0, 1) = 1.0;
           result(0, 2) = 0.5 * LengthBlock * cos(q(2)) + 0.5 * HeightBlock * sin(q(2));
         });
-    relation2->setComputeHdotFunction(
+    relation2->setComputeContactMatrixDotFunction(
         [](const siconos::algebra::BlockVector& q, const siconos::algebra::BlockVector& qdot,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result.setZero();
@@ -237,7 +237,7 @@ int main(int argc, char* argv[]) {
     //-------------------- Save the output during simulation
     //---------------------------------------------------------
     unsigned int NpointSave = 583;  //
-    unsigned int SizeOutput = 13;    //
+    unsigned int SizeOutput = 13;   //
     Matrix DataPlot(NpointSave, SizeOutput);
     //------------- At the initial time
     //-----------------------------------------------------------------------------

@@ -27,7 +27,7 @@
 using Matrix = siconos::algebra::SiconosMatrix;
 using Vector = siconos::algebra::SiconosVector;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   try {
     // ================= Creation of the model =======================
 
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
     // --- Dynamical systems ---
     // -------------------------
 
-    FILE *pFile;
+    FILE* pFile;
     pFile = fopen("data.h", "w");
     if (pFile == NULL) {
       printf("fopen exampleopen filed!\n");
@@ -84,7 +84,8 @@ int main(int argc, char *argv[]) {
     q10(6) = V1(2) * sin(angle * 0.5);
 
     // -- The dynamical system --
-    auto beam1 = std::make_shared<siconos::modeling::NewtonEulerDS>(q10, v10, m, I1, siconos::algebra::alias_t);
+    auto beam1 = std::make_shared<siconos::modeling::NewtonEulerDS>(q10, v10, m, I1,
+                                                                    siconos::algebra::alias_t);
     // -- Set external forces (weight) --
     Vector weight{nDof};
     weight.setZero();
@@ -108,7 +109,8 @@ int main(int argc, char *argv[]) {
     q02(5) = V1(1) * sin(angle / 2);
     q02(6) = V1(2) * sin(angle / 2);
 
-    auto beam2 = std::make_shared<siconos::modeling::NewtonEulerDS>(q02, v02, m, I2, siconos::algebra::alias_t);
+    auto beam2 = std::make_shared<siconos::modeling::NewtonEulerDS>(q02, v02, m, I2,
+                                                                    siconos::algebra::alias_t);
     // -- Set external forces (weight) --
     beam2->setConstantFext(weight, siconos::algebra::alias_t);
 
@@ -127,7 +129,8 @@ int main(int argc, char *argv[]) {
     q03(5) = V1(1) * sin(angle / 2);
     q03(6) = V1(2) * sin(angle / 2);
 
-    auto beam3 = std::make_shared<siconos::modeling::NewtonEulerDS>(q03, v03, m, I3, siconos::algebra::alias_t);
+    auto beam3 = std::make_shared<siconos::modeling::NewtonEulerDS>(q03, v03, m, I3,
+                                                                    siconos::algebra::alias_t);
     // -- Set external forces (weight) --
     beam3->setConstantFext(weight, siconos::algebra::alias_t);
     // --------------------
@@ -143,7 +146,7 @@ int main(int argc, char *argv[]) {
     H(0, 2) = 1.0;
     auto nslaw0 = std::make_shared<siconos::modeling::NewtonImpactNSL>(e);
     auto relation0 = std::make_shared<siconos::modeling::NewtonEulerR>();
-    relation0->setConstantG(H);
+    relation0->setConstantConstraintJacobian(H);
     relation0->setConstanteVector(eR);
 
     // Interactions

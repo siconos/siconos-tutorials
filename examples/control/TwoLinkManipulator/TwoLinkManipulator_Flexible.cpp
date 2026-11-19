@@ -77,7 +77,8 @@ int main(int argc, char* argv[]) {
     param[3] = v0(1);
     param[11] = std::numbers::pi;
 
-    auto arm = std::make_shared<siconos::modeling::LagrangianDS>(q0, v0, siconos::algebra::alias_t);
+    auto arm =
+        std::make_shared<siconos::modeling::LagrangianDS>(q0, v0, siconos::algebra::alias_t);
     arm->setComputeMassFunction([](const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
                                    Eigen::Ref<siconos::algebra::MapType> mass) {
       mass(0, 0) =
@@ -152,7 +153,7 @@ int main(int argc, char* argv[]) {
       y(0) = l1 * sin(q(0)) + l2 * sin(q(0) + q(1));
     });
 
-    relation02->setComputeHFunction(
+    relation02->setComputeContactMatrixFunction(
         [](const siconos::algebra::BlockVector& q,
            Eigen::Ref<siconos::algebra::MapType> result) {
           result(0, 0) = l1 * cos(q(0)) + l2 * cos(q(0) + q(1));

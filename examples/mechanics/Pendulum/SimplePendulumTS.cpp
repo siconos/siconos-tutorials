@@ -34,15 +34,15 @@ constexpr double gravity = 10.;
 double m1 = 1.0;
 double l1 = 1.0;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   try {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    int nDof = 1;  // degrees of freedom for robot arm
-    double t0 = 0;          // initial computation time
-    double T = 50.0;        // final computation time
-    double h = 0.0005;      // time step
+    int nDof = 1;       // degrees of freedom for robot arm
+    double t0 = 0;      // initial computation time
+    double T = 50.0;    // final computation time
+    double h = 0.0005;  // time step
     double criterion = 0.00005;
     unsigned int maxIter = 2000;
     double e = 0.9;  // nslaw
@@ -62,21 +62,22 @@ int main(int argc, char *argv[]) {
     v0.setZero();
     q0(0) = 1;
 
-    auto simplependulum = std::make_shared<siconos::modeling::LagrangianDS>(q0, v0, siconos::algebra::alias_t);
+    auto simplependulum =
+        std::make_shared<siconos::modeling::LagrangianDS>(q0, v0, siconos::algebra::alias_t);
     Matrix mass{nDof, nDof};
     mass(0, 0) = m1 * l1;
     simplependulum->setConstantMass(mass, siconos::algebra::alias_t);
 
     simplependulum->setComputeFintFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &v,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q, double time,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& v,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q, double time,
            Eigen::Ref<siconos::algebra::MapVectorType> fint) {
           fint(0) = m1 * sin(q(0)) * gravity;
         });
 
     simplependulum->setComputeJacobianFintOver_qFunction(
-        [](const Eigen::Ref<const siconos::algebra::SiconosVector> &v,
-           const Eigen::Ref<const siconos::algebra::SiconosVector> &q, double time,
+        [](const Eigen::Ref<const siconos::algebra::SiconosVector>& v,
+           const Eigen::Ref<const siconos::algebra::SiconosVector>& q, double time,
            Eigen::Ref<siconos::algebra::MapType> jacob) {
           jacob(0, 0) = cos(q(0)) * gravity * (m1);
         });
@@ -87,11 +88,11 @@ int main(int argc, char *argv[]) {
     auto nslaw = std::make_shared<siconos::modeling::NewtonImpactNSL>(e);
     auto relation = std::make_shared<siconos::modeling::LagrangianScleronomousR>();
     relation->setComputehFunction(
-        [](const siconos::algebra::BlockVector &q,
+        [](const siconos::algebra::BlockVector& q,
            Eigen::Ref<siconos::algebra::SiconosVector> y) { y(0) = l1 * sin(q(0)); });
 
-    relation->setComputeHFunction(
-        [](const siconos::algebra::BlockVector &q,
+    relation->setComputeContactMatrixFunction(
+        [](const siconos::algebra::BlockVector& q,
            Eigen::Ref<siconos::algebra::MapType> result) { result(0, 0) = l1 * cos(q(0)); });
 
     auto inter = std::make_shared<siconos::modeling::Interaction>(nslaw, relation);

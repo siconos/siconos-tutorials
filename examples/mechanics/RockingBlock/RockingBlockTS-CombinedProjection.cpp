@@ -127,12 +127,13 @@ int simulate(siconos::simulation::ProjectionUpdate update, const std::string& na
       y(0) = q(1) - 0.5 * LBlock * sin(q(2)) - 0.5 * HBlock * cos(q(2));
     });
 
-    relation1->setComputeHFunction([](const siconos::algebra::BlockVector& q,
-                                      Eigen::Ref<siconos::algebra::MapType> result) {
-      result(0, 0) = 0.0;
-      result(0, 1) = 1.0;
-      result(0, 2) = -0.5 * LBlock * cos(q(2)) + 0.5 * HBlock * sin(q(2));
-    });
+    relation1->setComputeContactMatrixFunction(
+        [](const siconos::algebra::BlockVector& q,
+           Eigen::Ref<siconos::algebra::MapType> result) {
+          result(0, 0) = 0.0;
+          result(0, 1) = 1.0;
+          result(0, 2) = -0.5 * LBlock * cos(q(2)) + 0.5 * HBlock * sin(q(2));
+        });
 
     auto inter1 = std::make_shared<siconos::modeling::Interaction>(nslaw, relation1);
     // Interaction at contact point 2
@@ -142,12 +143,13 @@ int simulate(siconos::simulation::ProjectionUpdate update, const std::string& na
       y(0) = q(1) + 0.5 * LBlock * sin(q(2)) - 0.5 * HBlock * cos(q(2));
     });
 
-    relation2->setComputeHFunction([](const siconos::algebra::BlockVector& q,
-                                      Eigen::Ref<siconos::algebra::MapType> result) {
-      result(0, 0) = 0.0;
-      result(0, 1) = 1.0;
-      result(0, 2) = 0.5 * LBlock * cos(q(2)) + 0.5 * HBlock * sin(q(2));
-    });
+    relation2->setComputeContactMatrixFunction(
+        [](const siconos::algebra::BlockVector& q,
+           Eigen::Ref<siconos::algebra::MapType> result) {
+          result(0, 0) = 0.0;
+          result(0, 1) = 1.0;
+          result(0, 2) = 0.5 * LBlock * cos(q(2)) + 0.5 * HBlock * sin(q(2));
+        });
 
     auto inter2 = std::make_shared<siconos::modeling::Interaction>(nslaw, relation2);
     // Interactions for the whole dynamical system

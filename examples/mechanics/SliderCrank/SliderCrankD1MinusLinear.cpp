@@ -168,20 +168,21 @@ int simulate(ImpactDetection impact_detection, double tolerance, const std::stri
              (l1 * sin(q(0)) + l2 * sin(q(1)) - a * sin(q(2)) + b * cos(q(2)));  // normal
     });
 
-    relation1->setComputeHFunction([](const siconos::algebra::BlockVector& q,
-                                      Eigen::Ref<siconos::algebra::MapType> jacob) {
-      jacob(0, 0) = -l1 * cos(q(0));
-      jacob(0, 1) = -l2 * cos(q(1));
-      jacob(0, 2) = a * cos(q(2)) + b * sin(q(2));
-    });
+    relation1->setComputeContactMatrixFunction(
+        [](const siconos::algebra::BlockVector& q,
+           Eigen::Ref<siconos::algebra::MapType> jacob) {
+          jacob(0, 0) = -l1 * cos(q(0));
+          jacob(0, 1) = -l2 * cos(q(1));
+          jacob(0, 2) = a * cos(q(2)) + b * sin(q(2));
+        });
 
-    relation1->setComputeHdotFunction([](const siconos::algebra::BlockVector& q,
-                                         const siconos::algebra::BlockVector& qdot,
-                                         Eigen::Ref<siconos::algebra::MapType> jacob) {
-      jacob(0, 0) = parameters::l1 * sin(q(0)) * qdot(0);
-      jacob(0, 1) = parameters::l2 * sin(q(1)) * qdot(1);
-      jacob(0, 2) = (-parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
-    });
+    relation1->setComputeContactMatrixDotFunction(
+        [](const siconos::algebra::BlockVector& q, const siconos::algebra::BlockVector& qdot,
+           Eigen::Ref<siconos::algebra::MapType> jacob) {
+          jacob(0, 0) = parameters::l1 * sin(q(0)) * qdot(0);
+          jacob(0, 1) = parameters::l2 * sin(q(1)) * qdot(1);
+          jacob(0, 2) = (-parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
+        });
 
     auto inter1 = std::make_shared<siconos::modeling::Interaction>(nslaw1, relation1);
 
@@ -194,20 +195,21 @@ int simulate(ImpactDetection impact_detection, double tolerance, const std::stri
              (l1 * sin(q(0)) + l2 * sin(q(1)) + a * sin(q(2)) + b * cos(q(2)));  // normal
     });
 
-    relation2->setComputeHFunction([](const siconos::algebra::BlockVector& q,
-                                      Eigen::Ref<siconos::algebra::MapType> jacob) {
-      jacob(0, 0) = -l1 * cos(q(0));
-      jacob(0, 1) = -l2 * cos(q(1));
-      jacob(0, 2) = -a * cos(q(2)) + b * sin(q(2));
-    });
+    relation2->setComputeContactMatrixFunction(
+        [](const siconos::algebra::BlockVector& q,
+           Eigen::Ref<siconos::algebra::MapType> jacob) {
+          jacob(0, 0) = -l1 * cos(q(0));
+          jacob(0, 1) = -l2 * cos(q(1));
+          jacob(0, 2) = -a * cos(q(2)) + b * sin(q(2));
+        });
 
-    relation2->setComputeHdotFunction([](const siconos::algebra::BlockVector& q,
-                                         const siconos::algebra::BlockVector& qdot,
-                                         Eigen::Ref<siconos::algebra::MapType> jacob) {
-      jacob(0, 0) = parameters::l1 * sin(q(0)) * qdot(0);
-      jacob(0, 1) = parameters::l2 * sin(q(1)) * qdot(1);
-      jacob(0, 2) = (-parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
-    });
+    relation2->setComputeContactMatrixDotFunction(
+        [](const siconos::algebra::BlockVector& q, const siconos::algebra::BlockVector& qdot,
+           Eigen::Ref<siconos::algebra::MapType> jacob) {
+          jacob(0, 0) = parameters::l1 * sin(q(0)) * qdot(0);
+          jacob(0, 1) = parameters::l2 * sin(q(1)) * qdot(1);
+          jacob(0, 2) = (-parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
+        });
 
     auto inter2 = std::make_shared<siconos::modeling::Interaction>(nslaw2, relation2);
 
@@ -220,20 +222,21 @@ int simulate(ImpactDetection impact_detection, double tolerance, const std::stri
           0.5 * d + l1 * sin(q(0)) + l2 * sin(q(1)) - a * sin(q(2)) - b * cos(q(2));  // normal
     });
 
-    relation3->setComputeHFunction([](const siconos::algebra::BlockVector& q,
-                                      Eigen::Ref<siconos::algebra::MapType> jacob) {
-      jacob(0, 0) = l1 * cos(q(0));
-      jacob(0, 1) = l2 * cos(q(1));
-      jacob(0, 2) = -a * cos(q(2)) + b * sin(q(2));
-    });
+    relation3->setComputeContactMatrixFunction(
+        [](const siconos::algebra::BlockVector& q,
+           Eigen::Ref<siconos::algebra::MapType> jacob) {
+          jacob(0, 0) = l1 * cos(q(0));
+          jacob(0, 1) = l2 * cos(q(1));
+          jacob(0, 2) = -a * cos(q(2)) + b * sin(q(2));
+        });
 
-    relation3->setComputeHdotFunction([](const siconos::algebra::BlockVector& q,
-                                         const siconos::algebra::BlockVector& qdot,
-                                         Eigen::Ref<siconos::algebra::MapType> jacob) {
-      jacob(0, 0) = -parameters::l1 * sin(q(0)) * qdot(0);
-      jacob(0, 1) = -parameters::l2 * sin(q(1)) * qdot(1);
-      jacob(0, 2) = (parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
-    });
+    relation3->setComputeContactMatrixDotFunction(
+        [](const siconos::algebra::BlockVector& q, const siconos::algebra::BlockVector& qdot,
+           Eigen::Ref<siconos::algebra::MapType> jacob) {
+          jacob(0, 0) = -parameters::l1 * sin(q(0)) * qdot(0);
+          jacob(0, 1) = -parameters::l2 * sin(q(1)) * qdot(1);
+          jacob(0, 2) = (parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
+        });
 
     auto inter3 = std::make_shared<siconos::modeling::Interaction>(nslaw3, relation3);
 
@@ -246,19 +249,20 @@ int simulate(ImpactDetection impact_detection, double tolerance, const std::stri
           0.5 * d + l1 * sin(q(0)) + l2 * sin(q(1)) + a * sin(q(2)) - b * cos(q(2));  // normal
     });
 
-    relation4->setComputeHFunction([](const siconos::algebra::BlockVector& q,
-                                      Eigen::Ref<siconos::algebra::MapType> jacob) {
-      jacob(0, 0) = l1 * cos(q(0));
-      jacob(0, 1) = l2 * cos(q(1));
-      jacob(0, 2) = a * cos(q(2)) + b * sin(q(2));
-    });
-    relation4->setComputeHdotFunction([](const siconos::algebra::BlockVector& q,
-                                         const siconos::algebra::BlockVector& qdot,
-                                         Eigen::Ref<siconos::algebra::MapType> jacob) {
-      jacob(0, 0) = -parameters::l1 * sin(q(0)) * qdot(0);
-      jacob(0, 1) = -parameters::l2 * sin(q(1)) * qdot(1);
-      jacob(0, 2) = (parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
-    });
+    relation4->setComputeContactMatrixFunction(
+        [](const siconos::algebra::BlockVector& q,
+           Eigen::Ref<siconos::algebra::MapType> jacob) {
+          jacob(0, 0) = l1 * cos(q(0));
+          jacob(0, 1) = l2 * cos(q(1));
+          jacob(0, 2) = a * cos(q(2)) + b * sin(q(2));
+        });
+    relation4->setComputeContactMatrixDotFunction(
+        [](const siconos::algebra::BlockVector& q, const siconos::algebra::BlockVector& qdot,
+           Eigen::Ref<siconos::algebra::MapType> jacob) {
+          jacob(0, 0) = -parameters::l1 * sin(q(0)) * qdot(0);
+          jacob(0, 1) = -parameters::l2 * sin(q(1)) * qdot(1);
+          jacob(0, 2) = (parameters::a * sin(q(2)) + parameters::b * cos(q(2))) * qdot(2);
+        });
 
     auto inter4 = std::make_shared<siconos::modeling::Interaction>(nslaw4, relation4);
 

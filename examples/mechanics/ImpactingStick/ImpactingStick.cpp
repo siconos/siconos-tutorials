@@ -46,11 +46,11 @@ int main(int argc, char* argv[]) {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    int nDof = 3;  // degrees of freedom for the ball
-    double t0 = 0;          // initial computation time
-    double T = 0.2;         // final computation time
-    double h = 1e-4;        // time step
-    double theta = 0.5;     // theta for MoreauJeanOSI integrator
+    int nDof = 3;        // degrees of freedom for the ball
+    double t0 = 0;       // initial computation time
+    double T = 0.2;      // final computation time
+    double h = 1e-4;     // time step
+    double theta = 0.5;  // theta for MoreauJeanOSI integrator
 
     double l = 1.0;  // length of the stick
     double m = 1.;   // mass
@@ -78,9 +78,9 @@ int main(int argc, char* argv[]) {
     Vector v0{nDof};
     v0.setZero();
 
-   q0(0) = 0.5 * l * sin(initial_angle);
-   q0(1) = 0.5 * l * cos(initial_angle) + 0.01;
-   q0(2) = initial_angle;
+    q0(0) = 0.5 * l * sin(initial_angle);
+    q0(1) = 0.5 * l * cos(initial_angle) + 0.01;
+    q0(2) = initial_angle;
 
     v0(0) = -0.5;
     v0(1) = 0.1;
@@ -111,18 +111,18 @@ int main(int argc, char* argv[]) {
     auto relation = std::make_shared<LagrangianScleronomousR>();
     // h and H, formerly in ImpactingStickPlugin (h1, G1)
     relation->setComputehFunction([l](const siconos::algebra::BlockVector& q,
-                                       Eigen::Ref<siconos::algebra::MapVectorType> y) {
+                                      Eigen::Ref<siconos::algebra::MapVectorType> y) {
       y(0) = q(1) - 0.5 * l * cos(q(2));
     });
-    relation->setComputeHFunction([l](const siconos::algebra::BlockVector& q,
-                                       Eigen::Ref<siconos::algebra::MapType> H) {
-      H(0, 0) = 0.0;
-      H(1, 0) = -1.0;
-      H(0, 1) = 1.0;
-      H(1, 1) = 0.0;
-      H(0, 2) = 0.5 * l * sin(q(2));
-      H(1, 2) = -0.5 * l * cos(q(2));
-    });
+    relation->setComputeContactMatrixFunction(
+        [l](const siconos::algebra::BlockVector& q, Eigen::Ref<siconos::algebra::MapType> H) {
+          H(0, 0) = 0.0;
+          H(1, 0) = -1.0;
+          H(0, 1) = 1.0;
+          H(1, 1) = 0.0;
+          H(0, 2) = 0.5 * l * sin(q(2));
+          H(1, 2) = -0.5 * l * cos(q(2));
+        });
 
     auto inter = std::make_shared<Interaction>(nslaw, relation);
 
@@ -150,7 +150,8 @@ int main(int argc, char* argv[]) {
     // -- (3) one step non smooth problem
     auto osnspb = std::make_shared<FrictionContact>(2);
     osnspb->setMStorageType(NM_SPARSE);
-    osnspb->setAssemblyType(siconos::nonsmooth_formulations::LinearOSNSAssemblyType::REDUCED_DIRECT);
+    osnspb->setAssemblyType(
+        siconos::nonsmooth_formulations::LinearOSNSAssemblyType::REDUCED_DIRECT);
     osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 10000;
     osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-10;
 
@@ -286,11 +287,13 @@ int main(int argc, char* argv[]) {
     // --- Output files ---
     cout << "====> Output file writing ..." << endl;
     dataPlot.conservativeResize(k, outputSize);
-    siconos::algebra::io::write("ImpactingStick.dat", dataPlot, siconos::algebra::io::ASCII_OUT,
+    siconos::algebra::io::write("ImpactingStick.dat", dataPlot,
+                                siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
     // siconos::algebra::io::write("ImpactingStick.ref", dataPlot);
     double error = 0.0, eps = 1e-12;
-    if ((error = siconos::algebra::io::compareRefFile(dataPlot, "ImpactingStick.ref", eps)) >= 0.0 &&
+    if ((error = siconos::algebra::io::compareRefFile(dataPlot, "ImpactingStick.ref", eps)) >=
+            0.0 &&
         error > eps)
       return 1;
 
