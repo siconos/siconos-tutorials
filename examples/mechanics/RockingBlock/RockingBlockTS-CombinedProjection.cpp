@@ -21,6 +21,7 @@
 #include <SiconosKernel.hpp>
 #include <chrono>
 #include <numbers>
+#include <string>
 
 using Matrix = siconos::algebra::SiconosMatrix;
 using Vector = siconos::algebra::SiconosVector;
@@ -51,7 +52,13 @@ unsigned int maxIter = 20000;
 //==========================================================================================================
 //                                             Main function
 //==========================================================================================================
-int main(int argc, char* argv[]) {
+// Simulation with a given update rule of the positions in the projection loop:
+// - ProjectionUpdate::incremental (default): q_{j+1} = q_j + G(q_j)^T lambda_j;
+// - ProjectionUpdate::from_origin: q_{j+1} = a + G(q_j)^T mu_j, exact projection of the
+//   positions a given by the velocity step (as in Acary, CMAME 2013 and the Scilab code Hots).
+// See docs/devel/PROJECTION_SCHEMES.md in siconos. Results in name.dat, compared with
+// name.ref.
+int simulate(siconos::simulation::ProjectionUpdate update, const std::string& name) {
   try {
     //===========================================================================================================
     //                  I: Declare the dynamical systems
@@ -120,13 +127,12 @@ int main(int argc, char* argv[]) {
       y(0) = q(1) - 0.5 * LBlock * sin(q(2)) - 0.5 * HBlock * cos(q(2));
     });
 
-    relation1->setComputeHFunction(
-        [](const siconos::algebra::BlockVector& q,
-           Eigen::Ref<siconos::algebra::MapType> result) {
-          result(0, 0) = 0.0;
-          result(0, 1) = 1.0;
-          result(0, 2) = -0.5 * LBlock * cos(q(2)) + 0.5 * HBlock * sin(q(2));
-        });
+    relation1->setComputeHFunction([](const siconos::algebra::BlockVector& q,
+                                      Eigen::Ref<siconos::algebra::MapType> result) {
+      result(0, 0) = 0.0;
+      result(0, 1) = 1.0;
+      result(0, 2) = -0.5 * LBlock * cos(q(2)) + 0.5 * HBlock * sin(q(2));
+    });
 
     auto inter1 = std::make_shared<siconos::modeling::Interaction>(nslaw, relation1);
     // Interaction at contact point 2
@@ -136,13 +142,12 @@ int main(int argc, char* argv[]) {
       y(0) = q(1) + 0.5 * LBlock * sin(q(2)) - 0.5 * HBlock * cos(q(2));
     });
 
-    relation2->setComputeHFunction(
-        [](const siconos::algebra::BlockVector& q,
-           Eigen::Ref<siconos::algebra::MapType> result) {
-          result(0, 0) = 0.0;
-          result(0, 1) = 1.0;
-          result(0, 2) = 0.5 * LBlock * cos(q(2)) + 0.5 * HBlock * sin(q(2));
-        });
+    relation2->setComputeHFunction([](const siconos::algebra::BlockVector& q,
+                                      Eigen::Ref<siconos::algebra::MapType> result) {
+      result(0, 0) = 0.0;
+      result(0, 1) = 1.0;
+      result(0, 2) = 0.5 * LBlock * cos(q(2)) + 0.5 * HBlock * sin(q(2));
+    });
 
     auto inter2 = std::make_shared<siconos::modeling::Interaction>(nslaw, relation2);
     // Interactions for the whole dynamical system
@@ -172,6 +177,7 @@ int main(int argc, char* argv[]) {
     // 4. Simulation with (1), (2), (3)
     auto TSscheme = std::make_shared<siconos::simulation::TimeSteppingCombinedProjection>(
         RoBlockModel, TimeDiscret, OSI, impact, impact_pos);
+    TSscheme->setProjectionUpdate(update);
 
     //==================================================================================================================
     //                    V. Process the simulation
@@ -241,16 +247,22 @@ int main(int argc, char* argv[]) {
 
     // --- Output files ---
     std::cout << "====> Output file writing ...\n";
-    siconos::algebra::io::write("RockingBlockTS-Combined.dat", DataPlot,
-                                siconos::algebra::io::ASCII_OUT,
+    siconos::algebra::io::write(name + ".dat", DataPlot, siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
     double error = 0.0, eps = 1e-12;
-    if ((error = siconos::algebra::io::compareRefFile(DataPlot, "RockingBlockTS-Combined.ref",
-                                                      eps)) > eps)
+    if ((error = siconos::algebra::io::compareRefFile(DataPlot, name + ".ref", eps)) > eps)
       return 1;
     return 0;
   } catch (...) {
     siconos::exception::process();
     return 1;
   }
+}
+
+int main() {
+  int err =
+      simulate(siconos::simulation::ProjectionUpdate::incremental, "RockingBlockTS-Combined");
+  err += simulate(siconos::simulation::ProjectionUpdate::from_origin,
+                  "RockingBlockTS-Combined-FromOrigin");
+  return err;
 }
