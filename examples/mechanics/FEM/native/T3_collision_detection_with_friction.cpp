@@ -93,6 +93,11 @@ int main(int argc, char* argv[]) {
 
     // -- (3) one step non smooth problem
     auto osnspb = std::make_shared<siconos::nonsmooth_formulations::FrictionContact>(2);
+    // Converged solution of each step: with the default tolerance (1e-4), the solver may
+    // stop far from the solution (5e-2 on the velocities for an older version of NSGS).
+    // At 1e-14 the results agree with SICONOS_FRICTION_2D_LEMKE to 1e-13.
+    osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-14;
+    osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 100000;
 
     // -- (4) Simulation setup with (1) (2) (3)
     auto simulation =

@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
     auto nslaw = std::make_shared<siconos::modeling::NewtonImpactNSL>(e);
     double initial_gap = Ly * 5e-4;
     siconos::algebra::SiconosVector normal{2};
-    normal << 1., 0.;
+    normal << 0., 1.;
 
     auto contact_condition = [](const siconos::mechanics::fem::FENode& node) {
       return (std::fabs(node.y()) <= 1e-16 and std::fabs(node.x()) >= 1e-16);

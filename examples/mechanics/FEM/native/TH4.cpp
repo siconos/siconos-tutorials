@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
     std::vector<int> node_dof_index(3);
     node_dof_index[0] = 0;
     node_dof_index[1] = 1;
-    node_dof_index[1] = 2;
+    node_dof_index[2] = 2;
 
     siconos::mechanics::fem::Tags tags;
     tags[siconos::mechanics::fem::MeshTags::bulk_material] = 1;
@@ -125,6 +125,7 @@ int main(int argc, char* argv[]) {
     // -> saved in a matrix dataPlot
     siconos::algebra::Index outputSize = 5;
     siconos::algebra::SiconosDenseMatrix dataPlot(N + 1, outputSize);
+    dataPlot.setZero();
 
     auto q = FEsolid->q_read();
     auto v = FEsolid->velocity_read();

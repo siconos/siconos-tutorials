@@ -38,20 +38,17 @@ int main(int argc, char* argv[]) {
     // Applied forces
     siconos::algebra::SiconosVector nodal_forces{2};
     nodal_forces << 0., -1e7;
-    // Boundary Conditions
-    std::vector<int> node_dof_index(2);
-    node_dof_index[0] = 0;
-    node_dof_index[1] = 1;
+    // No boundary conditions: they are not yet implemented in MoreauJeanGOSI for this
+    // kind of dynamical system. The solid is only pushed onto the contacts.
 
     siconos::mechanics::fem::Tags tags;
     tags[siconos::mechanics::fem::MeshTags::bulk_material] = 1;
-    tags[siconos::mechanics::fem::MeshTags::boundary_conditions] = 2;
     tags[siconos::mechanics::fem::MeshTags::applied_forces] = 3;
 
     siconos::mechanics::fem::Material mat{7800, 210e9, 1. / 3};
 
     auto FEsolid = siconos::mechanics::fem::build_dynamicalsystem_from_gmsh(
-        gmsh_filename, tags, mat, nodal_forces, node_dof_index);
+        gmsh_filename, tags, mat, nodal_forces, {});
 
     double t0 = 0;     // initial computation time
     double T = 1e-02;  // final computation time
@@ -109,8 +106,8 @@ int main(int argc, char* argv[]) {
         std::make_shared<siconos::simulation::TimeStepping>(solid, t, OSI, osnspb);
 
     //  Computation
-    return native_fem_examples::run_T3_simulation(simulation, FEsolid, "T3",
-                                                  "T3_square_200.ref");
+    return native_fem_examples::run_T3_simulation(simulation, FEsolid, "T3-GOSI",
+                                                  "T3-GOSI.ref");
   } catch (...) {
     std::cerr << "Exception caught in T3-GOSI.cpp\n";
     siconos::exception::process();
