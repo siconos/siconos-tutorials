@@ -29,7 +29,7 @@ int withLevel(unsigned int mylevel) {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    int nDof = 3;       // degrees of freedom for the ball
+    int nDof = 3;                // degrees of freedom for the ball
     double t0 = 0;               // initial computation time
     double T = 2.0;              // final computation time
     double h = 0.0005;           // time step
@@ -76,7 +76,8 @@ int withLevel(unsigned int mylevel) {
 
     std::vector<std::shared_ptr<siconos::modeling::LagrangianLinearTIDS>> beads(nBeads);
     for (unsigned int i = 0; i < nBeads; i++) {
-      beads[i] = std::make_shared<siconos::modeling::LagrangianLinearTIDS>(q0[i], v0[i], mass, siconos::algebra::alias_t);
+      beads[i] = std::make_shared<siconos::modeling::LagrangianLinearTIDS>(
+          q0[i], v0[i], mass, siconos::algebra::alias_t);
       // -- Set external forces (weight) --
       beads[i]->setConstantFext(weight, siconos::algebra::alias_t);
     }
@@ -133,6 +134,9 @@ int withLevel(unsigned int mylevel) {
         std::make_shared<siconos::nonsmooth_formulations::MLCPProjectOnConstraints>(
             SICONOS_MLCP_ENUM);
     osnspb_pos->numericsSolverOptions()->iparam[0] = 2000;
+    // The enumerative solver accepts z, w >= -tol: with the default tol (1e-6), a negative
+    // multiplier can close an open contact whose gap is below 1e-6 (gaps are ~1e-5 here).
+    osnspb_pos->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-12;
     // -- (4) Simulation setup with (1) (2) (3)
     unsigned int levelForProjection = mylevel;  //(default =1)
     auto s = std::make_shared<siconos::simulation::TimeSteppingDirectProjection>(
