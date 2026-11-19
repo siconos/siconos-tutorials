@@ -29,7 +29,7 @@ int withLevel(unsigned int mylevel) {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    int nDof = 3;       // degrees of freedom for the ball
+    int nDof = 3;                // degrees of freedom for the ball
     double t0 = 0;               // initial computation time
     double T = 2.0;              // final computation time
     double h = 0.0005;           // time step
@@ -76,7 +76,8 @@ int withLevel(unsigned int mylevel) {
 
     std::vector<std::shared_ptr<siconos::modeling::LagrangianLinearTIDS>> beads(nBeads);
     for (unsigned int i = 0; i < nBeads; i++) {
-      beads[i] = std::make_shared<siconos::modeling::LagrangianLinearTIDS>(q0[i], v0[i], mass, siconos::algebra::alias_t);
+      beads[i] = std::make_shared<siconos::modeling::LagrangianLinearTIDS>(
+          q0[i], v0[i], mass, siconos::algebra::alias_t);
       // -- Set external forces (weight) --
       beads[i]->setConstantFext(weight, siconos::algebra::alias_t);
     }
@@ -141,6 +142,11 @@ int withLevel(unsigned int mylevel) {
     // -- (3) one step non smooth problem
     auto osnspb = std::make_shared<siconos::nonsmooth_formulations::GlobalFrictionContact>(
         3, SICONOS_GLOBAL_FRICTION_3D_NSGS_WR);
+    // Converged solution of each step: with the default tolerance (1e-4), the results
+    // differ from the converged ones by up to 0.1 and depend on the roundoff (the
+    // solver can stop at another iteration), which a comparison at 1e-12 cannot follow.
+    osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-14;
+    osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 100000;
     // auto osnspb=
     // std::make_shared<siconos::nonsmooth_formulations::GlobalFrictionContact>(3);
 
