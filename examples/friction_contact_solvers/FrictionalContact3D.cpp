@@ -67,7 +67,7 @@
 #include "SiconosNumerics.h"
 #include "SolverOptions.h"
 // #include "fc3d_Solvers.h"
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   // Problem Definition
   int NC = 3;  // Number of contacts
   double M[81] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -84,17 +84,17 @@ int main(int argc, char *argv[]) {
   NumericsProblem.q = q;
 
   // M is attached as-is (not copied): it stays owned by main()
-  NumericsMatrix *MM = NM_create_with_data(NM_DENSE, 3 * NC, 3 * NC, M);
+  NumericsMatrix* MM = NM_create_with_data(NM_DENSE, 3 * NC, 3 * NC, M);
 
   NumericsProblem.M = MM;
 
   // Variable declaration
 
-  double *reaction = (double *)calloc(3 * NC, sizeof(double));
-  double *velocity = (double *)calloc(3 * NC, sizeof(double));
+  double* reaction = (double*)calloc(3 * NC, sizeof(double));
+  double* velocity = (double*)calloc(3 * NC, sizeof(double));
 
   // Numerics and Solver Options
-  SolverOptions *numerics_solver_options = solver_options_create(SICONOS_FRICTION_3D_NSGS);
+  SolverOptions* numerics_solver_options = solver_options_create(SICONOS_FRICTION_3D_NSGS);
   numerics_solver_options->iparam[SICONOS_IPARAM_MAX_ITER] = 1000;
   numerics_solver_options->dparam[SICONOS_DPARAM_TOL] = 100 * DBL_EPSILON;
   // numerics_set_verbose(2);

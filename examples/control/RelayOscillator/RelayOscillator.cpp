@@ -73,7 +73,8 @@ int main(int argc, char* argv[]) {
     x0->setZero();
     (*x0)(1) = xinit;
 
-    auto process = std::make_shared<siconos::modeling::FirstOrderLinearDS>(*x0, siconos::algebra::alias_t);
+    auto process = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        *x0, siconos::algebra::alias_t);
     process->setConstantA(*A, siconos::algebra::alias_t);
 
     // --------------------

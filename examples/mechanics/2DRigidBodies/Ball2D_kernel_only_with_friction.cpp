@@ -44,8 +44,8 @@ class MyCollisionManager : public siconos::simulation::InteractionManager {
       auto inter = indexSet0->bundle(*ui);
       // siconos::algebra::print(*inter);
       if (inter->number() == 0) {
-        auto relation =
-            std::static_pointer_cast<siconos::modeling::Lagrangian2dVelocityR>(inter->relation());
+        auto relation = std::static_pointer_cast<siconos::modeling::Lagrangian2dVelocityR>(
+            inter->relation());
         auto ds1(std::dynamic_pointer_cast<siconos::modeling::LagrangianLinearTIDS>(
             indexSet0->properties(*ui).source));
         // double angle = q(2);

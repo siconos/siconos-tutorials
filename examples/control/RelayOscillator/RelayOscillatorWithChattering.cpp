@@ -76,7 +76,8 @@ int main(int argc, char* argv[]) {
     (*x0)(2) = -1.0;
     (*x0)(3) = 0.5;
 
-    auto process = std::make_shared<siconos::modeling::FirstOrderLinearDS>(*x0, siconos::algebra::alias_t);
+    auto process = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        *x0, siconos::algebra::alias_t);
     process->setConstantA(*A, siconos::algebra::alias_t);
 
     // --------------------

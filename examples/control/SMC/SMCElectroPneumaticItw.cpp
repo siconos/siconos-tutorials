@@ -61,7 +61,8 @@ int main(int argc, char* argv[]) {
   x0 << pP0, pN0, v0, y0;
 
   // Dynamical Systems
-  auto plant = std::make_shared<siconos::modeling::FirstOrderNonLinearDS>(x0, siconos::algebra::copy_t);
+  auto plant =
+      std::make_shared<siconos::modeling::FirstOrderNonLinearDS>(x0, siconos::algebra::copy_t);
 
   plant->setComputefVectorFunction(
       [&param](const Eigen::Ref<const siconos::algebra::SiconosVector>& x, double time,

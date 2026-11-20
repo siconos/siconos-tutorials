@@ -158,8 +158,7 @@ int main(int argc, char* argv[]) {
       (*q0Ball)(0) = _Pos0Ball;
       (*v0Ball)(0) = _Vel0Ball;
       // -- The dynamical system --
-      auto ball =
-          std::make_shared<siconos::modeling::LagrangianLinearTIDS>(
+      auto ball = std::make_shared<siconos::modeling::LagrangianLinearTIDS>(
           *q0Ball, *v0Ball, *MassBall, siconos::algebra::copy_t);
       // -- Set external forces (weight1) --
 

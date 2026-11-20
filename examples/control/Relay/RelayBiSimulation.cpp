@@ -167,7 +167,7 @@ int main(int argc, char* argv[]) {
     // ================================= Computation =================================
 
     // --- Get the values to be plotted ---
-    unsigned int outputSize = 10;             // number of required data
+    unsigned int outputSize = 10;         // number of required data
     unsigned int N = ceil((T - t0) / h);  // Number of time steps
     Matrix dataPlot(N, outputSize);
 

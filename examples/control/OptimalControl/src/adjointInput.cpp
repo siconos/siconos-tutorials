@@ -2,24 +2,25 @@
 #define ADJOINTINPUT_CPP
 
 #include "adjointInput.hpp"
+
 #include "BlockVector.hpp"
 // #define SICONOS_DEBUG
 
 user_defined::adjointInput::adjointInput() : FirstOrderNonLinearR{} {
-  setComputehFunction([this](const siconos::algebra::BlockVector &x, double t,
-                             const Eigen::Ref<const siconos::algebra::SiconosVector> &lamb,
+  setComputehFunction([this](const siconos::algebra::BlockVector& x, double t,
+                             const Eigen::Ref<const siconos::algebra::SiconosVector>& lamb,
                              Eigen::Ref<siconos::algebra::MapVectorType> result) {
     auto betatmp = beta(t, x);
 
-    double betap = 2.0 * ((betatmp(0))*x(2) + (betatmp(1))*x(3));
+    double betap = 2.0 * ((betatmp(0)) * x(2) + (betatmp(1)) * x(3));
 
     result(0) = lamb(1) + betap;
     result(1) = 2.0 - lamb(0);
   });
 
-  setComputegFunction([this](const siconos::algebra::BlockVector &x, double t,
-                             const Eigen::Ref<const siconos::algebra::SiconosVector> &lamb,
-                             siconos::algebra::BlockVector &result) {
+  setComputegFunction([this](const siconos::algebra::BlockVector& x, double t,
+                             const Eigen::Ref<const siconos::algebra::SiconosVector>& lamb,
+                             siconos::algebra::BlockVector& result) {
     auto K2P = std::make_shared<siconos::algebra::SiconosVector>(2);
     auto P = std::make_shared<siconos::algebra::SiconosVector>(2);
     (*P)(0) = x(2);
@@ -36,8 +37,8 @@ user_defined::adjointInput::adjointInput() : FirstOrderNonLinearR{} {
   });
 
   setComputeJacobianhOver_stateFunction(
-      [this](const siconos::algebra::BlockVector &x, double t,
-             const Eigen::Ref<const siconos::algebra::SiconosVector> &lamb,
+      [this](const siconos::algebra::BlockVector& x, double t,
+             const Eigen::Ref<const siconos::algebra::SiconosVector>& lamb,
              Eigen::Ref<siconos::algebra::MapType> result) {
         result(0, 0) = x(3);
         result(0, 1) = -x(2);
@@ -50,8 +51,8 @@ user_defined::adjointInput::adjointInput() : FirstOrderNonLinearR{} {
       });
 
   setComputeJacobiangOver_stateFunction(
-      [this](const siconos::algebra::BlockVector &x, double t,
-             const Eigen::Ref<const siconos::algebra::SiconosVector> &lamb,
+      [this](const siconos::algebra::BlockVector& x, double t,
+             const Eigen::Ref<const siconos::algebra::SiconosVector>& lamb,
              Eigen::Ref<siconos::algebra::MapType> result) {
         auto jacbetaXtmp = JacobianXbeta(t, x);
 
@@ -67,8 +68,8 @@ user_defined::adjointInput::adjointInput() : FirstOrderNonLinearR{} {
       });
 
   setComputeJacobiangOver_lambdaFunction(
-      [this](const siconos::algebra::BlockVector &x, double time,
-             const Eigen::Ref<const siconos::algebra::SiconosVector> &lamb,
+      [this](const siconos::algebra::BlockVector& x, double time,
+             const Eigen::Ref<const siconos::algebra::SiconosVector>& lamb,
              Eigen::Ref<siconos::algebra::MapType> result) {
         auto K2P = std::make_shared<siconos::algebra::SiconosVector>(2);
         auto P = std::make_shared<siconos::algebra::SiconosVector>(2);
@@ -90,7 +91,7 @@ user_defined::adjointInput::adjointInput() : FirstOrderNonLinearR{} {
       });
 }
 
-void user_defined::adjointInput::initialize(siconos::modeling::Interaction &inter) {
+void user_defined::adjointInput::initialize(siconos::modeling::Interaction& inter) {
   FirstOrderNonLinearR::initialize(inter);
   K2 = std::make_shared<siconos::algebra::SiconosMatrix>(2, 2);
   K2->setValue(0, 0, 0.0);
@@ -105,7 +106,7 @@ double user_defined::adjointInput::source(double t) {
 }
 
 siconos::algebra::SiconosVector user_defined::adjointInput::beta(
-    double t, const siconos::algebra::BlockVector &xvalue) {
+    double t, const siconos::algebra::BlockVector& xvalue) {
   siconos::algebra::SiconosVector res{2};
   res(0) = -1.0 / 2.0 * xvalue(1) + 1.0 / 2.0;
   res(1) = 1.0 / 2.0 * xvalue(0);
@@ -118,7 +119,7 @@ siconos::algebra::SiconosVector user_defined::adjointInput::beta(
 }
 
 siconos::algebra::SiconosMatrix user_defined::adjointInput::JacobianXbeta(
-    double t, const siconos::algebra::BlockVector &xvalue) {
+    double t, const siconos::algebra::BlockVector& xvalue) {
   siconos::algebra::SiconosMatrix res{2, 2};
 
   res.setValue(0, 0, 0.0);

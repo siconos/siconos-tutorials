@@ -68,7 +68,7 @@
 #include "SparseBlockMatrix.h"
 #include "fc3d_Solvers.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   // Problem Definition
   int NC = 3;                                   // Number of contacts
   double M11[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};  // Warning Fortran Storage
@@ -86,14 +86,14 @@ int main(int argc, char *argv[]) {
   NumericsProblem.mu = mu;
   NumericsProblem.q = q;
 
-  NumericsMatrix *MM = NM_create(NM_SPARSE_BLOCK, 3 * NC, 3 * NC);
+  NumericsMatrix* MM = NM_create(NM_SPARSE_BLOCK, 3 * NC, 3 * NC);
 
   NumericsProblem.M = MM;
 
-  SparseBlockStructuredMatrix *MBlockMatrix = SBM_new();
+  SparseBlockStructuredMatrix* MBlockMatrix = SBM_new();
   MM->sparse_block = MBlockMatrix;
   MBlockMatrix->nbblocks = 3;
-  double *block[3] = {M11, M22, M33};
+  double* block[3] = {M11, M22, M33};
   MBlockMatrix->block = block;
   MBlockMatrix->blocknumber0 = 3;
   MBlockMatrix->blocknumber1 = 3;
@@ -109,17 +109,17 @@ int main(int argc, char *argv[]) {
 
   // Unknown Declaration
 
-  double *reaction = (double *)calloc(3 * NC, sizeof(double));
-  double *velocity = (double *)calloc(3 * NC, sizeof(double));
+  double* reaction = (double*)calloc(3 * NC, sizeof(double));
+  double* velocity = (double*)calloc(3 * NC, sizeof(double));
 
   // Solver Options
 
   // Driver call
-  FILE *ff = fopen("FC3D_Example1_SBM.dat", "w");
+  FILE* ff = fopen("FC3D_Example1_SBM.dat", "w");
   frictionContactProblem_printInFile(&NumericsProblem, ff);
   fclose(ff);
 
-  SolverOptions *numerics_solver_options = solver_options_create(SICONOS_FRICTION_3D_NSGS);
+  SolverOptions* numerics_solver_options = solver_options_create(SICONOS_FRICTION_3D_NSGS);
 
   numerics_solver_options->dparam[0] = 1e-16;
 

@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
     // == User-defined parameters ==
     unsigned int ndof = 2;  // number of degrees of freedom of your system
     double t0 = 0.0;
-    double T = 0.8;       // Total simulation time
+    double T = 0.8;     // Total simulation time
     double h = 1.0e-3;  // Time step
     double Vinit = 1.0;
 
@@ -122,7 +122,7 @@ int main(int argc, char* argv[]) {
     // ================================= Computation =================================
 
     // --- Get the values to be plotted ---
-    unsigned int outputSize = 7;          // number of required data
+    unsigned int outputSize = 7;              // number of required data
     unsigned int N = ceil((T - t0) / h) + 1;  // Number of time steps
 
     Matrix dataPlot(N, outputSize);

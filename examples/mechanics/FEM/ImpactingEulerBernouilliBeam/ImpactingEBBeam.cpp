@@ -225,7 +225,8 @@ int main(int argc, char* argv[]) {
     auto osnspb = std::make_shared<siconos::nonsmooth_formulations::LCP>();
 
     // -- (4) Simulation setup with (1) (2) (3)
-    auto s = std::make_shared<siconos::simulation::TimeStepping>(impactingBeam, t, OSI, osnspb);
+    auto s =
+        std::make_shared<siconos::simulation::TimeStepping>(impactingBeam, t, OSI, osnspb);
 
     // =========================== End of model definition ===========================
 
