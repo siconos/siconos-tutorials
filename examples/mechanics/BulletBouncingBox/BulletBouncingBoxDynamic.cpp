@@ -33,6 +33,8 @@
 #include <SiconosKernel.hpp>
 #include <chrono>
 #include <iostream>
+
+#include "../../toolbox/ResultChecks.hpp"
 using Matrix = siconos::algebra::SiconosMatrix;
 using Vector = siconos::algebra::SiconosVector;
 
@@ -199,6 +201,25 @@ int main() {
 
     // --- Time loop ---
 
+    // --- Data for the checks of the results (see the end of main) ---
+    namespace rb = siconos::examples::rigid_body;
+    std::shared_ptr<siconos::collision::RigidBodyDS> body2;  // the box added at step 100
+    auto totalEnergy = [&]() {
+      double E = rb::energy(body->q_read(), body->twist_read(), body->totalInertiaMatrix(), g);
+      if (body2)
+        E += rb::energy(body2->q_read(), body2->twist_read(), body2->totalInertiaMatrix(), g);
+      return E;
+    };
+    const double E0 = totalEnergy();
+    siconos::examples::MaxIncrease energyIncrease;
+    energyIncrease.push(E0);
+    double minLowestZ = rb::boxLowestZ(body->q_read(), 0.5, 0.5, 0.5);
+    double minCentreDistance = 1e300;
+    double addTime = -1.;
+    // first impact of box 2 on the ground, first impact of box 1 (on box 2)
+    double impact2Time = -1., impact1Time = -1.;
+    double v1Old = body->twist_read()(2), v2Old = 0.;
+
     std::cout << "====> Start computation ... \n";
     // ==== Simulation loop - Writing without explicit event handling =====
     int k = 1;
@@ -220,6 +241,9 @@ int main() {
         ds->setConstantFext(FExt, siconos::algebra::alias_t);
         simulation->nonSmoothDynamicalSystem()->insertDynamicalSystem(ds);
         simulation->associate(osi, ds);
+        body2 = ds;
+        addTime = simulation->startingTime();
+        energyIncrease.restart(totalEnergy());
       }
 
       simulation->computeOneStep();
@@ -228,6 +252,24 @@ int main() {
       dataPlot(k, 0) = simulation->nextTime();
       dataPlot(k, 1) = q(2);
       dataPlot(k, 2) = v(2);
+
+      energyIncrease.push(totalEnergy());
+      minLowestZ = std::min(minLowestZ, rb::boxLowestZ(body->q_read(), 0.5, 0.5, 0.5));
+      const double v1 = body->twist_read()(2);
+      if (body2) {
+        const double v2 = body2->twist_read()(2);
+        minLowestZ = std::min(minLowestZ, rb::boxLowestZ(body2->q_read(), 0.5, 0.5, 0.5));
+        minCentreDistance =
+            std::min(minCentreDistance, rb::centreDistance(body->q_read(), body2->q_read()));
+        if (impact2Time < 0. && v2Old < 0. && v2 > 0.) {
+          impact2Time = dataPlot(k, 0);
+        }
+        if (impact1Time < 0. && v1Old < 0. && v1 > v1Old + 1.) {
+          impact1Time = dataPlot(k, 0);
+        }
+        v2Old = v2;
+      }
+      v1Old = v1;
 
       // If broadphase collision detection shows some contacts then we may
       // display contact forces.
@@ -275,12 +317,39 @@ int main() {
                                 siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
 
-    double error = 0.0, eps = 1e-12;
-    if ((error = siconos::algebra::io::compareRefFile(dataPlot, "result_dynamic.ref", eps)) >
-        eps)
-      return 1;
-
-    return 0;
+    // --- Checks of the results (see BulletBouncingBox.cpp) ---
+    // Box 1 falls from z = 10 at t = 0; box 2 is added at z = 3 at the beginning of step
+    // 100 (t = 0.495), right below it. Box 2 lands on the ground, then box 1 on box 2.
+    // The restitution of these impacts is not checked: Bullet builds the contact
+    // manifold over a few steps, and at the first contact it may give the points of one
+    // edge only (an edge impact: the box rotates, then the opposite edge hits).
+    const double e = 0.8, groundZ = -0.5;
+    const double z2 = q0(2);
+    siconos::examples::Checks chk("BulletBouncingBoxDynamic");
+    // - first impact of box 2 (on the ground)
+    const double t2 = addTime + std::sqrt(2 * z2 / g);
+    chk.near("time of the first impact of box 2", impact2Time, t2, 2 * h);
+    // - first impact of box 1, on box 2 bouncing up (ideal 1D impacts): z1 - z2 = 1
+    const double v2up = e * g * (t2 - addTime);
+    double t1 = t2;
+    while (t1 < T && (position_init - 0.5 * g * t1 * t1) -
+                             (v2up * (t1 - t2) - 0.5 * g * (t1 - t2) * (t1 - t2)) >
+                         1.)
+      t1 += 1e-6;
+    chk.near("time of the first impact of box 1 (on box 2)", impact1Time, t1, 3 * h);
+    // - bounded penetration (ground and box/box), no energy increase
+    const double margin = h * std::sqrt(2 * g * position_init) + 0.05;
+    chk.atLeast("lowest point of the boxes", minLowestZ, groundZ - margin);
+    chk.atLeast("distance between the centres", minCentreDistance, 1. - margin);
+    chk.atMost("max energy increase in one step", energyIncrease.value(), 1e-5 * E0);
+    // - both boxes at rest, lying on a face (they may still slide and spin: no friction)
+    for (auto [name, b] : {std::pair{"box 1", body}, std::pair{"box 2", body2}}) {
+      chk.atMost(std::string("final vertical velocity of ") + name,
+                 std::abs(b->twist_read()(2)), 1e-2);
+      chk.atLeast(std::string("final orientation of ") + name + ": on a face",
+                  rb::verticalAxisCosine(b->q_read()), 0.999);
+    }
+    return chk.report();
   }
 
   catch (...) {

@@ -30,6 +30,8 @@
 #include <SiconosKernel.hpp>
 #include <chrono>
 #include <iostream>
+
+#include "../../toolbox/ResultChecks.hpp"
 using Matrix = siconos::algebra::SiconosMatrix;
 using Vector = siconos::algebra::SiconosVector;
 
@@ -182,6 +184,15 @@ int main() {
     dataPlot(0, 1) = q(2);
     dataPlot(0, 2) = v(2);
 
+    // --- Data for the checks of the results (see the end of main) ---
+    namespace rb = siconos::examples::rigid_body;
+    const double E0 =
+        rb::energy(body->q_read(), body->twist_read(), body->totalInertiaMatrix(), g);
+    siconos::examples::MaxIncrease energyIncrease;
+    energyIncrease.push(E0);
+    double minLowestZ = rb::boxLowestZ(body->q_read(), 0.5, 0.5, 0.5);
+    double firstImpactTime = -1., vBefore = 0., vAfter = 0.;
+
     // --- Time loop ---
 
     std::cout << "====> Start computation ... \n";
@@ -199,6 +210,15 @@ int main() {
       dataPlot(k, 0) = simulation->nextTime();
       dataPlot(k, 1) = q(2);
       dataPlot(k, 2) = v(2);
+
+      energyIncrease.push(
+          rb::energy(body->q_read(), body->twist_read(), body->totalInertiaMatrix(), g));
+      minLowestZ = std::min(minLowestZ, rb::boxLowestZ(body->q_read(), 0.5, 0.5, 0.5));
+      if (firstImpactTime < 0. && dataPlot(k - 1, 2) < 0. && v(2) > 0.) {
+        firstImpactTime = dataPlot(k, 0);
+        vBefore = dataPlot(k - 1, 2);
+        vAfter = v(2);
+      }
 
       // If broadphase collision detection shows some contacts then we may
       // display contact forces.
@@ -276,11 +296,33 @@ int main() {
     siconos::algebra::io::write("BouncingBox.dat", dataPlot, siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
 
-    double error = 0.0, eps = 1e-12;
-    if ((error = siconos::algebra::io::compareRefFile(dataPlot, "BouncingBox.ref", eps)) > eps)
-      return 1;
-
-    return 0;
+    // --- Checks of the results ---
+    // The trajectory depends on the contact detection by Bullet (margins, contact points
+    // of the version): a contact detected one step later shifts all the following
+    // bounces, so it is not compared with a reference file. We check instead:
+    const double e = 0.8, groundZ = -0.5;
+    const double vImpact = std::sqrt(2 * g * position_init);  // ~14 m/s
+    siconos::examples::Checks chk("BulletBouncingBox");
+    // - the free fall and the first impact (flat on a face: Newton law with e)
+    chk.near("time of the first impact", firstImpactTime, std::sqrt(2 * position_init / g),
+             2 * h);
+    chk.near("restitution of the first impact", -vAfter / vBefore, e, 0.01);
+    // - the penetration is bounded by what can happen in one step, plus a margin
+    chk.atLeast("lowest point of the box", minLowestZ, groundZ - (h * vImpact + 0.05));
+    // - frictionless impacts with e < 1: the energy must not increase (theta = 1/2).
+    //   (the inertia of the box is the one of its Bullet shape, see rb::energy)
+    chk.atMost("max energy increase in one step", energyIncrease.value(), 1e-5 * E0);
+    // - at rest on the ground at the end, lying on a face (without friction, it may still
+    //   slide and spin about the vertical: these velocities are not checked)
+    const double Eend =
+        rb::energy(body->q_read(), body->twist_read(), body->totalInertiaMatrix(), g);
+    chk.atMost("final energy (ground at -0.5 m g)", Eend, 1e-4 * E0);
+    chk.near("final lowest point", rb::boxLowestZ(body->q_read(), 0.5, 0.5, 0.5), groundZ,
+             0.05);
+    chk.atMost("final vertical velocity", std::abs(body->twist_read()(2)), 1e-2);
+    chk.atLeast("final orientation: lying on a face", rb::verticalAxisCosine(body->q_read()),
+                0.999);
+    return chk.report();
   }
 
   catch (...) {

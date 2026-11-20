@@ -18,31 +18,35 @@
 #
 
 
+import os
+import sys
+
+sys.path.insert(
+    0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "toolbox")
+)
+import numpy as np
+import result_checks as rc
+import siconos.numerics as sn
+import siconos.plot_config as sicoplot
+from numpy import zeros
+from numpy.linalg import norm
+from siconos.integrators import MoreauJeanOSI
+from siconos.mechanics.collision import (
+    RigidBodyDS,
+    SiconosBox,
+    SiconosContactor,
+    SiconosContactorSet,
+    SiconosPlane,
+)
+from siconos.mechanics.collision.bullet import SiconosBulletCollisionManager
 from siconos.modeling import (
     NewtonImpactFrictionNSL,
     NonSmoothDynamicalSystem,
-    interactions,
     copy_t,
+    interactions,
 )
-from siconos.integrators import MoreauJeanOSI
 from siconos.nonsmooth_formulations import FrictionContact
-from siconos.simulation import TimeStepping, TimeDiscretisation
-import siconos.numerics as sn
-
-from siconos.mechanics.collision.bullet import SiconosBulletCollisionManager
-
-from siconos.mechanics.collision import (
-    SiconosBox,
-    SiconosPlane,
-    RigidBodyDS,
-    SiconosContactor,
-    SiconosContactorSet,
-)
-
-from numpy import zeros
-from numpy.linalg import norm
-import numpy as np
-import siconos.plot_config as sicoplot
+from siconos.simulation import TimeDiscretisation, TimeStepping
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)
@@ -72,7 +76,7 @@ def makeBox(pos=initial_position, vel=initial_velocity):
     box = SiconosBox(1.0, 1.0, 1.0)
 
     # A Bullet Dynamical System : a shape + a mass (1.0) + position and velocity
-    body = RigidBodyDS(initial_position, initial_velocity, mass, inertia)
+    body = RigidBodyDS(pos, vel, mass, inertia)
 
     # set external forces
     body.setConstantFext(weight, copy_t)
@@ -115,7 +119,7 @@ timedisc = TimeDiscretisation(t0, h)
 # (3) one step non smooth problem
 osnspb = FrictionContact(3)
 
-osnspb.numericsSolverOptions().iparam[0] = 1000
+osnspb.numericsSolverOptions().iparam[0] = 10000  # as in the C++ version
 osnspb.numericsSolverOptions().dparam[0] = 1e-5
 osnspb.setMaxSize(16384)
 osnspb.setMStorageType(sn.params.NM_SPARSE_BLOCK)
@@ -171,14 +175,35 @@ k = 1
 
 # time loop
 new_position = np.array([0, 0, 3, 1, 0, 0, 0], dtype=np.float64)
-new_velocity = np.array([0, 0, 1, 0, 0, 0], dtype=np.float64)
+new_velocity = np.array([0, 0, 0, 0, 0, 0], dtype=np.float64)
+
+# data for the checks of the results (see the end of the script)
+body2 = None  # the box added at step 100
+
+
+def total_energy():
+    E = rc.energy(q, v, body.totalInertiaMatrix, g)
+    if body2 is not None:
+        E += rc.energy(body2.q(), body2.twist(), body2.totalInertiaMatrix, g)
+    return E
+
+
+E0 = total_energy()
+energy_increase = rc.MaxIncrease()
+energy_increase.push(E0)
+min_lowest_z = rc.box_lowest_z(q, 0.5, 0.5, 0.5)
+min_centre_distance = np.inf
+add_time, impact2_time, impact1_time = -1.0, -1.0, -1.0
+v1_old, v2_old = v[2], 0.0
 
 while simulation.hasNextEvent():
-
     # Add a second box dynamically to the simulation
     if k == 100:
         ds = makeBox(new_position, new_velocity)
         bouncingBox.insertDynamicalSystem(ds)
+        body2 = ds
+        add_time = simulation.startingTime()
+        energy_increase.restart(total_energy())
 
     simulation.computeOneStep()
 
@@ -186,34 +211,67 @@ while simulation.hasNextEvent():
     dataPlot[k, 1] = q[2]
     dataPlot[k, 2] = v[2]
 
+    energy_increase.push(total_energy())
+    min_lowest_z = min(min_lowest_z, rc.box_lowest_z(q, 0.5, 0.5, 0.5))
+    if body2 is not None:
+        q2, v2 = body2.q(), body2.twist()[2]
+        min_lowest_z = min(min_lowest_z, rc.box_lowest_z(q2, 0.5, 0.5, 0.5))
+        min_centre_distance = min(min_centre_distance, rc.centre_distance(q, q2))
+        if impact2_time < 0 and v2_old < 0 and v2 > 0:
+            impact2_time = dataPlot[k, 0]
+        if impact1_time < 0 and v1_old < 0 and v[2] > v1_old + 1:
+            impact1_time = dataPlot[k, 0]
+        v2_old = v2
+    v1_old = v[2]
+
     # if (broadphase.collisionWorld().getDispatcher().getNumManifolds() > 0):
     if (
         broadphase.statistics().new_interactions_created
         + broadphase.statistics().existing_interactions_processed
-    ) > 0:
-        if bouncingBox.topology().numberOfIndexSet() == 2:
-            index1 = interactions(simulation.indexSet(1))
-            if len(index1) == 4:
-                dataPlot[k, 3] = (
-                    norm(index1[0].lambda_python(1))
-                    + norm(index1[1].lambda_python(1))
-                    + norm(index1[2].lambda_python(1))
-                    + norm(index1[3].lambda_python(1))
-                )
+    ) > 0 and bouncingBox.topology().numberOfIndexSet() == 2:
+        index1 = interactions(simulation.indexSet(1))
+        if len(index1) == 4:
+            dataPlot[k, 3] = (
+                norm(index1[0].lambda_python(1))
+                + norm(index1[1].lambda_python(1))
+                + norm(index1[2].lambda_python(1))
+                + norm(index1[3].lambda_python(1))
+            )
 
     k += 1
     simulation.nextStep()
 
 #
-# comparison with the reference file
+# checks of the results (as in BulletBouncingBoxDynamic.cpp): the trajectory depends on
+# the contact detection by Bullet, it is not compared with a reference file.
 #
-ref = np.loadtxt("result_dynamic.ref", skiprows=1)
-
-print("norm(dataPlot - ref) = {0}".format(norm(dataPlot - ref)))
-
-
-if norm(dataPlot - ref) > 1e-11:
-    print("Warning. The result is rather different from the reference file.")
+e, ground_z = 0.8, -0.5
+z2 = new_position[2]
+chk = rc.Checks("BulletBouncingBoxDynamic.py")
+t2 = add_time + np.sqrt(2 * z2 / g)
+chk.near("time of the first impact of box 2", impact2_time, t2, 2 * h)
+# first impact of box 1, on box 2 bouncing up (ideal 1D impacts): z1 - z2 = 1
+tt = np.arange(t2, T, 1e-6)
+gap = (
+    (position_init - 0.5 * g * tt**2)
+    - (e * g * (t2 - add_time) * (tt - t2) - 0.5 * g * (tt - t2) ** 2)
+    - 1
+)
+chk.near(
+    "time of the first impact of box 1 (on box 2)",
+    impact1_time,
+    tt[np.argmax(gap <= 0)],
+    3 * h,
+)
+margin = h * np.sqrt(2 * g * position_init) + 0.05
+chk.at_least("lowest point of the boxes", min_lowest_z, ground_z - margin)
+chk.at_least("distance between the centres", min_centre_distance, 1 - margin)
+chk.at_most("max energy increase in one step", energy_increase.value, 1e-5 * E0)
+for name, b in (("box 1", body), ("box 2", body2)):
+    chk.at_most(f"final vertical velocity of {name}", abs(b.twist()[2]), 1e-2)
+    chk.at_least(
+        f"final orientation of {name}: on a face", rc.vertical_axis_cosine(b.q()), 0.999
+    )
 
 
 #
@@ -224,22 +282,13 @@ if enable_plot:
     plt.subplot(511)
     plt.title("position")
     plt.plot(dataPlot[0:k, 0], dataPlot[0:k, 1])
-    y = plt.ylim()
-    plt.plot(ref[0:k, 0], ref[0:k, 1])
-    plt.ylim(y)
     plt.grid()
     plt.subplot(513)
     plt.title("velocity")
     plt.plot(dataPlot[0:k, 0], dataPlot[0:k, 2])
-    y = plt.ylim()
-    plt.plot(ref[0:k, 0], ref[0:k, 2])
-    plt.ylim(y)
     plt.grid()
     plt.subplot(515)
     plt.plot(dataPlot[0:k, 0], dataPlot[0:k, 3])
-    y = plt.ylim()
-    plt.plot(ref[0:k, 0], ref[0:k, 3])
-    plt.ylim(y)
     plt.title("lambda")
     plt.grid()
     plt.savefig("result_dynamic.png")
@@ -247,3 +296,4 @@ if enable_plot:
         plt.show()
 
 np.savetxt("BouncingBoxDynamic-py.dat", dataPlot)
+sys.exit(chk.report())

@@ -17,31 +17,35 @@
 #
 #
 
+import os
+import sys
+
+sys.path.insert(
+    0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "toolbox")
+)
+import numpy as np
+import result_checks as rc
+import siconos.numerics as sn
+import siconos.plot_config as sicoplot
+from numpy import zeros
+from numpy.linalg import norm
+from siconos.integrators import MoreauJeanOSI
+from siconos.mechanics.collision import (
+    RigidBodyDS,
+    SiconosBox,
+    SiconosContactor,
+    SiconosContactorSet,
+    SiconosPlane,
+)
+from siconos.mechanics.collision.bullet import SiconosBulletCollisionManager
 from siconos.modeling import (
     NewtonImpactFrictionNSL,
     NonSmoothDynamicalSystem,
-    interactions,
     alias_t,
+    interactions,
 )
-from siconos.integrators import MoreauJeanOSI
 from siconos.nonsmooth_formulations import FrictionContact
-from siconos.simulation import TimeStepping, TimeDiscretisation
-import siconos.numerics as sn
-
-from siconos.mechanics.collision.bullet import SiconosBulletCollisionManager
-
-from siconos.mechanics.collision import (
-    SiconosBox,
-    SiconosPlane,
-    RigidBodyDS,
-    SiconosContactor,
-    SiconosContactorSet,
-)
-
-from numpy import zeros
-from numpy.linalg import norm
-import numpy as np
-import siconos.plot_config as sicoplot
+from siconos.simulation import TimeDiscretisation, TimeStepping
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)
@@ -104,7 +108,7 @@ timedisc = TimeDiscretisation(t0, h)
 # (3) one step non smooth problem
 osnspb = FrictionContact(3)
 
-osnspb.numericsSolverOptions().iparam[0] = 1000
+osnspb.numericsSolverOptions().iparam[0] = 10000  # as in the C++ version
 osnspb.numericsSolverOptions().dparam[0] = 1e-5
 osnspb.setMaxSize(16384)
 osnspb.setMStorageType(sn.params.NM_SPARSE_BLOCK)
@@ -158,41 +162,64 @@ dataPlot[0, 2] = v[2]
 
 k = 1
 
+# data for the checks of the results (see the end of the script)
+E0 = rc.energy(q, v, body.totalInertiaMatrix, g)
+energy_increase = rc.MaxIncrease()
+energy_increase.push(E0)
+min_lowest_z = rc.box_lowest_z(q, 0.5, 0.5, 0.5)
+first_impact_time, v_before, v_after = -1.0, 0.0, 0.0
+
 # time loop
 while simulation.hasNextEvent():
-
     simulation.computeOneStep()
 
     dataPlot[k, 0] = simulation.nextTime()
     dataPlot[k, 1] = q[2]
     dataPlot[k, 2] = v[2]
 
+    energy_increase.push(rc.energy(q, v, body.totalInertiaMatrix, g))
+    min_lowest_z = min(min_lowest_z, rc.box_lowest_z(q, 0.5, 0.5, 0.5))
+    if first_impact_time < 0 and dataPlot[k - 1, 2] < 0 and v[2] > 0:
+        first_impact_time, v_before, v_after = dataPlot[k, 0], dataPlot[k - 1, 2], v[2]
+
     # if (broadphase.collisionWorld().getDispatcher().getNumManifolds() > 0):
     if (
         broadphase.statistics().new_interactions_created
         + broadphase.statistics().existing_interactions_processed
-    ) > 0:
-        if bouncingBox.topology().numberOfIndexSet() == 2:
-            index1 = interactions(simulation.indexSet(1))
-            if len(index1) == 4:
-                dataPlot[k, 3] = (
-                    norm(index1[0].lambda_python(1))
-                    + norm(index1[1].lambda_python(1))
-                    + norm(index1[2].lambda_python(1))
-                    + norm(index1[3].lambda_python(1))
-                )
+    ) > 0 and bouncingBox.topology().numberOfIndexSet() == 2:
+        index1 = interactions(simulation.indexSet(1))
+        if len(index1) == 4:
+            dataPlot[k, 3] = (
+                norm(index1[0].lambda_python(1))
+                + norm(index1[1].lambda_python(1))
+                + norm(index1[2].lambda_python(1))
+                + norm(index1[3].lambda_python(1))
+            )
 
     k += 1
     simulation.nextStep()
 
 #
-# comparison with the reference file
+# checks of the results (as in BulletBouncingBox.cpp): the trajectory depends on the
+# contact detection by Bullet, it is not compared with a reference file.
 #
-ref = np.loadtxt("result.ref", skiprows=1)
-
-print("norm(dataPlot - ref) = {0}".format(norm(dataPlot - ref)))
-if norm(dataPlot - ref) > 1e-11:
-    print("Warning. The result is rather different from the reference file.")
+e, ground_z = 0.8, -0.5
+v_impact = np.sqrt(2 * g * position_init)
+chk = rc.Checks("BulletBouncingBox.py")
+chk.near(
+    "time of the first impact", first_impact_time, np.sqrt(2 * position_init / g), 2 * h
+)
+chk.near("restitution of the first impact", -v_after / v_before, e, 0.01)
+chk.at_least("lowest point of the box", min_lowest_z, ground_z - (h * v_impact + 0.05))
+chk.at_most("max energy increase in one step", energy_increase.value, 1e-5 * E0)
+chk.at_most(
+    "final energy (ground at -0.5 m g)",
+    rc.energy(q, v, body.totalInertiaMatrix, g),
+    1e-4 * E0,
+)
+chk.near("final lowest point", rc.box_lowest_z(q, 0.5, 0.5, 0.5), ground_z, 0.05)
+chk.at_most("final vertical velocity", abs(v[2]), 1e-2)
+chk.at_least("final orientation: lying on a face", rc.vertical_axis_cosine(q), 0.999)
 
 
 #
@@ -203,22 +230,13 @@ if enable_plot:
     plt.subplot(511)
     plt.title("position")
     plt.plot(dataPlot[0:k, 0], dataPlot[0:k, 1])
-    y = plt.ylim()
-    plt.plot(ref[0:k, 0], ref[0:k, 1])
-    plt.ylim(y)
     plt.grid()
     plt.subplot(513)
     plt.title("velocity")
     plt.plot(dataPlot[0:k, 0], dataPlot[0:k, 2])
-    y = plt.ylim()
-    plt.plot(ref[0:k, 0], ref[0:k, 2])
-    plt.ylim(y)
     plt.grid()
     plt.subplot(515)
     plt.plot(dataPlot[0:k, 0], dataPlot[0:k, 3])
-    y = plt.ylim()
-    plt.plot(ref[0:k, 0], ref[0:k, 3])
-    plt.ylim(y)
     plt.title("lambda")
     plt.grid()
     plt.savefig("result.png")
@@ -226,3 +244,4 @@ if enable_plot:
         plt.show()
 
 np.savetxt("BouncingBox-py.dat", dataPlot)
+sys.exit(chk.report())
