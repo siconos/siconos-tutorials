@@ -117,6 +117,7 @@ int main(int argc, char* argv[]) {
     // Interaction bar-floor
     //
     auto H = std::make_shared<siconos::algebra::SiconosDenseMatrix>(1, ndof);
+    H->setZero();  // (Eigen does not initialize)
     (*H)(0, 0) = 1.0;
 
     auto nslaw = std::make_shared<siconos::modeling::NewtonImpactNSL>(e);
