@@ -14,11 +14,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 /*!\file FrictionalContact3D.cpp
-  A very simple example to chow how to use SiconosNumerics to solve the time--discretized FrictionalContact3D problem with a dense storage.
-  The problem: Find \f$(reaction,velocity)\f$ such that:\n
+  A very simple example to chow how to use SiconosNumerics to solve the time--discretized
+  FrictionalContact3D problem with a dense storage. The problem: Find \f$(reaction,velocity)\f$
+  such that:\n
 
   \f$
   \left\lbrace
@@ -31,69 +32,59 @@
   \right.
   \f$
 
-  \f$ reaction, velocity, q\f$ are vectors of size n and \f$ M \f$ is a nXn matrix, with \f$ n = 2*nc or 3*nc \f$, nc being the number of contacts. \n
-  \f$ reaction_n\f$ represents the normal part of the reaction while \f$ reaction_t\f$ is its tangential part.
+  \f$ reaction, velocity, q\f$ are vectors of size n and \f$ M \f$ is a nXn matrix, with \f$ n
+  = 2*nc or 3*nc \f$, nc being the number of contacts. \n
+  \f$ reaction_n\f$ represents the normal part of the reaction while \f$ reaction_t\f$ is its
+  tangential part.
 
   \f$ \mu \f$ is the friction coefficient (it may be different for each contact).
 
-  Use the generic function frictionContact3D_driver() to call one the the specific solvers listed below:
+  Use the generic function frictionContact3D_driver() to call one the the specific solvers
+  listed below:
 
   - frictionContact3D_nsgs() : non-smooth Gauss-Seidel solver
 
   (see the functions/solvers list in FrictionContact3D_Solvers.h)
 
-  FrictionContact3D problems needs some specific parameters, given to the FrictionContact3D_driver() function thanks to a SolverOptions structure. \n
-  They are:\n
+  FrictionContact3D problems needs some specific parameters, given to the
+  FrictionContact3D_driver() function thanks to a SolverOptions structure. \n They are:\n
      - the name of the solver (ex: NSGS), used to switch to the right solver function
      - iparam[0]: max. number of iterations allowed
      - iparam[1]:
      - dparam[0]: tolerance
-     - isStorageSparse: 1 if a SparseBlockStructuredMatrix is used for M, else 0 (double* storage)
+     - isStorageSparse: 1 if a SparseBlockStructuredMatrix is used for M, else 0 (double*
+  storage)
 
 
   \brief
 */
 
-#include "GlobalFrictionContactProblem.h"
 #include "FrictionContactProblem.h"
-#include "NumericsMatrix.h"
-#include "SiconosNumerics.h"
-#include "SparseBlockMatrix.h"
-#include "NumericsSparseMatrix.h"
-#include "SolverOptions.h"
 #include "FrictionContact_options.h"
-#include "gfc3d_Solvers.h"
+#include "GlobalFrictionContactProblem.h"
+#include "NumericsMatrix.h"
+#include "NumericsSparseMatrix.h"
 #include "SiconosNumerics.h"
+#include "SolverOptions.h"
+#include "SparseBlockMatrix.h"
+#include "gfc3d_Solvers.h"
 
-int main(int argc, char* argv[])
-{
-
-
+int main(int argc, char* argv[]) {
   // Problem Definition
   int info = -1;
 
-
-
-  int NC = 1;//Number of contacts
+  int NC = 1;  // Number of contacts
   int m = 3;
   int n = 9;
-  double M[81] = {1, 0, 0, 0, 0, 0, 0, 0, 0,
-                  0, 1, 0, 0, 0, 0, 0, 0, 0,
-                  0, 0, 1, 0, 0, 0, 0, 0, 0,
-                  0, 0, 0, 1, 0, 0, 0, 0, 0,
-                  0, 0, 0, 0, 1, 0, 0, 0, 0,
-                  0, 0, 0, 0, 0, 1, 0, 0, 0,
-                  0, 0, 0, 0, 0, 0, 1, 0, 0,
-                  0, 0, 0, 0, 0, 0, 0, 1, 0,
-                  0, 0, 0, 0, 0, 0, 0, 0, 1
-                 };
+  double M[81] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                  0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+                  0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+                  0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
 
-  double H[27] = {1, 0, 0, 0, 0, 0, -1, 0, 0,
-                  0, 1, 0, 0, 0, 0, 0, -1, 0,
-                  0, 0, 1, 0, 0, 0, 0, 0, -1
-                 };
+  double H[27] = {1, 0, 0,  0, 0, 0, -1, 0, 0, 0, 1, 0, 0, 0,
+                  0, 0, -1, 0, 0, 0, 1,  0, 0, 0, 0, 0, -1};
 
-  double q[9] = { -3, -3, -3, -1, 1, 3, -1, 1, 3};
+  double q[9] = {-3, -3, -3, -1, 1, 3, -1, 1, 3};
   double b[3] = {0, 0, 0};
   double mu[1] = {0.1};
 
@@ -118,15 +109,13 @@ int main(int argc, char* argv[])
   /*        0, 0, 0, 0, 0, 0, 0, 1, 0,  */
   /*        0, 0, 0, 0, 0, 0, 0, 0, 1}; */
 
-
   /*     double q[9] = {-1, 1, 3, -1, 1, 3, -1, 1, 3}; */
   /*     double b[9] = {0, 0, 0,0, 0, 0,0, 0, 0 }; */
   /*     double mu[3] = {0.1,0.1,0.1};    */
 
-
   int i = 0, k = 0;
 
-  GlobalFrictionContactProblem * numericsProblem = globalFrictionContactProblem_new();
+  GlobalFrictionContactProblem* numericsProblem = globalFrictionContactProblem_new();
   numericsProblem->numberOfContacts = NC;
   numericsProblem->dimension = 3;
   numericsProblem->mu = mu;
@@ -137,35 +126,35 @@ int main(int argc, char* argv[])
   numericsProblem->M = NM_create_with_data(NM_DENSE, n, n, M);
   numericsProblem->H = NM_create_with_data(NM_DENSE, n, m, H);
 
-
   /*     FILE * foutput = fopen("Example_GlobalFrictionContact.dat", "w"); */
   /*     globalFrictionContactProblem_printInFile(&numericsProblem,  foutput ); */
   /*     fclose(foutput); */
 
-
-
   // Unknown Declaration
 
-  double *reaction = (double*)calloc(m, sizeof(double));
-  double *velocity = (double*)calloc(m, sizeof(double));
-  double *globalVelocity = (double*)calloc(n, sizeof(double));
+  double* reaction = (double*)calloc(m, sizeof(double));
+  double* velocity = (double*)calloc(m, sizeof(double));
+  double* globalVelocity = (double*)calloc(n, sizeof(double));
 
   // Solver Options
 
-  SolverOptions * numerics_solver_options = solver_options_create(SICONOS_GLOBAL_FRICTION_3D_NSGS);
-  numerics_solver_options->dparam[0] = 1e-14;
+  SolverOptions* numerics_solver_options =
+      solver_options_create(SICONOS_GLOBAL_FRICTION_3D_NSGS);
+  // 1e-14 is at the round-off level of the error measure (the solver stalls at 2e-14)
+  numerics_solver_options->dparam[0] = 1e-12;
   numerics_solver_options->iparam[0] = 100000;
-  //Driver call
+  // Driver call
   i = 0;
-  info = gfc3d_driver(numericsProblem,
-                      reaction, velocity, globalVelocity,
+  info = gfc3d_driver(numericsProblem, reaction, velocity, globalVelocity,
                       numerics_solver_options);
 
   solver_options_delete(numerics_solver_options);
   // Solver output
   printf("\n");
-  for(k = 0 ; k < m; k++) printf("velocity[%i] = %12.8e \t \t reaction[%i] = %12.8e \n ", k, velocity[k], k, reaction[k]);
-  for(k = 0 ; k < n; k++) printf("globalVelocity[%i] = %12.8e \t \n ", k, globalVelocity[k]);
+  for (k = 0; k < m; k++)
+    printf("velocity[%i] = %12.8e \t \t reaction[%i] = %12.8e \n ", k, velocity[k], k,
+           reaction[k]);
+  for (k = 0; k < n; k++) printf("globalVelocity[%i] = %12.8e \t \n ", k, globalVelocity[k]);
   printf("\n");
 
   free(reaction);
@@ -180,6 +169,4 @@ int main(int argc, char* argv[])
   globalFrictionContactProblem_free(numericsProblem);
 
   return info;
-
-
 }

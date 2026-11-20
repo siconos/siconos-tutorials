@@ -315,9 +315,14 @@ int main(int argc, char* argv[]) {
     siconos::algebra::io::write("PendulumSlider.dat", dataPlot,
                                 siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
+    // all the columns but 11 (size of indexSet1): a contact of the pendulum stays at a
+    // gap of +/-1e-17 (round-off), so the number of active contacts depends on the platform
+    std::vector<int> compared_columns;
+    for (int j = 0; j < static_cast<int>(outputSize); ++j)
+      if (j != 11) compared_columns.push_back(j);
     double error = 0.0, eps = 1e-12;
-    if ((error = siconos::algebra::io::compareRefFile(dataPlot, "PendulumSlider.ref", eps)) >
-        eps)
+    if ((error = siconos::algebra::io::compareRefFile(dataPlot, "PendulumSlider.ref", eps,
+                                                      compared_columns)) > eps)
       return 1;
     return 0;
   }

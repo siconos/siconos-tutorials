@@ -1,9 +1,9 @@
 import numpy as np
-import siconos.modeling as sm
 import siconos.integrators
-import siconos.simulation
+import siconos.modeling as sm
 import siconos.nonsmooth_formulations
 import siconos.plot_config as sicoplot
+import siconos.simulation
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)
@@ -14,7 +14,7 @@ ndof = 100  # degrees of freedom for the beam
 t0 = 1e-8  # initial computation time
 T = 0.0015  # final computation time
 h = 2e-6  # time step
-position_init = 0.00005  # initial position
+position_init = 0.0000503  # initial position (contact at 251.5 h: not on a time step)
 velocity_init = -0.1  # initial velocity
 epsilon = 0.0  # 1e-1
 theta = 1.0 / 2.0 + epsilon  # theta for MoreauJeanOSI integrator

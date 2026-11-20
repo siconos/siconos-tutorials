@@ -76,7 +76,7 @@
 #include "SparseBlockMatrix.h"
 #include "gfc3d_Solvers.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   // Problem Definition
   int info = -1;
 
@@ -138,7 +138,7 @@ int main(int argc, char *argv[]) {
   int m = 3 * NC;
   int n = Ndof;
 
-  GlobalFrictionContactProblem *numericsProblem = globalFrictionContactProblem_new();
+  GlobalFrictionContactProblem* numericsProblem = globalFrictionContactProblem_new();
   numericsProblem->numberOfContacts = NC;
   numericsProblem->dimension = 3;
   numericsProblem->mu = mu;
@@ -146,15 +146,15 @@ int main(int argc, char *argv[]) {
   numericsProblem->b = b;
 
   numericsProblem->M = NM_new();
-  NumericsMatrix *MM = numericsProblem->M;
+  NumericsMatrix* MM = numericsProblem->M;
   MM->storageType = NM_SPARSE_BLOCK;
   MM->size0 = Ndof;
   MM->size1 = Ndof;
 
   MM->sparse_block = SBM_new();
-  SparseBlockStructuredMatrix *MBlockMatrix = MM->sparse_block;
+  SparseBlockStructuredMatrix* MBlockMatrix = MM->sparse_block;
   MBlockMatrix->nbblocks = 3;
-  double *block[3] = {M11, M22, M33};
+  double* block[3] = {M11, M22, M33};
   MBlockMatrix->block = block;
   MBlockMatrix->blocknumber0 = 3;
   MBlockMatrix->blocknumber1 = 3;
@@ -169,15 +169,15 @@ int main(int argc, char *argv[]) {
   MBlockMatrix->index2_data = index2_data;
 
   numericsProblem->H = NM_new();
-  NumericsMatrix *HH = numericsProblem->H;
+  NumericsMatrix* HH = numericsProblem->H;
   HH->storageType = NM_SPARSE_BLOCK;
   HH->size0 = Ndof;
   HH->size1 = 3 * NC;
 
-  HH->sparse_block = (SparseBlockStructuredMatrix *)malloc(sizeof(SparseBlockStructuredMatrix));
-  SparseBlockStructuredMatrix *HBlockMatrix = HH->sparse_block;
+  HH->sparse_block = (SparseBlockStructuredMatrix*)malloc(sizeof(SparseBlockStructuredMatrix));
+  SparseBlockStructuredMatrix* HBlockMatrix = HH->sparse_block;
   HBlockMatrix->nbblocks = 2;
-  double *hblock[3] = {H00, H20};
+  double* hblock[3] = {H00, H20};
   HBlockMatrix->block = hblock;
   HBlockMatrix->blocknumber0 = 3;
   HBlockMatrix->blocknumber1 = 1;
@@ -192,19 +192,20 @@ int main(int argc, char *argv[]) {
   HBlockMatrix->index1_data = hindex1_data;
   HBlockMatrix->index2_data = hindex2_data;
 
-  FILE *foutput = fopen("Example_GlobalFrictionContact_SBM.dat", "w");
+  FILE* foutput = fopen("Example_GlobalFrictionContact_SBM.dat", "w");
   globalFrictionContactProblem_printInFile(numericsProblem, foutput);
   fclose(foutput);
 
   // Unknown Declaration
 
-  double *reaction = (double *)calloc(m, sizeof(double));
-  double *velocity = (double *)calloc(m, sizeof(double));
-  double *globalVelocity = (double *)calloc(n, sizeof(double));
+  double* reaction = (double*)calloc(m, sizeof(double));
+  double* velocity = (double*)calloc(m, sizeof(double));
+  double* globalVelocity = (double*)calloc(n, sizeof(double));
   // Solver Options
-  SolverOptions *numerics_solver_options =
+  SolverOptions* numerics_solver_options =
       solver_options_create(SICONOS_GLOBAL_FRICTION_3D_NSGS);
-  numerics_solver_options->dparam[0] = 1e-14;
+  // 1e-14 is at the round-off level of the error measure (the solver stalls at 2e-14)
+  numerics_solver_options->dparam[0] = 1e-12;
   numerics_solver_options->iparam[0] = 100000;
 
   // Driver call

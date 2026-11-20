@@ -4,11 +4,12 @@
 namespace user_defined_ref {
 
 // User-defined main parameters
-inline constexpr int nDof = 100;           // degrees of freedom for the beam
-inline constexpr double t0 = 1e-8;                  // initial computation time
-inline constexpr double T = 0.0015;                 // final computation time
-inline constexpr double h = 2e-6;                   // time step
-inline constexpr double position_init = 0.00005;    // initial position
+inline constexpr int nDof = 100;     // degrees of freedom for the beam
+inline constexpr double t0 = 1e-8;   // initial computation time
+inline constexpr double T = 0.0015;  // final computation time
+inline constexpr double h = 2e-6;    // time step
+inline constexpr double position_init =
+    0.0000503;  // initial position (contact at 251.5 h: not on a time step)
 inline constexpr double velocity_init = -.1;        // initial velocity
 inline constexpr double epsilon = 0.0;              // 1e-1;
 inline constexpr double theta = 1 / 2.0 + epsilon;  // theta for MoreauJeanOSI integrator
@@ -26,11 +27,12 @@ inline constexpr double g = 0.0;
 namespace user_defined {
 
 // User-defined main parameters
-inline constexpr int nDof = 10;            // degrees of freedom for the beam
-inline constexpr double t0 = 1e-8;                  // initial computation time
-inline constexpr double T = 0.0015;                 // final computation time
-inline constexpr double h = 1e-7;                   // time step
-inline constexpr double position_init = 0.00005;    // initial position
+inline constexpr int nDof = 10;      // degrees of freedom for the beam
+inline constexpr double t0 = 1e-8;   // initial computation time
+inline constexpr double T = 0.0015;  // final computation time
+inline constexpr double h = 1e-7;    // time step
+inline constexpr double position_init =
+    0.0000503;  // initial position (contact at 251.5 h: not on a time step)
 inline constexpr double velocity_init = -.1;        // initial velocity
 inline constexpr double epsilon = 0.0;              // 1e-1;
 inline constexpr double theta = 1 / 2.0 + epsilon;  // theta for MoreauJeanOSI integrator
