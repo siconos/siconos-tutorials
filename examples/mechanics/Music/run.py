@@ -116,8 +116,8 @@ guitar_model.save_ds_state_modal(0, string)
 if guitar_model.save_interactions:
     buff = guitar_model.data_interactions
     for i in range(nb_frets):
-        buff[frets[i]][0][0] = frets[i].y(0)
-        buff[frets[i]][1][0] = frets[i].lambda_python(1)
+        buff[frets[i]][0][0] = frets[i].y(0)[0]  # size-1 array (numpy 2.5)
+        buff[frets[i]][1][0] = frets[i].lambda_python(1)[0]
 
 print(f"Ready to start simulation for frequency {fs}.")
 print(f"Save output every {output_freq} time steps.")
@@ -152,8 +152,8 @@ while simu.hasNextEvent() and k < 200:
         if guitar_model.save_interactions:
             buff = guitar_model.data_interactions
             for i in range(nb_frets):
-                buff[frets[i]][0][pos] = frets[i].y(0)
-                buff[frets[i]][1][pos] = frets[i].lambda_python(1)
+                buff[frets[i]][0][pos] = frets[i].y(0)[0]  # size-1 array (numpy 2.5)
+                buff[frets[i]][1][pos] = frets[i].lambda_python(1)[0]
                 # buff[frets[i]][2][pos = frets[i].y(1)
 
         pos += 1

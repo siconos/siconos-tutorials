@@ -228,7 +228,9 @@ int main(int argc, char* argv[]) {
     siconos::algebra::io::write("SimplePendulumED_Lsodar.dat", DataPlot,
                                 siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
-    double error = 0.0, eps = 1e-12;
+    // relative tolerance: the event-driven integration (Lsodar, event location) differs
+    // with the platform (libm, blas) by up to 1e-9 in absolute value
+    double error = 0.0, eps = 1e-8 * DataPlot.cwiseAbs().maxCoeff();
     if ((error = siconos::algebra::io::compareRefFile(DataPlot, "SimplePendulumED_Lsodar.ref",
                                                       eps)) > eps)
       return 1;

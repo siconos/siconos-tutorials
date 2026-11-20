@@ -31,12 +31,12 @@
 using Matrix = siconos::algebra::SiconosMatrix;
 using Vector = siconos::algebra::SiconosVector;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   try {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    int nDof = 3;        // degrees of freedom for the ball
+    int nDof = 3;                 // degrees of freedom for the ball
     double t0 = 0;                // initial computation time
     double T = 10.0;              // final computation time
     double h = 0.01;              // time step
@@ -68,7 +68,8 @@ int main(int argc, char *argv[]) {
     v0(0) = velocity_init;
 
     // -- The dynamical system --
-    auto ball = std::make_shared<siconos::modeling::LagrangianLinearTIDS>(q0, v0, mass, siconos::algebra::alias_t);
+    auto ball = std::make_shared<siconos::modeling::LagrangianLinearTIDS>(
+        q0, v0, mass, siconos::algebra::alias_t);
 
     // -- Set external forces (weight) --
     Vector weight{nDof};
@@ -243,7 +244,9 @@ int main(int argc, char *argv[]) {
                                 siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
 
-    double error = 0.0, eps = 1e-12;
+    // relative tolerance: the event-driven integration (Lsodar, event location) differs
+    // with the platform (libm, blas) by up to 1e-9 in absolute value
+    double error = 0.0, eps = 1e-8 * dataPlot.cwiseAbs().maxCoeff();
     if ((error = siconos::algebra::io::compareRefFile(
              dataPlot, "BouncingBallED-TwoContacts.ref", eps)) > eps)
       return 1;
