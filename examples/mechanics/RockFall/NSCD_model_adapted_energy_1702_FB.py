@@ -16,34 +16,31 @@
 # limitations under the License.
 #
 #
-from siconos.mechanics.collision.tools import Contactor
+# Importing the necessary packages from python
+import math
+import os
+import time
+
+import numpy
+import numpy as np
+import siconos
+import siconos.numerics as Numerics
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
 from siconos.mechanics.collision.convexhull import ConvexHull
-import siconos.numerics as Numerics
-import siconos
-
-# Importing the necessary packages from python
-import math
-import time
-import numpy
-import numpy as np
-import os
+from siconos.mechanics.collision.tools import Contactor
 
 # from numpy import seed
-
 from stl import mesh
 
 siconos.integrators.enable_solver_check()
-#
 
 # List of input paramters #######
 # The length of the structure
 L_structure = 14.0855
-#
 
 # ETAG projetile paramteres
 m_projectile = 2600.0
@@ -55,7 +52,6 @@ L_b = 1.1
 X_block = -1.05 * (0.5 * L_b)
 Y_block = 0.5 * L_structure
 Z_block = 1.7
-#
 
 # How much disk offset do you want?
 disk_offset = 0.068
@@ -80,7 +76,6 @@ Nb_pattern = 19.0
 #
 # Pattern definition
 Bottom_block = False
-#
 rot_block = math.pi / 4  # 0.785 #0.804
 Orientation_list = [
     0,
@@ -112,13 +107,10 @@ block_height = 0.8
 # block hole
 block_hole_y1 = 0.38 - 0.5 * block_width
 block_hole_y2 = (0.8 + 0.38) - 0.5 * block_width
-#
 disk_position_z1 = disk_offset - 0.5 * block_height
 disk_position_z2 = 0.5 * block_height - disk_offset
-#
 disk_position_z3 = -disk_offset
 disk_position_z4 = disk_offset
-#
 block_hole_diameter = 0.154
 #
 # block mass
@@ -134,7 +126,6 @@ bar_diam_int = 0.1237
 #
 # Spherical vertical play
 factor_bar_diam_ext = 0.5
-#
 the_vertical_play = VP_total / 6  # The total vertical play is divided into six segments
 #
 # How much vertical play per block do you want?
@@ -144,9 +135,7 @@ VP_box_depth = factor_bar_diam_ext * bar_diam_ext
 VP_offset = 0.5 * the_vertical_play + VP_box_depth / 2
 # for sphere-box
 VP_offset_sphere = 0.5 * the_vertical_play + VP_box_depth
-#
 cylinder_radius = bar_diam_ext / 2.0
-#
 bar_length = (
     Nb_block_vert * block_height
 )  # Ritesh: This represents the steel bar length equal to the structure height
@@ -231,7 +220,7 @@ def create_block_bottom(io, X, Y, Z, k, orientation, mass_block, inertia_block):
     #
     # create object
     io.add_object(
-        "block%03d" % k,
+        f"block{k:03d}",
         [
             Contactor("Box_B", collision_group=0),
             Contactor(
@@ -317,7 +306,7 @@ def create_block_middle(io, X, Y, Z, k, orientation, mass_block, inertia_block):
     #
     # create object
     io.add_object(
-        "block%03d" % k,
+        f"block{k:03d}",
         [
             Contactor("Box_B", collision_group=0),
             Contactor(
@@ -385,7 +374,7 @@ def create_block_top(io, X, Y, Z, k, orientation, mass_block, inertia_block):
     #
     # create object
     io.add_object(
-        "block%03d" % k,
+        f"block{k:03d}",
         [
             Contactor("Box_B", collision_group=0),
             Contactor(
@@ -487,7 +476,6 @@ inertia_cyl1[2, 2] = (
     * mass_cyl1
     * (3 * ((0.5 * bar_diam_ext) ** 2 + (0.5 * bar_diam_int) ** 2) + len_cyl1**2)
 )
-#
 len_cyl2 = 0.5 * block_height
 mass_cyl2 = len_cyl2 * mass_bar / bar_length
 inertia_cyl2 = numpy.eye(3)
@@ -508,13 +496,11 @@ inertia_cyl2[2, 2] = (
 )
 
 
-#
-#
 def make_bars(io, X, Y, num_pattern):
     # create_shape
     k = num_pattern + 1
     io.add_object(
-        "bar1%03d" % k,
+        f"bar1{k:03d}",
         [
             Contactor("Cyl2", collision_group=2),
             Contactor(
@@ -555,7 +541,7 @@ def make_bars(io, X, Y, num_pattern):
     )
 
     io.add_object(
-        "bar2%03d" % k,
+        f"bar2{k:03d}",
         [
             Contactor("Cyl1", collision_group=3),
             Contactor(
@@ -596,7 +582,7 @@ def make_bars(io, X, Y, num_pattern):
     )
 
     io.add_object(
-        "bar3%03d" % k,
+        f"bar3{k:03d}",
         [
             Contactor("Cyl1", collision_group=2),
             Contactor(
@@ -637,7 +623,7 @@ def make_bars(io, X, Y, num_pattern):
     )
 
     io.add_object(
-        "bar4%03d" % k,
+        f"bar4{k:03d}",
         [
             Contactor("Cyl1", collision_group=3),
             Contactor(
@@ -678,7 +664,7 @@ def make_bars(io, X, Y, num_pattern):
     )
 
     io.add_object(
-        "bar5%03d" % k,
+        f"bar5{k:03d}",
         [
             Contactor("Cyl2", collision_group=2),
             Contactor(
@@ -710,7 +696,7 @@ def make_bars(io, X, Y, num_pattern):
 def create_half_block_left(io, X, Y, Z, k, mass_half_block, inertia_half_block):
     # create object
     io.add_object(
-        "half_block%03d" % k,
+        f"half_block{k:03d}",
         [
             Contactor("Box_half", collision_group=0),
             Contactor(
@@ -751,7 +737,7 @@ def create_half_block_left(io, X, Y, Z, k, mass_half_block, inertia_half_block):
 def create_half_block_left_bottom(io, X, Y, Z, k, mass_half_block, inertia_half_block):
     # create object
     io.add_object(
-        "half_block%03d" % k,
+        f"half_block{k:03d}",
         [
             Contactor("Box_half", collision_group=0),
             Contactor(
@@ -797,7 +783,7 @@ def create_half_block_left_bottom(io, X, Y, Z, k, mass_half_block, inertia_half_
 def create_half_block_right(io, X, Y, Z, k, mass_half_block, inertia_half_block):
     # create object
     io.add_object(
-        "half_block%03d" % k,
+        f"half_block{k:03d}",
         [
             Contactor("Box_half", collision_group=0),
             Contactor(
@@ -838,7 +824,7 @@ def create_half_block_right(io, X, Y, Z, k, mass_half_block, inertia_half_block)
 def create_half_block_right_bottom(io, X, Y, Z, k, mass_half_block, inertia_half_block):
     # create object
     io.add_object(
-        "half_block%03d" % k,
+        f"half_block{k:03d}",
         [
             Contactor("Box_half", collision_group=0),
             Contactor(
@@ -922,7 +908,6 @@ cm = ch.centroid()
 #
 # computation of inertia and volume
 inertia_projectile_1, volume_projectile = ch.inertia(cm)
-#
 vx_block = numpy.sqrt(impact_energy * 2.0 / m_projectile)
 density_projectile = m_projectile / volume_projectile
 inertia_projectile = inertia_projectile_1 * density_projectile
@@ -1271,7 +1256,7 @@ with MechanicsHdf5Runner() as io:
 # Let's run the model ##########
 # Here are the model run options
 bullet_options = SiconosBulletOptions()
-options = Numerics.solver_options_create(Numerics.solver_ids.SICONOS_FRICTION_3D_NSGS)
+options = Numerics.SolverOptions(Numerics.solver_ids.SICONOS_FRICTION_3D_NSGS)
 options.iparam[Numerics.params.SICONOS_IPARAM_MAX_ITER] = 800
 options.dparam[Numerics.params.SICONOS_DPARAM_TOL] = 1e-4
 options.iparam[Numerics.params.SICONOS_NSGS_FREEZING_CONTACT] = 20
@@ -1310,7 +1295,6 @@ run_options["constraint_activation_threshold"] = 1e-5
 
 
 class kinetic_iteration_hook:
-
     def __init__(self, obj_projectile_id):
         self._io = None
         self._kinetic_sum = []
@@ -1326,11 +1310,9 @@ class kinetic_iteration_hook:
         # self._frequency = 1/self._period
         # print('init hook')
         # input()
-        pass
 
     def initialize(self, io):
         self._io = io
-        pass
 
     def call(self, step):
         # print(' end hook step', step)
@@ -1374,7 +1356,6 @@ class kinetic_iteration_hook:
 
         cf_work = self._io._io.contactContactWork(self._io._nsds, 1)
         if cf_work is not None:
-
             # print('cf_work', cf_work)
 
             normal_work = cf_work[:, 1]
@@ -1405,7 +1386,6 @@ class kinetic_iteration_hook:
 
             self._friction_work_sum.append(friction_work_sum)
         else:
-
             self._normal_work_sum.append(0.0)
             self._tangent_work_sum.append(0.0)
 
