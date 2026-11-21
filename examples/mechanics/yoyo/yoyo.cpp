@@ -32,9 +32,10 @@ int main(int argc, char* argv[]) {
     int nDof = 3;   // nombre de degrés de liberté du yoyo
     double t0 = 0;  //  instants initial et final de la simulation
     double T = 50;
-    double h = 0.001;          // pas de discrétisation du temps
-    const double theta = 0.5;  // coefficient pour le générateur de simulation
-    double e = 0;              // coefficient de restitution
+    double h = 0.001;                 // pas de discrétisation du temps
+    double newton_tolerance = 1e-10;  // Newton tolerance of the time-stepping (see below)
+    const double theta = 0.5;         // coefficient pour le générateur de simulation
+    double e = 0;                     // coefficient de restitution
     int N = ceil((T - t0) / h) + 1;
 
     auto law = std::make_shared<siconos::modeling::NewtonImpactNSL>(e);
@@ -197,6 +198,16 @@ int main(int argc, char* argv[]) {
       auto osnspb = std::make_shared<siconos::nonsmooth_formulations::LCP>();
 
       auto s = std::make_shared<siconos::simulation::TimeStepping>(jeu, t, OSI, osnspb);
+      // Newton tolerance of the time-stepping (default 1e-6) tightened to 1e-10.
+      // The internal force switches (fint depends on the sign of v(0) and on
+      // q(0) < thetaset): at the steps where the phase changes (e.g. t = 9.23, the string is
+      // fully unwound and the model is re-initialized), Newton needs several iterations and,
+      // with the default tolerance, stopped at a residual of ~4e-7. The solution was then
+      // only accurate to that level, and a round-off difference of 1e-13 in the state
+      // (macOS arm64 / clang with fused multiply-add vs Linux x86_64 / gcc) changed the
+      // velocity by 1.3e-7, then the whole trajectory (2.6e-7). With 1e-10, the results no
+      // longer depend on the platform at this level (reference regenerated).
+      s->setNewtonTolerance(newton_tolerance);
 
       q = yoyo->q();
       v = yoyo->velocity();
@@ -304,6 +315,7 @@ int main(int argc, char* argv[]) {
         OSI = std::make_shared<siconos::integrators::MoreauJeanOSI>(theta);
         osnspb = std::make_shared<siconos::nonsmooth_formulations::LCP>();
         s = std::make_shared<siconos::simulation::TimeStepping>(jeu, t, OSI, osnspb);
+        s->setNewtonTolerance(newton_tolerance);  // see above
 
         q = yoyo->q();
         v = yoyo->velocity();
@@ -338,7 +350,9 @@ int main(int argc, char* argv[]) {
     siconos::algebra::io::write("fichier.dat", Controle, siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
 
-    double error = 0.0, eps = 1e-11;
+    // relative tolerance: the angular velocity reaches ~80 rad/s; with the Newton tolerance
+    // 1e-10, macOS and Linux results differ by up to 5e-11 (6e-13 relative).
+    double error = 0.0, eps = 1e-11 * dataPlot.cwiseAbs().maxCoeff();
     if ((error = siconos::algebra::io::compareRefFile(dataPlot, "yoyo.ref", eps)) > eps)
       return 1;
 

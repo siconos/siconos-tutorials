@@ -21,6 +21,7 @@
 #include <SolverOptions.h>
 
 #include <SiconosKernel.hpp>
+#include <algorithm>
 #include <chrono>
 #include <numbers>
 
@@ -368,9 +369,26 @@ int main(int argc, char* argv[]) {
     siconos::algebra::io::write("RockingBlockED_NewMarkAlpha.dat", DataPlot,
                                 siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
-    double error = 0.0, eps = 1e-12;
-    if ((error = siconos::algebra::io::compareRefFile(
-             DataPlot, "RockingBlockED_NewMarkAlpha.ref", eps)) > eps)
+    // Comparison with the reference, in two groups of columns.
+    //
+    // The generalized-alpha scheme (NewMarkAlphaOSI) recovers the acceleration, and the
+    // contact forces (solution of the LCP at the acceleration level), from the positions,
+    // through a = (q - q_pred) / (beta h^2): a round-off difference of one ulp on q gives
+    // a difference of ~1e-16 / (beta h^2) on a and on the forces, which then lives in the
+    // barely damped high-frequency mode of the scheme. The trajectory is not affected:
+    // positions, velocities, gaps and relative velocities stay within 1e-11 of the
+    // reference. Between macOS (arm64, clang, fused multiply-add) and Linux (x86_64, gcc),
+    // the contact force differs by up to 1.6e-6.
+    //  - kinematic columns (t, q, v, gaps, relative velocities): absolute tolerance 1e-9;
+    //  - contact forces: tolerance 1e-5 * max |force|.
+    double eps = 1e-9;
+    if (siconos::algebra::io::compareRefFile(DataPlot, "RockingBlockED_NewMarkAlpha.ref", eps,
+                                             {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}) > eps)
+      return 1;
+    double eps_forces = 1e-5 * std::max(DataPlot.col(11).cwiseAbs().maxCoeff(),
+                                        DataPlot.col(12).cwiseAbs().maxCoeff());
+    if (siconos::algebra::io::compareRefFile(DataPlot, "RockingBlockED_NewMarkAlpha.ref",
+                                             eps_forces, {11, 12}) > eps_forces)
       return 1;
     return 0;
   } catch (...) {

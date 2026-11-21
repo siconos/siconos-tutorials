@@ -25,6 +25,7 @@
 // =============================================================================================
 
 #include <SiconosKernel.hpp>
+#include <algorithm>
 #include <chrono>
 #include <numbers>
 
@@ -230,9 +231,28 @@ int main(int argc, char* argv[]) {
     siconos::algebra::io::write("SimplePendulumED_AlphaScheme.dat", DataPlot,
                                 siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
-    double error = 0.0, eps = 1e-10;
-    if ((error = siconos::algebra::io::compareRefFile(
-             DataPlot, "SimplePendulumED_AlphaScheme.ref", eps)) > eps)
+    // Comparison with the reference, in two groups of columns.
+    //
+    // The generalized-alpha scheme (NewMarkAlphaOSI) recovers the acceleration (and the
+    // contact force, solution of the LCP at the acceleration level) from the positions,
+    // through a = (q - q_pred) / (beta h^2): with h = 1e-3 and beta ~ 1/4, a round-off
+    // difference of one ulp on q (~1e-16) gives ~4e-10 on a and lambda. This difference
+    // then lives in the high-frequency mode of the scheme, which is barely damped with
+    // rho_inf = 0.99 (the sign alternates at each step), and grows to ~1e-5 over the
+    // 10000 steps. The trajectory is not affected: positions and velocities stay within
+    // 1e-14 and 1e-11 of the reference. Between macOS (arm64, clang, fused multiply-add)
+    // and Linux (x86_64, gcc), the accelerations and lambda differ by up to 7e-6.
+    //  - kinematic columns (t, q, v, g, gdot): absolute tolerance 1e-9;
+    //  - amplified columns (acceleration, lambda): tolerance 1e-5 * max |column|.
+    double eps = 1e-9;
+    if (siconos::algebra::io::compareRefFile(DataPlot, "SimplePendulumED_AlphaScheme.ref", eps,
+                                             {0, 1, 2, 3, 4, 7, 8}) > eps)
+      return 1;
+    double eps_amplified = 1e-5 * std::max({DataPlot.col(5).cwiseAbs().maxCoeff(),
+                                            DataPlot.col(6).cwiseAbs().maxCoeff(),
+                                            DataPlot.col(9).cwiseAbs().maxCoeff()});
+    if (siconos::algebra::io::compareRefFile(DataPlot, "SimplePendulumED_AlphaScheme.ref",
+                                             eps_amplified, {5, 6, 9}) > eps_amplified)
       return 1;
     return 0;
   }
