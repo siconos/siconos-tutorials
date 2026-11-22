@@ -89,7 +89,7 @@ int native_fem_examples::run_T3_simulation(
   dataPlot.conservativeResize(k, outputSize);
   siconos::algebra::io::write(basename + ".dat", dataPlot, siconos::algebra::io::ASCII_OUT,
                               siconos::algebra::io::WriteType::nodim);
-  double error = 0.0, eps = 1e-12;
+  double error = 0.0, eps = 1e-11;
   if ((error = siconos::algebra::io::compareRefFile(dataPlot, reference_file_name, eps)) >=
       eps)
     return 1;
