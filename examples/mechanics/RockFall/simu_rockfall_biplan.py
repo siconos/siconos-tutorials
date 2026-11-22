@@ -41,9 +41,10 @@ random.seed(42)
 ###############################################################################
 
 # Simu parameters---------------------------------------------------------------
-
+import os
 # time
-time = 20.0  # sec  ok avec 1 dt
+short_run = "SICONOS_EXAMPLES_SHORT_RUN" in os.environ
+time= 1.0 if short_run else 20.0
 
 
 # Soil param -------------------------------------------------------------------
@@ -88,7 +89,8 @@ parser.add_argument(
     help="Chemin complet du fichier HDF5 de sortie",
 )
 args = parser.parse_args()
-time += args.nblocks
+if not short_run:
+    time += args.nblocks
 
 # time = 14.2
 # output = f"time is {time}..."
@@ -145,19 +147,19 @@ class deleterock:
                     contact_force
                     - np.dot(contact_normal, contact_force) * contact_normal
                 )
-                print("positions", positions)
-                print("velocities", velocities)
+                # print("positions", positions)
+                # print("velocities", velocities)
 
-                print("contact_normal", contact_normal)
-                print("contact_force", contact_force)
-                print("fn", fn)
-                print("ft", ft)
+                # print("contact_normal", contact_normal)
+                # print("contact_force", contact_force)
+                # print("fn", fn)
+                # print("ft", ft)
 
-                if np.linalg.norm(fn) > 0:
-                    print("ft/fn", ft / fn)
-                if np.isnan(velocities).any():
-                    print("velocities", np.array(velocities)[:, ds1_id])
-                    input()
+                # if np.linalg.norm(fn) > 0:
+                #     print("ft/fn", ft / fn)
+                # if np.isnan(velocities).any():
+                #     print("velocities", np.array(velocities)[:, ds1_id])
+                #     input()
 
                 """
                 if ds1_id == ds2_id:

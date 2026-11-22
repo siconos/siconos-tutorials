@@ -1263,7 +1263,12 @@ options.iparam[Numerics.params.SICONOS_NSGS_FREEZING_CONTACT] = 20
 
 run_options = MechanicsHdf5Runner_run_options()
 run_options["t0"] = 0
-run_options["T"] = 1.0
+
+short_run = "SICONOS_EXAMPLES_SHORT_RUN" in os.environ
+T= 0.01 if short_run else 1.0
+
+
+run_options["T"] = T
 run_options["h"] = 2.5e-4
 # run_options['T']= 0.00025 * 500
 run_options["bullet_options"] = bullet_options
