@@ -210,7 +210,8 @@ int main(int argc, char* argv[]) {
 
     auto vball = block->velocity_read();
     auto sigma = beam->stress_read();
-    auto epsilonPointP = beam->plasticRate_read();
+    auto epsilonPointP = beam->plasticRate_read();    // plastic deformation rate
+    auto epsilonP = beam->plasticDeformation_read();  // plastic deformation
 
     siconos::algebra::SiconosVector vTotal{beam->dimension() + block->velocity()->size()};
     vTotal.segment(0, beam->dimension()) = v;
@@ -244,8 +245,8 @@ int main(int argc, char* argv[]) {
     double dissipationContact = 0, dissipationPlastique = 0, energieMecanique,
            energieCinetiqueTree, energieCinetiqueBlock;
     auto filename = siconos::mechanics::fem::prepareWriteDisplacementforPython("beam");
-    siconos::algebra::SiconosVector epsilonPointPOld{epsilonPointP.size()};
-    epsilonPointPOld.setZero();
+    siconos::algebra::SiconosVector epsilonPOld{epsilonP.size()};
+    epsilonPOld.setZero();
     siconos::algebra::SiconosVector epsilon{epsilonPointP.size()};
     epsilon.setZero();
     siconos::algebra::SiconosVector epsilonE{epsilonPointP.size()};
@@ -267,14 +268,15 @@ int main(int argc, char* argv[]) {
       energieCinetiqueBlock = 0.5 * (block->mass() * vball).dot(vball);
 
       energieCinetiqueTree = 0.5 * (beam->mass() * v).dot(v);
-      diff = epsilonPointP - epsilonPointPOld;
-      epsilonPointPOld = epsilonPointP;
+      // plastic dissipation: sigma_theta . (eps_p_{k+1} - eps_p_k)
+      diff = epsilonP - epsilonPOld;
+      epsilonPOld = epsilonP;
       sigmaOld = theta * sigma + (1. - theta) * sigmaOld;
 
       dissipationPlastique += sigmaOld.dot(diff);
       sigmaOld = sigma;
       epsilonE = beam->BMatrix() * q;
-      epsilon = epsilonE - epsilonPointP;
+      epsilon = epsilonE - epsilonP;
 
       energieMecanique = 0.5 * sigma.dot(epsilon);
 

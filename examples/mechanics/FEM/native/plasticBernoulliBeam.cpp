@@ -204,14 +204,24 @@ int main(int argc, char* argv[]) {
                                 siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
 
-    double error = 0.0, eps = 1e-6;
-    if ((error = siconos::algebra::io::compareRefFile(dataPlot, "plasticBernoulliBeam.ref",
-                                                      eps)) >= eps)
+    // Columns: t, sigma(16), sigma(17), plastic deformation(17), plastic rate(17).
+    // Stresses are O(1e9) (bounded by c) and the plastic variables O(1e-1)..O(1e2):
+    // compare each group with a tolerance relative to its magnitude.
+    double eps_rel = 1e-6;
+    double eps_sigma = eps_rel * c;
+    double eps_plastic = eps_rel * std::max(dataPlot.col(3).cwiseAbs().maxCoeff(),
+                                            dataPlot.col(4).cwiseAbs().maxCoeff());
+    double error_sigma = siconos::algebra::io::compareRefFile(
+        dataPlot, "plasticBernoulliBeam.ref", eps_sigma, {1, 2});
+    double error_plastic = siconos::algebra::io::compareRefFile(
+        dataPlot, "plasticBernoulliBeam.ref", eps_plastic, {3, 4});
+    if (error_sigma < 0. || error_sigma > eps_sigma || error_plastic < 0. ||
+        error_plastic > eps_plastic)
       return 1;
 
     return 0;
   } catch (...) {
-    std::cerr << "Exception caught in ballAgainstBernoulliBeam.cpp\n";
+    std::cerr << "Exception caught in plasticBernoulliBeam.cpp\n";
     siconos::exception::process();
     return 1;
   }
