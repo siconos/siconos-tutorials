@@ -14,7 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 /*! \file DelayedSampledActuator.h
   An example on how to implement a user-defined actuator.
@@ -35,16 +35,13 @@ class SiconosMatrix;
  *
  *
  */
-class DelayedSampledActuator : public Actuator
-{
-private:
-
+class DelayedSampledActuator : public Actuator {
+ private:
   /** Default constructor
    */
   DelayedSampledActuator();
 
-public:
-
+ public:
   /** Constructor with a TimeDiscretisation.
    * \param a string, the type of the Actuator, which corresponds to the class type
    * \param a TimeDiscretisation*, (linked to a model).
@@ -59,7 +56,8 @@ public:
    */
   void initialize();
 
-  /** capture data when the ActuatorEvent is processed ( for example set data[ActuatorEvent]=... )
+  /** capture data when the ActuatorEvent is processed ( for example set
+   * data[ActuatorEvent]=... )
    */
   void actuate();
 

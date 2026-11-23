@@ -23,7 +23,7 @@
 # to the ideal diode behavior currently (12/09/2005) modeled in the Siconos sample.
 #----------------------------------------------------------------------------------
 
-set term X11 
+set term X11
 
 resultfile = "CircuitRLCD.dat"
 
@@ -35,7 +35,7 @@ heightoff = 0.2
 winratio = 1.0
 winheight = basheight*winratio
 
-set lmargin 8 
+set lmargin 8
 set bmargin 0
 set tmargin 0
 
@@ -43,7 +43,7 @@ set size 1.0 , 1.0
 
 set xzeroaxis
 set format x ""
- 
+
 set grid xtics
 
 set multiplot
@@ -53,7 +53,7 @@ set size winratio,winheight
 set origin 0.0,winheight*3.0+heightoff
 set ylabel "V"
 plot\
-  resultfile u 1:2 t      "capacitor voltage , SICONOS BE 1us" w points 
+  resultfile u 1:2 t      "capacitor voltage , SICONOS BE 1us" w points
 set origin 0.0,winheight*2.0+heightoff
 set ylabel "A"
 plot\
@@ -72,4 +72,3 @@ set ylabel "A"
 plot\
   resultfile u 1:5 t      "diode current , SICONOS BE 1us" w l
 set nomultiplot
-

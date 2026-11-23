@@ -29,8 +29,7 @@ T=10;
 simulationLoop(q0,T,pa10Free, pa10Model,pa10Spy,%F,pa10Ndof());
 //simulationLoop(q0,T,pa10JointControl, pa10Model,pa10Spy,%F,pa10Ndof());
 //simulationLoop(q0,T,pa10CartesianControl, pa10Model,pa10Spy,%F,pa10Ndof());
- 
+
 //pa10Plot2D(2);
 
 pa10Plot3D();
-

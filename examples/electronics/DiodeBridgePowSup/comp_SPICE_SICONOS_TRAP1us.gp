@@ -3,14 +3,14 @@
 #    - reference results from the SPICE simulation
 #      of the filtered diode bridge circuit with trapezoidal
 #      integrator and fixed 1 us time step (file "SPICEN0p25TRAP1us.dat").
-#      
-#    - results from SICONOS  "DiodeBridgePowSupTRAP1us.dat" 
+#
+#    - results from SICONOS  "DiodeBridgePowSupTRAP1us.dat"
 #      obtained by a simulation of the DiodeBridgePowSup.cpp
 #      sample with theta = 0.5 (trapezoidal integration) and a
 #      time step of 1 us.
 #
 # Displayed results are :
-#    - the supply voltage 
+#    - the supply voltage
 #    - the current through two diodes of the bridge
 #    - the voltage across the resistor
 #
@@ -18,8 +18,8 @@
 # yielding very small differences in the conduction state of the diodes.
 #
 # - Oscillations are appearing in SPICE simulation when diodes become passing. This
-# is a failure of the SPICE solver due to the use of a large time step : 
-# SPICE simulation with 0.1 us do not display such oscillations 
+# is a failure of the SPICE solver due to the use of a large time step :
+# SPICE simulation with 0.1 us do not display such oscillations
 # (see "comp_SPICE_SICONOS_TRAP0p1us.gp").
 #----------------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ heightoff = 0.2
 winratio = 1.0
 winheight = basheight*winratio
 
-set lmargin 8 
+set lmargin 8
 set bmargin 0
 set tmargin 0
 
@@ -45,7 +45,7 @@ set format x ""
 
 set xrange[3e-6:1.5e-3]
 
-set mxtics 
+set mxtics
 set grid xtics
 set grid mxtics
 
@@ -82,4 +82,3 @@ plot\
   "SPICEN0p25TRAP1us.dat" u ($1-toffset):4 t              "resistor voltage , SPICE   TRAP 1us" w l
 
 set nomultiplot
-

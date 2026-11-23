@@ -6,7 +6,7 @@
 
 \b Location: Control/ObserverPassivityBased
 
-\b Code: 
+\b Code:
 
 \date: May 2015.
 
@@ -19,16 +19,16 @@ the results developed in the following paper:
 
 - A. Tanwani, B. Brogliato, and C. Prieur. Observer Design for
 Unilaterally Constrained Lagrangian Systems: A Passivity-Based
-Approach. Submitted for publication. 
+Approach. Submitted for publication.
 
 - A. Tanwani, B. Brogliato, and C. Prieur. Passivity-based observer
 design for a class of Lagrangian systems with perfect unilateral
 constraints. Proceedings of 52nd IEEE Conf. on Decision and Control,
 Florence, Italy, 2013.
-        
+
 The simulations of the nonsmooth dynamical systems studied in our work have baeen carried out using the software <a href="http://siconos.gforge.inria.fr/">SICONOS</a>, which is being developed by Team BipOp at INRIA, Grenoble. The animations have been carried out using Python libraries.
 
-<b>System Class:</b> 
+<b>System Class:</b>
 
 We consider mechanical systems with a finite number of degrees of freedom that are subjected to the unilateral constraints.
 The position variable \f$q \in \mathbb{R}^n\f$ is thus assumed to evolve in a set that admits the following form:
@@ -72,7 +72,7 @@ where we let
 \f}
 and the function \f$\begin{pmatrix}z_1\\z_2\end{pmatrix} \mapsto f(q,z):= \begin{pmatrix} f_1(z_1,q) \\ z_2 + f_2(z_1,q)\end{pmatrix}\f$ is assumed to be a diffeomorphism for each \f$q \in \mathbb{R}^n\f$, so that the function \f$f^{-1}(q,\cdot)\f$ is well-defined and continuously differentiable.<br>
 
- 
+
 <b>Example 1:</b> We consider a 3 ball chain moving in 1-dimension and their motion is constrained by two walls, one on either side of the chain. The coefficient of restitution is set to 1, and the external force is set to zero. The simulation results corresponding to different initial conditions appear in the following videos:<br>
 
 \htmlonly

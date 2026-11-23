@@ -58,7 +58,7 @@ heightoff = 0.07
 winratio = 0.95
 winheight = basheight*winratio
 
-set lmargin 8 
+set lmargin 8
 set bmargin 0
 set tmargin 0
 
@@ -67,14 +67,14 @@ set size 1.0 , 1.0
 set xzeroaxis
 set format x ""
 
-set mxtics 
+set mxtics
 set grid xtics
 set grid mxtics
 
 set multiplot
 set size winratio,winheight
 
-set ylabel "m" 
+set ylabel "m"
 set origin xoff,winheight*2.0+heightoff+offset+offset
 plot \
      resultfile u (1000*$1):2 t "q" w l
@@ -105,7 +105,7 @@ set ylabel "m"
 set origin xoff,winheight*2.0+heightoff+offset+offset
 plot \
      resultfile u (1000*$1):8 t "q (end of the bar)" w l
-set ylabel "m/s" 
+set ylabel "m/s"
 set origin xoff,winheight+heightoff+offset
 plot \
      resultfile u (1000*$1):9 t "v (end of the bar)" w l
@@ -118,8 +118,3 @@ set ylabel "N"
 set origin xoff,0.0+heightoff
 plot \
      resultfile u (1000*$1):($11) t "v (middle of the bar)" w l
-
-
-
-
-

@@ -14,7 +14,7 @@ All examples are built using gmsh input files.
 Results and post-processing :
 
 ```
-siconos XX.cpp 
+siconos XX.cpp
 ````
 
 results in:
@@ -26,4 +26,3 @@ results in:
 python meshio_prepost.py --mesh_file="outputs/mesh_data/YY.msh" --simulation_name="XX"
 ```
 will generate vtk files in ./vtk/XX... than can be viewed with Paraview.
-

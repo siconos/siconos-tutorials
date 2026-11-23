@@ -25,49 +25,40 @@
 #include "Utils.hpp"
 
 /*********************************************************
-* Matrix reduction           *
-*********************************************************/
+ * Matrix reduction           *
+ *********************************************************/
 
-void reduceMatrix(matrix<double, column_major> & mat, vector<int> & index1, vector<int> & index2)
-{
-  if (index1.size() > 0)
-  {
+void reduceMatrix(matrix<double, column_major>& mat, vector<int>& index1,
+                  vector<int>& index2) {
+  if (index1.size() > 0) {
     if (mat.size1() < index1.size())
       std::cout << "Wrong size...\n";
-    else
-    {
-      for (unsigned int i = 0; i < index1.size(); i++)
-        row(mat, i) = row(mat, index1(i));
+    else {
+      for (unsigned int i = 0; i < index1.size(); i++) row(mat, i) = row(mat, index1(i));
       mat.resize(index1.size(), mat.size2(), true);
     }
   }
 
-  if (index2.size() > 0)
-  {
+  if (index2.size() > 0) {
     if (mat.size2() < index2.size())
       std::cout << "Wrong size...\n";
-    else
-    {
-      for (unsigned int i = 0; i < index2.size(); i++)
-        column(mat, i) = column(mat, index2(i));
+    else {
+      for (unsigned int i = 0; i < index2.size(); i++) column(mat, i) = column(mat, index2(i));
       mat.resize(mat.size1(), index2.size(), true);
     }
   }
 }
 
-void reduceMatrix(matrix<double, column_major> & mat, vector<bool> & index1, vector<int> & index2)
-{
-  if (index1.size() > 0)
-  {
+void reduceMatrix(matrix<double, column_major>& mat, vector<bool>& index1,
+                  vector<int>& index2) {
+  if (index1.size() > 0) {
     if (mat.size1() != index1.size())
       std::cout << "Wrong size...\n";
-    else
-    {
+    else {
       matrix<double> tmp(index1.size(), mat.size2());
       int k = 0;
       for (unsigned int i = 0; i < index1.size(); i++)
-        if (index1(i))
-        {
+        if (index1(i)) {
           row(mat, k) = row(mat, i);
           k++;
         }
@@ -75,38 +66,31 @@ void reduceMatrix(matrix<double, column_major> & mat, vector<bool> & index1, vec
     }
   }
 
-  if (index2.size() > 0)
-  {
+  if (index2.size() > 0) {
     if (mat.size2() < index2.size())
       std::cout << "Wrong size...\n";
-    else
-    {
-      for (unsigned int i = 0; i < index2.size(); i++)
-        column(mat, i) = column(mat, index2(i));
+    else {
+      for (unsigned int i = 0; i < index2.size(); i++) column(mat, i) = column(mat, index2(i));
       mat.resize(mat.size1(), index2.size(), true);
     }
   }
 }
 
 /*********************************************************
-* Vector reduction           *
-*********************************************************/
+ * Vector reduction           *
+ *********************************************************/
 
-vector<double> reduceVector(vector<double> & vec, vector<int> & index)
-{
+vector<double> reduceVector(vector<double>& vec, vector<int>& index) {
   vector<double> ret(0);
 
-  if (vec.size() < index.size())
-  {
+  if (vec.size() < index.size()) {
     std::cout << "Wrong size...\n";
     return ret;
   }
 
-  if (index.size() > 0)
-  {
+  if (index.size() > 0) {
     ret.resize(index.size());
-    for (unsigned int i = 0; i < index.size(); i++)
-      ret[i] = vec[index[i]];
+    for (unsigned int i = 0; i < index.size(); i++) ret[i] = vec[index[i]];
     return ret;
   }
 
@@ -115,22 +99,17 @@ vector<double> reduceVector(vector<double> & vec, vector<int> & index)
   return ret;
 }
 
-
-vector<double> reduceVector(vector<double, array_adaptor<double> > & vec, vector<int> & index)
-{
+vector<double> reduceVector(vector<double, array_adaptor<double> >& vec, vector<int>& index) {
   vector<double> ret(0);
 
-  if (vec.size() < index.size())
-  {
+  if (vec.size() < index.size()) {
     std::cout << "Wrong size...\n";
     return ret;
   }
 
-  if (index.size() > 0)
-  {
+  if (index.size() > 0) {
     ret.resize(index.size());
-    for (unsigned int i = 0; i < index.size(); i++)
-      ret[i] = vec[index[i]];
+    for (unsigned int i = 0; i < index.size(); i++) ret[i] = vec[index[i]];
     return ret;
   }
 
@@ -139,17 +118,13 @@ vector<double> reduceVector(vector<double, array_adaptor<double> > & vec, vector
   return ret;
 }
 
-void reduceVector(vector<double> & vec, vector<bool> & index)
-{
+void reduceVector(vector<double>& vec, vector<bool>& index) {
   if (vec.size() != index.size())
     std::cout << "Wrong size...\n";
-  else
-  {
+  else {
     unsigned int k = 0;
-    for (unsigned int i = 0; i < index.size(); i++)
-    {
-      if (index(i))
-      {
+    for (unsigned int i = 0; i < index.size(); i++) {
+      if (index(i)) {
         vec[k] = vec[i];
         k++;
       }
@@ -158,17 +133,13 @@ void reduceVector(vector<double> & vec, vector<bool> & index)
   }
 }
 
-void reduceVector(vector<bool> & vec, vector<bool> & index)
-{
+void reduceVector(vector<bool>& vec, vector<bool>& index) {
   if (vec.size() != index.size())
     std::cout << "Wrong size...\n";
-  else
-  {
+  else {
     unsigned int k = 0;
-    for (unsigned int i = 0; i < index.size(); i++)
-    {
-      if (index(i))
-      {
+    for (unsigned int i = 0; i < index.size(); i++) {
+      if (index(i)) {
         vec[k] = vec[i];
         k++;
       }
@@ -178,41 +149,31 @@ void reduceVector(vector<bool> & vec, vector<bool> & index)
 }
 
 /*********************************************************
-* Vector expansion           *
-*********************************************************/
+ * Vector expansion           *
+ *********************************************************/
 
-void expandVector(double * tab, vector<double> & vector, vector<int> & index)
-{
+void expandVector(double* tab, vector<double>& vector, vector<int>& index) {
   //  if(vector2.size()>vector1.size() || vector2.size()!=index.size())
   //    std::cout << "Wrong size...\n";
   //  else
   if (index.size() > 0)
-    for (unsigned int i = 0; i < vector.size(); i++)
-      tab[index[i]] = vector[i];
+    for (unsigned int i = 0; i < vector.size(); i++) tab[index[i]] = vector[i];
   else
-    for (unsigned int i = 0; i < vector.size(); i++)
-      tab[i] = vector[i];
+    for (unsigned int i = 0; i < vector.size(); i++) tab[i] = vector[i];
 }
 
-void expandVector(double * tab, vector<double> & vector, vector<bool> & index)
-{
+void expandVector(double* tab, vector<double>& vector, vector<bool>& index) {
   //  if(vector.size()>index.size() && index.size()>0)
   //    std::cout << "Wrong size...\n";
   //  else
-  if (index.size() > 0)
-  {
+  if (index.size() > 0) {
     unsigned int k = 0;
     for (unsigned int i = 0; i < index.size(); i++)
-      if (index[i])
-      {
+      if (index[i]) {
         tab[i] = vector[k];
         k++;
       }
-  }
-  else
-  {
-    for (unsigned int i = 0; i < vector.size(); i++)
-      tab[i] = vector[i];
+  } else {
+    for (unsigned int i = 0; i < vector.size(); i++) tab[i] = vector[i];
   }
 }
-

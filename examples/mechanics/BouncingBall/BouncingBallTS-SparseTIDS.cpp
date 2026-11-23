@@ -31,7 +31,7 @@
 using Matrix = siconos::algebra::SiconosSparseMatrix;
 using Vector = siconos::algebra::SiconosVector;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   try {
     // ================= Creation of the model =======================
 

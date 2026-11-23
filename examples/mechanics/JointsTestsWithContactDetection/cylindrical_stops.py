@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 #
-from siconos.mechanics.collision.tools import Contactor
+import numpy as np
+import siconos.integrators
 import siconos.numerics as sn
+import siconos.simulation
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-import siconos.simulation
-import siconos.integrators
-import numpy as np
+from siconos.mechanics.collision.tools import Contactor
 
 # Configuration of four stops, at 0 and 0.3 on the linear DoF and at
 # -pi and pi on the rotational DoF.
@@ -121,7 +121,7 @@ with MechanicsHdf5Runner() as io:
 
 # We define a "controller" here to show how to measure the angle of
 # the joint using computehDoF.
-class Ctrl(object):
+class Ctrl:
     def initialize(self, io):
         self.nsds = io._nsds
         self.topo = self.nsds.topology()
@@ -144,7 +144,7 @@ class Ctrl(object):
         self.joint1.computeJachqDoF(
             self.joint1_inter, self.bar.q(), self.post.q(), self.jachq, 0
         )
-        print("joint linear position, %f, angle, %f" % tuple(self.yDoF))
+        print("joint linear position, {:f}, angle, {:f}".format(*tuple(self.yDoF)))
 
 
 options = sn.SolverOptions(sn.solver_ids.SICONOS_GENERIC_MECHANICAL_NSGS)

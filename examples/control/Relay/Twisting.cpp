@@ -63,7 +63,8 @@ int main(int argc, char* argv[]) {
     auto x0 = std::make_shared<Vector>(ndof);
     (*x0)(0) = Vinit;
     (*x0)(1) = Vinit;
-    auto doubleIntegrator = std::make_shared<siconos::modeling::FirstOrderLinearDS>(*x0, siconos::algebra::alias_t);
+    auto doubleIntegrator = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        *x0, siconos::algebra::alias_t);
     doubleIntegrator->setConstantA(*A, siconos::algebra::alias_t);
     // --------------------
     // --- Interactions ---
@@ -127,7 +128,7 @@ int main(int argc, char* argv[]) {
     // ================================= Computation =================================
 
     // --- Get the values to be plotted ---
-    unsigned outputSize = 5;               // number of required data
+    unsigned outputSize = 5;              // number of required data
     unsigned N = ceil((T - t0) / h) + 1;  // Number of time steps
 
     auto dataPlot = std::make_shared<Matrix>(N, outputSize);

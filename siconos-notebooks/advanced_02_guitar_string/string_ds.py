@@ -5,17 +5,18 @@ Based on JSV Issanchou paper.
 """
 
 import math
+
 import numpy as np
-import siconos.modeling as sm
 
 # import scipy.sparse as scs
 import numpywrappers as npw
+import siconos.modeling as sm
 
 
 class StringDS(sm.LagrangianLinearTIDS):
     """Build a string as a LagrangianLinearTIDS"""
 
-    __damping_parameters_names = ["nu_air", "rho_air", "delta_ve", "1/qte"]
+    __damping_parameters_names = ("nu_air", "rho_air", "delta_ve", "1/qte")
     CLAMPED = 1
 
     def __init__(
@@ -66,7 +67,7 @@ class StringDS(sm.LagrangianLinearTIDS):
         self.damping_parameters = damping_parameters
         msg = "StringDS : missing parameter value for damping."
         for name in self.__damping_parameters_names:
-            assert name in self.damping_parameters.keys(), msg
+            assert name in self.damping_parameters, msg
         self.use_sparse = use_sparse
         self.modal_form = modal_form
         if not modal_form:
@@ -85,7 +86,7 @@ class StringDS(sm.LagrangianLinearTIDS):
         mass, stiffness_mat, damping_mat = self.compute_linear_coeff()
         q0 = self.compute_initial_state(imax, umax)
         v0 = npw.zeros_like(q0)
-        super(StringDS, self).__init__(q0, v0, mass, stiffness_mat, damping_mat)
+        super().__init__(q0, v0, mass, stiffness_mat, damping_mat)
         if not self.modal_form:
             self.apply_boundary_conditions()
 

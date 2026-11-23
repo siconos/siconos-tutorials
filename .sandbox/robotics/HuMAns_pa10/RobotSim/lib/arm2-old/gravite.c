@@ -1,9 +1,8 @@
 #include <math.h>
+
 #include "robotmodel.h"
 
-void modele_gravite(const double q[NDDL], double G[NDDL])
-{
-
+void modele_gravite(const double q[NDDL], double G[NDDL]) {
   double c1, c12;
   // Compute cos and sin
   c1 = cos(q[0]);

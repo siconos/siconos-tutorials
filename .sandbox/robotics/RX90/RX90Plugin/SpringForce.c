@@ -1,7 +1,7 @@
-#include "LagrangianModel.h"
 #include <math.h>
-void SpringForce(S, q)
-double S[6];
+
+#include "LagrangianModel.h"
+void SpringForce(S, q) double S[6];
 double q[6];
 {
   double t1;
@@ -26,4 +26,3 @@ double q[6];
     return;
   }
 }
-

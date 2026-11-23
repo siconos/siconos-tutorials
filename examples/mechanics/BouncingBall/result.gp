@@ -10,6 +10,3 @@ resultfile every ::2 u 1:4 t "Reaction force" w l
 
 #,\
 #"result-gp.dat" u 1:5 t "Multiplier" w l
-     
-
-

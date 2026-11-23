@@ -3,13 +3,13 @@
 Those functions are useful to enforce predefined types in numpy arrays
 and avoid unexpected behavior due to types conversion.
 """
-import numpy as np
 
+import numpy as np
 
 REAL_KIND = np.float64
 """Set default type for real numbers"""
 
-ORDER = 'F'
+ORDER = "F"
 """default array layout (fortran or C convention)"""
 
 

@@ -18,9 +18,9 @@
 #
 __all__ = ["create_chute"]
 
-import numpy
 import math
 
+import numpy
 from siconos.mechanics.collision.tools import Contactor
 
 # WARNING : in 3D by default z-axis is upward
@@ -59,7 +59,6 @@ def normal_plane(p1, p2, p3):
     a = cross_product[0]
     b = cross_product[1]
     c = cross_product[2]
-    d = -(cross_product[0] * x1 + cross_product[1] * y1 + cross_product[2] * z1)
 
     return numpy.array([a, b, c]) / numpy.linalg.norm([a, b, c])
 
@@ -75,7 +74,7 @@ def create_chute(
     box_width=box_width,
     planethickness_=planethickness_,
     scale=1.0,
-    trans=[0, 0, 0],
+    trans=(0, 0, 0),
 ):
 
     box_height *= scale
@@ -225,9 +224,7 @@ def create_chute(
             1.280 * scale,
             1.200 * scale,
         ]
-    ) + numpy.array(
-        [delta_x, 0.0, delta_z]
-    )  # translation of v2
+    ) + numpy.array([delta_x, 0.0, delta_z])  # translation of v2
     print(v_v1)
     v_v2 = numpy.array(
         [
@@ -235,9 +232,7 @@ def create_chute(
             box_width,
             1.200 * scale,
         ]
-    ) + numpy.array(
-        [delta_x, 0.0, delta_z]
-    )  # translation
+    ) + numpy.array([delta_x, 0.0, delta_z])  # translation
     v_v3 = numpy.array([4.370 * scale, box_width, 0.0]) + numpy.array(
         [delta_x, 0.0, delta_z]
     )  # == v11

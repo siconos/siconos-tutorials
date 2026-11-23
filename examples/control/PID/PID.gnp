@@ -7,9 +7,9 @@ set xrange [0:100]
 basheight = 0.3
 heightoff = 0.1
 winratio = 1.0
-winheight = basheight*winratio 
+winheight = basheight*winratio
 
-set lmargin 8 
+set lmargin 8
 set bmargin 0
 set tmargin 0
 

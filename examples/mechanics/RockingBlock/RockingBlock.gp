@@ -12,10 +12,10 @@ l=1;
 L=1.5;
 
 
-set xlabel 'time (s)' 
-#set xrange [0.0001:10]   
+set xlabel 'time (s)'
+#set xrange [0.0001:10]
 #set yrange [0.0001:10]
-set grid 
+set grid
 
 #scheme =  "MoreauTSFixed"
 #scheme  =  "ProjectedMoreauTS"
@@ -49,4 +49,3 @@ set output scheme."-RockingBlock-viol-".timestep.extension
 
  plot 'result.dat'  using 1:  ( ($3-1/2.0*(L*cos($4) -l*sin($4) ) < 0 ) ?  ($3-1/2.0*(L*cos($4) -l*sin($4) ) )  : 0.0 )  t 'g1' w lines,\
       'result.dat'  using  1:  ( ($3-1/2.0*(L*cos($4) +l*sin($4) ) < 0 ) ?  ($3-1/2.0*(L*cos($4) +l*sin($4) ) )  : 0.0 ) t 'g2' w lines
-

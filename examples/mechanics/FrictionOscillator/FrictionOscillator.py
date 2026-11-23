@@ -20,16 +20,16 @@
 #
 
 
+import math
+
 import numpy as np
-from numpy.linalg import norm
-import siconos.modeling as sm
 import siconos.integrators as si
-import siconos.simulation as ss
+import siconos.modeling as sm
 import siconos.nonsmooth_formulations as snsf
 import siconos.numerics as sn
-
-import math
 import siconos.plot_config as sicoplot
+import siconos.simulation as ss
+from numpy.linalg import norm
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)

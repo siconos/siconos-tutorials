@@ -22,14 +22,14 @@
 # vertical line at (x,y)=(0,0).
 #
 
-from siconos.mechanics.collision.tools import Contactor
+import numpy as np
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-import siconos.numerics as sn
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
-import numpy as np
+from siconos.mechanics.collision.tools import Contactor
 
 bullet_options = SiconosBulletOptions()
 bullet_options.worldScale = 1.0
@@ -37,7 +37,6 @@ bullet_options.contactBreakingThreshold = 0.04
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a sphere
     io.add_primitive_shape("Sphere", "Sphere", (0.5,))
 
@@ -52,7 +51,7 @@ with MechanicsHdf5Runner() as io:
     # them towards 0,0 so that we can detect them as they roll by.
     for i in range(10):
         io.add_object(
-            "sphere%d" % i,
+            f"sphere{i}",
             [Contactor("Sphere")],
             translation=[i * 2, 0, 2],
             velocity=[-5, 0, 0, 0, 0, 0],
@@ -77,7 +76,9 @@ class LinePicker:
         query = self.io._interman.lineIntersectionQuery(start, end, False, True)
         names = [self.io._nsds.name(q.body) for q in query if q.body is not None]
         if len(names) > 0:
-            print("time %f, picked %s" % (self.io.current_time(), ", ".join(names)))
+            print(
+                "time {:f}, picked {}".format(self.io.current_time(), ", ".join(names))
+            )
 
 
 # Run the simulation from the inputs previously defined and add
@@ -100,7 +101,6 @@ run_options["solver_options"] = options
 run_options["bullet_options"] = bullet_options
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     io.run(run_options)

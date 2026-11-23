@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-import siconos.numerics as SN
-
 import numpy as np
+import siconos.numerics as SN
 import siconos.plot_config as sicoplot
 
 # Turn off interactive backend by default
@@ -10,14 +9,13 @@ plt, enable_plot = sicoplot.choose_backend(False)
 
 try:
     from cffi import FFI
-except:
+except ImportError:
     import sys
 
     print("no cffi module installed, exiting")
     sys.exit(0)
 
 if __name__ == "__main__":
-
     h = 1e-3
     T = 10.0
     t = 0.0
@@ -107,7 +105,7 @@ if __name__ == "__main__":
             #            info = SN.mcp_newton_minFBLSA(mcp, z, w, SO)
             # print('iter {:} ; solver iter = {:} ; prec = {:}'.format(k, SO.iparam[1], SO.dparam[1]))
             if info > 0:
-                print("VI solver failed ! info = {:}".format(info))
+                print(f"VI solver failed ! info = {info}")
                 print(xk)
                 print(lambda_)
                 print(xkp1)

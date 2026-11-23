@@ -3,12 +3,12 @@ extension=".tex"
 resultfile='result.dat'
 #resultfile="resultMonodisperseChain_LZBModel.ref"
 #resultfile="resultTaperedChain_LZBModel.ref"
-apple=1 
+apple=1
 
 
 
-set xlabel 'time (s)' 
-set grid 
+set xlabel 'time (s)'
+set grid
 
 
 if (apple == 1) {
@@ -17,7 +17,7 @@ set term aqua 0;
 set term x11 0;
 }
 
-set ylabel '$y$' 
+set ylabel '$y$'
 plot 	resultfile every::2 using 1:2  title 'Ball 1' w lines lc rgb "blue",\
      	resultfile every::2 using 1:3  title 'Ball 2' w lines lc rgb "green",\
 	resultfile every::2 using 1:4  title 'Ball 3' w lines lc rgb "red",\
@@ -46,7 +46,3 @@ plot 	resultfile every::2 using 1:12  title 'Ball 1' w lines lc rgb "blue",\
 	resultfile every::2 using 1:19  title 'Ball 8' w lines lc rgb "magenta",\
 	resultfile every::2 using 1:20  title 'Ball 9' w lines lc rgb "red",\
 	resultfile every::2 using 1:21  title 'Ball 10' w lines lc rgb "yellow"
-
-
-
-

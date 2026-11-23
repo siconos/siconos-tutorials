@@ -8,10 +8,10 @@ a = 0.05
 b = 0.025
 c = 0.001
 
-set xlabel 'time (s)' 
-#set xrange [0.0001:10]   
+set xlabel 'time (s)'
+#set xrange [0.0001:10]
 #set yrange [0.0001:10]
-set grid 
+set grid
 
 
 # Define two helper functions
@@ -111,14 +111,14 @@ unset xrange
 unset yrange
 set auto
 set xrange[0:2.0]
-set xlabel 'Crank revolutions' 
+set xlabel 'Crank revolutions'
 set ylabel ""
 basheight = 0.2
 heightoff = 0.1
 winratio = 1.0
 winheight = basheight*winratio
 
-set lmargin 8 
+set lmargin 8
 set bmargin 0
 set tmargin 0
 
@@ -194,7 +194,7 @@ set format y "%3.0e"
 set multiplot
 set grid xtics
 
-set ytics axis 
+set ytics axis
 
 set origin 0.0,winheight*3.0+heightoff
 plot resultfile  using  (crankrevo($5,$7,h*$1)):($82)  t 'g1' w lines
@@ -318,7 +318,3 @@ plot resultfile  using  (crankrevo($5,$7,h*$1)):($91)  t 'dot g2' w lines
 # set xlabel "Crank revolutions"
 # set origin 0.0,winheight*0.0+heightoff
 # plot resultfile  using 2:26  t 'lambda(0) 1' w lines
-
-
-
-

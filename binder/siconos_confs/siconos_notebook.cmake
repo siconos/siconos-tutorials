@@ -4,7 +4,7 @@
 # Usage:
 # cmake path-to-sources
 #  --> to keep default value
-# 
+#
 # cmake path-to-sources -DWITH_PYB11_WRAPPER=ON
 #  --> to enable (ON), or disable (OFF) the concerned option.
 #

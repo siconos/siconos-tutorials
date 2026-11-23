@@ -25,21 +25,21 @@
 ** version start HuMAnS
 **
 */
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
 #include <math.h>
 
-SICONOS_EXPORT void NLEffects(double *N, const double* q, const double *qdot);
+SICONOS_EXPORT void NLEffects(double* N, const double* q, const double* qdot);
 
-SICONOS_EXPORT void Inertia(double *M, const double *q);
+SICONOS_EXPORT void Inertia(double* M, const double* q);
 
-SICONOS_EXPORT void JacobianQNLEffects(double *jaco, const double* q, const double *qdot);
+SICONOS_EXPORT void JacobianQNLEffects(double* jaco, const double* q, const double* qdot);
 
-SICONOS_EXPORT void JacobianVNLEffects(double *jaco, const double* q, const double *qdot);
+SICONOS_EXPORT void JacobianVNLEffects(double* jaco, const double* q, const double* qdot);
 
-SICONOS_EXPORT void Contact(double *CC, const double* q);
+SICONOS_EXPORT void Contact(double* CC, const double* q);
 
-SICONOS_EXPORT void ContactJacobian(double *CJ, const double *q);
+SICONOS_EXPORT void ContactJacobian(double* CJ, const double* q);

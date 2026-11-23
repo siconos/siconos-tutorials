@@ -22,4 +22,3 @@ Run the python script:
 The simulation results can be viewed from the hdf5 file :
 
     siconos_vview occ_watch_escapement.hdf5
-

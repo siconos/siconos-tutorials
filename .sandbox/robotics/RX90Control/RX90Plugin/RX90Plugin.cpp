@@ -14,21 +14,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
-#include <iostream>
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
 #include <math.h>
+
+#include <iostream>
 
 #define PI 3.14159265
 
-
-void Inertia(double *M, double *q)
-{
+void Inertia(double* M, double* q) {
   double C0 = cos(q[0]);
   double S0 = sin(q[0]);
   double C1 = cos(q[1]);
@@ -172,8 +171,7 @@ void Inertia(double *M, double *q)
   M[34] = 0.0e0;
   M[35] = 0.268288e0;
 }
-void SpringForce(double * S, double *q)
-{
+void SpringForce(double* S, double* q) {
   double t1;
   double t10;
   double t2;
@@ -197,9 +195,7 @@ void SpringForce(double * S, double *q)
   }
 }
 
-
-void NLEffects(double *N, double *q, double *qdot)
-{
+void NLEffects(double* N, double* q, double* qdot) {
   double C0 = cos(q[0]);
   double S0 = sin(q[0]);
   double C1 = cos(q[1]);
@@ -227,9 +223,13 @@ void NLEffects(double *N, double *q, double *qdot)
   double tmp22 = tmp8 * tmp7;
   double tmp23 = 0.18042e2 * tmp11 + 0.54126e1 * tmp22 + 0.1407276e1 * tmp14;
   double tmp24 = 0.18042e2 * tmp12 + 0.54126e1 * tmp16 + 0.1407276e1 * tmp17;
-  double tmp26 = 0.20305475e1 * tmp9 + tmp8 * (-0.4551828e0 * tmp8 - 0.189078e1 * qdot[1]) + qdot[1] * (0.1397675e0 * tmp8 + 0.4551828e0 * qdot[1]) + 0.54126e1 * tmp13 - 0.1407276e1 * tmp12;
-  double tmp27 = 0.1397675e0 * tmp10 - 0.20305475e1 * tmp7 * qdot[1] - tmp7 * (-0.4551828e0 * tmp8 - 0.189078e1 * qdot[1]) + 0.1407276e1 * tmp11;
-  double tmp28 = -0.4551828e0 * tmp10 + tmp7 * (0.1397675e0 * tmp8 + 0.4551828e0 * qdot[1]) - 0.20305475e1 * tmp8 * tmp7 - 0.54126e1 * tmp11;
+  double tmp26 = 0.20305475e1 * tmp9 + tmp8 * (-0.4551828e0 * tmp8 - 0.189078e1 * qdot[1]) +
+                 qdot[1] * (0.1397675e0 * tmp8 + 0.4551828e0 * qdot[1]) + 0.54126e1 * tmp13 -
+                 0.1407276e1 * tmp12;
+  double tmp27 = 0.1397675e0 * tmp10 - 0.20305475e1 * tmp7 * qdot[1] -
+                 tmp7 * (-0.4551828e0 * tmp8 - 0.189078e1 * qdot[1]) + 0.1407276e1 * tmp11;
+  double tmp28 = -0.4551828e0 * tmp10 + tmp7 * (0.1397675e0 * tmp8 + 0.4551828e0 * qdot[1]) -
+                 0.20305475e1 * tmp8 * tmp7 - 0.54126e1 * tmp11;
   double tmp29 = C2 * tmp7 - S2 * tmp8;
   double tmp30 = S2 * tmp7 + C2 * tmp8;
   double tmp31 = C2 * tmp9 - S2 * tmp10 - tmp30 * qdot[2];
@@ -246,16 +246,28 @@ void NLEffects(double *N, double *q, double *qdot)
   double tmp45 = 0.1637e2 * tmp33 - 0.11459e0 * tmp44 - 0.14733e1 * tmp36;
   double tmp46 = 0.1637e2 * tmp34 - 0.11459e0 * tmp38 - 0.14733e1 * tmp39;
   double tmp47 = 0.1637e2 * tmp35 - 0.11459e0 * tmp41 - 0.14733e1 * tmp42;
-  double tmp48 = 0.1833991e0 * tmp31 + tmp30 * (-0.143131e-1 * tmp30 - 0.428021e-1 * qdot[1] - 0.428021e-1 * qdot[2]) - (-qdot[1] - qdot[2]) * (0.179597e0 * tmp30 + 0.143131e-1 * qdot[1] + 0.143131e-1 * qdot[2]) - 0.11459e0 * tmp35 + 0.14733e1 * tmp34;
-  double tmp49 = 0.179597e0 * tmp32 + 0.1833991e0 * (-qdot[1] - qdot[2]) * tmp29 - tmp29 * (-0.143131e-1 * tmp30 - 0.428021e-1 * qdot[1] - 0.428021e-1 * qdot[2]) - 0.14733e1 * tmp33;
-  double tmp50 = -0.143131e-1 * tmp32 + tmp29 * (0.179597e0 * tmp30 + 0.143131e-1 * qdot[1] + 0.143131e-1 * qdot[2]) - 0.1833991e0 * tmp30 * tmp29 + 0.11459e0 * tmp33;
+  double tmp48 =
+      0.1833991e0 * tmp31 +
+      tmp30 * (-0.143131e-1 * tmp30 - 0.428021e-1 * qdot[1] - 0.428021e-1 * qdot[2]) -
+      (-qdot[1] - qdot[2]) *
+          (0.179597e0 * tmp30 + 0.143131e-1 * qdot[1] + 0.143131e-1 * qdot[2]) -
+      0.11459e0 * tmp35 + 0.14733e1 * tmp34;
+  double tmp49 =
+      0.179597e0 * tmp32 + 0.1833991e0 * (-qdot[1] - qdot[2]) * tmp29 -
+      tmp29 * (-0.143131e-1 * tmp30 - 0.428021e-1 * qdot[1] - 0.428021e-1 * qdot[2]) -
+      0.14733e1 * tmp33;
+  double tmp50 = -0.143131e-1 * tmp32 +
+                 tmp29 * (0.179597e0 * tmp30 + 0.143131e-1 * qdot[1] + 0.143131e-1 * qdot[2]) -
+                 0.1833991e0 * tmp30 * tmp29 + 0.11459e0 * tmp33;
   double tmp51 = C3 * tmp29 - S3 * (-qdot[1] - qdot[2]);
   double tmp52 = S3 * tmp29 + C3 * (-qdot[1] - qdot[2]);
   double tmp53 = C3 * tmp31 - tmp52 * qdot[3];
   double tmp54 = S3 * tmp31 + tmp51 * qdot[3];
-  double tmp55 = C3 * (tmp33 + 0.7e-1 * tmp44 + 0.1e0 * tmp36) - S3 * (tmp35 + 0.7e-1 * tmp41 + 0.1e0 * tmp42);
+  double tmp55 = C3 * (tmp33 + 0.7e-1 * tmp44 + 0.1e0 * tmp36) -
+                 S3 * (tmp35 + 0.7e-1 * tmp41 + 0.1e0 * tmp42);
   double tmp56 = tmp34 + 0.7e-1 * tmp38 + 0.1e0 * tmp39;
-  double tmp57 = S3 * (tmp33 + 0.7e-1 * tmp44 + 0.1e0 * tmp36) + C3 * (tmp35 + 0.7e-1 * tmp41 + 0.1e0 * tmp42);
+  double tmp57 = S3 * (tmp33 + 0.7e-1 * tmp44 + 0.1e0 * tmp36) +
+                 C3 * (tmp35 + 0.7e-1 * tmp41 + 0.1e0 * tmp42);
   double tmp59 = tmp54 + (tmp30 + qdot[3]) * tmp51;
   double tmp60 = -tmp52 * tmp52 - tmp51 * tmp51;
   double tmp62 = -tmp32 + tmp52 * tmp51;
@@ -265,9 +277,18 @@ void NLEffects(double *N, double *q, double *qdot)
   double tmp67 = 0.11362e2 * tmp55 + 0.11362e-1 * tmp65 + 0.2897310e1 * tmp66;
   double tmp68 = 0.11362e2 * tmp56 + 0.11362e-1 * tmp59 + 0.2897310e1 * tmp60;
   double tmp69 = 0.11362e2 * tmp57 + 0.11362e-1 * tmp62 + 0.2897310e1 * tmp63;
-  double tmp70 = 0.9148140e0 * tmp53 + 0.71027e-2 * tmp32 + 0.9138254e0 * tmp52 * (tmp30 + qdot[3]) - tmp52 * (0.71027e-2 * tmp51 + 0.60114e-2 * tmp30 + 0.60114e-2 * qdot[3]) + 0.2897310e1 * tmp57;
-  double tmp71 = 0.71027e-2 * tmp53 + 0.60114e-2 * tmp32 + tmp52 * (0.9148140e0 * tmp51 + 0.71027e-2 * tmp30 + 0.71027e-2 * qdot[3]) - 0.9138254e0 * tmp52 * tmp51 - 0.11362e-1 * tmp57;
-  double tmp72 = 0.9138254e0 * tmp54 + tmp51 * (0.71027e-2 * tmp51 + 0.60114e-2 * tmp30 + 0.60114e-2 * qdot[3]) - (tmp30 + qdot[3]) * (0.9148140e0 * tmp51 + 0.71027e-2 * tmp30 + 0.71027e-2 * qdot[3]) + 0.11362e-1 * tmp56 - 0.2897310e1 * tmp55;
+  double tmp70 = 0.9148140e0 * tmp53 + 0.71027e-2 * tmp32 +
+                 0.9138254e0 * tmp52 * (tmp30 + qdot[3]) -
+                 tmp52 * (0.71027e-2 * tmp51 + 0.60114e-2 * tmp30 + 0.60114e-2 * qdot[3]) +
+                 0.2897310e1 * tmp57;
+  double tmp71 = 0.71027e-2 * tmp53 + 0.60114e-2 * tmp32 +
+                 tmp52 * (0.9148140e0 * tmp51 + 0.71027e-2 * tmp30 + 0.71027e-2 * qdot[3]) -
+                 0.9138254e0 * tmp52 * tmp51 - 0.11362e-1 * tmp57;
+  double tmp72 =
+      0.9138254e0 * tmp54 +
+      tmp51 * (0.71027e-2 * tmp51 + 0.60114e-2 * tmp30 + 0.60114e-2 * qdot[3]) -
+      (tmp30 + qdot[3]) * (0.9148140e0 * tmp51 + 0.71027e-2 * tmp30 + 0.71027e-2 * qdot[3]) +
+      0.11362e-1 * tmp56 - 0.2897310e1 * tmp55;
   double tmp73 = C4 * tmp51 - S4 * (tmp30 + qdot[3]);
   double tmp74 = S4 * tmp51 + C4 * (tmp30 + qdot[3]);
   double tmp75 = C4 * tmp53 - S4 * tmp32 - tmp74 * qdot[4];
@@ -347,56 +368,53 @@ void NLEffects(double *N, double *q, double *qdot)
   N[5] = 0.0e0;
 }
 
-
-
-SICONOS_EXPORT void mass(unsigned int sizeOfq, const double *q, double *mass, unsigned int sizeZ, double* z)
-{
+SICONOS_EXPORT void mass(unsigned int sizeOfq, const double* q, double* mass,
+                         unsigned int sizeZ, double* z) {
   double q_local[sizeOfq];
-  for (unsigned int i = 0; i < sizeOfq; i++)
-    q_local[i] = q[i];
+  for (unsigned int i = 0; i < sizeOfq; i++) q_local[i] = q[i];
   Inertia(mass, q_local);
 }
 
-SICONOS_EXPORT void FGyr(unsigned int sizeOfq, const double *q, const double *velocity, double *FGyr, unsigned int sizeZ, double* z)
-{
+SICONOS_EXPORT void FGyr(unsigned int sizeOfq, const double* q, const double* velocity,
+                         double* FGyr, unsigned int sizeZ, double* z) {
   double q_local[sizeOfq];
   double v_local[sizeOfq];
-  for (unsigned int i = 0; i < sizeOfq; i++)
-  {
+  for (unsigned int i = 0; i < sizeOfq; i++) {
     q_local[i] = q[i];
     v_local[i] = velocity[i];
   }
   NLEffects(FGyr, q_local, v_local);
 }
 
-SICONOS_EXPORT void jacobianFGyrq(unsigned int sizeOfq, const double *q, const double *velocity, double *jacobq, unsigned int sizeOfZ, double* z)
-{
-  //dummy function
+SICONOS_EXPORT void jacobianFGyrq(unsigned int sizeOfq, const double* q,
+                                  const double* velocity, double* jacobq, unsigned int sizeOfZ,
+                                  double* z) {
+  // dummy function
 }
 
-SICONOS_EXPORT void jacobianVFGyr(unsigned int sizeOfq, const double *q, const  double *velocity, double *jacobv, unsigned int sizeOfZ, double* z)
-{
-  //dummy function
+SICONOS_EXPORT void jacobianVFGyr(unsigned int sizeOfq, const double* q,
+                                  const double* velocity, double* jacobv, unsigned int sizeOfZ,
+                                  double* z) {
+  // dummy function
 }
 
-SICONOS_EXPORT void U(double time, unsigned int sizeOfq, const double *q, const  double *velocity, double *U, unsigned int sizeZ, double* z)
-{
+SICONOS_EXPORT void U(double time, unsigned int sizeOfq, const double* q,
+                      const double* velocity, double* U, unsigned int sizeZ, double* z) {
   double q_local[sizeOfq];
-  for (unsigned int i = 0; i < sizeOfq; i++)
-    q_local[i] = q[i];
+  for (unsigned int i = 0; i < sizeOfq; i++) q_local[i] = q[i];
   SpringForce(U, q_local);
 
   // ajout des torques
-  for (unsigned int i = 0; i < sizeOfq; i++)
-    U[i] -= z[i];
-
+  for (unsigned int i = 0; i < sizeOfq; i++) U[i] -= z[i];
 }
 
-SICONOS_EXPORT void jacobFintQ(double time, unsigned int sizeOfq, const double *q, const  double *velocity, double *jacobFintQ, unsigned int sizeOfZ, double* z)
-{
-  //dummy function
+SICONOS_EXPORT void jacobFintQ(double time, unsigned int sizeOfq, const double* q,
+                               const double* velocity, double* jacobFintQ,
+                               unsigned int sizeOfZ, double* z) {
+  // dummy function
 }
-SICONOS_EXPORT void jacobFintV(double time, unsigned int sizeOfq, const double *q, const double *velocity, double *jacobFintV, unsigned int sizeOfZ, double* z)
-{
-  //dummy function
+SICONOS_EXPORT void jacobFintV(double time, unsigned int sizeOfq, const double* q,
+                               const double* velocity, double* jacobFintV,
+                               unsigned int sizeOfZ, double* z) {
+  // dummy function
 }

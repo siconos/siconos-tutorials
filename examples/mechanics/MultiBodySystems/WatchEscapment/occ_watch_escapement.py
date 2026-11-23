@@ -9,17 +9,14 @@
 # siconos <this file>
 #
 
-from pathlib import Path
-from siconos.mechanics.collision.tools import Contactor, Shape, Volume, Material
-from siconos.io.mechanics_run import MechanicsHdf5Runner
-from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeCylinder
-from OCC.Core.gp import gp_Pnt, gp_Ax2, gp_Dir
-import siconos.numerics as sn
-import siconos.modeling as sm
-import siconos.io.mechanics_run
-import numpy as np
 import math
+from pathlib import Path
 
+import numpy as np
+import siconos.io.mechanics_run
+import siconos.numerics as sn
+from siconos.io.mechanics_run import MechanicsHdf5Runner
+from siconos.mechanics.collision.tools import Contactor, Material, Shape, Volume
 
 config_occ = siconos.io.mechanics_run.RunnerConfig(backend="occ")
 
@@ -91,7 +88,7 @@ if not restart:
         balance_wheel_com = np.array([10.36290606, -3.90431343, -0.21335326])
 
         inertia = [0.019661740055950054, 0.028171281786527207, 0.021165152882136887]
-        init_orientation = [0.97366047, 0.0, 0.0, -0.22800273]  #
+        init_orientation = [0.97366047, 0.0, 0.0, -0.22800273]
 
         angle_init = math.asin(-0.22800273)
         print("angle_init =", angle_init)
@@ -455,7 +452,6 @@ if not restart:
 
         counter = 0
         for c in list_contactor:
-
             io.add_interaction(
                 "contact_escape_wheel_pin_lever_" + str(counter),
                 body1_name="escape_wheel_body",
@@ -531,7 +527,6 @@ options.update_internal(1, sn.solver_ids.SICONOS_FRICTION_3D_ONECONTACT_NSN)
 
 
 with MechanicsHdf5Runner(config=config_occ, mode="r+") as io:
-
     io.run(
         with_timer=True,
         t0=0,

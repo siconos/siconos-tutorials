@@ -29,11 +29,12 @@
 #define __ActuationModel_h
 
 #ifdef WINDOWS
-#define extern __declspec (dllexport)
+#define extern __declspec(dllexport)
 #endif
 
 /**
- * Initialization of actuators dynamics for a position q, a velocity qdot and a time of sample given
+ * Initialization of actuators dynamics for a position q, a velocity qdot and a time of sample
+ * given
  * @param[in] t (double) time
  * @param[in] q (double vector, size = NDOF) position
  * @param[in] qdot (double vector, size = NDOF) velocity
@@ -46,14 +47,16 @@
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void actuationInitialisation(double *t, double *q, double *qdot, int *contactState, int *NDOF, int *NCONT, double *state, double *z);
+    void actuationInitialisation(double* t, double* q, double* qdot, int* contactState,
+                                 int* NDOF, int* NCONT, double* state, double* z);
 
 /**
  * Compute the State of actuators switchs
  * @param[in] t (double) time
- * @param[in] x (double vector, size = 2*NDOF + 2*Nmuscles + 2) system state \f$x = (q, \dot{q}, z)\f$
+ * @param[in] x (double vector, size = 2*NDOF + 2*Nmuscles + 2) system state \f$x = (q,
+ * \dot{q}, z)\f$
  * @param[in] oldState (double vector) state of actuators switchs
  * @param[in] NDOF (int) number of degrees of freedom
  * @param[in] x_size (int) size of x
@@ -63,9 +66,10 @@ void actuationInitialisation(double *t, double *q, double *qdot, int *contactSta
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void actuationStateReset(double *t, double *x, double *oldState, int *NDOF, int *x_size, int *state_size, double *newState);
+    void actuationStateReset(double* t, double* x, double* oldState, int* NDOF, int* x_size,
+                             int* state_size, double* newState);
 
 /**
  * Compute the state of the actuators switchs
@@ -81,9 +85,11 @@ void actuationStateReset(double *t, double *x, double *oldState, int *NDOF, int 
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void actuationEventDetection(double *t, double *x, double *actuationState, int *NDOF, int *x_size, int *state_size, double *events, int *events_size);
+    void actuationEventDetection(double* t, double* x, double* actuationState, int* NDOF,
+                                 int* x_size, int* state_size, double* events,
+                                 int* events_size);
 
 /**
  * Handling of Actuation Events
@@ -103,9 +109,11 @@ void actuationEventDetection(double *t, double *x, double *actuationState, int *
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void actuationEventHandling(double *t, double *x, int *events, double *oldState, int *NDOF, int *x_size, int *state_size, int *NCONT, int *contactState, double *newx, double *newState, int *warmStart);
+    void actuationEventHandling(double* t, double* x, int* events, double* oldState, int* NDOF,
+                                int* x_size, int* state_size, int* NCONT, int* contactState,
+                                double* newx, double* newState, int* warmStart);
 
 /**
  * Compute the generalized Torques
@@ -123,7 +131,8 @@ void actuationEventHandling(double *t, double *x, int *events, double *oldState,
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void actuationDynamics(double *t, double *q, double *qdot, double *z, double *state, int *NDOF, int *NCONT, int *z_size, double *zdot, double *torques);
+    void actuationDynamics(double* t, double* q, double* qdot, double* z, double* state,
+                           int* NDOF, int* NCONT, int* z_size, double* zdot, double* torques);
 #endif /* __ActuationModel_h */

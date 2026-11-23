@@ -47,5 +47,3 @@ plot \
 # set yrange [-2:2]
 # plot \
 # result_file u 1:(0.5*(1.0+(1.0-$9))) t "u(t)" w l linecolor rgb "red"
-
-

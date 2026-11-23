@@ -4,18 +4,18 @@
 # Example of a double pendulum
 #
 
-from siconos.mechanics.collision.tools import Contactor
-from siconos.io.mechanics_run import MechanicsHdf5Runner
+from math import pi
+
+import numpy as np
 import siconos
 from OCC.Core.BRepPrimAPI import (
     BRepPrimAPI_MakeBox,
-    BRepPrimAPI_MakeSphere,
     BRepPrimAPI_MakeCylinder,
+    BRepPrimAPI_MakeSphere,
 )
 from OCC.Core.gp import gp_Pnt
-
-from math import pi
-import numpy as np
+from siconos.io.mechanics_run import MechanicsHdf5Runner
+from siconos.mechanics.collision.tools import Contactor
 
 config_occ = siconos.io.mechanics_run.RunnerConfig(backend="occ")
 
@@ -58,8 +58,6 @@ brick = BRepPrimAPI_MakeBox(gp_Pnt(-bx / 2.0, -by / 2.0, -bz / 2.0), bx, by, bz)
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner(config=config_occ) as io:
-
-    #
     io.add_occ_shape("Mass1", sphere1)
     io.add_occ_shape("Mass2", sphere2)
     io.add_occ_shape("Arm1", cylinder1)
@@ -183,5 +181,4 @@ with MechanicsHdf5Runner(config=config_occ) as io:
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
 with MechanicsHdf5Runner(config=config_occ, mode="r+") as io:
-
     io.run()

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -15,21 +16,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import pickle
+
+import numpy
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-from siconos.mechanics.collision.tools import Contactor
 from siconos.mechanics.collision.convexhull import ConvexHull
+from siconos.mechanics.collision.tools import Contactor
 
-import siconos.numerics as sn
-import numpy
-
-
-import pickle
-
-brick = list(pickle.load(open("brick.dat", "rb")))
-vertices = list(pickle.load(open("vertices.dat", "rb")))
+with open("brick.dat", "rb") as f:
+    brick = list(pickle.load(f))
+with open("vertices.dat", "rb") as f:
+    vertices = list(pickle.load(f))
 
 
 def one_brick(
@@ -91,7 +92,6 @@ def one_brick(
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     k = 0
 
     vertices_array = {}
@@ -110,8 +110,8 @@ with MechanicsHdf5Runner() as io:
             # print(len(vertices))
             v.append(vertices[vertices_array[vb]]["coord"])
         # print('v',v)
-        name = "brick%03d" % k
-        cname = "brick_shp%03d" % k
+        name = f"brick{k:03d}"
+        cname = f"brick_shp{k:03d}"
         one_brick(
             io,
             name,
@@ -162,8 +162,8 @@ run_options["verbose"] = True
 run_options["violation_verbose"] = False
 run_options["with_timer"] = True
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 run_options["output_frequency"] = 1
 

@@ -24,11 +24,11 @@
 // @brief Definitions of the global variables : ActiveDOF and BilateralContact
 //
 
-#include <iostream>
-#include <vector>
-#include <string>
-
 #include "KernelSomeDefinitions.hpp"
+
+#include <iostream>
+#include <string>
+#include <vector>
 
 /**
  * Global variable storing the enable degrees of freedom, if NULL every joints enabled
@@ -44,58 +44,41 @@ std::vector<int> ACTIVEDOF(0);
  */
 std::vector<int> BILATERALCONTACT(0);
 
-
 /***********************************************
  *                 Setters                     *
  ***********************************************/
 
-void setActiveDOF(int * activeDOF, int * size)
-{
-  if (ACTIVEDOF.size() != 0)
-  {
-    std::cout << "You are reinitializing ActiveDOF...\n" ;
+void setActiveDOF(int* activeDOF, int* size) {
+  if (ACTIVEDOF.size() != 0) {
+    std::cout << "You are reinitializing ActiveDOF...\n";
     ACTIVEDOF.resize(0);
   }
 
-  for (int i = 0; i < *size; i++)
-    ACTIVEDOF.push_back(activeDOF[i]);
+  for (int i = 0; i < *size; i++) ACTIVEDOF.push_back(activeDOF[i]);
 }
 
-void setBilateralContact(int * bilateralContact, int * size)
-{
-  if (BILATERALCONTACT.size() != 0)
-  {
-    std::cout << "You are reinitializing BilateralContact...\n" ;
+void setBilateralContact(int* bilateralContact, int* size) {
+  if (BILATERALCONTACT.size() != 0) {
+    std::cout << "You are reinitializing BilateralContact...\n";
     BILATERALCONTACT.resize(0);
   }
 
-  for (int i = 0; i < *size; i++)
-    BILATERALCONTACT.push_back(bilateralContact[i]);
+  for (int i = 0; i < *size; i++) BILATERALCONTACT.push_back(bilateralContact[i]);
 }
 
 /***********************************************
  *                 Getters                     *
  ***********************************************/
 
-void getActiveDOFsize(int * size)
-{
-  *size = ACTIVEDOF.size();
+void getActiveDOFsize(int* size) { *size = ACTIVEDOF.size(); }
+
+void getActiveDOF(int* activeDOF) {
+  for (unsigned int i = 0; i < ACTIVEDOF.size(); i++) activeDOF[i] = ACTIVEDOF[i];
 }
 
-void getActiveDOF(int * activeDOF)
-{
-  for (unsigned int i = 0; i < ACTIVEDOF.size(); i++)
-    activeDOF[i] = ACTIVEDOF[i];
-}
+void getBilateralContactsize(int* size) { *size = BILATERALCONTACT.size(); }
 
-void getBilateralContactsize(int * size)
-{
-  *size = BILATERALCONTACT.size();
-}
-
-void getBilateralContact(int * bilateralContact)
-{
+void getBilateralContact(int* bilateralContact) {
   for (unsigned int i = 0; i < BILATERALCONTACT.size(); i++)
     bilateralContact[i] = BILATERALCONTACT[i];
 }
-

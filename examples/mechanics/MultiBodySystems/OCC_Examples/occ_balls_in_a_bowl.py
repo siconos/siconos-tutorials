@@ -6,24 +6,21 @@
 #
 # specification of center of mass & moments of inertia
 
-#
 
 from math import pi
 
-from siconos.mechanics.collision.tools import Contactor
-from siconos.io.mechanics_run import MechanicsHdf5Runner
+# original implementation with occ backend
+import siconos.io.mechanics_run
 import siconos.numerics as sn
 
 # for osi specification:
 from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Cut
-from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox, BRepPrimAPI_MakeSphere
-from OCC.Core.gp import gp_Pnt, gp_Ax1, gp_Dir
-
-from OCC.Core.GProp import GProp_GProps
 from OCC.Core.BRepGProp import brepgprop_VolumeProperties
-
-# original implementation with occ backend
-import siconos.io.mechanics_run
+from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox, BRepPrimAPI_MakeSphere
+from OCC.Core.gp import gp_Ax1, gp_Dir, gp_Pnt
+from OCC.Core.GProp import GProp_GProps
+from siconos.io.mechanics_run import MechanicsHdf5Runner
+from siconos.mechanics.collision.tools import Contactor
 
 config_occ = siconos.io.mechanics_run.RunnerConfig()
 config_occ.set_backend("occ")
@@ -71,7 +68,6 @@ print("bowl moment of inertia:", (bowl_I1, bowl_I2, bowl_I3))
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner(config=config_occ) as io:
-
     io.add_occ_shape("Contact", bowl)
 
     io.add_occ_shape("Ground", ground)
@@ -240,7 +236,6 @@ options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = 100000
 options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-7
 
 with MechanicsHdf5Runner(config=config_occ, mode="r+") as io:
-
     io.run(
         with_timer=False,
         gravity_scale=1,

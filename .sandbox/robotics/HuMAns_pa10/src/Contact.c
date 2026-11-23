@@ -1,6 +1,5 @@
 #include <math.h>
-void Contact(double * CC, double * q)
-{
+void Contact(double* CC, double* q) {
   double t1;
   double t10;
   double t11;
@@ -39,4 +38,3 @@ void Contact(double * CC, double * q)
     return;
   }
 }
-

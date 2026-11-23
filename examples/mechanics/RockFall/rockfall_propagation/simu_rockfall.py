@@ -18,26 +18,25 @@
 #
 #
 
-from pathlib import Path
+# passage argument --output
+import argparse
 import shutil
+from pathlib import Path
 
-# siconos
-from siconos.mechanics.collision.tools import Contactor
-
+import siconos.integrators
 import siconos.io.rocks_generator as rg
-
-# from convexhull_modif import ConvexHull
-from siconos.mechanics.collision.bullet import SiconosBulletOptions
+import siconos.numerics as sn
+import siconos.simulation as simu
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-import siconos.numerics as sn
-import siconos.simulation as simu
-import siconos.integrators
 
-# passage argument --output
-import argparse
+# from convexhull_modif import ConvexHull
+from siconos.mechanics.collision.bullet import SiconosBulletOptions
+
+# siconos
+from siconos.mechanics.collision.tools import Contactor
 
 ###############################################################################
 # Definition
@@ -66,7 +65,6 @@ args = parser.parse_args()
 do_build_config = False
 
 if do_build_config:
-
     # Soil param -------------------------------------------------------------------
     # concat
     zone_id = [1, 2, 12, 13, 15, 16, 17, 18, 19]
@@ -146,25 +144,24 @@ if do_build_config:
         height_fall_max=3.0,
     )
     with MechanicsHdf5Runner(io_filename=args.output) as io:
-
         # soil ---------------------------------------------------------------------
         print("Resample Soil mask... \n")
-        for i in range(0, nb_zones):
+        for i in range(nb_zones):
             dem_file = mnt_file_prefix + str(zone_id[i]) + ".stl"
             # if i==1:
             # dem_file='mnt_2m_PR_simple_'+str(i)+'_mod.stl'
             # else:
             # dem_file='mnt_2m_PR_simple_'+str(i)+'.stl'
             mesh1 = io.add_mesh_from_file(
-                "dem_TIN_shape%d" % i,
+                f"dem_TIN_shape{i}",
                 dem_file,
                 scale=1,
                 insideMargin=0.0,
                 outsideMargin=0.0,
             )
             io.add_object(
-                "dem_TIN%d" % i,
-                [Contactor("dem_TIN_shape%d" % i, collision_group=i)],
+                f"dem_TIN{i}",
+                [Contactor(f"dem_TIN_shape{i}", collision_group=i)],
                 translation=[0.0, 0.0, 0.0],
             )
 
@@ -172,9 +169,9 @@ if do_build_config:
         rg.generate_random_blocks(io, drop_config, rock_config)
 
         # contact laws
-        for i in range(0, nb_zones):
+        for i in range(nb_zones):
             io.add_Newton_impact_rolling_friction_nsl(
-                "contact_soil_%d" % int(i),
+                f"contact_soil_{int(i)}",
                 e=e_c[i - 1],
                 mu=mu_c[i - 1],
                 mu_r=mu_r_c[i - 1],
@@ -324,7 +321,6 @@ class deleterock:
 
     def initialize(self, io):
         self._io = io
-        pass
 
     def call(self, step):
         # print("call death hook at step", step)

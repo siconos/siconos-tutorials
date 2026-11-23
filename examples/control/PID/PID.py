@@ -18,16 +18,15 @@
 # limitations under the License.
 #
 
-import siconos.modeling as sm
-from siconos.control.simulation import ControlManager
-from siconos.control.sensor import LinearSensor
-from siconos.control.controller import PID
 import siconos.integrators
+import siconos.modeling as sm
 import siconos.nonsmooth_formulations
-import siconos.simulation
-
-from numpy import zeros, savetxt
 import siconos.plot_config as sicoplot
+import siconos.simulation
+from numpy import savetxt, zeros
+from siconos.control.controller import PID
+from siconos.control.sensor import LinearSensor
+from siconos.control.simulation import ControlManager
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)

@@ -52,17 +52,13 @@ int main(int argc, char* argv[]) {
 
     // Apply nodal forces
     if (tags.find(siconos::mechanics::fem::MeshTags::applied_forces) != tags.end()) {
-       siconos::algebra::SiconosVector nodal_forces;
-      if (dim == 2)
-      {
+      siconos::algebra::SiconosVector nodal_forces;
+      if (dim == 2) {
         nodal_forces.resize(3);
-        nodal_forces <<  -2e9, 0.  ,0. ;
-      }
-      else
-      {
+        nodal_forces << -2e9, 0., 0.;
+      } else {
         nodal_forces.resize(6);
-        nodal_forces <<  -2e9, 0. ,0. ,0. ,0. ,0. ;
-
+        nodal_forces << -2e9, 0., 0., 0., 0., 0.;
       }
       beam->applyNodalForces(tags[siconos::mechanics::fem::MeshTags::applied_forces],
                              nodal_forces);
@@ -71,15 +67,12 @@ int main(int argc, char* argv[]) {
     // Boundary Conditions
     if (tags.find(siconos::mechanics::fem::MeshTags::boundary_conditions) != tags.end()) {
       std::vector<int> bc_dof_index;
-      if (dim == 2)
-      {
+      if (dim == 2) {
         bc_dof_index.resize(3);
         bc_dof_index[0] = 0;
         bc_dof_index[1] = 1;
         bc_dof_index[2] = 2;
-      }
-      else
-      {
+      } else {
         bc_dof_index.resize(6);
         bc_dof_index[0] = 0;
         bc_dof_index[1] = 1;
@@ -117,9 +110,7 @@ int main(int argc, char* argv[]) {
       SOLVER = SICONOS_GLOBAL_FRICTION_3D_NSGS_WR;
 
     auto osnspb = std::make_shared<
-        siconos::mechanics::fem::nonsmooth_formulations::GlobalFrictionContact>(
-        dim, SOLVER);
-
+        siconos::mechanics::fem::nonsmooth_formulations::GlobalFrictionContact>(dim, SOLVER);
 
     // -- (4) Simulation setup with (1) (2) (3)
     auto s = std::make_shared<siconos::simulation::TimeStepping>(beamNSDS, t, osi_fem, osnspb);
@@ -144,14 +135,11 @@ int main(int argc, char* argv[]) {
     siconos::algebra::SiconosDenseMatrix pos{N + 1, 10};
     pos.setZero();
     int lastXposition, lastYposition, lastOrientation;
-    if (dim == 2)
-    {
-     lastXposition = beam->dimension() - 3;
+    if (dim == 2) {
+      lastXposition = beam->dimension() - 3;
       lastYposition = beam->dimension() - 2;
-     lastOrientation = beam->dimension() - 1;
-    }
-    else
-    {
+      lastOrientation = beam->dimension() - 1;
+    } else {
       lastXposition = beam->dimension() - 6;
       lastYposition = beam->dimension() - 5;
       lastOrientation = beam->dimension() - 1;

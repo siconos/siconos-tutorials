@@ -1,10 +1,9 @@
-import siconos.numerics as SN
-
 import numpy as np
+import siconos.numerics as SN
 
 try:
     from cffi import FFI
-except:
+except ImportError:
     import sys
 
     print("no cffi module installed, exiting")
@@ -108,7 +107,7 @@ if __name__ == "__main__":
 
             info = SN.mcp_newton_minFBLSA(mcp, z, w, SO)
             if info > 0:
-                print("MCP solver failed ! info = {:}".format(info))
+                print(f"MCP solver failed ! info = {info}")
                 print(xk)
                 print(z)
                 print(w)

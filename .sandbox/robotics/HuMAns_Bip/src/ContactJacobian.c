@@ -1,7 +1,7 @@
-#include "LagrangianModel.h"
 #include <math.h>
-void ContactJacobian(CJ, q)
-double CJ[1449];
+
+#include "LagrangianModel.h"
+void ContactJacobian(CJ, q) double CJ[1449];
 double q[21];
 {
   double t1;
@@ -3959,4 +3959,3 @@ double q[21];
     return;
   }
 }
-

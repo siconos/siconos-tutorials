@@ -25,7 +25,7 @@ using Vector = siconos::algebra::SiconosVector;
 
 user_defined::MyDS::MyDS(Eigen::Ref<siconos::algebra::SiconosVector> x0)
     : FirstOrderNonLinearDS(x0, siconos::algebra::alias_t) {
-  setComputefVectorFunction([](const Eigen::Ref<const siconos::algebra::SiconosVector> &x,
+  setComputefVectorFunction([](const Eigen::Ref<const siconos::algebra::SiconosVector>& x,
                                double time,
                                Eigen::Ref<siconos::algebra::MapVectorType> result) {
     result(0) = -4.5 * x(0);
@@ -33,7 +33,7 @@ user_defined::MyDS::MyDS(Eigen::Ref<siconos::algebra::SiconosVector> x0)
   });
 
   setComputeJacobianfOver_xFunction(
-      [](const Eigen::Ref<const siconos::algebra::SiconosVector> &x, double time,
+      [](const Eigen::Ref<const siconos::algebra::SiconosVector>& x, double time,
          Eigen::Ref<siconos::algebra::MapType> result) {
         result.setZero();
         result(0, 0) = -4.5;

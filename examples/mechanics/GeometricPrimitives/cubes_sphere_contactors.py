@@ -14,20 +14,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import numpy
 import math
+
+import numpy
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-from siconos.mechanics.collision.tools import Contactor
-
-import siconos.numerics as sn
-
-
-from siconos.mechanics.collision.convexhull import ConvexHull
-
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
+from siconos.mechanics.collision.convexhull import ConvexHull
+from siconos.mechanics.collision.tools import Contactor
 
 bullet_options = SiconosBulletOptions()
 bullet_options.worldScale = 1.0
@@ -71,7 +68,6 @@ def normal_plane(p1, p2, p3):
 
 # Creation of the hdf5 file
 with MechanicsHdf5Runner(use_compression=True) as io:
-
     # ######## amont
     v0 = numpy.array([5.00, 1.6131, 1.0751])
     v1 = numpy.array([-2.50, 1.6131, 1.0751])
@@ -172,7 +168,7 @@ with MechanicsHdf5Runner(use_compression=True) as io:
 
                 for v in vertices:
                     sphere_count += 1
-                    spheres.append("Sphere%03d" % sphere_count)
+                    spheres.append(f"Sphere{sphere_count:03d}")
                     io.add_primitive_shape(spheres[-1], "Sphere", [radius])
 
                 # computation of inertia and volume
@@ -252,8 +248,8 @@ run_options["output_frequency"] = 10
 run_options["with_timer"] = False
 # run_options["violation_verbose"] = True
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 
 with MechanicsHdf5Runner(mode="r+") as io:

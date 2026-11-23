@@ -24,5 +24,3 @@
 + spheres_in_a_box.py
 + mkspheres.py : creation of the sample of spheres using LMGC90
 http://www.lmgc.univ-montp2.fr/~dubois/LMGC90/Web/Welcome_%21.html
-
-

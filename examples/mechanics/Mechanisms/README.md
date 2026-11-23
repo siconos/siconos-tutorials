@@ -19,7 +19,7 @@ The general options of the siconos_mechanisms toolbox can be overwritten in the 
 GUI and visualization
 ---------------------
 
-A light-weight GUI has been developped base on pythonocc (version 0.16 or 0.18).	
+A light-weight GUI has been developped base on pythonocc (version 0.16 or 0.18).
 
 The option `with3D=1` in the file `mbtbLocalOptions.py` enables the 3D GUI.
 

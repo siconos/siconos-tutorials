@@ -5,8 +5,8 @@
 #      integrator and fixed 1 us time step (file "SMASHN0p25BE1us.dat").
 #      The first 217 us are discarded since they correspond
 #      to the initialization of the oscillating circuit.
-#      
-#    - results from SICONOS  "DiodeBridgeCapFilterBE1us.dat" 
+#
+#    - results from SICONOS  "DiodeBridgeCapFilterBE1us.dat"
 #      (rename of "DiodeBridgeCapFilter.dat") assumed to be obtained
 #      by a simulation of the DiodeBridgeCapFilter.cpp
 #      sample with theta = 1 (Backward Euler integration) and a
@@ -23,13 +23,13 @@
 # diode is a stiff one, with a threshold of around 0.25 V. Such a threshold
 # yields small differences in the conduction state of the diode with respect
 # to the ideal diode behavior currently (12/09/2005) modelled in the Siconos sample.
-# - Larger differences appear on the potentials of the bridge's load (2nd graph). 
+# - Larger differences appear on the potentials of the bridge's load (2nd graph).
 # They are due to the phases when all diodes are blocked : the load is floating with respect
 # to the oscillator, and there is an infinity of solutions (bounded by the oscillator poles
 # potentials). Thus, these differences are not meaningful.
 #----------------------------------------------------------------------------------
 
-#set  term X11 
+#set  term X11
 
 
 toffset = 2.170E-04
@@ -39,7 +39,7 @@ heightoff = 0.2
 winratio = 1.0
 winheight = basheight*winratio
 
-set lmargin 8 
+set lmargin 8
 set bmargin 0
 set tmargin 0
 
@@ -49,7 +49,7 @@ set xzeroaxis
 set format x ""
 set xrange[2E-6:0.005]
 
-set mxtics 
+set mxtics
 set grid xtics
 set grid mxtics
 
@@ -58,7 +58,7 @@ set multiplot
 set size winratio,winheight
 
 set origin 0.0,winheight*3.0+heightoff
-set ylabel "V" 
+set ylabel "V"
 plot \
   "SMASHN0p25BE1us.dat" u ($1-toffset):2 t     "capacitor voltage , SMASH   BE 1us" w l,\
   "DiodeBridgeCapFilter.dat" u 1:2 t      "capacitor voltage , SICONOS BE 1us" w l
@@ -78,11 +78,10 @@ set format
 set xtics axis
 set xlabel "time in s"
 set origin 0.0,0.0+heightoff
-set ylabel "A" 
+set ylabel "A"
 plot\
   "SMASHN0p25BE1us.dat" u ($1-toffset):6 t     "diode F1 current , SMASH   BE 1us" w l,\
   "DiodeBridgeCapFilter.dat" u 1:7 t      "diode F1 current , SICONOS BE 1us" w l,\
   "SMASHN0p25BE1us.dat" u ($1-toffset):7 t     "diode R1 current , SMASH   BE 1us" w l,\
   "DiodeBridgeCapFilter.dat" u 1:4 t      "diode R1 current , SICONOS BE 1us" w l
 set nomultiplot
-

@@ -28,7 +28,7 @@
 #define __Kernel_SomeDefinitions_hpp
 
 #ifdef WINDOWS
-#define extern __declspec (dllexport)
+#define extern __declspec(dllexport)
 #endif
 
 /**
@@ -39,9 +39,9 @@
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void setActiveDOF(int *activeDOF, int *size);
+    void setActiveDOF(int* activeDOF, int* size);
 
 /**
  * set the contacts that are bilateral
@@ -51,10 +51,9 @@ void setActiveDOF(int *activeDOF, int *size);
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void setBilateralContact(int *bilateralContact, int *size);
-
+    void setBilateralContact(int* bilateralContact, int* size);
 
 /**
  * get the size of ACTIVEDOF
@@ -63,9 +62,9 @@ void setBilateralContact(int *bilateralContact, int *size);
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void getActiveDOFsize(int *size);
+    void getActiveDOFsize(int* size);
 
 /**
  * get the active degrees of freedom
@@ -74,9 +73,9 @@ void getActiveDOFsize(int *size);
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void getActiveDOF(int *activeDOF);
+    void getActiveDOF(int* activeDOF);
 
 /**
  * get the size of BILATERALCONTACT
@@ -85,9 +84,9 @@ void getActiveDOF(int *activeDOF);
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void getBilateralContactsize(int *size);
+    void getBilateralContactsize(int* size);
 
 /**
  * get the contacts that are bilateral
@@ -96,9 +95,8 @@ void getBilateralContactsize(int *size);
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void getBilateralContact(int *bilateralContact);
-
+    void getBilateralContact(int* bilateralContact);
 
 #endif /* __Kernel_SomeDefinitions_hpp */

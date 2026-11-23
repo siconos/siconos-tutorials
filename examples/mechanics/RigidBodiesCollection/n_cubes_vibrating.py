@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -20,15 +21,16 @@
 # shape.
 #
 
-from siconos.mechanics.collision.tools import Contactor
+import math
+import random
+
+import numpy as np
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-import siconos.numerics as sn
-import numpy as np
-import random
-import math
+from siconos.mechanics.collision.tools import Contactor
 
 n_cube = 3
 n_row = 2
@@ -163,7 +165,6 @@ run_options["solver_options"] = options
 run_options["output_frequency"] = 100
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

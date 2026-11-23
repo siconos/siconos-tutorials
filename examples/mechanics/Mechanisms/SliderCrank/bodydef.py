@@ -3,13 +3,14 @@ Check examples manual for details.
 
 """
 
-import numpy as np
 import array
 import subprocess
-import siconos.mechanisms.mbtb as mbtb
+
+import numpy as np
+from siconos.mechanisms import mbtb
 
 command = ["siconos", "-q"]
-subprocess.run(command)
+subprocess.run(command, check=True)
 
 
 WITH_CLEARANCE_ON_RODE = 1

@@ -49,7 +49,7 @@
 using Matrix = siconos::algebra::SiconosMatrix;
 using Vector = siconos::algebra::SiconosVector;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   double t0 = 0.0;
   double T = 5e-3;          // Total simulation time
   double h_step = 10.0e-6;  // Time step

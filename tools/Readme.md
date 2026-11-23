@@ -7,5 +7,3 @@ run Siconos.
   ```
 
 About oar : check https://cs-ljk.imag.fr/serveurs-de-calcul/utilisation/article/le-gestionnaire-de-batch-oar
-
-

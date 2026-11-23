@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -20,12 +21,11 @@
 # shape.
 #
 
-from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_run import MechanicsHdf5Runner
+from siconos.mechanics.collision.tools import Contactor
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a cube as a convex shape
     io.add_convex_shape(
         "CubeCS",
@@ -86,7 +86,6 @@ else:
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

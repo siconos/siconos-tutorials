@@ -34,6 +34,7 @@ except (ImportError, ModuleNotFoundError):
     raise
 
 import sys
+
 import getfem
 import numpy
 
@@ -235,7 +236,7 @@ class FigureItem:
         elif dim == 3:
             self.sl = getfem.Slice(("boundary",), m, self.nrefine)
         else:
-            raise Exception("%d-D Meshes are not supported" % (dim,))
+            raise NotImplementedError(f"{dim}-D Meshes are not supported")
         self.build_from_slice(self.sl, **args)
 
     def build_from_slice(self, sl, **args):
@@ -259,7 +260,7 @@ class FigureItem:
             elif len(data) == 1:
                 U = data[0]
             else:
-                raise Exception("wrong data tuple..")
+                raise ValueError("wrong data tuple..")
         else:
             U = data
         if mf is not None:
@@ -284,7 +285,7 @@ class FigureItem:
         d = self.dfield_on_slice(vdata)
         n = self.sl.nbpts()
         if d.size % n != 0:
-            raise Exception("non consistent dimension for data")
+            raise ValueError("non consistent dimension for data")
         if d.size > n:
             d = d.transpose()
             d.shape = (n, -1)
@@ -318,7 +319,7 @@ class FigureItem:
         elif isinstance(c, tvtk.LookupTable):
             lut = c
         else:
-            raise Exception("expected a string or a tvtk.LookupTable")
+            raise TypeError("expected a string or a tvtk.LookupTable")
         self.lookup_table = lut
         if self.mapper is not None:
             self.mapper.lookup_table = self.lookup_table
@@ -329,7 +330,7 @@ class FigureItem:
         if self.actors is None:
             self.actors = []
             points = _getfem_to_tvtk_points(self.sl.pts())
-            (triangles, cv2tr) = self.sl.splxs(2)
+            (triangles, _cv2tr) = self.sl.splxs(2)
             triangles = numpy.array(triangles.transpose(), "I")
             data = tvtk.PolyData(points=points, polys=triangles)
             if self.scalar_data is not None:
@@ -365,7 +366,7 @@ class FigureItem:
                 elif self.glyph_name == "cube":
                     glyph.source = tvtk.CubeSource().output
                 else:
-                    raise Exception("Unknown glyph name..")
+                    raise ValueError("Unknown glyph name..")
                 # glyph.scaling = 1
                 # glyph.scale_factor = self.glyph_scale_factor
                 data = glyph.output
@@ -404,7 +405,7 @@ class FigureItem:
                     self.actors += [actor_edges]
             if self.sl.nbsplxs(1):
                 # plot tubes
-                (seg, cv2seg) = self.sl.splxs(1)
+                (seg, _cv2seg) = self.sl.splxs(1)
                 seg = numpy.array(seg.transpose(), "I")
                 data = tvtk.Axes(origin=(0, 0, 0), scale_factor=0.5, symmetric=1)
                 data = tvtk.PolyData(points=points, lines=seg)
@@ -466,8 +467,8 @@ class Figure:
         self.gui = None
 
     def _create_ivtk_window(self, size=(800, 800)):
-        from enthought.tvtk.tools import ivtk
         from enthought.pyface.api import GUI
+        from enthought.tvtk.tools import ivtk
 
         # Create a GUI instance.
         self.gui = GUI()
@@ -529,7 +530,7 @@ class Figure:
                 for i in self.items:
                     i.scalar_range(*args)
         else:
-            raise Exception("plot something before changing its scalar range!")
+            raise RuntimeError("plot something before changing its scalar range!")
 
     #    def scalar_bar(self):
     #        if len(self.items):

@@ -14,10 +14,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-
-// =============================== Robot arm sample (HuMAnsPa10) ===============================
+// =============================== Robot arm sample (HuMAnsPa10)
+// ===============================
 //
 // see modelRobot1.jpg for complete system view.
 //
@@ -29,20 +29,17 @@
 
 using namespace std;
 
-int main(int argc, char* argv[])
-{
-  try
-  {
-
+int main(int argc, char* argv[]) {
+  try {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    int nDof = 3;           // degrees of freedom for robot arm
-    double t0 = 0;                   // initial computation time
-    double T = 1.9;                   // final computation time
-    double h = 0.005;                // time step
-    double e = 0.9;                  // restit. coef. for impact on the ground.
-    double e2 = 0.0;                 // restit. coef for angular stops impacts.
+    int nDof = 3;      // degrees of freedom for robot arm
+    double t0 = 0;     // initial computation time
+    double T = 1.9;    // final computation time
+    double h = 0.005;  // time step
+    double e = 0.9;    // restit. coef. for impact on the ground.
+    double e2 = 0.0;   // restit. coef for angular stops impacts.
 
     // -> mind to set the initial conditions below.
 
@@ -54,9 +51,9 @@ int main(int argc, char* argv[])
 
     // --- DS: robot arm ---
 
-    // The dof are angles between ground and arm and between differents parts of the arm. (See Robot.fig for more details)
+    // The dof are angles between ground and arm and between differents parts of the arm. (See
+    // Robot.fig for more details)
     //
-
 
     // Initial position (angles in radian)
     SiconosVector q0(nDof), v0(nDof);
@@ -77,8 +74,8 @@ int main(int argc, char* argv[])
 
     // Two interactions:
     //  - one with Lagrangian non linear relation to define contact with ground
-    //  - the other to define angles limitations (articular stops), with lagrangian linear relation
-    //  Both with newton impact ns laws.
+    //  - the other to define angles limitations (articular stops), with lagrangian linear
+    //  relation Both with newton impact ns laws.
 
     // -- relations --
 
@@ -131,7 +128,7 @@ int main(int argc, char* argv[])
 
     auto Robot(new Model(t0, T));
     Robot->nonSmoothDynamicalSystem()->insertDynamicalSystem(arm);
-    
+
     Robot->nonSmoothDynamicalSystem()->link(inter1, arm);
     Robot->nonSmoothDynamicalSystem()->link(inter2, arm);
     // ----------------
@@ -148,10 +145,10 @@ int main(int argc, char* argv[])
     s->insertIntegrator(OSI);
     // -- OneStepNsProblem --
     IntParameters iparam(5);
-    iparam[0] = 20001; // Max number of iteration
+    iparam[0] = 20001;  // Max number of iteration
     DoubleParameters dparam(5);
-    dparam[0] =  0.005; // Tolerance
-    string solverName = "PGS" ;
+    dparam[0] = 0.005;  // Tolerance
+    string solverName = "PGS";
     auto mySolver(new NonSmoothSolver(solverName, iparam, dparam));
     auto impact(new LCP(mySolver));
     auto acceleration(new LCP(mySolver));
@@ -160,8 +157,8 @@ int main(int argc, char* argv[])
     Robot->setSimulation(s);
     cout << "=== End of model loading === " << endl;
 
-    // =========================== End of model definition ===========================  dataPlot(k,7) = (*inter->y(0))(0);
-
+    // =========================== End of model definition ===========================
+    // dataPlot(k,7) = (*inter->y(0))(0);
 
     // ================================= Computation =================================
 
@@ -189,7 +186,7 @@ int main(int argc, char* argv[])
     std::shared_ptr<siconos::algebra::SiconosVector> yMem = inter->getYOldPtr(0);
     std::shared_ptr<siconos::algebra::SiconosVector> yDotMem = inter->getYOldPtr(1);
 
-    dataPlot(k, 0) =  Robot->t0();
+    dataPlot(k, 0) = Robot->t0();
     dataPlot(k, 1) = (*q)(0);
     dataPlot(k, 2) = (*vel)(0);
     dataPlot(k, 3) = (*q)(1);
@@ -206,22 +203,19 @@ int main(int argc, char* argv[])
     boost::timer boostTimer;
     boostTimer.restart();
 
-    unsigned int numberOfEvent = 0 ;
+    unsigned int numberOfEvent = 0;
     auto eventsManager = s->eventsManager();
     bool nonSmooth = false;
-    while (s->hasNextEvent())
-    {
+    while (s->hasNextEvent()) {
       // get current time step
       k++;
       s->advanceToEvent();
-      if (eventsManager->nextEvent()->getType() == 2)
-        nonSmooth = true;
+      if (eventsManager->nextEvent()->getType() == 2) nonSmooth = true;
 
       s->processEvents();
       // If the treated event is non smooth, we get the pre-impact state.
-      if (nonSmooth)
-      {
-        dataPlot(k, 0) =  s->startingTime();
+      if (nonSmooth) {
+        dataPlot(k, 0) = s->startingTime();
         dataPlot(k, 1) = qMem(0);
         dataPlot(k, 2) = velMem(0);
         dataPlot(k, 3) = qMem(1);
@@ -233,10 +227,9 @@ int main(int argc, char* argv[])
         dataPlot(k, 9) = (*yDotMem)(0);
         dataPlot(k, 10) = (*yDotMem)(1);
 
-
         k++;
       }
-      dataPlot(k, 0) =  s->startingTime();
+      dataPlot(k, 0) = s->startingTime();
       dataPlot(k, 1) = (*q)(0);
       dataPlot(k, 2) = (*vel)(0);
       dataPlot(k, 3) = (*q)(1);
@@ -252,20 +245,19 @@ int main(int argc, char* argv[])
       //  if (k==N) break;
     }
 
-    cout << "===== End of Event Driven simulation. " << numberOfEvent << " events have been processed. ==== " << endl << endl;
-    cout << "Computation Time: " << boostTimer.elapsed()  << endl;
+    cout << "===== End of Event Driven simulation. " << numberOfEvent
+         << " events have been processed. ==== " << endl
+         << endl;
+    cout << "Computation Time: " << boostTimer.elapsed() << endl;
 
     cout << endl << "Output writing ..." << endl;
     // --- Output files ---
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
   }
 
-  catch (SiconosException e)
-  {
+  catch (SiconosException e) {
     cout << e.report() << endl;
-  }
-  catch (...)
-  {
+  } catch (...) {
     cout << "Exception caught in \'sample/MultiBeadsColumn\'" << endl;
   }
 }

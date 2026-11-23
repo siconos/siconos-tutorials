@@ -3,14 +3,14 @@
 #    - reference results from the SPICE simulation
 #      of the filtered diode bridge circuit with trapezoidal
 #      integrator and fixed 0.1 us time step (file "SPICEN0p25TRAP0p1us.dat").
-#      
-#    - results from SICONOS  "DiodeBridgePowSupTRAP0p1us.dat" 
+#
+#    - results from SICONOS  "DiodeBridgePowSupTRAP0p1us.dat"
 #      obtained by a simulation of the DiodeBridgePowSup.cpp
 #      sample with theta = 0.5 (trapezoidal integration) and a
 #      time step of 0.1 us.
 #
 # Displayed results are :
-#    - the supply voltage 
+#    - the supply voltage
 #    - the current through two diodes of the bridge
 #    - the voltage across the resistor
 #
@@ -26,7 +26,7 @@ heightoff = 0.2
 winratio = 1.0
 winheight = basheight*winratio
 
-set lmargin 8 
+set lmargin 8
 set bmargin 0
 set tmargin 0
 
@@ -40,7 +40,7 @@ set format x ""
 
 set xrange[0.3e-6:1.5e-3]
 
-set mxtics 
+set mxtics
 set grid xtics
 set grid mxtics
 
@@ -77,4 +77,3 @@ plot\
   "SPICEN0p25TRAP0p1us.dat" u ($1-toffset):4 t              "resistor voltage , SPICE   TRAP 0p1us" w l
 
 set nomultiplot
-

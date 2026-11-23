@@ -3,18 +3,16 @@
 #
 # Example of one object under gravity with one contactor and a ground
 #
+import math
+import random
+
+import siconos.mechanics.collision.bullet
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-
-import math
-import random
 from siconos.mechanics.collision.tools import Contactor
-
-import siconos.numerics as sn
-import siconos.mechanics.collision.bullet
-
 
 diameter = 0.02
 depth = 0.1
@@ -30,7 +28,6 @@ margin_ratio = 1e-05
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a sphere
     io.add_primitive_shape(
         "Disk",
@@ -137,13 +134,12 @@ run_options["verbose"] = True
 run_options["violation_verbose"] = False
 run_options["with_timer"] = False
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 run_options["output_frequency"] = 10
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

@@ -5,21 +5,20 @@
 # using the Siconos proposed mechanics API
 #
 
-import numpy
-import random
 import math
+import random
+
+import numpy
+import siconos.mechanics.collision.bullet
+import siconos.nonsmooth_formulations as nsf
+import siconos.numerics as sn
+import siconos.simulation as simu
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
 from siconos.mechanics.collision.convexhull import ConvexHull2d
 from siconos.mechanics.collision.tools import Contactor
-
-import siconos.numerics as sn
-import siconos.mechanics.collision.bullet
-import siconos.simulation as simu
-import siconos.nonsmooth_formulations as nsf
-
 
 bullet_options = siconos.mechanics.collision.bullet.SiconosBulletOptions()
 bullet_options.worldScale = 1.0
@@ -164,7 +163,6 @@ else:
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     grains = create_grains(
         io,
         n_row=n_row,
@@ -234,7 +232,6 @@ run_options["output_energy_work"] = True
 
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     io.run(run_options)

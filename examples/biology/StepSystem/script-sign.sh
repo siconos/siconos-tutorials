@@ -20,8 +20,3 @@ siconos SignSystem.cpp 11 3
 siconos SignSystem.cpp 12 9
 siconos SignSystem.cpp 12 8
 siconos SignSystem.cpp 12 6
-
-
-
-
-

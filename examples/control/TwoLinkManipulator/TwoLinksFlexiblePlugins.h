@@ -49,8 +49,8 @@ double J2 = 0.1;
 const int nDof = 4;  // degrees of freedom for robot arm
 inline std::vector<double> param(nDof * 5, 0.);
 
-inline auto u_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-                        const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+inline auto u_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+                        const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
                         double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {
   double m11 =
       m1 * (l1 * l1 / 4) + I1 + I2 + m2 * (l1 * l1 + (l2 * l2 / 4) + l1 * l2 * cos(q(1)));
@@ -365,14 +365,20 @@ inline auto u_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> 
   double qd2 = 0.3 * sin(2 * std::numbers::pi * time / P);
   double qd11 = -(2 * std::numbers::pi / P) * 0.3 * sin(2 * std::numbers::pi * time / P);
   double qd12 = (2 * std::numbers::pi / P) * 0.3 * cos(2 * std::numbers::pi * time / P);
-  double qd21 = -(2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * 0.3 * cos(2 * std::numbers::pi * time / P);
-  double qd22 = -(2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * 0.3 * sin(2 * std::numbers::pi * time / P);
-  double qd31 = (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * 0.3 * sin(2 * std::numbers::pi * time / P);
-  double qd32 = -(2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * 0.3 * cos(2 * std::numbers::pi * time / P);
-  double qd41 =
-      (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * 0.3 * cos(2 * std::numbers::pi * time / P);
-  double qd42 =
-      (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * 0.3 * sin(2 * std::numbers::pi * time / P);
+  double qd21 = -(2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * 0.3 *
+                cos(2 * std::numbers::pi * time / P);
+  double qd22 = -(2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * 0.3 *
+                sin(2 * std::numbers::pi * time / P);
+  double qd31 = (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) *
+                (2 * std::numbers::pi / P) * 0.3 * sin(2 * std::numbers::pi * time / P);
+  double qd32 = -(2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) *
+                (2 * std::numbers::pi / P) * 0.3 * cos(2 * std::numbers::pi * time / P);
+  double qd41 = (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) *
+                (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * 0.3 *
+                cos(2 * std::numbers::pi * time / P);
+  double qd42 = (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) *
+                (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * 0.3 *
+                sin(2 * std::numbers::pi * time / P);
 
   double qr11 = qd11 - gamma2 * (x - qd1);
   double qr12 = qd12 - gamma2 * (y - qd2);
@@ -555,8 +561,8 @@ inline auto u_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> 
   param[17] = result(3);
 };
 
-inline auto u1_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-                         const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+inline auto u1_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+                         const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
                          double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {
   double m11 =
       m1 * (l1 * l1 / 4) + I1 + I2 + m2 * (l1 * l1 + (l2 * l2 / 4) + l1 * l2 * cos(q(1)));
@@ -1123,8 +1129,8 @@ inline auto u1_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>
   param[17] = result(3);
 };
 
-inline auto u2_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-                         const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+inline auto u2_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+                         const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
                          double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {
   double m11 =
       m1 * (l1 * l1 / 4) + I1 + I2 + m2 * (l1 * l1 + (l2 * l2 / 4) + l1 * l2 * cos(q(1)));
@@ -1609,8 +1615,8 @@ inline auto u2_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>
   param[17] = result(3);
 };
 
-inline auto u3_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-                         const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+inline auto u3_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+                         const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
                          double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {
   double m11 =
       m1 * (l1 * l1 / 4) + I1 + I2 + m2 * (l1 * l1 + (l2 * l2 / 4) + l1 * l2 * cos(q(1)));
@@ -2123,8 +2129,8 @@ inline auto u3_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>
   param[19] = ld;
 };
 
-inline auto u4_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-                         const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+inline auto u4_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+                         const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
                          double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {
   double m11 =
       m1 * (l1 * l1 / 4) + I1 + I2 + m2 * (l1 * l1 + (l2 * l2 / 4) + l1 * l2 * cos(q(1)));
@@ -2441,35 +2447,49 @@ inline auto u4_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>
 
   double qd1 = 0.4 + 0.3 * cos(2 * std::numbers::pi * time / P);
   double qd11 = -0.3 * (2 * std::numbers::pi / P) * sin(2 * std::numbers::pi * time / P);
-  double qd21 = -0.3 * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * cos(2 * std::numbers::pi * time / P);
-  double qd31 = 0.3 * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * sin(2 * std::numbers::pi * time / P);
-  double qd41 =
-      0.3 * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * cos(2 * std::numbers::pi * time / P);
+  double qd21 = -0.3 * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) *
+                cos(2 * std::numbers::pi * time / P);
+  double qd31 = 0.3 * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) *
+                (2 * std::numbers::pi / P) * sin(2 * std::numbers::pi * time / P);
+  double qd41 = 0.3 * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) *
+                (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) *
+                cos(2 * std::numbers::pi * time / P);
 
   double qd2 =
-      0.3 * sin(2 * std::numbers::pi * (k * P + (time - k * P) * sin(b * td + (std::numbers::pi / 2 - b) * td * td)) / P);
+      0.3 *
+      sin(2 * std::numbers::pi *
+          (k * P + (time - k * P) * sin(b * td + (std::numbers::pi / 2 - b) * td * td)) / P);
   double qd12 =
       0.3 * (2 * std::numbers::pi / P) *
-      cos(2 * std::numbers::pi * (k * P + (time - k * P) * sin(b * td + (std::numbers::pi / 2 - b) * td * td)) / P) *
-      (sin(b * td + (std::numbers::pi / 2 - b) * td * td) + (time - k * P) *
-                                                  cos(b * td + (std::numbers::pi / 2 - b) * td * td) *
-                                                  (b / ep + 2 * (std::numbers::pi / 2 - b) * td / ep));
+      cos(2 * std::numbers::pi *
+          (k * P + (time - k * P) * sin(b * td + (std::numbers::pi / 2 - b) * td * td)) / P) *
+      (sin(b * td + (std::numbers::pi / 2 - b) * td * td) +
+       (time - k * P) * cos(b * td + (std::numbers::pi / 2 - b) * td * td) *
+           (b / ep + 2 * (std::numbers::pi / 2 - b) * td / ep));
   double qd22 =
       -0.3 * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) *
-          sin(2 * std::numbers::pi * (k * P + (time - k * P) * sin(b * td + (std::numbers::pi / 2 - b) * td * td)) / P) *
-          (sin(b * td + (std::numbers::pi / 2 - b) * td * td) + (time - k * P) *
-                                                      cos(b * td + (std::numbers::pi / 2 - b) * td * td) *
-                                                      (b / ep + 2 * (std::numbers::pi / 2 - b) * td / ep)) +
+          sin(2 * std::numbers::pi *
+              (k * P + (time - k * P) * sin(b * td + (std::numbers::pi / 2 - b) * td * td)) /
+              P) *
+          (sin(b * td + (std::numbers::pi / 2 - b) * td * td) +
+           (time - k * P) * cos(b * td + (std::numbers::pi / 2 - b) * td * td) *
+               (b / ep + 2 * (std::numbers::pi / 2 - b) * td / ep)) +
       0.3 * (2 * std::numbers::pi / P) *
-          cos(2 * std::numbers::pi * (k * P + (time - k * P) * sin(b * td + (std::numbers::pi / 2 - b) * td * td)) / P) *
-          (2 * cos(b * td + (std::numbers::pi / 2 - b) * td * td) * (b / ep + 2 * (std::numbers::pi / 2 - b) * td / ep) +
-           (time - k * P) *
-               (2 * cos(b * td + (std::numbers::pi / 2 - b) * td * td) * (std::numbers::pi / 2 - b) / (ep * ep) -
-                sin(b * td + (std::numbers::pi / 2 - b) * td * td) * (b / ep + 2 * (std::numbers::pi / 2 - b) * td / ep) *
-                    (b / ep + 2 * (std::numbers::pi / 2 - b) * td / ep)));
-  double qd32 =
-      -0.3 * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * cos(std::numbers::pi / 2 + 2 * std::numbers::pi * time / P);
-  double qd42 = 0.3 * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) *
+          cos(2 * std::numbers::pi *
+              (k * P + (time - k * P) * sin(b * td + (std::numbers::pi / 2 - b) * td * td)) /
+              P) *
+          (2 * cos(b * td + (std::numbers::pi / 2 - b) * td * td) *
+               (b / ep + 2 * (std::numbers::pi / 2 - b) * td / ep) +
+           (time - k * P) * (2 * cos(b * td + (std::numbers::pi / 2 - b) * td * td) *
+                                 (std::numbers::pi / 2 - b) / (ep * ep) -
+                             sin(b * td + (std::numbers::pi / 2 - b) * td * td) *
+                                 (b / ep + 2 * (std::numbers::pi / 2 - b) * td / ep) *
+                                 (b / ep + 2 * (std::numbers::pi / 2 - b) * td / ep)));
+  double qd32 = -0.3 * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) *
+                (2 * std::numbers::pi / P) *
+                cos(std::numbers::pi / 2 + 2 * std::numbers::pi * time / P);
+  double qd42 = 0.3 * (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) *
+                (2 * std::numbers::pi / P) * (2 * std::numbers::pi / P) *
                 sin(std::numbers::pi / 2 + 2 * std::numbers::pi * time / P);
 
   param[13] = (time - k * P);  // td*ep;

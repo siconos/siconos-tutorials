@@ -47,7 +47,7 @@ function [qddot] = pa10Dynamics(q, qdot, Tau)
 // Matrix computation
  M = pa10Inertia(q);
 
-//  motor constants (link-referenced in kg-m^2) 
+//  motor constants (link-referenced in kg-m^2)
  M(1,1)=0.75 + M(1,1);
  M(2,2)=0.75 + M(2,2);
  M(3,3)=0.2125 + M(3,3);
@@ -58,7 +58,7 @@ function [qddot] = pa10Dynamics(q, qdot, Tau)
 
 
  NL = pa10NLEffects(q, qdot);
- 
+
  F = pa10Friction(q,qdot);
 
 // Dynamics equation

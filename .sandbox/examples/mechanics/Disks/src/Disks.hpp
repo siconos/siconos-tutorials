@@ -14,8 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
-
+ */
 
 #ifndef Disks_h
 #define Disks_h
@@ -37,36 +36,33 @@
 
 #define Rr 1
 
-#define COSPI6  0.866025403784439
-#define SINPI6  0.5
-#define TANPI6  0.577350269189626 // tan(pi/6)
+#define COSPI6 0.866025403784439
+#define SINPI6 0.5
+#define TANPI6 0.577350269189626  // tan(pi/6)
 
 #define SY 3.73205080756888  // ((cos(a)+1)/(cos(a)*sin(a)) - tan(a)) a=pi/6, R=1
-#define SYL 1/TANPI6
-
+#define SYL 1 / TANPI6
 
 // Plan1
 #define P1A COSPI6
 #define P1B -SINPI6
-#define P1C (SY+(Ll-1)*SYL-Rr)*P1B
+#define P1C (SY + (Ll - 1) * SYL - Rr) * P1B
 
 // Plan2
 #define P2A COSPI6
 #define P2B SINPI6
-#define P2C (SY+(Ll-1)*SYL-Rr)*P2B
-
+#define P2C (SY + (Ll - 1) * SYL - Rr) * P2B
 
 #define GROUND_ID -1
 #define MAX_RADIUS INFINITY
 
 #include "SiconosBodies.hpp"
 
-class Disks : public SiconosBodies, public std11::enable_shared_from_this<Disks>
-{
+class Disks : public SiconosBodies, public std11::enable_shared_from_this<Disks> {
   void init();
   void compute();
 };
 
 TYPEDEF_SPTR(Disks);
 
-#endif //Disks_h
+#endif  // Disks_h

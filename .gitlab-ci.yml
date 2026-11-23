@@ -8,7 +8,7 @@ variables:
   BUILD_EXAMPLES_DIR: ${CI_PROJECT_DIR}/build-examples
   # Default build path
   PARALLEL_BUILD: 1
-  
+
 
 # -- Template for examples build-test-install jobs --
 # - Pull an image (possibly from siconos-tutorials registry)
@@ -24,7 +24,7 @@ variables:
   artifacts:
       paths:
         - build/
-      expire_in: 3 days 
+      expire_in: 3 days
       reports:
         junit: $CI_PROJECT_DIR/build-examples/test_results.xml
 
@@ -43,14 +43,14 @@ run-examples:
       when: never          # <-- ne crée pas le job dans ce cas
     - when: manual
       allow_failure: true
- 
+
 # Examples, executed on a "ready-to-use" image containing a
 # full Siconos installation, based on the last version
 # of a branch with the same name as the current example branch.
 # - Run only when triggered from siconos project
 # - Run on a docker image siconoslab-$CI_COMMIT_REF_SLUG
 # $CI_COMMIT_REF_SLUG
-# is the current branch name in lowercase 
+# is the current branch name in lowercase
 # This job runs in  multi-project pipelines only
 # Required: same branch name in siconos and siconos-tutorials
 triggered-examples:

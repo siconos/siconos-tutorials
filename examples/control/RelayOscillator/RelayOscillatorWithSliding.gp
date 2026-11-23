@@ -2,7 +2,7 @@ set term X11
 set term pdf
 extension= ".pdf"
 #set term tikz standalone color solid size 5in,3in
-#set term tikz standalone monochrome  size 5in,5in font '\small\sf' 
+#set term tikz standalone monochrome  size 5in,5in font '\small\sf'
 #extension=".tex"
 
 resultfile="RelayOscillatorWithSliding.dat"
@@ -25,7 +25,7 @@ winratio = 1.0
 winheight = basheight*winratio
 hoffset = 0.05
 voffset = 0.01
-set lmargin 8 
+set lmargin 8
 set bmargin 0
 set tmargin 0
 
@@ -35,7 +35,7 @@ set xzeroaxis
 set format x ""
 unset xlabel
 #set grid xtics
-#set term tikz standalone monochrome  size 5in,3in font '\small\sf' 
+#set term tikz standalone monochrome  size 5in,3in font '\small\sf'
 set output "RelayOscillatorWithSliding".extension
 set multiplot
 

@@ -1,8 +1,8 @@
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
 #include <math.h>
 
 /* link masses (kg) */
@@ -23,9 +23,9 @@
 
 /* offset distance (m) */
 #define d1 0.115
-#define d3  0.450
-#define d5  0.50
-#define d7  0.08
+#define d3 0.450
+#define d5 0.50
+#define d7 0.08
 
 /*  motor constants (link-referenced in kg-m^2) */
 #define Im1 0.75
@@ -74,30 +74,18 @@
 #define FRIC6 1.0
 #define FRIC7 1.0
 
-
 #define N_DOF 7
 
-#define GRAV      9.81
+#define GRAV 9.81
 
-SICONOS_EXPORT void
-modele_nddl(int *nddl);
+SICONOS_EXPORT void modele_nddl(int* nddl);
 
-SICONOS_EXPORT void
-modele_coriolis(const double q[N_DOF],
-                const double qdot[N_DOF],
-                double N[N_DOF*N_DOF]);
+SICONOS_EXPORT void modele_coriolis(const double q[N_DOF], const double qdot[N_DOF],
+                                    double N[N_DOF * N_DOF]);
 
-SICONOS_EXPORT void
-modele_gravite(const double q[N_DOF],
-               double G[N_DOF]);
+SICONOS_EXPORT void modele_gravite(const double q[N_DOF], double G[N_DOF]);
 
-SICONOS_EXPORT void
-modele_inertie(const double q[N_DOF],
-               double M[N_DOF*N_DOF]);
+SICONOS_EXPORT void modele_inertie(const double q[N_DOF], double M[N_DOF * N_DOF]);
 
-
-SICONOS_EXPORT void
-modele_frottements(const double q[N_DOF],
-                   const double qdot[N_DOF],
-                   double F[N_DOF]);
-
+SICONOS_EXPORT void modele_frottements(const double q[N_DOF], const double qdot[N_DOF],
+                                       double F[N_DOF]);

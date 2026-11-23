@@ -15,19 +15,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import math
+import sys
+
+import numpy
+import read_tess
+import siconos.nonsmooth_formulations as nsf
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-import siconos.numerics as sn
-import siconos.nonsmooth_formulations as nsf
-import read_tess
-
-import math
-import sys
-import numpy
-from siconos.mechanics.collision.tools import Contactor
 from siconos.mechanics.collision.convexhull import ConvexHull
+from siconos.mechanics.collision.tools import Contactor
 
 if len(sys.argv) < 2:
     dist = "uniform"
@@ -44,7 +44,7 @@ if float(mu) < 0.1 or float(mu) > 2.0:
     sys.exit(1)
 
 
-fn = "tesselation-{0}-mu-{1}.hdf5".format(dist, mu)
+fn = f"tesselation-{dist}-mu-{mu}.hdf5"
 
 
 test = True
@@ -66,7 +66,6 @@ tesselation = read_tess.read_tesselation(filename)
 # input()
 
 with MechanicsHdf5Runner(mode="w", io_filename=fn) as io:
-
     all_faces = tesselation["face"]
     all_edges = tesselation["edge"]
     all_vertices = tesselation["vertex"]

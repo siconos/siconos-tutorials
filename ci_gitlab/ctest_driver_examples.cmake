@@ -11,7 +11,7 @@
 # - a proper install of siconos
 # - a file siconos-commit-number.txt in $HOME.
 
-# -- job : build and test examples -- 
+# -- job : build and test examples --
 message("\n\n============== Start conf for siconos examples build and tests ==============\n\n")
 
 # ============= setup  ================
@@ -39,7 +39,7 @@ endif()
 
 # =============  Run ctest steps ================
 
-# Current testing model. Priority: 
+# Current testing model. Priority:
 # Nightly -> set by scheduler on gricad-gitlab
 # Continuous -> set in .gitlab-ci.yml
 # Experimental : default

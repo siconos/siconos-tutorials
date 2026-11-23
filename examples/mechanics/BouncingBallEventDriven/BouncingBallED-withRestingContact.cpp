@@ -30,12 +30,12 @@
 using Matrix = siconos::algebra::SiconosMatrix;
 using Vector = siconos::algebra::SiconosVector;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   try {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    int nDof = 3;       // degrees of freedom for the ball
+    int nDof = 3;                // degrees of freedom for the ball
     double t0 = 0;               // initial computation time
     double T = 8.5;              // final computation time
     double h = 0.005;            // time step
@@ -66,7 +66,8 @@ int main(int argc, char *argv[]) {
     v0(0) = velocity_init;
 
     // -- The dynamical system --
-    auto ball = std::make_shared<siconos::modeling::LagrangianLinearTIDS>(q0, v0, mass, siconos::algebra::alias_t);
+    auto ball = std::make_shared<siconos::modeling::LagrangianLinearTIDS>(
+        q0, v0, mass, siconos::algebra::alias_t);
     // -- Set external forces (weight) --
     Vector weight{nDof};
     weight.setZero();
@@ -197,7 +198,8 @@ int main(int argc, char *argv[]) {
     std::cout << "\nComputation time : " << elapsed << " ms\n";
     // --- Output files ---
     std::cout << "====> Output file writing ...\n\n";
-    siconos::algebra::io::write("BouncingBallED-withRestingContact.dat", dataPlot, siconos::algebra::io::ASCII_OUT,
+    siconos::algebra::io::write("BouncingBallED-withRestingContact.dat", dataPlot,
+                                siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
     double error = 0.0, eps = 1e-11;
     if ((error = siconos::algebra::io::compareRefFile(

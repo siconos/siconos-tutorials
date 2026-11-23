@@ -1,8 +1,8 @@
 #include <math.h>
+
 #include "robotmodel.h"
 
-void modele_frottements(const double q[N_DOF], const double qdot[N_DOF], double F[N_DOF])
-{
+void modele_frottements(const double q[N_DOF], const double qdot[N_DOF], double F[N_DOF]) {
   // Friction  (viscosity model)
   F[0] = FRIC1 * qdot[0];
   F[1] = FRIC2 * qdot[1];
@@ -12,4 +12,3 @@ void modele_frottements(const double q[N_DOF], const double qdot[N_DOF], double 
   F[5] = FRIC6 * qdot[5];
   F[6] = FRIC7 * qdot[6];
 }
-

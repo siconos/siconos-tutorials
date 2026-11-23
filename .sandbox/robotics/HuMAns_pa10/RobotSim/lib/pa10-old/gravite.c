@@ -1,12 +1,8 @@
 #include "robotmodel.h"
 
-
-
 double gravity[N_DOF];
 
-void modele_gravite(const double Q[N_DOF], double gravity[N_DOF])
-{
-
+void modele_gravite(const double Q[N_DOF], double gravity[N_DOF]) {
   int i;
 
   /* Intermediate cos and sin values */
@@ -40,31 +36,32 @@ void modele_gravite(const double Q[N_DOF], double gravity[N_DOF])
 
   gravity[0] = 0;
 
-  gravity[1] = -(\
-                 g * (S2 * (d3 * (m3 + m4 + m5 + m6 + m7) - m3 * ry3 + m2 * rz2 + \
-                            C4 * (d5 * (m5 + m6 + m7) - m5 * ry5 + m4 * rz4 + \
-                                  C6 * (m6 * rz6 + m7 * (d7 + rz7))) - \
-                            C5 * (m6 * rz6 + m7 * (d7 + rz7)) * S4 * S6) + \
-                      C2 * (C3 * (d5 * (m5 + m6 + m7) - m5 * ry5 + m4 * rz4 + \
-                                  C6 * (m6 * rz6 + m7 * (d7 + rz7)))*\
-                            S4 + (m6 * rz6 + m7 * (d7 + rz7)) * (C3 * C4 * C5 - S3 * S5) * S6)));
+  gravity[1] = -(g * (S2 * (d3 * (m3 + m4 + m5 + m6 + m7) - m3 * ry3 + m2 * rz2 +
+                            C4 * (d5 * (m5 + m6 + m7) - m5 * ry5 + m4 * rz4 +
+                                  C6 * (m6 * rz6 + m7 * (d7 + rz7))) -
+                            C5 * (m6 * rz6 + m7 * (d7 + rz7)) * S4 * S6) +
+                      C2 * (C3 *
+                                (d5 * (m5 + m6 + m7) - m5 * ry5 + m4 * rz4 +
+                                 C6 * (m6 * rz6 + m7 * (d7 + rz7))) *
+                                S4 +
+                            (m6 * rz6 + m7 * (d7 + rz7)) * (C3 * C4 * C5 - S3 * S5) * S6)));
 
-  gravity[2] = g*\
-               S2 * ((d5 * (m5 + m6 + m7) - m5 * ry5 + m4 * rz4 + C6 * (m6 * rz6 + m7 * (d7 + rz7)))*\
-                     S3 * S4 + (m6 * rz6 + m7 * (d7 + rz7)) * (C4 * C5 * S3 + C3 * S5) * S6);
+  gravity[2] =
+      g * S2 *
+      ((d5 * (m5 + m6 + m7) - m5 * ry5 + m4 * rz4 + C6 * (m6 * rz6 + m7 * (d7 + rz7))) * S3 *
+           S4 +
+       (m6 * rz6 + m7 * (d7 + rz7)) * (C4 * C5 * S3 + C3 * S5) * S6);
 
-  gravity[3] = -(\
-                 g * (d5 * (m5 + m6 + m7) - m5 * ry5 + m4 * rz4 + \
-                      C6 * (m6 * rz6 + m7 * (d7 + rz7))) * (C3 * C4 * S2 + C2 * S4)) + \
-               C5 * g * (m6 * rz6 + m7 * (d7 + rz7)) * (-(C2 * C4) + C3 * S2 * S4) * S6;
+  gravity[3] =
+      -(g * (d5 * (m5 + m6 + m7) - m5 * ry5 + m4 * rz4 + C6 * (m6 * rz6 + m7 * (d7 + rz7))) *
+        (C3 * C4 * S2 + C2 * S4)) +
+      C5 * g * (m6 * rz6 + m7 * (d7 + rz7)) * (-(C2 * C4) + C3 * S2 * S4) * S6;
 
-  gravity[4] = g * (m6 * rz6 + m7 * (d7 + rz7)) * (C5 * S2 * S3 + (C3 * C4 * S2 + C2 * S4) * S5) * S6;
+  gravity[4] =
+      g * (m6 * rz6 + m7 * (d7 + rz7)) * (C5 * S2 * S3 + (C3 * C4 * S2 + C2 * S4) * S5) * S6;
 
-  gravity[5] = -(\
-                 g * (m6 * rz6 + m7 * (d7 + rz7)) * (\
-                     C6 * (C5 * (C3 * C4 * S2 + C2 * S4) - S2 * S3 * S5) + (C2 * C4 - C3 * S2 * S4) * S6));
+  gravity[5] =
+      -(g * (m6 * rz6 + m7 * (d7 + rz7)) *
+        (C6 * (C5 * (C3 * C4 * S2 + C2 * S4) - S2 * S3 * S5) + (C2 * C4 - C3 * S2 * S4) * S6));
   gravity[6] = 0;
-
 }
-
-

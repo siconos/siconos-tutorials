@@ -17,16 +17,14 @@
 
 import os
 import shutil
-
-from siconos.mechanics.collision.tools import Contactor
-from siconos.io.mechanics_run import MechanicsHdf5Runner
-from siconos.mechanics.collision.convexhull import ConvexHull
-
-import siconos.numerics as sn
+import sys
 
 import numpy
-
+import siconos.numerics as sn
+from siconos.io.mechanics_run import MechanicsHdf5Runner
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
+from siconos.mechanics.collision.convexhull import ConvexHull
+from siconos.mechanics.collision.tools import Contactor
 
 # A collection of box stacks for stress-testing Siconos solver with
 # chains of contacts.
@@ -58,7 +56,7 @@ if os.path.exists(filename_first_run + ".hdf5"):
     shutil.copyfile(filename_first_run + ".hdf5", filename_second_run)
 else:
     print("first run file is not existing")
-    exit()
+    sys.exit()
 
 final_time_first_run = 1.0
 

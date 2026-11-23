@@ -95,25 +95,25 @@ variables ($y,\lambda$)
 \underline{Remark :}
 In a more general setting, the system's evolution would be described by a DAE :
 \[
-G \cdot x' = A \cdot x + E \cdot u + b + r 
+G \cdot x' = A \cdot x + E \cdot u + b + r
 \]
 with $G , A , E$ matrices constant over time (time invariant system), $u , b$ source terms functions of time and $r$,
 a term coming from the non-smooth law variables : $r = B \cdot \lambda + a$ with $B , a$ constant over time.\\
 We will consider here the case of an ordinary differential equation :
 \[
-x' = A \cdot x + E \cdot u + b + r 
+x' = A \cdot x + E \cdot u + b + r
 \]
 and an initial value problem for which the boundary conditions are $t_0 \in \mathbb{R} , x(t_0)= x_0$.
 
 \subsection{Relation between constrained variables and state variables}
-In the linear time invariant framework, the non-smooth law acts on the linear dynamical system evolution through the variable 
+In the linear time invariant framework, the non-smooth law acts on the linear dynamical system evolution through the variable
 $r = B \cdot \lambda + a$. Reciprocally, the state variable $x$ acts on the non-smooth law through the relation
 $y = C \cdot x + D \cdot \lambda + F \cdot u + e$ with $C , D , F , e$ constant over time.
 
 \subsection{Definition of the Non Smooth Law between constrained variables}
 It is a complementarity condition between y and $\lambda$ : $0 \leq y \, \perp \, \lambda \geq 0$. This corresponds
 to the behaviour of the rectifying diode, as described in \ref{Non Smooth laws}.
- 
+
 \section{The formalization of the electrical oscillator with half-wave rectifier into the LCS}
 
 The equations come from the following physical laws :
@@ -142,11 +142,11 @@ v_R = R i_R
 \]
 and last the "branch constitutive equation" of the ideal diode that is no more an equation but instead
 a complementarity condition :
-\[ 
+\[
 0 \leq i_D \, \perp \, -v_D \geq 0
 \]
 
-This is illustrated on figure \ref{fig-diode-reg} where the left-hand sketch displays the ideal diode 
+This is illustrated on figure \ref{fig-diode-reg} where the left-hand sketch displays the ideal diode
 characteristic and the right-hand sketch displays the usual exponential characteristic as stated by
 Shockley's law.
 
@@ -163,7 +163,7 @@ Shockley's law.
 \label{sec-dyn-eq}
 After rearranging the previous equations, we obtain :
 
-\[ 
+\[
 \left( \begin{array}{c}
 v_L'\\
 i_L'
@@ -187,13 +187,13 @@ i_L
 \]
 that fits in the frame of \ref{sec-def-NSDS} with
 \[
-x = 
+x =
 \left( \begin{array}{c}
 v_L\\
 i_L
 \end{array} \right)
 \]
-and 
+and
 \[
 \lambda = i_D
 \]
@@ -214,7 +214,7 @@ r =
 from the dynamical equation (\ref{sec-dyn-eq}).\\
 Rearranging the initial set of equations yields :
 \[
--v_D = 
+-v_D =
 \left( \begin{array}{cc}
 -1 & 0
 \end{array} \right)
@@ -225,7 +225,7 @@ i_L
 \end{array} \right)
 + R i_D
 \]
-as the second equation of the linear time invariant relation with 
+as the second equation of the linear time invariant relation with
 \[
 y = -v_D
 \]
@@ -236,7 +236,7 @@ y = -v_D
 \label{Non Smooth laws}
 There is just the complementarity condition resulting from the ideal diode characteristic :
 
-\[ 
+\[
 0 \leq i_D \, \perp \, -v_D \geq 0
 \]
 
@@ -247,7 +247,7 @@ There is just the complementarity condition resulting from the ideal diode chara
 The integration of the ODE over a time step $[t_i,t_{i+1}]$ of length $h$ is :
 
 \[
-\int_{t_i}^{t_{i+1}}x'\,dt = \int_{t_i}^{t_{i+1}} A \cdot x\,dt + \int_{t_i}^{t_{i+1}}(E \cdot u + b) dt + \int_{t_i}^{t_{i+1}}r\,dt   
+\int_{t_i}^{t_{i+1}}x'\,dt = \int_{t_i}^{t_{i+1}} A \cdot x\,dt + \int_{t_i}^{t_{i+1}}(E \cdot u + b) dt + \int_{t_i}^{t_{i+1}}r\,dt
 \]
 The left-hand term is $x(t_{i+1})-x(t_i)$. \\
 Right-hand terms are approximated this way :
@@ -258,9 +258,9 @@ Right-hand terms are approximated this way :
 \]
 
 \item since the second integral comes from independent sources, it can be evaluated with whatever quadrature method, for
-instance a $\theta$-method 
+instance a $\theta$-method
 \[
-\int_{t_i}^{t_{i+1}}(E \cdot u + b) dt \approx h \theta (E \cdot u(t_{i+1}) + b(t_{i+1})) + 
+\int_{t_i}^{t_{i+1}}(E \cdot u + b) dt \approx h \theta (E \cdot u(t_{i+1}) + b(t_{i+1})) +
                                                               h (1-\theta) (E \cdot u(t_{i}) + b(t_{i}))
 \]
 
@@ -271,17 +271,17 @@ instance a $\theta$-method
 \end{itemize}
 By replacing the accurate solution $x(t_i)$ by the approximated value $x_i$, we get :
 \[
-x_{i+1}-x_i = h \theta (A \cdot x_{i+1}) + h (1-\theta) (A \cdot x_{i}) + 
+x_{i+1}-x_i = h \theta (A \cdot x_{i+1}) + h (1-\theta) (A \cdot x_{i}) +
               h \theta (E \cdot u(t_{i+1}) + b(t_{i+1})) + h (1-\theta) (E \cdot u(t_{i}) + b(t_{i})) + h r_{i+1}
 \]
 Assuming that $I - h \theta A$ is invertible, matrix $W$ is defined as $(I - h \theta A)^{-1}$. We get then :
 \[
-x_{i+1} = W(I + h (1-\theta) A) \cdot x_{i} + 
+x_{i+1} = W(I + h (1-\theta) A) \cdot x_{i} +
             W (h \theta (E \cdot u(t_{i+1}) + b(t_{i+1})) + h (1-\theta) (E \cdot u(t_{i}) + b(t_{i}))) + h W r_{i+1}
 \]
 An intermediate variable $x_{free}$ related to the smooth part of the system is defined as :
 \[
-x_{free} = W(I + h (1-\theta) A) \cdot x_{i} + 
+x_{free} = W(I + h (1-\theta) A) \cdot x_{i} +
            W (h \theta (E \cdot u(t_{i+1}) + b(t_{i+1})) + h (1-\theta) (E \cdot u(t_{i}) + b(t_{i})))
 \]
 Thus the calculus of $x_{i+1}$ becomes :
@@ -304,7 +304,7 @@ It comes straightforwardly :
 \]
 
 \subsection{Summary of the time discretized equations}
-These equations are summarized assuming that there is no source term and simplified relations as for the 
+These equations are summarized assuming that there is no source term and simplified relations as for the
 electrical oscillator with half-wave rectifier.
 
 \begin{eqnarray*}
@@ -313,7 +313,7 @@ x_{free} & = & W(I + h (1-\theta) A) \cdot x_{i} \\
 x_{i+1} & = & x_{free} + h W r_{i+1} \\
 r_{i+1} & = & B \cdot \lambda_{i+1}  \\
 y_{i+1} & = & C \cdot x_{i+1} + D \cdot \lambda_{i+1}  \\
- & 0 \leq y_{i+1} \, \perp \, \lambda_{i+1} \geq 0 & 
+ & 0 \leq y_{i+1} \, \perp \, \lambda_{i+1} \geq 0 &
 \end{eqnarray*}
 
 \subsection{Numerical simulation}
@@ -321,10 +321,10 @@ The integration algorithm with a fixed step is described here :
 
 \begin{algorithm}
 \caption{Integration of the electrical oscillator with half-wave rectifier through a fixed Moreau time stepping scheme}
-\begin{algorithmic} 
+\begin{algorithmic}
 
 \REQUIRE $R > 0 , L > 0 , C > 0$
-\REQUIRE Time parameters $h,T,t_0$ and $\theta$ for the integration 
+\REQUIRE Time parameters $h,T,t_0$ and $\theta$ for the integration
 \REQUIRE Initial value of inductor voltage $v_L = x_0(0)$
 \REQUIRE Optional, initial value  of inductor current $i_L = x_0(1)$ (default : 0)
 
@@ -354,7 +354,7 @@ The integration algorithm with a fixed step is described here :
 \COMMENT{Non-smooth dynamical system integration\\}
 \FOR{$i=0$ to $n_{step}-1$}
 %\STATE // Computation of $x_{free}$
-\STATE \begin{eqnarray*} 
+\STATE \begin{eqnarray*}
 x_{free} = W (I + h (1 - \theta) A) x_i && \textrm{// Computation of $x_{free}$} \\
 %\STATE // Formalization of the one step LCP
 q = C \cdot x_{free} &&  \textrm{// Formalization of the one step LCP} \\
@@ -372,7 +372,7 @@ x_{i+1} = x_{free} + h W B \lambda_{i+1} &&  \textrm{// Computation of new state
 
 \section{Comparison with numerical results coming from SPICE models and algorithms}
 We have used the SMASH simulator from Dolphin to perform a simulation of this circuit with a smooth model
-of the diode as given by Shockley's law , with a classical one step solver (Newton-Raphson) and a choice between 
+of the diode as given by Shockley's law , with a classical one step solver (Newton-Raphson) and a choice between
 backward-Euler and trapezoidal integrators.
 
 \subsection{Characteristic of the diode in the SPICE model}
@@ -386,14 +386,14 @@ and two values for the emission coefficient N : $1.0$ (standard diode) and $0.25
 \caption{Diodes characteristics from SPICE model with $N=0.25$ and $N=1$}
 \label{fig-carac-diode}
 \end{figure}
- 
+
 The stiff diode is close to an ideal one with a threshold of $0.2$ V.
 
 \subsection{Simulation results}
 Figure (\ref{fig-comp-SMASH-SICONOS-BE10us}) displays a comparison of the SMASH and SICONOS results with
 a backward Euler integration and a fixed time step of 10 $\mu$s. A stiff diode model was used in SMASH simulations.
 For figure (\ref{fig-comp-SMASH-SICONOS-TRAP10us}) a trapezoidal integrator was used, yielding a better accuracy.
-One can notice that the results from both simulators are very close. The slight differences are due to the smooth 
+One can notice that the results from both simulators are very close. The slight differences are due to the smooth
 model of the diode used by SMASH, and mainly to the threshold of around 0.2 V. Such a threshold
 yields small differences in the conduction state of the diode with respect to the ideal diode.
 

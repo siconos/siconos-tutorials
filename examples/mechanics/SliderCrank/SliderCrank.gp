@@ -6,10 +6,10 @@ l=1;
 L=1.5;
 
 
-set xlabel 'time (s)' 
-#set xrange [0.0001:10]   
+set xlabel 'time (s)'
+#set xrange [0.0001:10]
 #set yrange [0.0001:10]
-set grid 
+set grid
 
 scheme =  "Moreau"
 #scheme  = "Moreau-ProjectOnConstraints"
@@ -62,14 +62,14 @@ plot resultfile  using 12:13   w lines notitle
 unset xrange
 unset yrange
 set auto
-set xlabel 'Crank revolutions' 
+set xlabel 'Crank revolutions'
 
 basheight = 0.2
 heightoff = 0.11
 winratio = 1.0
 winheight = basheight*winratio
 hoffset = 0.05
-set lmargin 8 
+set lmargin 8
 set bmargin 0
 set tmargin 0
 
@@ -103,7 +103,7 @@ set xlabel "Crank revolutions"
 set ylabel "corner 4"
 set origin hoffset,winheight*0.0+heightoff
 plot resultfile  using 2:11  notitle w lines
-     
+
 unset multiplot
 #set output scheme."SliderCrank-Energy-".timestep.".pdf"
 # plot resultfile  using 1:8  t 'Kinetic' w lines,\
@@ -274,5 +274,3 @@ plot resultfile  using 2:18  notitle w lines
 # set xlabel "Crank revolutions"
 # set origin hoffset,winheight*0.0+heightoff
 # plot resultfile  using 2:26  t 'lambda(0) 1' w lines
-
-

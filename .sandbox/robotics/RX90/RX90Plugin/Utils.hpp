@@ -28,13 +28,13 @@
 #define __Kernel_Utils_hpp
 
 #ifdef WINDOWS
-#define extern __declspec (dllexport)
+#define extern __declspec(dllexport)
 #endif
 
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/ublas/vector_proxy.hpp>
+#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/ublas/vector_proxy.hpp>
 
 using namespace boost::numeric::ublas;
 
@@ -45,7 +45,7 @@ using namespace boost::numeric::ublas;
  * @param[in] index1 (int)
  * @param[in] index2 (int)
  */
-void reduceMatrix(matrix<double, column_major> & mat, vector<int> & index1, vector<int> & index2);
+void reduceMatrix(matrix<double, column_major>& mat, vector<int>& index1, vector<int>& index2);
 
 /**
  * Reduce the input matrix to the given indexes
@@ -54,7 +54,8 @@ void reduceMatrix(matrix<double, column_major> & mat, vector<int> & index1, vect
  * @param[in] index1 (bool) <em> dim number of rows of mat </em>
  * @param[in] index2 (int)
  */
-void reduceMatrix(matrix<double, column_major> & mat, vector<bool> & index1, vector<int> & index2);
+void reduceMatrix(matrix<double, column_major>& mat, vector<bool>& index1,
+                  vector<int>& index2);
 
 /**
  * Reduce the input vector to the given index
@@ -64,7 +65,7 @@ void reduceMatrix(matrix<double, column_major> & mat, vector<bool> & index1, vec
  *
  * @return reduced vector <em> dim size of index </em>
  */
-vector<double> reduceVector(vector<double> & vec, vector<int> & index);
+vector<double> reduceVector(vector<double>& vec, vector<int>& index);
 
 /**
  * Reduce the input vector to the given index
@@ -74,7 +75,7 @@ vector<double> reduceVector(vector<double> & vec, vector<int> & index);
  *
  * @return reduced vector <em> dim size of index </em>
  */
-vector<double> reduceVector(vector<double, array_adaptor<double> > & vec, vector<int> & index);
+vector<double> reduceVector(vector<double, array_adaptor<double> >& vec, vector<int>& index);
 
 /**
  * Reduce the input vector to the given index
@@ -83,7 +84,7 @@ vector<double> reduceVector(vector<double, array_adaptor<double> > & vec, vector
  * @param[in] index (bool) <em> dim size of vec </em>
  *
  */
-void reduceVector(vector<double> & vec, vector<bool> & index);
+void reduceVector(vector<double>& vec, vector<bool>& index);
 
 /**
  * Reduce the input vector to the given index
@@ -92,7 +93,7 @@ void reduceVector(vector<double> & vec, vector<bool> & index);
  * @param[in] index (bool) <em> dim size of vec </em>
  *
  */
-void reduceVector(vector<bool> & vec, vector<bool> & index);
+void reduceVector(vector<bool>& vec, vector<bool>& index);
 
 /**
  * Expand a vector2 into the given indexes of vector1
@@ -101,7 +102,7 @@ void reduceVector(vector<bool> & vec, vector<bool> & index);
  * @param[in] vector (vector)
  * @param[in] index (int)
  */
-void expandVector(double * tab, vector<double> & vector2, vector<int> & index);
+void expandVector(double* tab, vector<double>& vector2, vector<int>& index);
 
 /**
  * Expand a vector2 into the given indexes of vector1
@@ -110,6 +111,6 @@ void expandVector(double * tab, vector<double> & vector2, vector<int> & index);
  * @param[in] vector (vector)
  * @param[in] index (int) <em> dim size of tab </em>
  */
-void expandVector(double * tab, vector<double> & vector, vector<bool> & index);
+void expandVector(double* tab, vector<double>& vector, vector<bool>& index);
 
 #endif /* __Kernel_Utils_hpp */

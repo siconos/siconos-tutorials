@@ -1,6 +1,5 @@
 #include <math.h>
-void NLEffects(N, q, qdot)
-double N[2];
+void NLEffects(N, q, qdot) double N[2];
 double q[2];
 double qdot[2];
 {
@@ -36,4 +35,3 @@ double qdot[2];
     return;
   }
 }
-

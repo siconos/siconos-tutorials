@@ -35,4 +35,3 @@ plot \
 resultfile every ::2 u 1:12 t "Ball  rot velocity x" w l,\
 resultfile every ::2 u 1:13 t "Ball  rot velocity y" w l,\
 resultfile every ::2 u 1:14 t "Ball  rot velocity z" w l
-

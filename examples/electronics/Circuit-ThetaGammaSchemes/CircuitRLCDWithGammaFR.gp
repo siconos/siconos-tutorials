@@ -23,7 +23,7 @@
 # to the ideal diode behavior currently (12/09/2005) modeled in the Siconos sample.
 #----------------------------------------------------------------------------------
 
-#set  term X11 
+#set  term X11
 
 #!tail -n 10000 CircuitRLCD.dat > resultgp.dat
 
@@ -34,7 +34,7 @@ heightoff = 0.2
 winratio = 1.0
 winheight = basheight*winratio
 
-set lmargin 8 
+set lmargin 8
 set bmargin 0
 set tmargin 0
 
@@ -42,7 +42,7 @@ set size 1.0 , 1.0
 
 set xzeroaxis
 set format x ""
- 
+
 set grid xtics
 
 
@@ -61,9 +61,9 @@ set ylabel "V"
 plot\
   "CircuitRLCD-gammaFR0.dat" u ($1-toffset):2 t "capacitor voltage , Gamma0   BE 1us" w l,\
   "CircuitRLCD-gammaFR1.dat" u ($1-toffset):2 t "capacitor voltage , Gamma1   BE 1us" w l,\
-  "CircuitRLCD.dat" u 1:2 t      "capacitor voltage , Gamma1/2 BE 1us" with lines 
+  "CircuitRLCD.dat" u 1:2 t      "capacitor voltage , Gamma1/2 BE 1us" with lines
 set origin 0.0,winheight*2.0+heightoff
-set ylabel "A" 
+set ylabel "A"
 plot\
   "CircuitRLCD-gammaFR0.dat" u ($1-toffset):3 t "inductor current , Gamma0   BE 1us" w l,\
   "CircuitRLCD-gammaFR1.dat" u ($1-toffset):3 t "inductor current , Gamma1   BE 1us" w l,\
@@ -81,7 +81,7 @@ set format
 set xtics axis
 set xlabel "time in s"
 set origin 0.0,0.0+heightoff
-set ylabel "A" 
+set ylabel "A"
 plot\
   "CircuitRLCD-gammaFR0.dat" u ($1-toffset):5 t "diode current , Gamma0   BE 1us" w l,\
   "CircuitRLCD-gammaFR1.dat" u ($1-toffset):5 t "diode current , Gamma1   BE 1us" w l,\
@@ -97,7 +97,7 @@ plot\
   "CircuitRLCD-gammaFR1.dat" u ($1-toffset):7 t "storage function , Gamma1   BE 1us" w l,\
   "CircuitRLCD.dat" u 1:7 t      "storage function , Gamma1/2 BE 1us" w l
 
- 
+
 plot\
   "CircuitRLCD-gammaFR0.dat" u ($1-toffset):8 t "dissipation function , Gamma0   BE 1us" w l,\
   "CircuitRLCD-gammaFR1.dat" u ($1-toffset):8 t "dissipation function , Gamma1   BE 1us" w l,\
@@ -107,5 +107,3 @@ plot\
   "CircuitRLCD-gammaFR0.dat" u ($1-toffset):9 t "total function , Gamma0   BE 1us" w l,\
   "CircuitRLCD-gammaFR1.dat" u ($1-toffset):9 t "total function , Gamma1   BE 1us" w l,\
   "CircuitRLCD.dat" u 1:9    t  "total function , Gamma1/2 BE 1us" w l
-
-

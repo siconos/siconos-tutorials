@@ -25,7 +25,6 @@
 #include <SiconosMatrix.hpp>
 #include <SiconosVector.hpp>
 #include <StorageTools.hpp>
-#include <SiconosFEM.h>
 // #include <StressLinearTIR.hpp>
 #include <chrono>
 #include <cmath>  // for fabs
@@ -62,7 +61,7 @@ int main(int argc, char* argv[]) {
     // Apply nodal forces
     if (tags.find(siconos::mechanics::fem::MeshTags::applied_forces) != tags.end()) {
       siconos::algebra::SiconosVector nodal_forces{6};
-      nodal_forces << -1e9, 0., 0., 0., 0., 0. ;
+      nodal_forces << -1e9, 0., 0., 0., 0., 0.;
       // nodal_forces << 0., 0., 4e9, 0. , 0., 0. ;
       beam->applyNodalForces(tags[siconos::mechanics::fem::MeshTags::applied_forces],
                              nodal_forces);
@@ -82,7 +81,6 @@ int main(int argc, char* argv[]) {
     }
 
     std::cout << beam->stressDimension() << "\n";
-
 
     // ------- Interactions -------
 
@@ -107,26 +105,25 @@ int main(int argc, char* argv[]) {
 
     auto nslawPlasticity =
         std::make_shared<siconos::modeling::MohrCoulombPlasticityNSL>(c, phi, nslawdimension);
-    siconos::algebra::SiconosDenseMatrix H{nslawdimension,beam->stressDimension()};
-    siconos::algebra::SiconosDenseMatrix Hminus{nslawdimension,beam->stressDimension()};
-    siconos::algebra::SiconosDenseMatrix H2{nslawdimension,beam->stressDimension()};
-    siconos::algebra::SiconosDenseMatrix Hminus2{nslawdimension,beam->stressDimension()};
+    siconos::algebra::SiconosDenseMatrix H{nslawdimension, beam->stressDimension()};
+    siconos::algebra::SiconosDenseMatrix Hminus{nslawdimension, beam->stressDimension()};
+    siconos::algebra::SiconosDenseMatrix H2{nslawdimension, beam->stressDimension()};
+    siconos::algebra::SiconosDenseMatrix Hminus2{nslawdimension, beam->stressDimension()};
 
     H.setZero();
     Hminus.setZero();
     int dimStressPerElement = 6;
     for (int elNum = 2; elNum < 3; elNum++) {
       H(0, elNum * dimStressPerElement + 5) = 1.0;
-      H(1, elNum * dimStressPerElement ) = 1.0;
+      H(1, elNum * dimStressPerElement) = 1.0;
       H(2, elNum * dimStressPerElement + 1) = 1.0;
       Hminus(0, elNum * dimStressPerElement + 5) = -1.0;
-      Hminus(1, elNum * dimStressPerElement ) = -1.0;
+      Hminus(1, elNum * dimStressPerElement) = -1.0;
       Hminus(2, elNum * dimStressPerElement + 1) = -1.0;
 
       auto relation = std::make_shared<siconos::mechanics::fem::StressLinearTIR>(H);
       auto inter = std::make_shared<siconos::modeling::Interaction>(nslawPlasticity, relation);
-      auto relationMinus =
-          std::make_shared<siconos::mechanics::fem::StressLinearTIR>(Hminus);
+      auto relationMinus = std::make_shared<siconos::mechanics::fem::StressLinearTIR>(Hminus);
       auto interMinus =
           std::make_shared<siconos::modeling::Interaction>(nslawPlasticity, relationMinus);
 
@@ -181,7 +178,7 @@ int main(int argc, char* argv[]) {
     auto filename = siconos::mechanics::fem::prepareWriteDisplacementforPython("beam");
 
     while (s->hasNextEvent()) {
-      std::cout << "Step number " << k << std::endl;      
+      std::cout << "Step number " << k << std::endl;
       s->computeOneStep();
       //  --- Get values to be plotted ---
       dataPlot(k, 0) = s->nextTime();
@@ -208,8 +205,8 @@ int main(int argc, char* argv[]) {
                                 siconos::algebra::io::WriteType::nodim);
 
     double error = 0.0, eps = 1e-6;
-    if ((error = siconos::algebra::io::compareRefFile(
-             dataPlot, "plasticBernoulliBeam.ref", eps)) >= eps)
+    if ((error = siconos::algebra::io::compareRefFile(dataPlot, "plasticBernoulliBeam.ref",
+                                                      eps)) >= eps)
       return 1;
 
     return 0;

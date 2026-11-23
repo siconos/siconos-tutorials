@@ -1,7 +1,8 @@
-import numpy
 import array
 import subprocess
 
+import numpy
+from siconos.mechanisms import mbtb
 
 # his file is one of the configuration file of siconos/mechanisms
 
@@ -164,7 +165,7 @@ afile = [
 ###### FORCES and MOMENTS acting on the bodies##################################################
 plugin = "plugins.so"
 
-fctfext = numpy.array(["", "", "", "", "", "", "", ""])  #
+fctfext = numpy.array(["", "", "", "", "", "", "", ""])
 
 fctmext = numpy.array(["", "", "", "", "", "", "", ""])
 
@@ -177,7 +178,7 @@ fctfint = numpy.array(
         "externalEquipageForces",
         "externalBarreForces",
         "",
-        "",  #
+        "",
     ]
 )
 

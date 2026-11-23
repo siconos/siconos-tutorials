@@ -43,7 +43,7 @@ function [qddot] = pa10Dynamics(q, qdot, Tau)
 
 // Matrix computation
  M = pa10inertie(q);
- 
+
  N = pa10coriolis(q, qdot)*qdot;
  G = pa10Gravity(q);
  F = pa10frottements(q,qdot);

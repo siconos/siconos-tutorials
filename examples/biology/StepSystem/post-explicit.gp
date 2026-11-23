@@ -63,12 +63,11 @@ coeff=0.05
 set arrow from 8,ymin to 8,ymax nohead ls 3
 set arrow from xmin,8 to xmax,8 nohead ls 3
 
-vec1(x,y) =  ( x/(sqrt(x*x+y*y))*coeff     ) 
-vec2(x,y) =  ( y/(sqrt(x*x+y*y))*coeff     ) 
+vec1(x,y) =  ( x/(sqrt(x*x+y*y))*coeff     )
+vec2(x,y) =  ( y/(sqrt(x*x+y*y))*coeff     )
 
 
 set label "\$\\theta_2^2\$" at first 10.5, first 8
 set label "\$\\theta_1^2\$" at first 7.7, first 10.8
 
 plot "result.dat" u 2:3 w l ls 1 notitle
-

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -19,12 +20,11 @@
 # Example of one object under gravity with one contactor and a ground
 #
 
-from siconos.mechanics.collision.tools import Contactor
 from siconos.io.mechanics_hdf5 import MechanicsHdf5
+from siconos.mechanics.collision.tools import Contactor
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5(io_filename="cube_scene.hdf5") as io:
-
     # Definition of a cube as a convex shape
     io.add_convex_shape(
         "Cube",

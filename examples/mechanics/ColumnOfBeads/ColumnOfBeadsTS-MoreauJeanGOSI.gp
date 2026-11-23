@@ -26,4 +26,3 @@ resultfile every ::2 u 1:20 t "Ball position" w l,\
 resultfile every ::2 u 1:21 t "Ball Velocity" w l,\
 resultfile every ::2 u 1:22 t "Ball position" w l,\
 resultfile every ::2 u 1:23 t "Ball Velocity" w l
-

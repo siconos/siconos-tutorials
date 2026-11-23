@@ -18,18 +18,17 @@
 # limitations under the License.
 #
 import math
+
 import numpy as np
+import siconos.integrators
+import siconos.plot_config as sicoplot
 from siconos.modeling import (
     FirstOrderLinearDS,
     FirstOrderLinearTIR,
-    RelayNSL,
     Interaction,
     NonSmoothDynamicalSystem,
+    RelayNSL,
 )
-
-import siconos.integrators
-
-import siconos.plot_config as sicoplot
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)

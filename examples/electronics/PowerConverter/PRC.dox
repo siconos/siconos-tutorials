@@ -19,7 +19,7 @@ The Parallel Resonant Converter (PRC) is a dc-dc power converter. The schematic 
 The general form of an LCS is given by
 
 \f{eqnarray*}
-\dot{x}(t)=Ax(t)+Bu(t)+Ew(t),\\ y(t)=Cx(t)+Du(t)+Fw(t),\\ 0\leq y \perp u \geq 0 
+\dot{x}(t)=Ax(t)+Bu(t)+Ew(t),\\ y(t)=Cx(t)+Du(t)+Fw(t),\\ 0\leq y \perp u \geq 0
 \f}
 
 with \f$ x\in R^n \f$, \f$ w \in R^k \f$, and \f$ y,u \f$ are \f$p\f$ pairs of complementarity variables. Here \f$x\f$ denotes the state (the voltage across the capacitors and the currents through the inductors), \f$w\f$ denotes the external source, \f$(u_i,y_i)\f$ denotes either the voltage-current of the current-voltage pairs of the \f$i\f$th port, and \f$A,B,C,D,E,F\f$ are (constant) matrices and vectors of suitable dimensions.
@@ -49,10 +49,10 @@ E= \left( \begin{array}{c} \frac{\displaystyle 1}{\displaystyle L_r} \\ 0 \\ 0 \
 
 This paper shows simulations of the parallel resonant converter using the complementarity framework in the SICONOS Platform. We present the different dynamical behaviours when the load (\f$R_l\f$) and the frequency (\f$F_0\f$) of the input voltage are changed. The numerical simulations are performed with the following parameter values: \f$L_r=150\mu H\f$, \f$L_f=0.4mH\f$, \f$C_r=68nF\f$, \f$C_f=2.2 \mu F\f$.
 
-\image html Electronics/PowerConverter/PRC1_1.png 
+\image html Electronics/PowerConverter/PRC1_1.png
 \image latex Electronics/PowerConverter/PRC_fig1.eps " "
 
-\image html Electronics/PowerConverter/PRC1_2.png 
+\image html Electronics/PowerConverter/PRC1_2.png
 \image latex Electronics/PowerConverter/PRC_fig2.eps " "
 
 */

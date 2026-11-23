@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -19,18 +20,16 @@
 # Example of how to use the heightmap object to interact with static terrain.
 #
 
-from siconos.mechanics.collision.tools import Contactor
+import numpy as np
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-import siconos.numerics as sn
-
-import numpy as np
+from siconos.mechanics.collision.tools import Contactor
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Generate a numpy matrix defining a slope + sinusoid + noise
     noise_amp = 1
     sine_amp = 2
@@ -69,7 +68,7 @@ with MechanicsHdf5Runner() as io:
     for i in range(20):
         for j in range(20):
             io.add_object(
-                "ball_%d_%d" % (i, j),
+                f"ball_{i}_{j}",
                 [Contactor("Ball", collision_group=1)],
                 translation=[j * 5 - 47.5, i * 5 - 47.5, 110],
                 mass=1,
@@ -116,11 +115,10 @@ run_options["output_frequency"] = None
 run_options["with_timer"] = False
 # run_options["violation_verbose"] = True
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
 

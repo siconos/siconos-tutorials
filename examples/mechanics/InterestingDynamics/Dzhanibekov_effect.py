@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # The Dzhanibekov effect
 # http://mathoverflow.net/questions/81960/the-dzhanibekov-effect-an-exercise-in-mechanics-or-fiction-explain-mathemat
 #
@@ -5,15 +6,13 @@ from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-from siconos.mechanics.collision.tools import Contactor
-
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
+from siconos.mechanics.collision.tools import Contactor
 
 bullet_options = SiconosBulletOptions()
 bullet_options.worldScale = 0.01
 
 with MechanicsHdf5Runner() as io:
-
     # Definition of a tetrahedron as a convex shape
     io.add_primitive_shape("Body1", "Cylinder", (1, 6))
     io.add_primitive_shape("Body2", "Box", (2, 0.4, 11))
@@ -31,7 +30,6 @@ test = True
 if test:
     T = 10
 else:
-
     T = 100
 
 run_options = MechanicsHdf5Runner_run_options()
@@ -48,8 +46,8 @@ run_options["verbose"] = True
 run_options["violation_verbose"] = False
 run_options["with_timer"] = True
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 run_options["output_frequency"] = None
 run_options["set_external_forces"] = lambda x: None

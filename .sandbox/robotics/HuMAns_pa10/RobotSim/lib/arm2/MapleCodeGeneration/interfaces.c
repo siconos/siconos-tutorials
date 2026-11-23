@@ -1,33 +1,29 @@
-#include "stack-c.h"
 #include <string.h>
+
 #include "machine.h"
-#include "sun/link.h"
 #include "robotmodel.h"
+#include "stack-c.h"
+#include "sun/link.h"
 
-#define CreateVar1(n,ct,mx,nx,lx)\
- if(! C2F(createvar)((c_local=n,&c_local),ct,mx,nx,lx, 1L))\
-        { return ;  }
-
-
+#define CreateVar1(n, ct, mx, nx, lx)                                 \
+  if (!C2F(createvar)((c_local = n, &c_local), ct, mx, nx, lx, 1L)) { \
+    return;                                                           \
+  }
 
 /***************************************************
  * interfaces
  ***************************************************/
 
-void modele_nddl(int *nddl)
-{
-  *nddl = NDDL;
-}
+void modele_nddl(int* nddl) { *nddl = NDDL; }
 
-int interface_nddl(char *fname)
-{
+int interface_nddl(char* fname) {
   static int un = 1, nddl;
 
   /*    Define minls=1,  maxlhs   */
-  static int minlhs = 1,  maxlhs = 1;
+  static int minlhs = 1, maxlhs = 1;
 
   /*   Check lhs   */
-  CheckLhs(minlhs, maxlhs) ;
+  CheckLhs(minlhs, maxlhs);
 
   CreateVar(1, "d", &un, &un, &nddl);
 
@@ -37,8 +33,7 @@ int interface_nddl(char *fname)
   return 0;
 }
 
-int interface_frottements(char *fname)
-{
+int interface_frottements(char* fname) {
   static int un = 1, nddl = NDDL;
   static int n, nbis;
   static int q, qdot, F;
@@ -47,20 +42,18 @@ int interface_frottements(char *fname)
   static int minlhs = 1, minrhs = 2, maxlhs = 1, maxrhs = 2;
 
   /*   Check rhs and lhs   */
-  CheckRhs(minrhs, maxrhs) ;
-  CheckLhs(minlhs, maxlhs) ;
+  CheckRhs(minrhs, maxrhs);
+  CheckLhs(minlhs, maxlhs);
 
   GetRhsVar(1, "d", &n, &nbis, &q);
-  if (n * nbis != NDDL)
-  {
+  if (n * nbis != NDDL) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
   }
 
   GetRhsVar(2, "d", &n, &nbis, &qdot);
-  if (n * nbis != NDDL)
-  {
+  if (n * nbis != NDDL) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
@@ -74,8 +67,7 @@ int interface_frottements(char *fname)
   return 0;
 }
 
-int interface_coriolis(char *fname)
-{
+int interface_coriolis(char* fname) {
   static int nddl = NDDL;
   static int n, nbis;
   static int q, qdot, N;
@@ -84,20 +76,18 @@ int interface_coriolis(char *fname)
   static int minlhs = 1, minrhs = 2, maxlhs = 1, maxrhs = 2;
 
   /*   Check rhs and lhs   */
-  CheckRhs(minrhs, maxrhs) ;
-  CheckLhs(minlhs, maxlhs) ;
+  CheckRhs(minrhs, maxrhs);
+  CheckLhs(minlhs, maxlhs);
 
   GetRhsVar(1, "d", &n, &nbis, &q);
-  if (n * nbis != NDDL)
-  {
+  if (n * nbis != NDDL) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
   }
 
   GetRhsVar(2, "d", &n, &nbis, &qdot);
-  if (n * nbis != NDDL)
-  {
+  if (n * nbis != NDDL) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
@@ -111,8 +101,7 @@ int interface_coriolis(char *fname)
   return 0;
 }
 
-int interface_gravite(char *fname)
-{
+int interface_gravite(char* fname) {
   static int un = 1, nddl = NDDL;
   static int n, nbis;
   static int q, G;
@@ -121,12 +110,11 @@ int interface_gravite(char *fname)
   static int minlhs = 1, minrhs = 1, maxlhs = 1, maxrhs = 1;
 
   /*   Check rhs and lhs   */
-  CheckRhs(minrhs, maxrhs) ;
-  CheckLhs(minlhs, maxlhs) ;
+  CheckRhs(minrhs, maxrhs);
+  CheckLhs(minlhs, maxlhs);
 
   GetRhsVar(1, "d", &n, &nbis, &q);
-  if (n * nbis != NDDL)
-  {
+  if (n * nbis != NDDL) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
@@ -140,9 +128,7 @@ int interface_gravite(char *fname)
   return 0;
 }
 
-
-int interface_inertie(char *fname)
-{
+int interface_inertie(char* fname) {
   static int nddl = NDDL;
   static int n, nbis;
   static int q, M;
@@ -151,12 +137,11 @@ int interface_inertie(char *fname)
   static int minlhs = 1, minrhs = 1, maxlhs = 1, maxrhs = 1;
 
   /*   Check rhs and lhs   */
-  CheckRhs(minrhs, maxrhs) ;
-  CheckLhs(minlhs, maxlhs) ;
+  CheckRhs(minrhs, maxrhs);
+  CheckLhs(minlhs, maxlhs);
 
   GetRhsVar(1, "d", &n, &nbis, &q);
-  if (n * nbis != NDDL)
-  {
+  if (n * nbis != NDDL) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
@@ -170,32 +155,18 @@ int interface_inertie(char *fname)
   return 0;
 }
 
-
-
 /***************************************************
  * Gateways for Scilab
  ***************************************************/
 
+typedef int (*gate_function)(char*);
 
-typedef int (*gate_function)(char *);
-
-int C2F(gateway_lagrangien)()
-{
-  gate_function function[] = {interface_coriolis,
-                              interface_gravite,
-                              interface_inertie,
-                              interface_frottements,
-                              interface_nddl
-                             };
-  char *name[] = {"coriolis",
-                  "gravite",
-                  "inertie",
-                  "frottements",
-                  "nddl"
-                 };
+int C2F(gateway_lagrangien)() {
+  gate_function function[] = {interface_coriolis, interface_gravite, interface_inertie,
+                              interface_frottements, interface_nddl};
+  char* name[] = {"coriolis", "gravite", "inertie", "frottements", "nddl"};
 
   Rhs = Max(0, Rhs);
   sci_gateway(name[Fin - 1], function[Fin - 1]);
   return 0;
 }
-

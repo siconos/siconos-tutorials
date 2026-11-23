@@ -1,8 +1,8 @@
 try:
     import siconos.kernel as SK
 
-except (ImportError):
-    print('Could not import Siconos.* module')
+except ImportError:
+    print("Could not import Siconos.* module")
 
 import numpy
 
@@ -15,57 +15,50 @@ class MyNonLinearR(SK.FirstOrderNonLinearR):
         SK.FirstOrderNonLinearR.__init__(self)
         self.setBPtr(B)
         self.setCPtr(C)
-        self._verbose=False
-        return
+        self._verbose = False
 
     def computeh(self, time, x, l, z, y):
         if self._verbose:
-            print('################################## call computeh')
+            print("################################## call computeh")
             print(x)
         y[:] = self.C().dot(x)[:]
         if self._verbose:
             print(y)
-            print('################################## computeh done')
-        pass
+            print("################################## computeh done")
 
     def computeg(self, time, x, l, z, R):
         if self._verbose:
-            print('################################## call computeg')
+            print("################################## call computeg")
         R[:] = self.B().dot(l)[:]
         if self._verbose:
-            print('################################## call computeg done')
-        pass
+            print("################################## call computeg done")
 
     def computeJachx(self, time, x, l, z, C):
         # since C is given, this should not be called
         if self._verbose:
-            print('********************************* call computeJachx')
+            print("********************************* call computeJachx")
             print(C)
         C[:] = numpy.eye(2)[:]
         if self._verbose:
-            print('********************************* call computeJachx done ')
-        pass
+            print("********************************* call computeJachx done ")
 
     def computeJacglambda(self, time, x, l, z, B):
         # since B is given, this should not be called
         B[:] = self.B()
-        pass
 
     def computeJacgx(self, time, x, l, z, K):
         if self._verbose:
-            print('********************************* call computeJacgx')
+            print("********************************* call computeJacgx")
         K[:] = numpy.zeros(2)[:]
         if self._verbose:
             print(K)
-            print('********************************* call computeJacgx done')
-        pass
+            print("********************************* call computeJacgx done")
 
     def computeJachlambda(self, time, x, l, z, D):
         # since D is given, this should not be called
         if self._verbose:
-            print('********************************* call computeJachlambda')
+            print("********************************* call computeJachlambda")
         D[:] = numpy.zeros(2)[:]
         if self._verbose:
             print(D)
-            print('********************************* call computeJachlambda done')
-        pass
+            print("********************************* call computeJachlambda done")

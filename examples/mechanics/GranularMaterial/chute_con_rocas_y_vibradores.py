@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -15,21 +16,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from siconos.io.mechanics_run import (
-    MechanicsHdf5Runner,
-    MechanicsHdf5Runner_run_options,
-)
-import siconos.numerics as sn
+import random
+import sys
 
 # import chute_con_vibrator_rear_up as chute_con_vibradores
 # import chute_con_vibrador_bottom as chute_con_vibradores
 # import chute_con_vibrador_middle as chute_con_vibradores
 import chute_con_vibrador_top as chute_con_vibradores
-
-import rocas
-import random
-import sys
 import numpy
+import rocas
+import siconos.numerics as sn
+from siconos.io.mechanics_run import (
+    MechanicsHdf5Runner,
+    MechanicsHdf5Runner_run_options,
+)
 
 if len(sys.argv) < 2:
     dist = "uniform"
@@ -45,7 +45,7 @@ if float(mu) < 0.1 or float(mu) > 1.5:
     print("mu = [0.1 .. 1.5]")
     sys.exit(1)
 
-fn = "chute_con_rocas_y_vibradores-{0}-mu-{1}.hdf5".format(dist, mu)
+fn = f"chute_con_rocas_y_vibradores-{dist}-mu-{mu}.hdf5"
 
 random.seed(0)
 numpy.random.seed(0)
@@ -76,7 +76,6 @@ else:
 
 
 with MechanicsHdf5Runner(mode="w", io_filename=fn) as io:
-
     io.add_Newton_impact_friction_nsl(
         "contact_rocas", mu=float(mu), e=0.01, collision_group1=0, collision_group2=0
     )
@@ -134,12 +133,11 @@ run_options["verbose"] = True
 run_options["verbose_progress"] = True
 run_options["with_timer"] = False
 
-run_options['numerics_verbose']=False
-run_options['numerics_verbose_level']=0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 run_options["output_frequency"] = 10
 run_options["multipoints_iterations"] = True
 
 with MechanicsHdf5Runner(mode="r+", io_filename=fn) as io:
     io.run(run_options)
-    

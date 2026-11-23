@@ -15,21 +15,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import random
+import sys
+
+import chute
+import numpy
+import rocas
+import siconos.nonsmooth_formulations as nsf
+import siconos.numerics as sn
+import siconos.simulation as simu
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-import siconos.numerics as sn
-import siconos.simulation as simu
-import siconos.nonsmooth_formulations as nsf
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
-import numpy
-
-import chute
-import rocas
-import random
-
-import sys
 
 if len(sys.argv) < 2:
     dist = "uniform"
@@ -62,9 +61,9 @@ rock_shape = "roca"
 
 # hdf5 file name
 if rock_shape == "roca":
-    fn = "chute_con_rocas-{0}-mu-{1}.hdf5".format(dist, mu)
+    fn = f"chute_con_rocas-{dist}-mu-{mu}.hdf5"
 else:
-    fn = "chute_con_rocas-{0}-mu-{1}_{2}.hdf5".format(dist, mu, rock_shape)
+    fn = f"chute_con_rocas-{dist}-mu-{mu}_{rock_shape}.hdf5"
 
 test = True
 if test:
@@ -90,7 +89,6 @@ class death_hook:
 
     def initialize(self, io):
         self._io = io
-        pass
 
     def call(self, step):
         if step % 100 == 0:

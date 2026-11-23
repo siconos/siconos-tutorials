@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -21,19 +22,17 @@
 # performed with scaled-up geometries, the contact points are
 # correctly generated and used by Siconos.
 #
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
 from siconos.mechanics.collision.tools import Contactor
 
-import siconos.numerics as sn
-
 # We need to pass some options to the Bullet backend
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a cube as a convex shape
     io.add_convex_shape(
         "CubeCH",
@@ -103,7 +102,7 @@ options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-8
 
 run_options = MechanicsHdf5Runner_run_options()
 run_options["t0"] = 0
-run_options["T"] = 10.
+run_options["T"] = 10.0
 run_options["h"] = 0.005
 
 
@@ -119,11 +118,10 @@ run_options["output_frequency"] = None
 run_options["with_timer"] = False
 # run_options["violation_verbose"] = True
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

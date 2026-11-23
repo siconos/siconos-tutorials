@@ -2,15 +2,15 @@
 a siconos interaction
 """
 
-import siconos.modeling as sm
-import numpywrappers as npw
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import animation
-from scipy import signal
+import numpywrappers as npw
 import siconos.integrators
+import siconos.modeling as sm
 import siconos.nonsmooth_formulations
 import siconos.simulation
+from matplotlib import animation
+from scipy import signal
 
 
 class Fret(sm.Interaction):
@@ -24,8 +24,8 @@ class Fret(sm.Interaction):
         if string.modal_form:
             coeff = 1.0  # string.length / string._N
             if string.use_sparse:
-                hmat = sk.SimpleMatrix(1, string.ndof, sk.SPARSE, string.ndof)
-                for i in xrange(string.ndof):
+                hmat = sm.SimpleMatrix(1, string.ndof, sm.SPARSE, string.ndof)
+                for i in range(string.ndof):
                     val = coeff * string.s_mat[self.contact_index, i]
                     hmat.setValue(0, i, val)
             else:
@@ -39,7 +39,7 @@ class Fret(sm.Interaction):
         e = restitution_coeff
         nslaw = sm.NewtonImpactNSL(e)
         relation = sm.LagrangianLinearTIR(hmat, -self.position)
-        super(Fret, self).__init__(nslaw, relation)
+        super().__init__(nslaw, relation)
 
 
 class Guitar(sm.NonSmoothDynamicalSystem):
@@ -48,8 +48,7 @@ class Guitar(sm.NonSmoothDynamicalSystem):
     """
 
     def __init__(self, strings, frets, time_range, fs):
-        """ """
-        super(Guitar, self).__init__(time_range[0], time_range[1])
+        super().__init__(time_range[0], time_range[1])
         if not isinstance(strings, list):
             strings = [strings]
         if not isinstance(frets, list):
@@ -85,7 +84,6 @@ class Guitar(sm.NonSmoothDynamicalSystem):
         self.data = npw.zeros((self.nb_time_steps + 1, 3 + ndof))
 
     def save_state(self, k):
-        """ """
         self.data[k, 0] = self.simu.nextTime()
         if self.modal_form:
             self.data[k, 3:] = np.dot(self.strings[0].s_mat, self.strings[0].q())
@@ -154,7 +152,6 @@ class Guitar(sm.NonSmoothDynamicalSystem):
         return plt
 
     def plot_modes(self, movie_name):
-        """ """
 
         fig = plt.figure()
         string = self.strings[0]

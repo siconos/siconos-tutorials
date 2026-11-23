@@ -43,7 +43,7 @@ function [qddot] = arm2Dynamics(q, qdot, Tau)
 
 // Matrix computation
  M = arm2inertie(q);
- 
+
  N = arm2coriolis(q, qdot)*qdot;
  G = arm2Gravity(q);
  F = arm2frottements(q,qdot);

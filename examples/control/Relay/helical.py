@@ -4,10 +4,10 @@ http://www.irisa.fr/prive/Benoit.Caillaud/cours-hybride-2014/Cours_modelisation_
 """
 
 import numpy as np
-import siconos.modeling as sm
-import siconos.numerics as sn
 import siconos.integrators
+import siconos.modeling as sm
 import siconos.nonsmooth_formulations
+import siconos.numerics as sn
 import siconos.plot_config as sicoplot
 
 # Turn off interactive backend by default

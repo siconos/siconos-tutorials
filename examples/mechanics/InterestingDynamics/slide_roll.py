@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 
 # Various object types sliding, rolling, and sitting still.
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-from siconos.mechanics.collision.tools import Contactor
-from siconos.mechanics.collision.convexhull import ConvexHull
-
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
-import siconos.numerics as sn
+from siconos.mechanics.collision.convexhull import ConvexHull
+from siconos.mechanics.collision.tools import Contactor
 
 bullet_options = SiconosBulletOptions()
 bullet_options.worldScale = 1.0
@@ -21,7 +20,6 @@ bullet_options.minimumPointsPerturbationThreshold = 5
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a tetrahedron as a convex shape.
     # Bottom purposely not even.
     import numpy
@@ -153,7 +151,7 @@ with MechanicsHdf5Runner() as io:
     stack_height = 3
     for i in range(stack_height):
         io.add_object(
-            "box%d" % (i + 3),
+            f"box{i + 3}",
             [Contactor("Cube", collision_group=1 + (i % 2))],
             translation=[x, y, i + 1],
             velocity=[0, 0, 0, 0, 0, 0],
@@ -196,13 +194,12 @@ run_options["verbose"] = True
 run_options["violation_verbose"] = False
 run_options["with_timer"] = False
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 run_options["output_frequency"] = None
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

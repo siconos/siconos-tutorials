@@ -3,7 +3,7 @@ well-posedness and numerical analysis*. The code simulating the example is separ
 Code executed and tested on Ubuntu 18.04.
 
 ## Requirements
- 
+
 - Both the python code and the C++ code require the installation of the Siconos toolbox: https://github.com/siconos/siconos
 
 - The python code requires Jupyter notebook: https://jupyter.org/
@@ -20,15 +20,14 @@ This code as been used to generate the pictures in the papers. Please Refers to 
 
 This code behave in the same way as the Python code but is significantly faster.
 
-- Use 
+- Use
 
-    ``siconos example_convergence.cpp`` 
+    ``siconos example_convergence.cpp``
 
 to generate the results of the convergence tests (see usage in example_convergence.cpp comments).
 
-- Use 
+- Use
 
     ``siconos example_simulation.cpp``
 
 to generate the results of a single simulation run.
-

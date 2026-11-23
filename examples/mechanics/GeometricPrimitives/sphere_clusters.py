@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -19,19 +20,14 @@
 # Example of one object under gravity with one contactor and a ground
 # using the Siconos proposed mechanics API
 #
+import numpy as np
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-from siconos.mechanics.collision.tools import Contactor
-
-import siconos.numerics as sn
-
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
-
-
-import numpy as np
-
+from siconos.mechanics.collision.tools import Contactor
 
 sphere_count = 0
 cluster_count = 0
@@ -55,12 +51,12 @@ def add_sphere_cluster(
     locations = np.random.normal(0, dispersion, (n_spheres, 3))
     for n in range(n_spheres):
         sphere_count += 1
-        spheres.append("Sphere%03d" % sphere_count)
+        spheres.append(f"Sphere{sphere_count:03d}")
         io.add_primitive_shape(spheres[-1], "Sphere", [radius])
 
     cluster_count += 1
     io.add_object(
-        "cluster%d" % cluster_count,
+        f"cluster{cluster_count}",
         [
             Contactor(sph, relative_translation=loc)
             for sph, loc in zip(spheres, locations)
@@ -74,7 +70,6 @@ def add_sphere_cluster(
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a cube
     io.add_primitive_shape(
         "Cube1", "Box", (2, 2, 2), insideMargin=0.04, outsideMargin=0.0
@@ -169,12 +164,11 @@ run_options["output_frequency"] = None
 run_options["with_timer"] = False
 # run_options["violation_verbose"] = True
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     io.run(run_options)

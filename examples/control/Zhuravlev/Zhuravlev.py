@@ -20,21 +20,20 @@
 #
 
 
-from numpy import array, eye, empty, zeros, savetxt
+import MyR  # local module (MyR.py)
 import numpy as np
+import siconos.plot_config as sicoplot
+from numpy import array, empty, eye, savetxt, zeros
 from siconos.kernel import (
+    EulerMoreauOSI,
     FirstOrderLinearDS,
-    RelayNSL,
+    Interaction,
     NonSmoothDynamicalSystem,
+    Relay,
+    RelayNSL,
     TimeDiscretisation,
     TimeStepping,
-    EulerMoreauOSI,
-    Interaction,
-    Relay,
 )
-
-
-import siconos.plot_config as sicoplot
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)

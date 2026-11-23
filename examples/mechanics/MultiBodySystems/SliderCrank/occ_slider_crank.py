@@ -9,12 +9,12 @@
 # siconos <this file>
 #
 
-from siconos.mechanics.collision.tools import Contactor, Shape
-from siconos.io.mechanics_run import MechanicsHdf5Runner
-from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeCylinder
-from OCC.Core.gp import gp_Pnt, gp_Ax2, gp_Dir
 import siconos
 import siconos.numerics as sn
+from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeCylinder
+from OCC.Core.gp import gp_Ax2, gp_Dir, gp_Pnt
+from siconos.io.mechanics_run import MechanicsHdf5Runner
+from siconos.mechanics.collision.tools import Contactor, Shape
 
 config_occ = siconos.io.mechanics_run.RunnerConfig(backend="occ")
 
@@ -45,7 +45,6 @@ CAD_directory = "../../Mechanisms/SliderCrank/CAD/"
 
 
 with MechanicsHdf5Runner(config=config_occ) as io:
-
     io.add_occ_shape("AxisShape", axis)
 
     io.add_plugin_source("plugin", "SliderCrankPlugin/SliderCrankPlugin.cpp")
@@ -456,7 +455,6 @@ options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-4
 options.update_internal(1, sn.solver_ids.SICONOS_FRICTION_3D_ONECONTACT_NSN)
 
 with MechanicsHdf5Runner(config=config_occ, mode="r+") as io:
-
     io.run(
         with_timer=True,
         t0=0,

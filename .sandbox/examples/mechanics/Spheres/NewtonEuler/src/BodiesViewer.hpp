@@ -14,30 +14,30 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 #ifndef BodiesViewer_hpp
 #define BodiesViewer_hpp
 
 /* Siconos */
-#include <Disk.hpp>
-#include <DiskDiskR.hpp>
-#include <DiskPlanR.hpp>
-#include <DiskMovingPlanR.hpp>
 #include <Circle.hpp>
 #include <CircleCircleR.hpp>
+#include <ContactR.hpp>
+#include <Disk.hpp>
+#include <DiskDiskR.hpp>
+#include <DiskMovingPlanR.hpp>
+#include <DiskPlanR.hpp>
+#include <NewtonEulerDS.hpp>
+#include <Question.hpp>
+#include <RigidBodyDS.hpp>
+#include <SiconosContactor.hpp>
+#include <SiconosShape.hpp>
 #include <SphereLDS.hpp>
 #include <SphereLDSPlanR.hpp>
 #include <SphereLDSSphereLDSR.hpp>
 #include <SphereNEDS.hpp>
 #include <SphereNEDSPlanR.hpp>
 #include <SphereNEDSSphereNEDSR.hpp>
-#include <Question.hpp>
-#include <RigidBodyDS.hpp>
-#include <NewtonEulerDS.hpp>
-#include <SiconosContactor.hpp>
-#include <SiconosShape.hpp>
-#include <ContactR.hpp>
 
 #if WITH_BULLET
 #include <BulletR.hpp>
@@ -50,33 +50,26 @@
 #include "SiconosKernel.hpp"
 
 /* QGLViewer */
-#include <qglviewer.h>
 #include <manipulatedCameraFrame.h>
 #include <qapplication.h>
-
 #include <qevent.h>
+#include <qglviewer.h>
 #include <qmessagebox.h>
 
 #ifdef QT_INTERFACE
 #include "ui_viewerInterface.Qt4.h"
-class ViewerInterface : public QDialog, public Ui::Dialog
-{
-public:
-  ViewerInterface()
-  {
-    setupUi(this);
-  }
+class ViewerInterface : public QDialog, public Ui::Dialog {
+ public:
+  ViewerInterface() { setupUi(this); }
 };
 #endif
 
 /* convenient macros */
 
-
 #define GETALLDS(M) M->simulation()->nonSmoothDynamicalSystem()->topology()->dSG(0)
 #define GETNDS(M) GETALLDS(M)->size()
 
-struct ForNdof : public Question<unsigned int>
-{
+struct ForNdof : public Question<unsigned int> {
   using SiconosVisitor::visit;
 
   ANSWER_V(Disk, 3);
@@ -87,9 +80,7 @@ struct ForNdof : public Question<unsigned int>
   ANSWER_V(NewtonEulerDS, 6);
 };
 
-
-struct ForFExt : public Question<std::shared_ptr<siconos::algebra::SiconosVector>>
-{
+struct ForFExt : public Question<std::shared_ptr<siconos::algebra::SiconosVector>> {
   using SiconosVisitor::visit;
 
   ANSWER(Disk, fext());
@@ -100,9 +91,7 @@ struct ForFExt : public Question<std::shared_ptr<siconos::algebra::SiconosVector
   ANSWER(NewtonEulerDS, fext());
 };
 
-
-struct ForPosition : public Question<std::shared_ptr<siconos::algebra::SiconosVector>>
-{
+struct ForPosition : public Question<std::shared_ptr<siconos::algebra::SiconosVector>> {
   using SiconosVisitor::visit;
 
   ANSWER(Disk, q());
@@ -113,21 +102,19 @@ struct ForPosition : public Question<std::shared_ptr<siconos::algebra::SiconosVe
   ANSWER(NewtonEulerDS, q());
 };
 
-struct ForRadius : public Question<double>
-{
+struct ForRadius : public Question<double> {
   using SiconosVisitor::visit;
 
   ANSWER(Disk, getRadius());
   ANSWER(Circle, getRadius());
   ANSWER(SphereLDS, getRadius());
   ANSWER(SphereNEDS, getRadius());
-  ANSWER_V(RigidBodyDS,
-           std11::dynamic_pointer_cast<SiconosSphere>(ds.contactors()->at(0)->shape)
-           ->radius());
+  ANSWER_V(
+      RigidBodyDS,
+      std11::dynamic_pointer_cast<SiconosSphere>(ds.contactors()->at(0)->shape)->radius());
 };
 
-struct ForMassValue : public Question<double>
-{
+struct ForMassValue : public Question<double> {
   using SiconosVisitor::visit;
 
   ANSWER(Disk, (*mass())(0, 0));
@@ -138,8 +125,7 @@ struct ForMassValue : public Question<double>
   ANSWER(NewtonEulerDS, scalarMass());
 };
 
-struct ForJachq : public Question<std::shared_ptr<siconos::algebra::SiconosMatrix>>
-{
+struct ForJachq : public Question<std::shared_ptr<siconos::algebra::SiconosMatrix>> {
   using SiconosVisitor::visit;
 
   ANSWER(LagrangianR, jachq());
@@ -155,16 +141,12 @@ struct ForJachq : public Question<std::shared_ptr<siconos::algebra::SiconosMatri
   ANSWER(ContactR, jachq());
 };
 
-struct ForContactForce : public Question<std::shared_ptr<siconos::algebra::SiconosVector>>
-{
+struct ForContactForce : public Question<std::shared_ptr<siconos::algebra::SiconosVector>> {
   using SiconosVisitor::visit;
 
   IFBULLET(ANSWER(BulletR, contactForce()));
   ANSWER(ContactR, contactForce());
 };
-
-
-
 
 #define GETX(C) (*ask<ForPosition>(*C))(0)
 #define GETY(C) (*ask<ForPosition>(*C))(1)
@@ -187,18 +169,9 @@ struct ForContactForce : public Question<std::shared_ptr<siconos::algebra::Sicon
 
 #define GETRADIUS(C) ask<ForRadius>(*C)
 
+enum SHAPE { UNKNOWN, DISK, CIRCLE, SPHERE, IFBULLET(BULLET) };
 
-enum SHAPE
-{
-  UNKNOWN,
-  DISK,
-  CIRCLE,
-  SPHERE,
-  IFBULLET(BULLET)
-};
-
-struct ForShape : public Question<SHAPE>
-{
+struct ForShape : public Question<SHAPE> {
   using SiconosVisitor::visit;
 
   ANSWER_V(Disk, DISK);
@@ -207,19 +180,17 @@ struct ForShape : public Question<SHAPE>
   ANSWER_V(SphereNEDS, SPHERE);
   ANSWER_V(RigidBodyDS,
            std11::dynamic_pointer_cast<SiconosSphere>(ds.contactors()->at(0)->shape)
-           ? SPHERE : UNKNOWN);
+               ? SPHERE
+               : UNKNOWN);
   ANSWER_V(NewtonEulerDS, UNKNOWN);
 };
 
 /* dynamical system / figure association */
-class QGLShape
-{
-
-public:
-
+class QGLShape {
+ public:
   /* construction from a LagrangianDS */
-  QGLShape(SHAPE f, std::shared_ptr<siconos::modeling::DynamicalSystem> D, const qglviewer::Frame* ref)
-  {
+  QGLShape(SHAPE f, std::shared_ptr<siconos::modeling::DynamicalSystem> D,
+           const qglviewer::Frame* ref) {
     assert(D);
 
     figure_ = f;
@@ -230,81 +201,48 @@ public:
     selected_ = false;
     saved_ = true;
     type_ = Type::value(*DS());
-
   };
 
   ~QGLShape() {};
 
   /* pointer to DS */
-  std::shared_ptr<siconos::modeling::DynamicalSystem> DS() const
-  {
-    return DS_;
-  };
+  std::shared_ptr<siconos::modeling::DynamicalSystem> DS() const { return DS_; };
 
   /* selection with mouse */
-  bool selected()
-  {
-    return selected_ ;
-  };
-  void setSelection(bool v)
-  {
-    selected_ = v ;
-  };
+  bool selected() { return selected_; };
+  void setSelection(bool v) { selected_ = v; };
 
   /* identifiant */
-  int getD()
-  {
-    return id_ ;
-  };
-  void setID(int i)
-  {
-    id_ = i;
-  };
-
+  int getD() { return id_; };
+  void setID(int i) { id_ = i; };
 
   /* External force set from mouse and restore */
-  void saveFExt()
-  {
-    savedFExt_ = ask<ForFExt>(*DS());
-  };
-  void restoreFExt()
-  {
-    switch (Type::value(*DS()))
-    {
-    case Type::NewtonEulerDS :
-    {
-      std11::static_pointer_cast<NewtonEulerDS>(DS())
-      ->setConstantFext(Eigen::Ref<siconos::algebra::SiconosVector>(*savedFExt_));
-      break;
-    }
-    case Type::LagrangianDS :
-    {
-      std11::static_pointer_cast<LagrangianDS>(DS())
-      ->setConstantFext(Eigen::Ref<siconos::algebra::SiconosVector>(*savedFExt_));
-      break;
-    };
-    default:
-    {};
+  void saveFExt() { savedFExt_ = ask<ForFExt>(*DS()); };
+  void restoreFExt() {
+    switch (Type::value(*DS())) {
+      case Type::NewtonEulerDS: {
+        std11::static_pointer_cast<NewtonEulerDS>(DS())->setConstantFext(
+            Eigen::Ref<siconos::algebra::SiconosVector>(*savedFExt_));
+        break;
+      }
+      case Type::LagrangianDS: {
+        std11::static_pointer_cast<LagrangianDS>(DS())->setConstantFext(
+            Eigen::Ref<siconos::algebra::SiconosVector>(*savedFExt_));
+        break;
+      };
+      default: {
+      };
     }
   };
 
   /* DS frame */
-  qglviewer::ManipulatedFrame * frame()
-  {
-    return frame_.get();
-  };
+  qglviewer::ManipulatedFrame* frame() { return frame_.get(); };
 
-  SHAPE shape() const
-  {
-    return figure_;
-  }
+  SHAPE shape() const { return figure_; }
 
-  Type::Siconos type() const
-  {
-    return type_;
-  }
+  Type::Siconos type() const { return type_; }
 
-protected:
+ protected:
   int id_;
   bool selected_;
   bool saved_;
@@ -316,59 +254,55 @@ protected:
   int positionSize_;
 
   Type::Siconos type_;
-
 };
 
 TYPEDEF_SPTR(QGLShape);
 
 /* QGLViewer main object */
-class BodiesViewer : public QGLViewer
-{
-
-public:
-
+class BodiesViewer : public QGLViewer {
+ public:
 #ifdef QT_INTERFACE
-  Viewer(QWidget *parent);
+  Viewer(QWidget* parent);
 #endif
 
-public:
+ public:
   virtual void draw() = 0;
   void drawWithNames();
   void initUCircle();
   void drawUCircle();
   void drawUDisk();
   void drawUCircleTicks(float a);
-  void drawUDiskTicks(float a) ;
-  void drawUTriangle(float depth = 0.) ;
-  void drawVec(float x1, float y1, float x2, float y2) ;
+  void drawUDiskTicks(float a);
+  void drawUTriangle(float depth = 0.);
+  void drawVec(float x1, float y1, float x2, float y2);
   void drawRec(float x1, float y1, float x2, float y2, float w, float z = 0.);
   void drawArrow(float x1, float y1, float x2, float y2, float w);
   void drawPar(float x1, float y1, float z1, float x2, float y2, float z2, float w);
   void drawArrow(float x1, float y1, float z1, float x2, float y2, float z2, float w);
   void drawCircleTicks(float x, float y, float a, float r);
-  void drawDiskTicks(float x, float y, float a, float r, float *c);
+  void drawDiskTicks(float x, float y, float a, float r, float* c);
   void drawSimpleCircle(float x, float y, float r);
-  void drawCircle(float x, float y, float a, float r, float *c);
-  void drawDisk(float x, float y, float a, float r, float *c);
+  void drawCircle(float x, float y, float a, float r, float* c);
+  void drawDisk(float x, float y, float a, float r, float* c);
   void rotate(const float R[12]);
-  void drawSphere(float x, float y, float z, float theta, float phi, float psi, float r, float *c);
-  void drawSphere(float x, float y, float z, float a, float b, float c, float d, float r, float *color);
-  void drawPolyg(unsigned int n, double* coor, float *c);
+  void drawSphere(float x, float y, float z, float theta, float phi, float psi, float r,
+                  float* c);
+  void drawSphere(float x, float y, float z, float a, float b, float c, float d, float r,
+                  float* color);
+  void drawPolyg(unsigned int n, double* coor, float* c);
 
   virtual void drawQGLShape(const QGLShape&);
   virtual void drawSelectedQGLShape(const QGLShape&);
   void insertQGLShape(SHAPE, std::shared_ptr<siconos::modeling::DynamicalSystem>);
 
-
-protected :
-
+ protected:
   void postSelection(const QPoint& point);
   virtual void init();
   virtual void animate();
-  virtual void mousePressEvent(QMouseEvent *);
-  virtual void mouseMoveEvent(QMouseEvent *);
-  virtual void mouseReleaseEvent(QMouseEvent *);
-  virtual void keyPressEvent(QKeyEvent *);
+  virtual void mousePressEvent(QMouseEvent*);
+  virtual void mouseMoveEvent(QMouseEvent*);
+  virtual void mouseReleaseEvent(QMouseEvent*);
+  virtual void keyPressEvent(QKeyEvent*);
 
   virtual QString helpString() const;
   boost::shared_ptr<qglviewer::WorldConstraint> constraint_;
@@ -377,9 +311,9 @@ protected :
 
   qglviewer::Frame* referenceFrame_;
 
-  std::vector<std::shared_ptr<QGLShape>>  shapes_;
+  std::vector<std::shared_ptr<QGLShape>> shapes_;
 
-  void print(float x, float y, const char *s, int size);
+  void print(float x, float y, const char* s, int size);
 
   int NDS_;
 
@@ -397,9 +331,6 @@ protected :
   long timeGlob_;
 
   float _transparency;
-
 };
-
-
 
 #endif

@@ -14,10 +14,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-
-// =============================== Robot arm sample (HuMAnsPa10) ===============================
+// =============================== Robot arm sample (HuMAnsPa10)
+// ===============================
 //
 // see modelRobot1.jpg for complete system view.
 //
@@ -29,22 +29,19 @@
 
 using namespace std;
 
-int main(int argc, char* argv[])
-{
-  try
-  {
-
+int main(int argc, char* argv[]) {
+  try {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    int nDof = 3;           // degrees of freedom for robot arm
-    double t0 = 0;                   // initial computation time
-    double T = 1.9;                   // final computation time
-    double h = 0.005;                // time step
+    int nDof = 3;      // degrees of freedom for robot arm
+    double t0 = 0;     // initial computation time
+    double T = 1.9;    // final computation time
+    double h = 0.005;  // time step
     double criterion = 0.0005;
     unsigned int maxIter = 20000;
-    double e = 0.9;                  // restit. coef. for impact on the ground.
-    double e2 = 0.0;                 // restit. coef for angular stops impacts.
+    double e = 0.9;   // restit. coef. for impact on the ground.
+    double e2 = 0.0;  // restit. coef for angular stops impacts.
 
     // -> mind to set the initial conditions below.
 
@@ -55,17 +52,17 @@ int main(int argc, char* argv[])
     // unsigned int i;
     // --- DS: robot arm ---
 
-    // The dof are angles between ground and arm and between differents parts of the arm. (See Robot.fig for more details)
+    // The dof are angles between ground and arm and between differents parts of the arm. (See
+    // Robot.fig for more details)
     //
-
 
     // Initial position (angles in radian)
     siconos::algebra::SiconosVector q0{nDof};
     siconos::algebra::SiconosVector v0{nDof};
     q0.setZero();
     v0.setZero();
-   q0(0) = 0.05;
-   q0(1) = 0.05;
+    q0(0) = 0.05;
+    q0(1) = 0.05;
 
     auto arm(new LagrangianDS(q0, v0));
 
@@ -81,8 +78,8 @@ int main(int argc, char* argv[])
 
     // Two interactions:
     //  - one with Lagrangian non linear relation to define contact with ground
-    //  - the other to define angles limitations (articular stops), with lagrangian linear relation
-    //  Both with newton impact ns laws.
+    //  - the other to define angles limitations (articular stops), with lagrangian linear
+    //  relation Both with newton impact ns laws.
 
     // -- relations --
 
@@ -161,13 +158,12 @@ int main(int argc, char* argv[])
     osnspb->numericsSolverOptions()->iparam[0] = 30001;
     osnspb->numericsSolverOptions()->dparam[0] = 0.005;
 
-
     s->insertNonSmoothProblem(osnspb);
     Robot->setSimulation(s);
     cout << "=== End of model loading === " << endl;
 
-    // =========================== End of model definition ===========================  dataPlot(k,7) = (*inter->y(0))(0);
-
+    // =========================== End of model definition ===========================
+    // dataPlot(k,7) = (*inter->y(0))(0);
 
     // ================================= Computation =================================
 
@@ -189,7 +185,7 @@ int main(int argc, char* argv[])
     std::shared_ptr<siconos::algebra::SiconosVector> vel = arm->velocity();
     std::shared_ptr<siconos::algebra::SiconosVector> y = inter->y(0);
 
-    dataPlot(k, 0) =  Robot->t0();
+    dataPlot(k, 0) = Robot->t0();
     dataPlot(k, 1) = (*q)(0);
     dataPlot(k, 2) = (*vel)(0);
     dataPlot(k, 3) = (*q)(1);
@@ -204,12 +200,11 @@ int main(int argc, char* argv[])
     boost::timer boostTimer;
     boostTimer.restart();
 
-    while (s->hasNextEvent())
-    {
+    while (s->hasNextEvent()) {
       // get current time step
       k++;
       s->newtonSolve(criterion, maxIter);
-      dataPlot(k, 0) =  s->nextTime();
+      dataPlot(k, 0) = s->nextTime();
       dataPlot(k, 1) = (*q)(0);
       dataPlot(k, 2) = (*vel)(0);
       dataPlot(k, 3) = (*q)(1);
@@ -222,19 +217,16 @@ int main(int argc, char* argv[])
     }
 
     cout << "End of computation - Number of iterations done: " << k << endl;
-    cout << "Computation Time: " << boostTimer.elapsed()  << endl;
+    cout << "Computation Time: " << boostTimer.elapsed() << endl;
 
     cout << endl << "Output writing ..." << endl;
     // --- Output files ---
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
   }
 
-  catch (SiconosException e)
-  {
+  catch (SiconosException e) {
     cout << e.report() << endl;
-  }
-  catch (...)
-  {
+  } catch (...) {
     cout << "Exception caught in \'sample/MultiBeadsColumn\'" << endl;
   }
 }

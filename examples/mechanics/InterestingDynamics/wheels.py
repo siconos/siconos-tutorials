@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -19,20 +20,19 @@
 # Example of a small driving 4-wheeled car with no steering
 #
 
-from siconos.mechanics.collision.tools import Contactor
+import numpy as np
+import siconos.modeling as sm
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-import siconos.modeling as sm
-import numpy as np
+from siconos.mechanics.collision.tools import Contactor
 
 bumpy_terrain = True  # false = flat ground
 use_torque = True  # false = boundary condition
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a non smooth law. We put the objects and heightmap
     # into different collision groups so that there are object-terrain
     # collisions but no object-object collisions.
@@ -129,12 +129,12 @@ with MechanicsHdf5Runner() as io:
 
 
 # A controller to give constant torque to the wheels
-class roll(object):
+class roll:
     def initialize(self, io):
         ang_force = 6.0
         self.io = io
         topo = io._nsds.topology()
-        self.wheels = [(topo.getDynamicalSystem("wheel%d" % i)) for i in [1, 2, 3, 4]]
+        self.wheels = [(topo.getDynamicalSystem(f"wheel{i}")) for i in [1, 2, 3, 4]]
         print(dir(self.wheels[0]))
         print(self.wheels[0].fext())
         self.wheel_force = np.array(self.wheels[0].fext())
@@ -165,7 +165,6 @@ run_options["Newton_max_iter"] = 1
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     io.run(run_options)

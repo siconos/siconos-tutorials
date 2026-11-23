@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck source=/dev/null
 source /applis/site/nix.sh
 
 frequency=$1
@@ -13,10 +14,9 @@ case=$5
 
 siconos_dir=$HOME/Softs/myfork/siconos/examples/Mechanics/Music
 rundir=/nfs_scratch/$USER/Music/F_${frequency}_id_${OAR_JOB_ID}
-echo $frequency ${OAR_JOB_ID} ${HOSTNAME} $output_freq $restit ${OAR_JOB_NAME}>> jobs_params
+echo "$frequency" "${OAR_JOB_ID}" "${HOSTNAME}" "$output_freq" "$restit" "${OAR_JOB_NAME}" >>jobs_params
 
-mkdir -p $rundir
-cd $rundir
-# 
-siconos $siconos_dir/run.py $frequency $output_freq $restit $final_time $case
-
+mkdir -p "$rundir"
+cd "$rundir" || exit 1
+#
+siconos "$siconos_dir/run.py" "$frequency" "$output_freq" "$restit" "$final_time" "$case"

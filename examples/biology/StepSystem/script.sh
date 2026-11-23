@@ -22,8 +22,3 @@ siconos StepSystem.cpp 11 3
 siconos StepSystem.cpp 12 9
 siconos StepSystem.cpp 12 8
 siconos StepSystem.cpp 12 6
-
-
-
-
-

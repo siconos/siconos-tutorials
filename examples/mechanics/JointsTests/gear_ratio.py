@@ -14,15 +14,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from siconos.mechanics.collision.tools import Contactor
-from siconos.io.mechanics_run import MechanicsHdf5Runner
 import numpy as np
-
-from siconos.simulation import TimeSteppingDirectProjection
-from siconos.integrators import MoreauJeanDirectProjectionOSI
-
 import siconos.numerics as sn
-
+from siconos.integrators import MoreauJeanDirectProjectionOSI
+from siconos.io.mechanics_run import MechanicsHdf5Runner
+from siconos.mechanics.collision.tools import Contactor
+from siconos.simulation import TimeSteppingDirectProjection
 
 # A demonstration of how to couple the two free axes of a
 # CylindricalJointR in order to construct a screw relation. (Coupled
@@ -30,7 +27,6 @@ import siconos.numerics as sn
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Bouncy contact with the ground
     io.add_Newton_impact_friction_nsl("contact", mu=0.3, e=0.9)
 

@@ -14,7 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 /*!\file Disks.cpp
 
@@ -24,61 +24,42 @@
 */
 
 // Siconos
-#include <SiconosBodies.hpp>
-#include <SiconosPointers.hpp>
-
-#include <TimeStepping.hpp>
 #include <FrictionContact.hpp>
 #include <MoreauJeanOSI.hpp>
 #include <NewtonImpactFrictionNSL.hpp>
-//#include <Siconos/io/SiconosRestart.hpp>
+#include <SiconosBodies.hpp>
+#include <SiconosPointers.hpp>
+#include <TimeStepping.hpp>
+// #include <Siconos/io/SiconosRestart.hpp>
+
+#include <Circle.hpp>
+#include <Disk.hpp>
+#include <DiskPlanR.hpp>
+#include <SpaceFilter.hpp>
 
 #include "Disks.hpp"
 #include "Model.hpp"
 #include "NonSmoothDynamicalSystem.hpp"
 #include "TimeDiscretisation.hpp"
-#include <Disk.hpp>
-#include <Circle.hpp>
-#include <DiskPlanR.hpp>
-#include <SpaceFilter.hpp>
-
 
 using namespace std;
 
 /* do nothing if solver does not converge */
-void localCheckSolverOuput(int, Simulation*)
-{};
+void localCheckSolverOuput(int, Simulation*) {};
 
-double A(double t)
-{
-  return 0. ;
+double A(double t) { return 0.; }
+double B(double t) { return 1.; }
+double C(double t) {
+  return 0.0;  // 1.1*cos(32.*M_PI*t) ;
 }
-double B(double t)
-{
-  return 1. ;
+double DA(double t) { return 0.; }
+double DB(double t) { return 0.; }
+double DC(double t) {
+  return 0.0;  //-1.1*32.*M_PI*sin(32.*M_PI*t) ;
 }
-double C(double t)
-{
-  return 0.0;//1.1*cos(32.*M_PI*t) ;
-}
-double DA(double t)
-{
-  return 0. ;
-}
-double DB(double t)
-{
-  return 0. ;
-}
-double DC(double t)
-{
-  return 0.0;//-1.1*32.*M_PI*sin(32.*M_PI*t) ;
-}
-
 
 // ================= Creation of the model =======================
-void Disks::init()
-{
-
+void Disks::init() {
   auto timedisc_;
   auto sim;
   auto osnspb_;
@@ -86,14 +67,14 @@ void Disks::init()
 
   // User-defined main parameters
 
-  double t0 = 0;                   // initial computation time
+  double t0 = 0;  // initial computation time
 
-  double T =  std::numeric_limits<double>::infinity();
+  double T = std::numeric_limits<double>::infinity();
 
-  double h = 0.01;                // time step
+  double h = 0.01;  // time step
   double g = 9.81;
 
-  double theta = 0.5;              // theta for MoreauJeanOSI integrator
+  double theta = 0.5;  // theta for MoreauJeanOSI integrator
 
   std::string solverName = "NSGS";
 
@@ -104,9 +85,7 @@ void Disks::init()
   double R;
   double m;
 
-  try
-  {
-
+  try {
     // ------------
     // --- Init ---
     // ------------
@@ -114,8 +93,7 @@ void Disks::init()
     std::cout << "====> Model loading ..." << std::endl << std::endl;
 
     _plans.reset(new SimpleMatrix("plans.dat", true));
-    if (_plans->rows() == 0)
-    {
+    if (_plans->rows() == 0) {
       /* default plans */
       double A1 = P1A;
       double B1 = P1B;
@@ -150,12 +128,10 @@ void Disks::init()
       (*_plans)(5, 0) = A2;
       (*_plans)(5, 1) = B2;
       (*_plans)(5, 2) = C2;
-
     }
 
     /* set center positions */
-    for (unsigned int i = 0 ; i < _plans->rows(); ++i)
-    {
+    for (unsigned int i = 0; i < _plans->rows(); ++i) {
       auto tmpr;
       tmpr.reset(new DiskPlanR(1, (*_plans)(i, 0), (*_plans)(i, 1), (*_plans)(i, 2),
                                (*_plans)(i, 3), (*_plans)(i, 4), (*_plans)(i, 5)));
@@ -170,8 +146,6 @@ void Disks::init()
         (*_moving_plans)(0,3) = &DA;
         (*_moving_plans)(0,4) = &DB;
         (*_moving_plans)(0,5) = &DC;*/
-
-
 
     std::shared_ptr<siconos::algebra::SiconosMatrix> Disks;
     Disks.reset(new SimpleMatrix("disks.dat", true));
@@ -190,8 +164,7 @@ void Disks::init()
     sim.reset(new TimeStepping(nsds, timedisc_));
     _sim = sim;
 
-    for (unsigned int i = 0; i < Disks->rows(); i++)
-    {
+    for (unsigned int i = 0; i < Disks->rows(); i++) {
       R = (*Disks)(i, 2);
       m = (*Disks)(i, 3);
 
@@ -223,9 +196,7 @@ void Disks::init()
       nsds->insertDynamicalSystem(body);
     }
 
-
     nsds->setSymmetric(true);
-
 
     // ------------------
     // --- Simulation ---
@@ -234,19 +205,17 @@ void Disks::init()
     // -- OneStepNsProblem --
     osnspb_.reset(new FrictionContact(2));
 
-    osnspb_->numericsSolverOptions()->iparam[0] = 100; // Max number of
+    osnspb_->numericsSolverOptions()->iparam[0] = 100;  // Max number of
     // iterations
-    osnspb_->numericsSolverOptions()->iparam[1] = 20; // compute error
+    osnspb_->numericsSolverOptions()->iparam[1] = 20;  // compute error
     // iterations
-    osnspb_->numericsSolverOptions()->dparam[0] = 1e-3; // Tolerance
-
+    osnspb_->numericsSolverOptions()->dparam[0] = 1e-3;  // Tolerance
 
     osnspb_->setMaxSize(6 * ((3 * Ll * Ll + 3 * Ll) / 2 - Ll));
-    osnspb_->setMStorageType(1);            // Sparse storage
+    osnspb_->setMStorageType(1);  // Sparse storage
     osnspb_->setNumericsVerboseMode(0);
 
     osnspb_->setKeepLambdaAndYState(true);  // inject previous solution
-
 
     sim->setNewtonMaxIteration(3);
 
@@ -267,41 +236,29 @@ void Disks::init()
     sim->insertInteractionManager(_playground);
   }
 
-  catch (SiconosException e)
-  {
+  catch (SiconosException e) {
     std::cout << e.report() << std::endl;
     exit(1);
-  }
-  catch (...)
-  {
+  } catch (...) {
     std::cout << "Exception caught in Disks::init()" << std::endl;
     exit(1);
   }
 }
 
-
-
-
-
 // =========================== End of model definition ===========================
 
 // ================================= Computation =================================
 
-void Disks::compute()
-{
-  try
-  {
+void Disks::compute() {
+  try {
     simulation()->advanceToEvent();
     simulation()->processEvents();
     //    siconos::save(_model, "Disks.bin");
   }
 
-  catch (SiconosException e)
-  {
+  catch (SiconosException e) {
     std::cout << e.report() << std::endl;
-  }
-  catch (...)
-  {
+  } catch (...) {
     std::cout << "Exception caught in SiconosBodies::compute()" << std::endl;
   }
 }

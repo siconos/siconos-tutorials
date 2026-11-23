@@ -22,6 +22,6 @@ double J3 = 2.7e-6;
 // force elements
 double gravity = 9.81;
 
-}; // namespace parameters
+};  // namespace parameters
 
 #endif

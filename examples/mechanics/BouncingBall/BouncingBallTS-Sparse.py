@@ -16,13 +16,13 @@
 # limitations under the License.
 #
 #
-import siconos.modeling as sm
-import siconos.integrators
-import siconos.simulation
-import siconos.nonsmooth_formulations
 import numpy as np
 import scipy.sparse as sp
+import siconos.integrators
+import siconos.modeling as sm
+import siconos.nonsmooth_formulations
 import siconos.plot_config as sicoplot
+import siconos.simulation
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)

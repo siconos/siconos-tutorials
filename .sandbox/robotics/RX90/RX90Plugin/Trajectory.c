@@ -23,20 +23,16 @@
 // @brief Compute the position, velocity and acceleration desired at a given time t
 //
 
-
 // Description:
 //
 
-
-#include "stdio.h"
+#include "ActuationModelSomeDefinitions.hpp"
 #include "math.h"
+#include "stdio.h"
 #include "string.h"
 
-#include "ActuationModelSomeDefinitions.hpp"
-
-
-void trajectory(double * t, double * position, double * velocity, double * acceleration, int * contacts)
-{
+void trajectory(double* t, double* position, double* velocity, double* acceleration,
+                int* contacts) {
   int i;
   double a, r, ry, rz;
   char trajectoryName[20] = "";
@@ -44,15 +40,16 @@ void trajectory(double * t, double * position, double * velocity, double * accel
   a = M_PI / 3.0;
   r = 0.2;
 
-  for (i = 0; i < 6; i++)
-  {
+  for (i = 0; i < 6; i++) {
     position[i] = 0;
     velocity[i] = 0;
     acceleration[i] = 0;
   }
 
-  position[0] = (0.45 + 0.07) * cos(M_PI / 2 - M_PI / 3) + 0.38 * cos(M_PI / 2 - M_PI / 3 + M_PI / 6);
-  position[1] = r * cos(a * (*t)) + 0.42 + (0.45 + 0.07) * sin(M_PI / 2 - M_PI / 3) + 0.38 * sin(M_PI / 2 - M_PI / 3 + M_PI / 6) - r;
+  position[0] =
+      (0.45 + 0.07) * cos(M_PI / 2 - M_PI / 3) + 0.38 * cos(M_PI / 2 - M_PI / 3 + M_PI / 6);
+  position[1] = r * cos(a * (*t)) + 0.42 + (0.45 + 0.07) * sin(M_PI / 2 - M_PI / 3) +
+                0.38 * sin(M_PI / 2 - M_PI / 3 + M_PI / 6) - r;
   position[2] = r * sin(a * (*t));
   position[3] = 0.1 * cos(M_PI / 2 - M_PI / 3);
   position[4] = 0.15 * cos(M_PI / 2 - M_PI / 3);

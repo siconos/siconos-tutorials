@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -17,15 +18,15 @@
 #
 # A simple walking mechanism (in progress, does not work!)
 #
+import math
+
+import numpy as np
+import siconos.modeling as sm
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
 from siconos.mechanics.collision.tools import Contactor
-
-import math
-import numpy as np
-import siconos.modeling as sm
 
 pi = math.pi
 
@@ -33,7 +34,6 @@ motor_id = None
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Only touch the ground, ignore contacts between links of the robot
     io.add_Newton_impact_friction_nsl(
         "contact", collision_group1=0, collision_group2=1, mu=0.3, e=0.0
@@ -287,8 +287,8 @@ run_options["verbose"] = True
 run_options["violation_verbose"] = False
 run_options["with_timer"] = True
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 run_options["output_frequency"] = None
 run_options["set_external_forces"] = my_forces

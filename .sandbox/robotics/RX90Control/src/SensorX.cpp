@@ -14,55 +14,48 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 #include "SensorX.hpp"
-#include "SensorFactory.hpp"
+
 #include "DynamicalSystem.hpp"
-#include "Model.hpp"
-#include "TimeDiscretisation.hpp"
-#include "NonSmoothDynamicalSystem.hpp"
 #include "LagrangianDS.hpp"
+#include "Model.hpp"
+#include "NonSmoothDynamicalSystem.hpp"
+#include "SensorFactory.hpp"
+#include "TimeDiscretisation.hpp"
 
 using namespace std;
 using namespace SensorFactory;
 
-SensorX::SensorX(): Sensor()
-{}
+SensorX::SensorX() : Sensor() {}
 
-SensorX::SensorX(int name, std::shared_ptr<siconos::simulation::TimeDiscretisation> t): Sensor(name, t)
-{}
+SensorX::SensorX(int name, std::shared_ptr<siconos::simulation::TimeDiscretisation> t)
+    : Sensor(name, t) {}
 
-SensorX::~SensorX()
-{
-  storedX.reset();
-}
+SensorX::~SensorX() { storedX.reset(); }
 
-void SensorX::initialize()
-{
+void SensorX::initialize() {
   // Call initialize of base class
   Sensor::initialize();
 
+  // On n'as pas besoin de garder tout les relevés capteurs, on ne garde donc qu'un seul
+  // evenement pour y associer notre vecteur de données.
 
-  //On n'as pas besoin de garder tout les relevés capteurs, on ne garde donc qu'un seul evenement
-  //pour y associer notre vecteur de données.
-
-  //Comme on veut récuperer un vecteur a un temps donné, on créer une copie dans un autre vecteur
-  storedX.reset(new SiconosVector(model()->nonSmoothDynamicalSystem()->dynamicalSystem(0)->dimension()));
+  // Comme on veut récuperer un vecteur a un temps donné, on créer une copie dans un autre
+  // vecteur
+  storedX.reset(
+      new SiconosVector(model()->nonSmoothDynamicalSystem()->dynamicalSystem(0)->dimension()));
   (_data[_eSensor])["StoredX"] = storedX;
 }
 
-void SensorX::capture()
-{
-  //capture du vecteur d'état
+void SensorX::capture() {
+  // capture du vecteur d'état
   storedX = model()->nonSmoothDynamicalSystem()->dynamicalSystem(0)->x();
 }
 
-SensorX* SensorX::convert(Sensor* s)
-{
+SensorX* SensorX::convert(Sensor* s) {
   SensorX* sp = dynamic_cast<SensorX*>(s);
   return sp;
 }
 
 AUTO_REGISTER_SENSOR(2, SensorX);
-
-

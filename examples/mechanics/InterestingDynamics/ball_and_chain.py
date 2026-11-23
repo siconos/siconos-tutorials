@@ -1,18 +1,14 @@
 #!/usr/bin/env python
 
 # Various object types sliding, rolling, and sitting still.
+import numpy as np
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-
-from siconos.mechanics.collision.tools import Contactor
-
 from siconos.mechanics.collision.convexhull import ConvexHull
-import numpy as np
-
-import siconos.numerics as sn
-import siconos.modeling as sm
+from siconos.mechanics.collision.tools import Contactor
 
 # Shape parameters of a single link
 num_parts = 8
@@ -27,7 +23,6 @@ ball_radius = 0.5
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a half-torus as a composition of convex shapes.
     all_pts = []
     s = np.pi / (num_parts - 1) / 2
@@ -79,18 +74,14 @@ with MechanicsHdf5Runner() as io:
                 ]
             )
             all_pts += list(pts)
-            io.add_convex_shape("Chainlink%02d" % (i * num_parts + j), pts)
+            io.add_convex_shape(f"Chainlink{i * num_parts + j:02d}", pts)
 
     # connector: using the 16 points closest to center, create two
     # hulls for upper and lower part
     all_pts = np.array(all_pts)
     connect = all_pts[np.argsort((all_pts[:, 1] - 0) ** 2)[:16]]
-    io.add_convex_shape(
-        "Chainlink%02d" % (num_parts * 2 + 0), connect[connect[:, 2] > 0]
-    )
-    io.add_convex_shape(
-        "Chainlink%02d" % (num_parts * 2 + 1), connect[connect[:, 2] < 0]
-    )
+    io.add_convex_shape(f"Chainlink{num_parts * 2 + 0:02d}", connect[connect[:, 2] > 0])
+    io.add_convex_shape(f"Chainlink{num_parts * 2 + 1:02d}", connect[connect[:, 2] < 0])
 
     # computation of inertia and volume of all points
     ch = ConvexHull(all_pts)
@@ -118,7 +109,7 @@ with MechanicsHdf5Runner() as io:
     # ball at the end of the chain
     io.add_primitive_shape("Ball", "Sphere", [ball_radius])
 
-    chainlink = [Contactor("Chainlink%02d" % i) for i in range(num_parts * 2 + 2)]
+    chainlink = [Contactor(f"Chainlink{i:02d}") for i in range(num_parts * 2 + 2)]
     ball = [Contactor("Ball", relative_translation=ball_pos)]
     mass = 0.1
     initvel = 0.0
@@ -126,7 +117,7 @@ with MechanicsHdf5Runner() as io:
     for i in range(num_links):
         if i > 0:
             io.add_object(
-                "link%02d" % (i * 2 + 0),
+                f"link{i * 2 + 0:02d}",
                 chainlink,
                 translation=[0, 0, 10 + (i * 2 + 0) * length * 2],
                 orientation=[(1, 0, 0), np.pi / 2],
@@ -136,7 +127,7 @@ with MechanicsHdf5Runner() as io:
             )
         else:
             io.add_object(
-                "link%02d" % (i * 2 + 0),
+                f"link{i * 2 + 0:02d}",
                 chainlink,
                 translation=[0, 0, 10 + (i * 2 + 0) * length * 2],
                 orientation=[(1, 0, 0), np.pi / 2],
@@ -150,7 +141,7 @@ with MechanicsHdf5Runner() as io:
             initvel = 0.1
             inertia = ball_inertia
         io.add_object(
-            "link%02d" % (i * 2 + 1),
+            f"link{i * 2 + 1:02d}",
             chainlink,
             translation=[0, 0, 10 + (i * 2 + 1) * length * 2],
             orientation=[(1, 1, 1), np.pi * 2 / 3],

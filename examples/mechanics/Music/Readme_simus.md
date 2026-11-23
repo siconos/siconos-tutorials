@@ -17,7 +17,7 @@ Plot convergence avec time_step en facteur dans cvg_with_ts
 
 
 
-Camp 'new' 0612 : 
+Camp 'new' 0612 :
 -----------------
 h5 dans Results_new_bass_0612
 
@@ -40,6 +40,3 @@ Camp 'short'
 
 run sur 0.4s avec Freqs = 1024000, 2048000, 4096000, 8192000 32768000
 en cours
-
-
-

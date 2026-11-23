@@ -24,9 +24,9 @@ namespace geomtools {
 /* Given a position of a point in the Inertial Frame and the configuration vector q of a solid
  * returns a position in the spatial frame.
  */
-void fromInertialToSpatialFrame(std::vector<double> &positionInInertialFrame,
-                                std::vector<double> &positionInSpatialFrame,
-                                const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+void fromInertialToSpatialFrame(std::vector<double>& positionInInertialFrame,
+                                std::vector<double>& positionInSpatialFrame,
+                                const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double q0 = q(3);
   double q1 = q(4);
   double q2 = q(5);
@@ -45,8 +45,8 @@ void fromInertialToSpatialFrame(std::vector<double> &positionInInertialFrame,
   positionInSpatialFrame[1] = quatBuff.R_component_3() + q(1);
   positionInSpatialFrame[2] = quatBuff.R_component_4() + q(2);
 }
-void tipTrajectories(const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
-                     std::vector<double> &traj, double length) {
+void tipTrajectories(const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
+                     std::vector<double>& traj, double length) {
   std::vector<double> positionInInertialFrame(3);
   std::vector<double> positionInSpatialFrame(3);
   // Output the position of the tip of beam1

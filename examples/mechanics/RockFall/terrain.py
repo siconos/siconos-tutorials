@@ -1,9 +1,8 @@
-import numpy as np
-from scipy import ndimage
-import numpy.ma as ma
 import math
 
+import numpy as np
 from matplotlib import pyplot as plt
+from scipy import ndimage
 
 """ matrice to ground coordinates"""
 
@@ -18,9 +17,9 @@ def matrix_to_ground_coordinates(x, y, nRows, nCols, cellSize):
     return X, Y
 
 
-def point_rotation(i, j, cols, rows, angle) :
+def point_rotation(i, j, cols, rows, angle):
     ic = i - (rows - 1) / 2
-    jc = jc = j - (cols - 1) / 2
+    jc = j - (cols - 1) / 2
     icrot = jc * math.sin(angle) + ic * math.cos(angle)
     jcrot = jc * math.cos(angle) - ic * math.sin(angle)
     irot = icrot + (rows - 1) / 2
@@ -28,8 +27,7 @@ def point_rotation(i, j, cols, rows, angle) :
     return irot, jrot
 
 
-class terrain(object):
-
+class terrain:
     def __init__(self, filename, cellSize=2.5, noValue=-9999):
         self._filename = filename
         if type(filename) == str:
@@ -37,7 +35,7 @@ class terrain(object):
             self._orig_matrix = np.copy(self._matrix)
         elif type(filename) == np.ndarray:
             self._matrix = filename
-        else :
+        else:
             raise TypeError
         n_rows, n_cols = np.shape(self._matrix)
         self._n_rows = n_rows
@@ -54,17 +52,19 @@ class terrain(object):
         self._zoom = 1
 
     def dim(self):
-        self._dimension = ((self.n_rows - 1) * self._cell_size,
-                           (self.n_cols - 1) * self._cell_size)
+        self._dimension = (
+            (self.n_rows - 1) * self._cell_size,
+            (self.n_cols - 1) * self._cell_size,
+        )
 
     def zoom(self, zoom):
         if zoom == 0:
-            return None
+            return
         self._matrix = ndimage.zoom(self._matrix, zoom, order=1)
         n_rows, n_cols = np.shape(self._matrix)
         self._n_rows = n_rows
         self._n_cols = n_cols
-        self._cell_size = self._dimension[0] / float((self._n_rows - 1))
+        self._cell_size = self._dimension[0] / float(self._n_rows - 1)
         self._zoom = zoom
 
     def change_min(self, val=1100):
@@ -92,7 +92,8 @@ class terrain(object):
     def rotation(self, angle):
         self.change_min()
         self._matrix = ndimage.rotate(
-            self._matrix, angle, mode='constant', cval=self._matrix.min(), order=1)
+            self._matrix, angle, mode="constant", cval=self._matrix.min(), order=1
+        )
         n_rows, n_cols = np.shape(self._matrix)
         self._n_rows = n_rows
         self._n_cols = n_cols
@@ -106,8 +107,9 @@ class terrain(object):
 
     def sinusoidal_noise(self, noise_amp=1, noise_freq=1, phase=0):
         i, j = np.shape(self._matrix)
-        b, c = np.meshgrid(np.linspace(0, self._dimension[0], i),
-                           np.linspace(0, self._dimension[1], j))
+        b, c = np.meshgrid(
+            np.linspace(0, self._dimension[0], i), np.linspace(0, self._dimension[1], j)
+        )
         bruit1 = noise_amp * np.cos(b * noise_freq * 2 * math.pi + phase)
         bruit2 = noise_amp * np.sin(c * noise_freq * 2 * math.pi + phase)
         self._matrix = self._matrix + bruit1.T + bruit2.T
@@ -126,17 +128,27 @@ class terrain(object):
         val = posInit[i, j]
         if self._angle != 0:
             angle = -(self._angle) * math.pi / 180
-            irotsg, jrotsg = point_rotation(0, 0, colsPI, rowsPI, angle)
-            irotig, jrotig = point_rotation(rowsPI, 0, colsPI, rowsPI, angle)
+            irotsg, _jrotsg = point_rotation(0, 0, colsPI, rowsPI, angle)
+            _irotig, jrotig = point_rotation(rowsPI, 0, colsPI, rowsPI, angle)
             irot, jrot = point_rotation(i, j, colsPI, rowsPI, angle)
             icut = irot - (irotsg + self.bInfI)
             jcut = jrot - (jrotig + self.bInfJ)
             X, Y = matrix_to_ground_coordinates(
-                icut * self._zoom, jcut * self._zoom, self._n_rows, self._n_cols, self._cell_size)
+                icut * self._zoom,
+                jcut * self._zoom,
+                self._n_rows,
+                self._n_cols,
+                self._cell_size,
+            )
             Z = self._matrix[int(icut) * self._zoom, int(jcut) * self._zoom] + val
         else:
             X, Y = matrix_to_ground_coordinates(
-                i * self._zoom, j * self._zoom, self._n_rows, self._n_cols, self._cell_size)
+                i * self._zoom,
+                j * self._zoom,
+                self._n_rows,
+                self._n_cols,
+                self._cell_size,
+            )
             Z = np.loadtxt(self._filename, skiprows=6)[i, j] + val
         return X, Y, Z
 
@@ -167,7 +179,7 @@ class terrain(object):
 
 
 if __name__ == "__main__":
-    Terrain = terrain('./data/dem.asc')
+    Terrain = terrain("./data/dem.asc")
     print(Terrain)
     print(Terrain.matrix)
     print(Terrain.dimension)

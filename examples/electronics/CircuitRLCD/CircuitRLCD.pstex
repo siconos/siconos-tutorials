@@ -92,7 +92,7 @@ $F2psBegin
 %
 % Fig objects follow
 %
-% 
+%
 % here starts figure with depth 50
 % Polyline
 2 slj
@@ -169,41 +169,41 @@ n 4807 3858 m 4807 3857 l 4807 3853 l 4806 3842 l 4805 3824 l 4803 3801 l
  4770 1894 l 4777 1880 l 4783 1863 l 4789 1844 l 4793 1822 l
  4797 1798 l 4800 1773 l 4803 1747 l 4805 1725 l 4806 1708 l
  4807 1697 l 4807 1693 l
- 4807 1692 l gs col0 s gr 
+ 4807 1692 l gs col0 s gr
 % Polyline
 0 slj
 n 1200 1200 m
- 8400 1200 l gs col0 s gr 
+ 8400 1200 l gs col0 s gr
 % Polyline
 n 1200 1200 m
- 1200 2700 l gs col0 s gr 
+ 1200 2700 l gs col0 s gr
 % Polyline
 n 600 2700 m
- 1800 2700 l gs col0 s gr 
+ 1800 2700 l gs col0 s gr
 % Polyline
 n 600 3000 m
- 1800 3000 l gs col0 s gr 
+ 1800 3000 l gs col0 s gr
 % Polyline
 n 1200 3000 m 1200 4500 l
- 8400 4500 l gs col0 s gr 
+ 8400 4500 l gs col0 s gr
 % Polyline
 n 4800 1200 m
- 4800 1800 l gs col0 s gr 
+ 4800 1800 l gs col0 s gr
 % Polyline
 n 4800 4500 m
- 4800 3750 l gs col0 s gr 
+ 4800 3750 l gs col0 s gr
 % Polyline
 n 4800 1800 m
- 4800 1725 l gs col0 s gr 
+ 4800 1725 l gs col0 s gr
 % Polyline
 n 8250 3300 m 8550 3300 l 8400 3600 l
- 8250 3300 l  cp gs col0 s gr 
+ 8250 3300 l  cp gs col0 s gr
 % Polyline
 n 8175 3600 m
- 8625 3600 l gs col0 s gr 
+ 8625 3600 l gs col0 s gr
 % Polyline
 n 8400 3600 m
- 8400 4500 l gs col0 s gr 
+ 8400 4500 l gs col0 s gr
 % Polyline
 7.500 slw
 gs  clippath
@@ -283,7 +283,7 @@ n 8400 1200 m 8400 1650 l 8400 1800 l 8250 1875 l 8550 1950 l 8250 2025 l
  8550 2100 l 8250 2175 l 8550 2250 l 8250 2325 l 8550 2400 l
  8250 2475 l 8550 2550 l 8400 2625 l 8400 2700 l 8400 2775 l
 
- 8400 3300 l gs col0 s gr 
+ 8400 3300 l gs col0 s gr
 % here ends figure;
 $F2psEnd
 rs

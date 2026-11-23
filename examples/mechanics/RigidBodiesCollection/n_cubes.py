@@ -4,16 +4,16 @@
 # Example of two cubes, one with a convex shape, one with a primitive
 # shape.
 #
+import random
+
+import siconos
+import siconos.mechanics.collision.bullet
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
 from siconos.mechanics.collision.tools import Contactor
-import siconos.numerics as sn
-import siconos.mechanics.collision.bullet
-import random
-
-import siconos
 
 bullet_options = siconos.mechanics.collision.bullet.SiconosBulletOptions()
 bullet_options.worldScale = 1.0
@@ -133,14 +133,13 @@ run_options["verbose"] = True
 run_options["violation_verbose"] = False
 run_options["with_timer"] = False
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 run_options["output_frequency"] = 100
 
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

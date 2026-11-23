@@ -21,4 +21,3 @@ plot\
  # resultfile1 u 1:2 t "Ball position Moreau" w l,\
  # resultfile1 u 1:3 t "Ball velocity Moreau" w l,\
  # resultfile1 u 1:4 t "Reaction force Moreau" w l
- 

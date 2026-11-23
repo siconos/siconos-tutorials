@@ -14,8 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
-
+ */
 
 // =============================== Robot arm sample  ===============================
 //
@@ -23,30 +22,28 @@
 //
 // =============================================================================================
 
-#include "SiconosKernel.hpp"
 #include <math.h>
+
+#include "SiconosKernel.hpp"
 
 #define PI 3.14159265
 
 using namespace std;
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
   boost::timer time;
   time.restart();
-  try
-  {
-
+  try {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    int nDof = 6;           // degrees of freedom for robot arm
-    double t0 = 0;                   // initial computation time
-    double T = 6.0;                   // final computation time
-    double h = 1e-2;                // time step
+    int nDof = 6;     // degrees of freedom for robot arm
+    double t0 = 0;    // initial computation time
+    double T = 6.0;   // final computation time
+    double h = 1e-2;  // time step
     double criterion = 1e-8;
     unsigned int maxIter = 200000;
-    double e = 0.0;                  // nslaw
+    double e = 0.0;  // nslaw
 
     // -> mind to set the initial conditions below.
 
@@ -93,8 +90,7 @@ int main(int argc, char* argv[])
     SimpleMatrix H(12, 6);
     SiconosVector b(12);
     H.setZero();
-    for (unsigned int i = 0; i < nDof; i++)
-    {
+    for (unsigned int i = 0; i < nDof; i++) {
       H(2 * i, i) = 1;
       H(2 * i + 1, i) = -1;
     }
@@ -122,7 +118,7 @@ int main(int argc, char* argv[])
     auto RX90(new Model(t0, T));
     RX90->nonSmoothDynamicalSystem()->insertDynamicalSystem(arm);
     RX90->nonSmoothDynamicalSystem()->link(inter, arm);
-    
+
     // ----------------
     // --- Simulation ---
     // ----------------
@@ -136,10 +132,10 @@ int main(int argc, char* argv[])
     auto OSI(new LsodarOSI(arm));
 
     IntParameters iparam(5);
-    iparam[0] = 1000; // Max number of iteration
+    iparam[0] = 1000;  // Max number of iteration
     DoubleParameters dparam(5);
-    dparam[0] = 1e-15; // Tolerance
-    string solverName = "Lemke" ;
+    dparam[0] = 1e-15;  // Tolerance
+    string solverName = "Lemke";
     auto mySolver(new NonSmoothSolver(solverName, iparam, dparam));
     // -- OneStepNsProblem --
     auto impact(new LCP(mySolver));
@@ -149,18 +145,17 @@ int main(int argc, char* argv[])
     RX90->setSimulation(s);
     cout << "=== End of model loading === " << endl;
 
-    // =========================== End of model definition ===========================  dataPlot(k,7) = (*inter->y(0))(0);
-
+    // =========================== End of model definition ===========================
+    // dataPlot(k,7) = (*inter->y(0))(0);
 
     // ================================= Computation
     // --- Simulation initialization ---
-
 
     RX90->initialize();
     cout << "End of simulation initialisation" << endl;
 
     int k = 0;
-    int N = ceil((T - t0) / h) + 1; // Number of time steps
+    int N = ceil((T - t0) / h) + 1;  // Number of time steps
 
     // --- Get the values to be plotted ---
     // -> saved in a matrix dataPlot
@@ -172,7 +167,7 @@ int main(int argc, char* argv[])
     std::shared_ptr<siconos::algebra::SiconosVector> v = arm->velocity();
     auto eventsManager = s->eventsManager();
 
-    dataPlot(k, 0) =  RX90->t0();
+    dataPlot(k, 0) = RX90->t0();
     dataPlot(k, 1) = (*q)(0);
     dataPlot(k, 2) = (*q)(1);
     dataPlot(k, 3) = (*q)(2);
@@ -186,15 +181,13 @@ int main(int argc, char* argv[])
     dataPlot(k, 11) = (*v)(4);
     dataPlot(k, 12) = (*v)(5);
 
-
     time.restart();
-    while (s->hasNextEvent())
-    {
+    while (s->hasNextEvent()) {
       s->advanceToEvent();
       s->processEvents();
 
       k++;
-      dataPlot(k, 0) =  s->startingTime();
+      dataPlot(k, 0) = s->startingTime();
       dataPlot(k, 1) = (*q)(0);
       dataPlot(k, 2) = (*q)(1);
       dataPlot(k, 3) = (*q)(2);
@@ -208,19 +201,16 @@ int main(int argc, char* argv[])
       dataPlot(k, 11) = (*v)(4);
       dataPlot(k, 12) = (*v)(5);
     }
-    cout << "Computation Time " << time.elapsed()  << endl;
+    cout << "Computation Time " << time.elapsed() << endl;
 
     // --- Output files ---
     ioMatrix::write("result.dat", "ascii", dataPlot, "noDim");
 
   }
 
-  catch (SiconosException e)
-  {
+  catch (SiconosException e) {
     cout << e.report() << endl;
-  }
-  catch (...)
-  {
+  } catch (...) {
     cout << "Exception caught in RX90 manipulator " << endl;
   }
 }

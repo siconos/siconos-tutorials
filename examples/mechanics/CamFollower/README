@@ -20,7 +20,7 @@
 
 Cam Follower sample :
 
-A follower modelled as a Second Order Generalized Langrangian System interacting 
+A follower modelled as a Second Order Generalized Langrangian System interacting
 through impacts with a rotational cam.
 
 Available input files are :

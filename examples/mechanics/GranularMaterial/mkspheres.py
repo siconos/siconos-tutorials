@@ -9,8 +9,9 @@
 #  - radii      : radii-<nb generated spheres>.txt
 
 
-import numpy
 import sys
+
+import numpy
 
 if __name__ == "__main__":
     try:
@@ -18,7 +19,7 @@ if __name__ == "__main__":
 
     except ImportError:
         print("pylmgc90 is not found !!!, exit")
-        exit(0)
+        sys.exit(0)
 
 radius_min = 0.001
 radius_max = 0.0025
@@ -32,10 +33,10 @@ print(sys.argv)
 if __name__ == "__main__":
     try:
         from pylmgc90 import pre
-    except:
-        print('pylmgc90 is not found !!!, exit')
-        exit(0)
-    if (len(sys.argv) >1):
+    except ImportError:
+        print("pylmgc90 is not found !!!, exit")
+        sys.exit(0)
+    if len(sys.argv) > 1:
         nbp = int(sys.argv[1])
     else:
         nbp = 20
@@ -44,5 +45,5 @@ if __name__ == "__main__":
     print(pre.depositInBox3D(radii, lx, ly, lz))
     nbpl, coors, radii = pre.depositInBox3D(radii, lx, ly, lz)
 
-    numpy.savetxt("coors-{0}.txt".format(nbpl), coors[0 : nbpl * 3])
-    numpy.savetxt("radii-{0}.txt".format(nbpl), radii[0:nbpl])
+    numpy.savetxt(f"coors-{nbpl}.txt", coors[0 : nbpl * 3])
+    numpy.savetxt(f"radii-{nbpl}.txt", radii[0:nbpl])

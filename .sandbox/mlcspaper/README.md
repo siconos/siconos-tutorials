@@ -1,6 +1,6 @@
 - Tested with `Siconos 4.4.0` on Ubuntu 18.04
 
-- Launch the simulations corresponding to an example using: 
+- Launch the simulations corresponding to an example using:
 
    ``siconos example_1.cpp ``
 

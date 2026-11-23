@@ -4,24 +4,22 @@
 # Example of how to use the heightmap object to interact with a static terrain.
 #
 import math
-from siconos.mechanics.collision.convexhull import ConvexHull
 import random
+
 import numpy as np
-
-from siconos.mechanics.collision.tools import Contactor
-from siconos.io.mechanics_run import (
-    MechanicsHdf5Runner,
-    MechanicsHdf5Runner_run_options,
-)
-from siconos.mechanics.collision.bullet import SiconosBulletOptions
-
 import siconos.numerics as sn
 
 # 1 - build the heightmap as a numpy 2D array
 # The matrix consists of elevation (z) of the terrain point
 # over a rectangular grid.
-
 import terrain
+from siconos.io.mechanics_run import (
+    MechanicsHdf5Runner,
+    MechanicsHdf5Runner_run_options,
+)
+from siconos.mechanics.collision.bullet import SiconosBulletOptions
+from siconos.mechanics.collision.convexhull import ConvexHull
+from siconos.mechanics.collision.tools import Contactor
 
 Terrain = terrain.terrain("./data/dem.asc")
 Terrain.change_min(1000)
@@ -102,7 +100,6 @@ print("polyhedron inertia, polyhedron mass", polyhedron_inertia, polyhedron_mass
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # The heightmap has tangential extents 50 by 50, and its height is
     # not scaled; actual height must be reflected by values in
     # heightmap data.
@@ -196,7 +193,6 @@ run_options["output_frequency"] = 1
 run_options["time_stepping"] = None
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
 
@@ -218,8 +214,4 @@ with MechanicsHdf5Runner(mode="r+") as io:
     np.set_printoptions(precision=3)
     for e in positions:
         if e[1] == polyhedron_id:
-            print(
-                "at time {0:.2f} position {1} \t\t\t orientation {2}".format(
-                    e[0], e[2:5], e[5:10]
-                )
-            )
+            print(f"at time {e[0]:.2f} position {e[2:5]} \t\t\t orientation {e[5:10]}")

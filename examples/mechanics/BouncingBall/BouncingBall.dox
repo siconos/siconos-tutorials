@@ -3,7 +3,7 @@
 
 \b Keywords: LagrangianLinearTIDS, LagrangianLinearR, NewtonImpactNSL, TimeStepping, Moreau, LCP
 
-\b Location: Mechanics/BouncingBall. 
+\b Location: Mechanics/BouncingBall.
 
 \b Code: BouncingBallTS.cpp,  BouncingBallED.cpp,  BouncingBall.py, BouncingBall.sci
 
@@ -13,8 +13,8 @@
 
 Let us consider  a ball of  mass \f$ m\f$  and radius \f$ R\f$ , described by \f$ 3\f$  generalized coordinates \f$ q=(z,x,\theta)\f$ . The ball is subjected to the gravity \f$ g\f$  and a vertical external force \f$ f(t)\f$ . The system is also constituted by a rigid plane, defined by its position \f$ h\f$  with respect to the axis \f$ Oz\f$ . We assume that the position of the plane is fixed. The physical problem  is depicted on the Figure below:
 
-\image html Mechanics/BouncingBall/BouncingBall2.png 
-\image latex Mechanics/BouncingBall/BouncingBall2.eps "Two-dimensional Bouncing Ball on a rigid plane" 
+\image html Mechanics/BouncingBall/BouncingBall2.png
+\image latex Mechanics/BouncingBall/BouncingBall2.eps "Two-dimensional Bouncing Ball on a rigid plane"
 
 The ball bounces on the rigid plane, introducing a constraint on the position of the ball. We consider also that the behavior of the system at impact is governed by a Newton impact law with a coefficient of restitution \f$ e\f$ .
 
@@ -32,9 +32,9 @@ In this section, we provide a short description of a general abstract class of N
 \f{eqnarray}
   M(q)\ddot q + Q(q,\dot q) + F(\dot q, q , t) = F_{ext}(t) + p
 \f}
-where 
+where
 - \f$ q \in \mathcal R^n\f$  is the generalized coordinates vector. The dimension \f$ n\f$   of this vector is called  the number of degree of freedom of the system. The first and the second time derivative of \f$ q\f$ , denoted \f$ \dot q\f$  and \f$ \ddot q\f$ , are usually called the velocity and the acceleration of the system.
-- \f$ M(q): \mathcal R^n \mapsto \mathcal M^{n \times n}\f$  is the inertia term 
+- \f$ M(q): \mathcal R^n \mapsto \mathcal M^{n \times n}\f$  is the inertia term
 - \f$ Q(q,\dot q ): \mathcal R^n  \times \mathcal R^n \mapsto \mathcal R^{n}\f$  is the non linear inertia term,
 - \f$ F(\dot q, q , t) : \mathcal R^n  \times \mathcal R^n  \times \mathcal R \mapsto \mathcal R^{n}\f$  is the internal force of the system,
 - \f$ F_{ext}(t):  \mathcal R \mapsto \mathcal R^{n}  \f$   is the given external force,
@@ -42,24 +42,24 @@ where
 
 
 
-In a general way, we denote the state of the system as 
+In a general way, we denote the state of the system as
 \f[
   x =  \left[\begin{array}{c}
   q \\
   \dot q
-  \end{array}\right] 
+  \end{array}\right]
 \f]
 which is a vector of dimension \f$ 2  n\f$ .  The equation of evolution (1) may be reformulated in terms of the state vector as :
 \f[
 \dot x =f (x,t) + r \mbox{  with } r= \left[\begin{array}{c}
   0 \\
   p
-  \end{array}\right] 
+  \end{array}\right]
 \f]
 which is a classical order one formulation for an ordinary differential equation (ODE).
 
-<em> Remark: 
-In most mechanical applications, the order one form is not very convenient for the  numerical applications.  Furthermore the specific structure of the Lagrangian system allow us to use of special numerical algorithms to solve it. 
+<em> Remark:
+In most mechanical applications, the order one form is not very convenient for the  numerical applications.  Furthermore the specific structure of the Lagrangian system allow us to use of special numerical algorithms to solve it.
 </em>
 
 <b> A particular case: the linear time invariant case. </b>
@@ -93,10 +93,10 @@ In the same way, we have to specify the relation between \f$ r\f$ , the force du
 
 <b> Linear time invariant case </b> In the linear time invariant case, this relation are directly given by matrices defined by :
 \f{eqnarray}
-  y&=& C x + D \lambda, \\ 
+  y&=& C x + D \lambda, \\
   r&=& B \lambda.
 \f}
- 
+
 <b>Lagrangian system </b>
 In the Lagrangian systems, the structure of theses relations is very particular  and we assume that they can be written as :
 \f{eqnarray}
@@ -105,7 +105,7 @@ In the Lagrangian systems, the structure of theses relations is very particular 
    r &=& H(q) \lambda.
 \f}
 
-We can also consider the linear case such as 
+We can also consider the linear case such as
 \f{eqnarray}
       y &=& H^{T} q + b,\\
       \dot y &=& H^{T}\dot q, \\
@@ -116,14 +116,14 @@ which can be stated by assumptions or derived by a linearization procedure.
 In order to give more meaning to this choice, let us recall the definition of a constraint (or a joint) in a  mechanical system :
 \f{eqnarray}
   y=h(x,t) = h(q,\dot q,t)  &=&0 \ in \ the \ bilateral \ case,\\
- &\geq& 0 \ in \ the \ unilateral \ case.  
+ &\geq& 0 \ in \ the \ unilateral \ case.
 \f}
 
  If we assume that these relations are non holonomic i.e., independence with respect to the velocity \f$ \dot q\f$ , we are used to derive for perfect constraint  the relative velocity as:
 \f[
   \dot y= \nabla^T_q h(q,t) \dot q + \frac{\partial{h(q,t)}}{\partial{t}}.
 \f]
-Furthermore, if the constraints is scleronomic ( i.e., independence with respect to the time  \f$ t\f$ ) this relation leads to 
+Furthermore, if the constraints is scleronomic ( i.e., independence with respect to the time  \f$ t\f$ ) this relation leads to
 \f{eqnarray}
   \label{eq:11}
    \dot y= \nabla^T_q h(q) \dot q.
@@ -148,9 +148,9 @@ and the Newton impact law :
 \f[
  if \ y(t)=0,\quad  \dot y(t^+)= -e   \dot y(t^-)
 \f]
- 
+
 \section EMBouncingBallFormalization The Formalization of the bouncing ball problem into the class of Lagrangian NSDS
-We assume that the system of a bouncing ball on a plane belongs to the abstract class of the Lagrangian NSDS. 
+We assume that the system of a bouncing ball on a plane belongs to the abstract class of the Lagrangian NSDS.
 
 \subsection EMBouncingBallDynamics Dynamical equation
 
@@ -204,12 +204,12 @@ so we identify the terms of the equation giving the constraints:
   b &=& -R - h
 \f}
 
-In the same way, the reaction due to the constraint is written as follows : 
+In the same way, the reaction due to the constraint is written as follows :
 \f[
   r  = H \lambda, \ with \ H = \left[
   \begin{array}[]{c}
   1 \\ 0 \\ 0
-  \end{array}\right] 
+  \end{array}\right]
 \f]
 \subsection EMBouncingBallFormNSLaw Non Smooth laws
 
@@ -237,7 +237,7 @@ where $di$ is the impulse measure. If the motion is non impulsive, the reaction 
 \f}
 Due to the non smooth character of the motion, the first term is integrated by an one order scheme( backward Euler-like) such that :
 \f{eqnarray}
-   \int_{[t_i,t_{i+1}]} M \ddot q  \, dt \approx M (\dot q(t_{i+1})-\dot q(t_{i})) 
+   \int_{[t_i,t_{i+1}]} M \ddot q  \, dt \approx M (\dot q(t_{i+1})-\dot q(t_{i}))
 \f}
 
 For simplicity sake, we note the approximation of \f$ q\f$  and \f$ \dot q\f$ :
@@ -270,7 +270,7 @@ which can be written :
 \f{eqnarray}
    \dot q_{i+1} = \dot q_{free}  + W P_{i+1}
 \f}
-where 
+where
 \f{eqnarray}
   W &=&   \left[M+h\theta C + h^2 \theta^2 K\right]^{-1}\\
  \dot q_{free} &=& \dot q_{i}+  W \left[   - h  C \dot q_{i} - h K q_{i} - h^2 \theta  K \dot q_{i}
@@ -365,7 +365,7 @@ The numerical strategy is given by the pseudo-algorithm below.
 
 \section EMBouncingBallResults Exploitation of the results
 
-For the case of Lagrangian NSDS, the state variable and the reaction force vs. time are the basic results that we want to export out of the algorithm. Various of energies may be also expected by the user. 
+For the case of Lagrangian NSDS, the state variable and the reaction force vs. time are the basic results that we want to export out of the algorithm. Various of energies may be also expected by the user.
 
 \image html Mechanics/BouncingBall/bouncingBallResults.png
 \image latex Mechanics/BouncingBall/bouncingBallResults.eps "Results" width=5cm

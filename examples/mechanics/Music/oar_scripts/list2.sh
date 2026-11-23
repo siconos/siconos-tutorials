@@ -27,5 +27,3 @@ oarsub -S "./run2.sh 15680 1" -p "network_address='luke44'"
 # oarsub -S "./run2.sh 62720 4" -p "network_address='luke42'" -t timesharing=perignon,*
 # oarsub -S "./run2.sh 31360 2" -p "network_address='luke42'" -t timesharing=perignon,*
 # oarsub -S "./run2.sh 15680 1" -p "network_address='luke42'" -t timesharing=perignon,*
-
-

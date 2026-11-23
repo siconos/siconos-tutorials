@@ -37,7 +37,7 @@ function(post_ctest)
       return()
     endif()
   endif()
-  
+
   if(NOT _STATUS EQUAL 0 OR NOT _RESULT EQUAL 0)
     message(FATAL_ERROR "\n\n *** ${run_PHASE} process failed *** \n\n")
   endif()
@@ -47,9 +47,9 @@ function(post_ctest)
 
 endfunction()
 
-# Set site name (cdash) according to current host status. 
+# Set site name (cdash) according to current host status.
 function(set_site_name)
-  
+
   # -- Query host system information --
   # --> to set ctest site for cdash.
   #include(cmake_host_system_information)
@@ -65,7 +65,7 @@ function(set_site_name)
 
   if(DEFINED ENV{GITLAB_CI})
     if($ENV{GITLAB_CI} STREQUAL true)
-      string(SUBSTRING $ENV{CI_JOB_IMAGE} 39 -1 dockerimagename) 
+      string(SUBSTRING $ENV{CI_JOB_IMAGE} 39 -1 dockerimagename)
       string(STRIP ${dockerimagename} dockerimagename)
       set(hostname "[ ${dockerimagename} from gitlab registry]")
     endif()
@@ -82,7 +82,7 @@ function(set_cdash_build_name)
   # Get hash for commit of current version of Siconos
   # Saved in the file siconos-commit.txt during Siconos installation
   # (only if WITH_GIT=ON).
-  
+
   execute_process(COMMAND
     siconos --configpath
     OUTPUT_VARIABLE siconos_DIR
@@ -99,4 +99,3 @@ function(set_cdash_build_name)
   string(STRIP ${_name} _name)
   set(CTEST_BUILD_NAME "${_name}" PARENT_SCOPE)
 endfunction()
-

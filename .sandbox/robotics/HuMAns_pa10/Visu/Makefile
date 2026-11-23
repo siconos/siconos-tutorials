@@ -11,11 +11,11 @@ BIPOBJS = Contact.o \
 	NLEffects.o \
 	JacobianNLEffects.o \
 	JacobianVelocityNLEffects.o \
-	Tags.o 
+	Tags.o
 
 OBJS=$(BIPOBJS) ScilabInterface.o
 
-all : $(OBJPATH)/$(LIB) 
+all : $(OBJPATH)/$(LIB)
 
 $(OBJPATH)/%.o: %.c
 	$(CC) -c -o $(@) $(CFLAGS) $<
@@ -25,7 +25,7 @@ $(OBJPATH)/$(LIB) : $(addprefix $(OBJPATH)/, $(OBJS))
 
 
 clean :
-	$(RM) $(OBJPATH)/*.o $(OBJPATH)/$(LIB) 
+	$(RM) $(OBJPATH)/*.o $(OBJPATH)/$(LIB)
 
 SCITOC=scitoc
 SCIFILES=SomeDefinitions.sci
@@ -38,7 +38,7 @@ doc: $(CFILES)
 $(CFILES): %.scilab : %.sci
 	$(SCITOC) $< >$(@)
 
-clean_doc:	
+clean_doc:
 	$(RM) *.scilab
 
 bip: all

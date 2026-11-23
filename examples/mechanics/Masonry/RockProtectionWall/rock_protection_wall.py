@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -22,18 +23,19 @@
 # print(ret.stdout.decode())
 
 
-from siconos.mechanics.collision.tools import Contactor
-from siconos.mechanics.collision.convexhull import ConvexHull
+import math
+import random
+
+import numpy as np
+import siconos.nonsmooth_formulations
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
 from siconos.mechanics.collision.bullet import SiconosBulletOptions
-import siconos.numerics as sn
-import random
-import numpy as np
-import siconos.nonsmooth_formulations
-import math
+from siconos.mechanics.collision.convexhull import ConvexHull
+from siconos.mechanics.collision.tools import Contactor
 
 # A collection of box stacks for stress-testing Siconos solver with
 # chains of contacts.
@@ -202,7 +204,6 @@ else:
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner(io_filename=fn) as io:
-
     width, depth, height = 1, 2, 1
 
     margin = 0.01
@@ -223,7 +224,7 @@ with MechanicsHdf5Runner(io_filename=fn) as io:
                     x = (i - N / 2.0) * (width + sep) + X
                     y = (j - M / 2.0) * (depth + sep) + Y
                     io.add_object(
-                        "box%03d" % k,
+                        f"box{k:03d}",
                         [Contactor("Box")],
                         translation=[x, y, z],
                         mass=1.0,
@@ -234,7 +235,7 @@ with MechanicsHdf5Runner(io_filename=fn) as io:
             W = W - 1
             z += height + sep
 
-    def make_large_stack(X, Y, N, M, W, orientation=[1.0, 0.0, 0.0], density=1.0):
+    def make_large_stack(X, Y, N, M, W, orientation=(1.0, 0.0, 0.0), density=1.0):
         """
         N is the depth of the wall
         W is th height
@@ -254,7 +255,7 @@ with MechanicsHdf5Runner(io_filename=fn) as io:
                     Y_r = -x * math.sin(angle) + y * math.cos(angle)
 
                     io.add_object(
-                        "box%03d" % k,
+                        f"box{k:03d}",
                         [Contactor("Box")],
                         translation=[X_r, Y_r, z],
                         orientation=[
@@ -272,7 +273,7 @@ with MechanicsHdf5Runner(io_filename=fn) as io:
             z += height + sep
 
     def make_large_stack_with_straight_side(
-        X, Y, N, M, W, orientation=[1.0, 0.0, 0.0], density=1.0
+        X, Y, N, M, W, orientation=(1.0, 0.0, 0.0), density=1.0
     ):
         """
         N is the depth of the wall
@@ -307,7 +308,7 @@ with MechanicsHdf5Runner(io_filename=fn) as io:
                     Y_r = -x * math.sin(angle) + y * math.cos(angle)
 
                     io.add_object(
-                        "box%03d" % k,
+                        f"box{k:03d}",
                         [Contactor(shape)],
                         translation=[X_r, Y_r, z],
                         orientation=[
@@ -320,7 +321,6 @@ with MechanicsHdf5Runner(io_filename=fn) as io:
                     )
                     k += 1
             N = N - 1 if N > 1 else N
-            M = M if M > 1 else M
             W = W - 1
             z += height + sep
 

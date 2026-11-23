@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -21,13 +22,13 @@
 #
 # Req : mechanics component with bullet.
 
-from siconos.mechanics.collision.tools import Contactor
-from siconos.io.mechanics_run import MechanicsHdf5Runner
+from math import pi
 
+import siconos.integrators
 import siconos.numerics as sn
 import siconos.simulation
-import siconos.integrators
-from math import pi
+from siconos.io.mechanics_run import MechanicsHdf5Runner
+from siconos.mechanics.collision.tools import Contactor
 
 # length of first branch
 l1 = 30
@@ -60,8 +61,6 @@ bz = 2
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
-    #
     io.add_primitive_shape("Arm1", "Cylinder", (0.3, l1))
     io.add_primitive_shape("Arm2", "Cylinder", (0.3, l2))
     io.add_primitive_shape("Mass1", "Sphere", (r1,))
@@ -125,10 +124,10 @@ with MechanicsHdf5Runner() as io:
     # a brick wall
     H = 3  # heigh
     L = 2  # length
-    for k in range(0, H - 1):
-        for n in range(0, L):
+    for k in range(H - 1):
+        for n in range(L):
             io.add_object(
-                "brick{0}".format(k + n * H),
+                f"brick{k + n * H}",
                 [Contactor("Brick")],
                 translation=[
                     n * bx - L * bx / 2.0 + (k % 2) * bx / 2.0,
@@ -141,7 +140,7 @@ with MechanicsHdf5Runner() as io:
     k = H - 1
     for n in range(1, L):
         io.add_object(
-            "brick{0}".format(k + n * H),
+            f"brick{k + n * H}",
             [Contactor("Brick")],
             translation=[
                 n * bx - L * bx / 2.0 + (k % 2) * bx / 2.0,

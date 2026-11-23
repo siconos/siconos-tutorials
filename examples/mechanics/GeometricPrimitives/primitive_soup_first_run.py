@@ -15,19 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from siconos.mechanics.collision.tools import Contactor
-from siconos.io.mechanics_run import MechanicsHdf5Runner
-
-from siconos.mechanics.collision.bullet import SiconosBulletOptions
-
 import siconos.numerics as sn
+from siconos.io.mechanics_run import MechanicsHdf5Runner
+from siconos.mechanics.collision.bullet import SiconosBulletOptions
+from siconos.mechanics.collision.tools import Contactor
 
 # A collection of box stacks for stress-testing Siconos solver with
 # chains of contacts.
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     width, depth, height = 1, 1, 1
     io.add_primitive_shape("Box", "Box", [width, depth, height])
     io.add_primitive_shape("Sphere", "Sphere", (width / 2.0,))
@@ -56,7 +53,7 @@ with MechanicsHdf5Runner() as io:
                     # print('obj-idx', obj_idx)
 
                     io.add_object(
-                        "object%03d" % k,
+                        f"object{k:03d}",
                         [Contactor(shape_list[obj_idx])],
                         translation=[x, y, z],
                         mass=1.0,

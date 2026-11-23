@@ -9,21 +9,18 @@
 
 using namespace std;
 
-int main(int argc, char* argv[])
-{
-  try
-  {
-
+int main(int argc, char* argv[]) {
+  try {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    int nDof = 21;           // degrees of freedom for robot
-    double t0 = 0;                   // initial computation time
-    double T = 1.3;//0.005;                   // final computation time
-    double h = 0.001;                // time step
+    int nDof = 21;     // degrees of freedom for robot
+    double t0 = 0;     // initial computation time
+    double T = 1.3;    // 0.005;                   // final computation time
+    double h = 0.001;  // time step
     double criterion = 0.5;
     unsigned int maxIter = 5000;
-    double en = 0.0, et = 0.0, mu = 0.1;      // nslaw
+    double en = 0.0, et = 0.0, mu = 0.1;  // nslaw
 
     // -> mind to set the initial conditions below.
 
@@ -60,8 +57,8 @@ int main(int argc, char* argv[])
 
     // Two interactions:
     //  - one with Lagrangian non linear relation to define contact with ground
-    //  - the other to define angles limitations (articular stops), with lagrangian linear relation
-    //  Both with newton impact nslaw.
+    //  - the other to define angles limitations (articular stops), with lagrangian linear
+    //  relation Both with newton impact nslaw.
 
     // -- relations --
 
@@ -70,16 +67,14 @@ int main(int argc, char* argv[])
     auto relation(new LagrangianScleronomousR("RobotFrotPlugin:h0", G));
     auto inter(new Interaction(69, nslaw, relation));
 
-    //The linear contraint corresponding to joints limits (hq+b>0)
+    // The linear contraint corresponding to joints limits (hq+b>0)
     auto nslaw2(new NewtonImpactFrictionNSL(en, et, 0, 3));
     SimpleMatrix H(90, 21);
     SiconosVector b(90);
     H.setZero();
     b.setZero();
-    for (unsigned int i = 0; i < 15; ++i)
-    {
-      for (unsigned int j = 0; j < 3; ++j)
-      {
+    for (unsigned int i = 0; i < 15; ++i) {
+      for (unsigned int j = 0; j < 3; ++j) {
         H(6 * i + j, i) = -1;
         H(6 * i + j + 3, i) = 1;
       }
@@ -131,7 +126,6 @@ int main(int argc, char* argv[])
     b(3 * i + 28) = 0.08;
     b(3 * i + 29) = 0.21;
 
-
     auto relation2(new LagrangianLinearTIR(H, b));
     auto inter2(new Interaction(90, nslaw2, relation2));
 
@@ -158,15 +152,15 @@ int main(int argc, char* argv[])
     s->insertIntegrator(OSI);
 
     // -- OneStepNsProblem --
-    string solverName = "NSGS";      // solver algorithm used for non-smooth problem
+    string solverName = "NSGS";  // solver algorithm used for non-smooth problem
     IntParameters iparam(5);
-    iparam[0] = 10100; // Max number of iteration
+    iparam[0] = 10100;  // Max number of iteration
     // Solver/formulation
     // 0: projection, 1: Newton/AlartCurnier, 2: Newton/Fischer-Burmeister, 3: Path/Glocker
     iparam[4] = 4;
     DoubleParameters dparam(5);
-    dparam[0] = 1e-6; // Tolerance
-    dparam[2] = 1e-8; // Local Tolerance
+    dparam[0] = 1e-6;  // Tolerance
+    dparam[2] = 1e-8;  // Local Tolerance
     auto Mysolver(new NonSmoothSolver(solverName, iparam, dparam));
     auto mySolver(new NonSmoothSolver(solverName, iparam, dparam));
     auto osnspb(new FrictionContact(3, mySolver));
@@ -175,14 +169,13 @@ int main(int argc, char* argv[])
     Robot->setSimulation(s);
     // =========================== End of model definition ===========================
 
-
     // ================================= Computation =================================
 
     // --- Simulation initialization ---
     Robot->initialize();
     cout << "End of model initialisation" << endl;
 
-    int k = 0; // Current step
+    int k = 0;  // Current step
     unsigned int N = (unsigned int)((T - t0) / h);
 
     // --- Get the values to be plotted ---
@@ -193,8 +186,7 @@ int main(int argc, char* argv[])
     // time
     dataPlot(k, 0) = Robot->t0();
 
-    for (unsigned int i = 1; i < 22; i++)
-      dataPlot(k, i) = (*bip->q())(i - 1);
+    for (unsigned int i = 1; i < 22; i++) dataPlot(k, i) = (*bip->q())(i - 1);
 
     // --- Compute elapsed time ---
     boost::timer tt;
@@ -202,8 +194,7 @@ int main(int argc, char* argv[])
 
     // --- Time loop ---
     cout << "Start computation ... " << endl;
-    while (s->hasNextEvent())
-    {
+    while (s->hasNextEvent()) {
       // get current time step
       k++;
       cout << k << endl;
@@ -211,8 +202,7 @@ int main(int argc, char* argv[])
       s->nextStep();
       dataPlot(k, 0) = s->startingTime();
 
-      for (unsigned int i = 1; i < 22; i++)
-        dataPlot(k, i) = (*bip->q())(i - 1);
+      for (unsigned int i = 1; i < 22; i++) dataPlot(k, i) = (*bip->q())(i - 1);
     }
     cout << "time = " << tt.elapsed() << endl;
     cout << "End of computation - Number of iterations done: " << k << endl;
@@ -222,12 +212,9 @@ int main(int argc, char* argv[])
 
   }
 
-  catch (SiconosException e)
-  {
+  catch (SiconosException e) {
     cout << e.report() << endl;
-  }
-  catch (...)
-  {
+  } catch (...) {
     cout << "Exception caught in \'sample/MultiBeadsColumn\'" << endl;
   }
 }

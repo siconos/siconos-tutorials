@@ -4,7 +4,7 @@ This directory contains tutorials for [Siconos software](https://nonsmooth.grica
 written as jupyter notebooks.
 
 
-### Try Siconos through jupyter on mybinder 
+### Try Siconos through jupyter on mybinder
 
 An easy way to try Siconos in your web browser. This step does not require any build or installation.
 
@@ -32,5 +32,3 @@ cd siconos-tutorial/siconos-notebooks
 jupyter lab
 ```
 and double click on 'index.ipynb'.
-
-

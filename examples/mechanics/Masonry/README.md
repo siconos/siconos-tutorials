@@ -27,7 +27,7 @@
 
 
      siconos_vexport --global-filter --gen-para-script=6  arches.hdf5 > par.sh;
-     
+
 ## Issues to be corrected
 
-  We use convex hull for building the brick. Some of bricks are not convex. 
+  We use convex hull for building the brick. Some of bricks are not convex.

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -15,20 +16,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy
 import math
-
 import random
-from siconos.mechanics.collision.tools import Contactor
-import siconos.mechanics.collision.convexhull
-from siconos.mechanics.collision.bullet import SiconosBulletOptions
 
+import numpy
+import siconos.mechanics.collision.convexhull
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-
-import siconos.numerics as sn
+from siconos.mechanics.collision.bullet import SiconosBulletOptions
+from siconos.mechanics.collision.tools import Contactor
 
 unscaled_polyhedron_size = 0.5
 unscaled_density = 2500

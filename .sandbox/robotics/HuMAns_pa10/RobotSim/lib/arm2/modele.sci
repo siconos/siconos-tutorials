@@ -46,9 +46,9 @@ function [qddot] = arm2Dynamics(q, qdot, Tau)
 
 // Matrix computation
  M = arm2Inertia(q);
- 
+
  NL = arm2NLEffects(q, qdot);
- 
+
  F = arm2Friction(q,qdot);
 
 // Dynamics equation

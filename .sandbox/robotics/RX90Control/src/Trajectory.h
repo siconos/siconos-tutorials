@@ -27,7 +27,7 @@
 #define __TaskFunctionDefinitoin_trajectory_h
 
 #ifdef WINDOWS
-#define extern __declspec (dllexport)
+#define extern __declspec(dllexport)
 #endif
 
 /**
@@ -41,6 +41,6 @@
  *  @param[out]contacts (int vector, variable size <= NCONTACTS ) number of the
  *  lines of contact vector which correspond to effectives contacts at t.
  */
-void trajectory(double * t, double * q, double * qdot, double * qddot, int * contacts);
+void trajectory(double* t, double* q, double* qdot, double* qddot, int* contacts);
 
 #endif

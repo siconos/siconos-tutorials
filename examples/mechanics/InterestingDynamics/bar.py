@@ -2,16 +2,16 @@
 
 import math
 import pickle
+
+# import scipy.constants as constants
+import numpy as np
+import siconos.modeling as sm
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
 from siconos.mechanics.collision.tools import Contactor
-
-# import scipy.constants as constants
-import numpy as np
-import siconos.numerics as sn
-import siconos.modeling as sm
 
 # WARNING : in 3D by default z-axis is upward
 # this is very important to direct PLANx objects
@@ -98,9 +98,8 @@ with MechanicsHdf5Runner() as io:
 
     print(body_collection)
 
-    f = open("body_collection.dict", "wb")
-    pickle.dump(body_collection, f)
-    f.close()
+    with open("body_collection.dict", "wb") as f:
+        pickle.dump(body_collection, f)
 
 
 step = 1000
@@ -151,8 +150,8 @@ run_options["verbose"] = True
 run_options["violation_verbose"] = True
 run_options["with_timer"] = True
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 run_options["output_frequency"] = 10
 run_options["gravity_scale"] = 1.0 / scale
@@ -160,7 +159,6 @@ run_options["multipoints_iterations"] = True
 run_options["set_external_forces"] = apply_forces
 
 with MechanicsHdf5Runner(mode="r+", collision_margin=0.01) as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

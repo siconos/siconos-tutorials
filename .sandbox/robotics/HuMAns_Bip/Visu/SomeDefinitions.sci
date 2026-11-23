@@ -1,14 +1,14 @@
 // Copyright (C) INRIA 1999-2005
-// 
+//
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License version 2 as published
 // by the Free Software Foundation.
-// 
+//
 // This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
 // Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License along
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -19,13 +19,13 @@
 // Affiliation(s): INRIA, team BIPOP
 //
 // Email(s): Pierre-Brice.Wieber@inria.fr
-// 
+//
 // @brief Define the Lagrangian Model Name, the contacts names, the contact solids and
 // the Stickfigure and the name of H-Anim Joints used in VRML Visualization
-// 
- 
+//
+
 // Description:
-// 
+//
 // Modifications:
 // $Log$
 // Revision 1.6  2005/10/28 09:07:26  billet
@@ -46,7 +46,7 @@
 // Revision 1.1.1.1  2005/02/08 13:05:30  rpissard
 // version start HuMAnS
 //
-// 
+//
 
 
 //Definitions for Lagrangian Model
@@ -85,7 +85,7 @@ ContactSolids = [1, 4;...
 		 10, 10;...
 		 11, 14;...
 		 15, 23];
-		 
+
 
 StickFigure = [1, 2;...
 	       2, 4;...
@@ -150,7 +150,7 @@ HAnimContactSolidsNames = ['BipHigh_RightFoot';...
 			   'BipHigh_LeftFoot';...
 				'BipHigh_Suspension';
 				'BipHigh_Total'];
-				
+
 HAnimContactSolidsRGB = [[255; 0; 0],...
 			[255; 0; 0],...
 			[255; 0; 0],...
@@ -159,11 +159,4 @@ HAnimContactSolidsRGB = [[255; 0; 0],...
 			[255; 0; 0],...
 			[255; 0; 0],...
 			[255; 0; 0],...
-			[0; 0; 255]];				
-				
-				
-				
-				
-				
-				
-				
+			[0; 0; 255]];

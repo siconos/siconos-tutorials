@@ -25,19 +25,17 @@
 **
 */
 
-
-#include "stack-c.h"
+#include <stdio.h>
 #include <string.h>
+
+#include "LagrangianModel.h"
 #include "machine.h"
 #include "os_specific/link.h"
-#include "LagrangianModel.h"
-
-#include <stdio.h>
+#include "stack-c.h"
 
 #ifdef WINDOWS
-#define extern __declspec (dllexport)
+#define extern __declspec(dllexport)
 #endif
-
 
 /***************************************************
  * Declarations for Lagrangian gateway             *
@@ -49,30 +47,27 @@ extern int C2F(LagrangianGateway)();
  * Declarations for Lagrangian Model               *
  ***************************************************/
 
-extern int ContactInterface(char *fname);
+extern int ContactInterface(char* fname);
 
-extern int ContactHessianInterface(char *fname);
+extern int ContactHessianInterface(char* fname);
 
-extern int ContactJacobianInterface(char *fname);
+extern int ContactJacobianInterface(char* fname);
 
-extern int InertiaInterface(char *fname);
+extern int InertiaInterface(char* fname);
 
-extern int NLEffectsInterface(char *fname);
+extern int NLEffectsInterface(char* fname);
 
-extern int JacobianNLEffectsInterface(char *fname);
+extern int JacobianNLEffectsInterface(char* fname);
 
-extern int JacobianVelocityNLEffectsInterface(char *fname);
+extern int JacobianVelocityNLEffectsInterface(char* fname);
 
-extern int TagsInterface(char *fname);
-
-
+extern int TagsInterface(char* fname);
 
 /***************************************************
  * interfaces for Lagrangian Model
  ***************************************************/
 
-int ContactInterface(char *fname)
-{
+int ContactInterface(char* fname) {
   static int one = 1, ncont = 3 * NCONT;
   static int n, nbis;
   static int q, CC;
@@ -81,12 +76,11 @@ int ContactInterface(char *fname)
   static int minlhs = 1, minrhs = 1, maxlhs = 1, maxrhs = 1;
 
   /*   Check rhs and lhs   */
-  CheckRhs(minrhs, maxrhs) ;
-  CheckLhs(minlhs, maxlhs) ;
+  CheckRhs(minrhs, maxrhs);
+  CheckLhs(minlhs, maxlhs);
 
   GetRhsVar(1, "d", &n, &nbis, &q);
-  if (n * nbis != NDOF)
-  {
+  if (n * nbis != NDOF) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
@@ -100,8 +94,7 @@ int ContactInterface(char *fname)
   return 0;
 }
 
-int ContactHessianInterface(char *fname)
-{
+int ContactHessianInterface(char* fname) {
   static int one = 1, ncont = 3 * NCONT;
   static int n, nbis;
   static int q, qdot, H;
@@ -110,20 +103,18 @@ int ContactHessianInterface(char *fname)
   static int minlhs = 1, minrhs = 2, maxlhs = 1, maxrhs = 2;
 
   /*   Check rhs and lhs   */
-  CheckRhs(minrhs, maxrhs) ;
-  CheckLhs(minlhs, maxlhs) ;
+  CheckRhs(minrhs, maxrhs);
+  CheckLhs(minlhs, maxlhs);
 
   GetRhsVar(1, "d", &n, &nbis, &q);
-  if (n * nbis != NDOF)
-  {
+  if (n * nbis != NDOF) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
   }
 
   GetRhsVar(2, "d", &n, &nbis, &qdot);
-  if (n * nbis != NDOF)
-  {
+  if (n * nbis != NDOF) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
@@ -137,8 +128,7 @@ int ContactHessianInterface(char *fname)
   return 0;
 }
 
-int ContactJacobianInterface(char *fname)
-{
+int ContactJacobianInterface(char* fname) {
   static int ndof = NDOF, ncont = 3 * NCONT;
   static int n, nbis;
   static int q, J;
@@ -147,12 +137,11 @@ int ContactJacobianInterface(char *fname)
   static int minlhs = 1, minrhs = 1, maxlhs = 1, maxrhs = 1;
 
   /*   Check rhs and lhs   */
-  CheckRhs(minrhs, maxrhs) ;
-  CheckLhs(minlhs, maxlhs) ;
+  CheckRhs(minrhs, maxrhs);
+  CheckLhs(minlhs, maxlhs);
 
   GetRhsVar(1, "d", &n, &nbis, &q);
-  if (n * nbis != NDOF)
-  {
+  if (n * nbis != NDOF) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
@@ -166,8 +155,7 @@ int ContactJacobianInterface(char *fname)
   return 0;
 }
 
-int InertiaInterface(char *fname)
-{
+int InertiaInterface(char* fname) {
   static int ndof = NDOF;
   static int n, nbis;
   static int q, M;
@@ -176,12 +164,11 @@ int InertiaInterface(char *fname)
   static int minlhs = 1, minrhs = 1, maxlhs = 1, maxrhs = 1;
 
   /*   Check rhs and lhs   */
-  CheckRhs(minrhs, maxrhs) ;
-  CheckLhs(minlhs, maxlhs) ;
+  CheckRhs(minrhs, maxrhs);
+  CheckLhs(minlhs, maxlhs);
 
   GetRhsVar(1, "d", &n, &nbis, &q);
-  if (n * nbis != NDOF)
-  {
+  if (n * nbis != NDOF) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
@@ -195,8 +182,7 @@ int InertiaInterface(char *fname)
   return 0;
 }
 
-int NLEffectsInterface(char *fname)
-{
+int NLEffectsInterface(char* fname) {
   static int one = 1, ndof = NDOF;
   static int n, nbis;
   static int q, qdot, N;
@@ -205,20 +191,18 @@ int NLEffectsInterface(char *fname)
   static int minlhs = 1, minrhs = 2, maxlhs = 1, maxrhs = 2;
 
   /*   Check rhs and lhs   */
-  CheckRhs(minrhs, maxrhs) ;
-  CheckLhs(minlhs, maxlhs) ;
+  CheckRhs(minrhs, maxrhs);
+  CheckLhs(minlhs, maxlhs);
 
   GetRhsVar(1, "d", &n, &nbis, &q);
-  if (n * nbis != NDOF)
-  {
+  if (n * nbis != NDOF) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
   }
 
   GetRhsVar(2, "d", &n, &nbis, &qdot);
-  if (n * nbis != NDOF)
-  {
+  if (n * nbis != NDOF) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
@@ -232,10 +216,7 @@ int NLEffectsInterface(char *fname)
   return 0;
 }
 
-
-
-int JacobianNLEffectsInterface(char *fname)
-{
+int JacobianNLEffectsInterface(char* fname) {
   static int ndof = NDOF;
   static int n, nbis;
   static int q, qdot, NJ;
@@ -244,20 +225,18 @@ int JacobianNLEffectsInterface(char *fname)
   static int minlhs = 1, minrhs = 2, maxlhs = 1, maxrhs = 2;
 
   /*   Check rhs and lhs   */
-  CheckRhs(minrhs, maxrhs) ;
-  CheckLhs(minlhs, maxlhs) ;
+  CheckRhs(minrhs, maxrhs);
+  CheckLhs(minlhs, maxlhs);
 
   GetRhsVar(1, "d", &n, &nbis, &q);
-  if (n * nbis != NDOF)
-  {
+  if (n * nbis != NDOF) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
   }
 
   GetRhsVar(2, "d", &n, &nbis, &qdot);
-  if (n * nbis != NDOF)
-  {
+  if (n * nbis != NDOF) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
@@ -271,9 +250,7 @@ int JacobianNLEffectsInterface(char *fname)
   return 0;
 }
 
-
-int JacobianVelocityNLEffectsInterface(char *fname)
-{
+int JacobianVelocityNLEffectsInterface(char* fname) {
   static int ndof = NDOF;
   static int n, nbis;
   static int q, qdot, NVJ;
@@ -281,22 +258,19 @@ int JacobianVelocityNLEffectsInterface(char *fname)
   /*    Define minls=1, maxlhs, minrhs, maxrhs   */
   static int minlhs = 1, minrhs = 2, maxlhs = 1, maxrhs = 2;
 
-
   /*   Check rhs and lhs   */
-  CheckRhs(minrhs, maxrhs) ;
-  CheckLhs(minlhs, maxlhs) ;
+  CheckRhs(minrhs, maxrhs);
+  CheckLhs(minlhs, maxlhs);
 
   GetRhsVar(1, "d", &n, &nbis, &q);
-  if (n * nbis != NDOF)
-  {
+  if (n * nbis != NDOF) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
   }
 
   GetRhsVar(2, "d", &n, &nbis, &qdot);
-  if (n * nbis != NDOF)
-  {
+  if (n * nbis != NDOF) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
@@ -310,10 +284,7 @@ int JacobianVelocityNLEffectsInterface(char *fname)
   return 0;
 }
 
-
-
-int TagsInterface(char *fname)
-{
+int TagsInterface(char* fname) {
   static int three = 3, ntags = NTAGS;
   static int n, nbis;
   static int q, T;
@@ -322,12 +293,11 @@ int TagsInterface(char *fname)
   static int minlhs = 1, minrhs = 1, maxlhs = 1, maxrhs = 1;
 
   /*   Check rhs and lhs   */
-  CheckRhs(minrhs, maxrhs) ;
-  CheckLhs(minlhs, maxlhs) ;
+  CheckRhs(minrhs, maxrhs);
+  CheckLhs(minlhs, maxlhs);
 
   GetRhsVar(1, "d", &n, &nbis, &q);
-  if (n * nbis != NDOF)
-  {
+  if (n * nbis != NDOF) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
@@ -341,19 +311,15 @@ int TagsInterface(char *fname)
   return 0;
 }
 
-
-
-
 /***************************************************
  * Gateways for Scilab
  ***************************************************/
 
-typedef int (*gate_function)(char *);
+typedef int (*gate_function)(char*);
 
-extern int sci_gateway(char *name, gate_function f);
+extern int sci_gateway(char* name, gate_function f);
 
-int C2F(LagrangianGateway)()
-{
+int C2F(LagrangianGateway)() {
   gate_function function[] = {ContactInterface,
                               ContactHessianInterface,
                               ContactJacobianInterface,
@@ -361,20 +327,11 @@ int C2F(LagrangianGateway)()
                               NLEffectsInterface,
                               JacobianNLEffectsInterface,
                               JacobianVelocityNLEffectsInterface,
-                              TagsInterface
-                             };
-  char *name[] = {"Contact",
-                  "ContactHessian",
-                  "ContactJacobian",
-                  "Inertia",
-                  "NLEffects",
-                  "JacobianNLEffects",
-                  "JacobianVelocityNLEffects",
-                  "Tags"
-                 };
+                              TagsInterface};
+  char* name[] = {"Contact",   "ContactHessian",    "ContactJacobian",           "Inertia",
+                  "NLEffects", "JacobianNLEffects", "JacobianVelocityNLEffects", "Tags"};
 
   Rhs = Max(0, Rhs);
   sci_gateway(name[Fin - 1], function[Fin - 1]);
   return 0;
 }
-

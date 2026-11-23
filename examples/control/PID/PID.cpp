@@ -39,10 +39,10 @@ int main(int argc, char* argv[]) {
   // ================= Creation of the model =======================
 
   // User-defined main parameters
-  int nDof = 2;  // degrees of freedom for the system
-  double t0 = 0;          // initial computation time
-  double T = 100.0;       // final computation time
-  double h = 0.05;        // time step
+  int nDof = 2;      // degrees of freedom for the system
+  double t0 = 0;     // initial computation time
+  double T = 100.0;  // final computation time
+  double h = 0.05;   // time step
   double hControl = h;
   double position_init = 10;   // initial position for lowest bead.
   double velocity_init = 0.0;  // initial velocity for lowest bead.
@@ -66,7 +66,8 @@ int main(int argc, char* argv[]) {
   (*x0)(1) = velocity_init;
 
   // -- The dynamical system --
-  auto doubleIntegrator = std::make_shared<siconos::modeling::FirstOrderLinearDS>(*x0, siconos::algebra::alias_t);
+  auto doubleIntegrator =
+      std::make_shared<siconos::modeling::FirstOrderLinearDS>(*x0, siconos::algebra::alias_t);
   doubleIntegrator->setConstantA(*A, siconos::algebra::alias_t);
   // -------------
   // --- Model ---

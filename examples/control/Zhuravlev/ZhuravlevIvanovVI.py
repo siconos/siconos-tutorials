@@ -1,8 +1,5 @@
-import siconos.modeling as sm
-import siconos.numerics as SN
-
 import numpy as np
-
+import siconos.numerics as SN
 import siconos.plot_config as sicoplot
 
 # Turn off interactive backend by default
@@ -43,7 +40,6 @@ def vi_function(n, l, F):
     v_theta = xk1 + theta * F[1]
     F[0] += xk0 + h * v_theta
     F[1] += xk1
-    pass
 
 
 def vi_nabla_function(n, l, nabla_Fmcp):
@@ -63,7 +59,6 @@ def vi_nabla_function(n, l, nabla_Fmcp):
         _kappa * l0 * v_gamma + (-1.0 + gamma * h * _kappa * l0 * l1) * nabla_Fmcp[1, 1]
     )
     B[:] = nabla_Fmcp
-    pass
 
 
 if __name__ == "__main__":
@@ -135,7 +130,7 @@ if __name__ == "__main__":
             #            info = SN.mcp_newton_minFBLSA(mcp, z, w, SO)
             # print('iter {:} ; solver iter = {:} ; prec = {:}'.format(k, SO.iparam[1], SO.dparam[1]))
             if info > 0:
-                print("VI solver failed ! info = {:}".format(info))
+                print(f"VI solver failed ! info = {info}")
                 print(B)
                 print(np.linalg.eig(B))
                 print(np.linalg.cond(B))

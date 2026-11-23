@@ -14,14 +14,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 #include "SpheresViewer.hpp"
+
 #include <NonSmoothDynamicalSystem.hpp>
 using namespace qglviewer;
 
-void SpheresViewer::init()
-{
+void SpheresViewer::init() {
   Siconos_.reset(new Spheres());
 
   BodiesViewer::init();
@@ -30,26 +30,18 @@ void SpheresViewer::init()
 
   camera()->setPosition(qglviewer::Vec(100.0, 100.0, 100.0));
   camera()->setOrientation(1., 1.);
-
 }
 
-
-void SpheresViewer::draw()
-{
-
+void SpheresViewer::draw() {
   char qs[6];
 
   std::shared_ptr<siconos::modeling::Interaction> interaction;
   std::shared_ptr<siconos::modeling::Relation> relation;
 
-  for (unsigned int i = 0; i < GETNDS(Siconos_); i++)
-  {
-    if (shapes_[i]->selected())
-    {
+  for (unsigned int i = 0; i < GETNDS(Siconos_); i++) {
+    if (shapes_[i]->selected()) {
       drawSelectedQGLShape(*shapes_[i]);
-    }
-    else
-    {
+    } else {
       drawQGLShape(*shapes_[i]);
     }
   }
@@ -66,8 +58,7 @@ void SpheresViewer::draw()
   glColor3f(0, 0, 1);
   glLineWidth(4.);
 
-  for (unsigned int i = 0 ; i < Siconos_->plans()->size(0) ; ++i)
-  {
+  for (unsigned int i = 0; i < Siconos_->plans()->size(0); ++i) {
     double A = (*Siconos_->plans())(i, 0);
     double B = (*Siconos_->plans())(i, 1);
     double C = (*Siconos_->plans())(i, 2);
@@ -81,7 +72,6 @@ void SpheresViewer::draw()
     glMultMatrixd(Quaternion(Vec(0., 0., 1.), Vec(A, B, C)).matrix());
     drawGrid(100, 200);
     glPopMatrix();
-
   }
 
   glColor3f(.1, .1, .1);
@@ -90,20 +80,15 @@ void SpheresViewer::draw()
   QGLViewer::drawArrow(qglviewer::Vec(0, 0, .1), qglviewer::Vec(0, 1, .1), .01, 3);
 
   glLineWidth(1.);
-  for (unsigned int i = -100; i <= 100; i += 5)
-  {
+  for (unsigned int i = -100; i <= 100; i += 5) {
     sprintf(qs, "%d", i);
     //    print((float)i,-.8,qs,small_text);
-    //print(-.8,(float)i,qs,small_text);
+    // print(-.8,(float)i,qs,small_text);
     drawVec((float)i, -.2, (float)i, .2);
     drawVec(-.2, (float)i, .2, (float)i);
   }
-  for (unsigned int i = -100; i <= 100; i++)
-  {
+  for (unsigned int i = -100; i <= 100; i++) {
     drawVec((float)i, -.1, (float)i, .1);
     drawVec(-.1, (float)i, .1, (float)i);
   }
 }
-
-
-

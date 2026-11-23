@@ -1,8 +1,8 @@
 #include <math.h>
+
 #include "LagrangianModel.h"
 
-void Inertia(M, q)
-double M[36];
+void Inertia(M, q) double M[36];
 double q[6];
 {
   double C0 = cos(q[0]);

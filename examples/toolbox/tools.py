@@ -1,5 +1,5 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def plot_and_compare(mine, *others):
@@ -24,7 +24,7 @@ def plot_and_compare(mine, *others):
     linestyles = ["-.", ":", "-.", ":"]
     markers = [None, None, None, None, None]
     for i in range(1, num_cols):
-        fig, axes = plt.subplots(
+        _fig, axes = plt.subplots(
             1, num_graphs, figsize=(6 * num_graphs, 6), sharex=True
         )
 
@@ -37,20 +37,19 @@ def plot_and_compare(mine, *others):
         )
 
         for j, other in enumerate(others):
-            if other is not None:
-                if other.shape[1] > i:
-                    time_other = other[:, 0]
-                    color = colors[j % len(colors)]
-                    linestyle = linestyles[j % len(linestyles)]
-                    marker = markers[j % len(markers)]
-                    axes[0].plot(
-                        time_other,
-                        other[:, i],
-                        label=f"Other {j+1} - Col {i}",
-                        color=color,
-                        linestyle=linestyle,
-                        marker=marker,
-                    )
+            if other is not None and other.shape[1] > i:
+                time_other = other[:, 0]
+                color = colors[j % len(colors)]
+                linestyle = linestyles[j % len(linestyles)]
+                marker = markers[j % len(markers)]
+                axes[0].plot(
+                    time_other,
+                    other[:, i],
+                    label=f"Other {j + 1} - Col {i}",
+                    color=color,
+                    linestyle=linestyle,
+                    marker=marker,
+                )
 
         axes[0].set_xlabel("Time")
         axes[0].set_title(f"Column {i} vs Time")
@@ -59,17 +58,19 @@ def plot_and_compare(mine, *others):
 
         # Plot differences for each other matrix
         for j, other in enumerate(others):
-            if other is not None:
-                if other.shape[1] > i:
-                    rows = np.min([mine.shape[0], other.shape[0]])
-                    time_other = other[:rows, 0]
-                    # y_mine_interp = np.interp(time_other, time, mine[:, i])
-                    # diff = y_mine_interp - other[:, i]
-                    diff = mine[:rows, i] - other[:rows, i]
-                    axes[j + 1].plot(
-                        time_other, diff, label=f"Diff Mine - Other {j+1}", color="red"
-                    )
-                    axes[j + 1].set_xlabel("Time")
-                    axes[j + 1].set_title(f"Diff Col {i} (Mine - Other {j+1})")
-                    axes[j + 1].legend()
-                    axes[j + 1].grid()
+            if other is not None and other.shape[1] > i:
+                rows = np.min([mine.shape[0], other.shape[0]])
+                time_other = other[:rows, 0]
+                # y_mine_interp = np.interp(time_other, time, mine[:, i])
+                # diff = y_mine_interp - other[:, i]
+                diff = mine[:rows, i] - other[:rows, i]
+                axes[j + 1].plot(
+                    time_other,
+                    diff,
+                    label=f"Diff Mine - Other {j + 1}",
+                    color="red",
+                )
+                axes[j + 1].set_xlabel("Time")
+                axes[j + 1].set_title(f"Diff Col {i} (Mine - Other {j + 1})")
+                axes[j + 1].legend()
+                axes[j + 1].grid()

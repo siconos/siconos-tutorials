@@ -27,7 +27,7 @@
 #define __controlLaw_h
 
 #ifdef WINDOWS
-#define extern __declspec (dllexport)
+#define extern __declspec(dllexport)
 #endif
 
 /**
@@ -40,6 +40,6 @@
  *
  *  @param[out] torques (double vector, size = NDOF) generalized Torques
  */
-void controlLaw(double * t, double * q, double * qdot, int * NDOF, int * NCONT, double * torques);
+void controlLaw(double* t, double* q, double* qdot, int* NDOF, int* NCONT, double* torques);
 
 #endif

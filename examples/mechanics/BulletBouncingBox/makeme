@@ -1,6 +1,8 @@
 #!/bin/sh
 
-siconos -v -g -j 2 -DBT_USE_DOUBLE_PRECISION=1 -DWITH_BULLET `pkg-config bullet --cflags` `pkg-config bullet --lib` -lglut BulletBouncingBox.cpp
+# pkg-config output must be split into separate flags
+# shellcheck disable=SC2046
+siconos -v -g -j 2 -DBT_USE_DOUBLE_PRECISION=1 -DWITH_BULLET $(pkg-config bullet --cflags) $(pkg-config bullet --lib) -lglut BulletBouncingBox.cpp
 
 # Note: Ubuntu 15.10, "-DBT_USE_DOUBLE_PRECISION=1" causes linker error.
 

@@ -3,7 +3,7 @@ set term X11
 #set term pdf
 #extension= ".pdf"
 #set term tikz standalone color solid size 5in,3in
-set term tikz standalone monochrome  size 5in,5in font '\small\sf' 
+set term tikz standalone monochrome  size 5in,5in font '\small\sf'
 extension=".tex"
 
 
@@ -17,8 +17,8 @@ set output "traj-sign".extension
 plot "sign.11.8.log" u 1:2 w l ,\
      "sign.11.8.log" u 1:3 w l ,\
      "sign.11.8.log" u 1:8 w l ,\
-     "sign.11.8.log" u 1:9 w l 
-     
+     "sign.11.8.log" u 1:9 w l
+
 
 set output "phase-sign".extension
 
@@ -31,8 +31,8 @@ set arrow from 8,0 to 8,12.5 nohead ls 3
 set arrow from 0,4 to 12.5,4 nohead ls 3
 set arrow from 0,8 to 12.5,8 nohead ls 3
 
-vec1(x,y) =  ( x/(sqrt(x*x+y*y))*coeff     ) 
-vec2(x,y) =  ( y/(sqrt(x*x+y*y))*coeff     ) 
+vec1(x,y) =  ( x/(sqrt(x*x+y*y))*coeff     )
+vec2(x,y) =  ( y/(sqrt(x*x+y*y))*coeff     )
 plot "sign.1.6.log" u 2:3:(vec1($8,$9)):(vec2($8,$9)) w vec notitle,\
      "sign.1.6.log" u 2:3 w l ls 1 notitle,\
      "sign.1.7.5.log" u 2:3:(vec1($8,$9)):(vec2($8,$9)) w vec notitle,\
@@ -79,11 +79,3 @@ plot "sign.1.6.log" u 2:3:(vec1($8,$9)):(vec2($8,$9)) w vec notitle,\
 
 # plot "sign.11.8.log" u 2:3:(vec1($8,$9)):(vec2($8,$9)) w vec notitle,\
 #      "sign.11.8.log" u 2:3 w l notitle
-    
-
-
-
-
-
-
-

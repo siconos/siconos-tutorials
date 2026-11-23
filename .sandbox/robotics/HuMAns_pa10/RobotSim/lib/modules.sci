@@ -1,7 +1,7 @@
 
 function [qd] = f_trajectory_lin(t,qi,qf,duration)
 
-if t < duration then 
+if t < duration then
     qd = qi + ((t/duration) * (qf - qi));
 else
     qd = qf;
@@ -15,7 +15,7 @@ if (t==0) then
  a3=(-2/(d2*duration))*(qf-qi);
 end;
 
-if t < duration then 
+if t < duration then
     t2=t*t;
     qd = qi + a2*t2 + a3*t*t2;
 else
@@ -96,7 +96,7 @@ qdot=pseudoJ*xdot;
 endfunction
 
 //
-// 
+//
 //
 function [mkin] = f_Kin(q,funcGeom,index)
 
@@ -106,7 +106,7 @@ function [mkin] = f_Kin(q,funcGeom,index)
 endfunction
 
 //
-// 
+//
 //
 function [x] = f_xKin(q,funcGeom,index)
 
@@ -115,7 +115,7 @@ function [x] = f_xKin(q,funcGeom,index)
  mkin=model(index);
 
  x=[0 0 0 0 0 0];
- 
+
  // Translation
  x(1)=mkin(1,4);
  x(2)=mkin(2,4);
@@ -127,7 +127,7 @@ function [x] = f_xKin(q,funcGeom,index)
 endfunction
 
 //
-// 
+//
 //
 function [mkin] = f_Hmat(x)
 
@@ -157,7 +157,7 @@ if (t==0) then
  a3=(-2/(d2*duration))*(qf-qi);
 end;
 
-if t < duration then 
+if t < duration then
     t2=t*t;
     qd = qi + a2*t2 + a3*t*t2;
 else
@@ -168,13 +168,13 @@ endfunction
 
 
 //
-// 
+//
 //
 function [err] = f_xerror(mKin,mKind)
 
  global GLOBAL_HIST;
 
-err=zeros(6,1);	
+err=zeros(6,1);
 
 // Error in translation
 err([1 2 3])=mKind([1 2 3],4) - mKin([1 2 3],4);
@@ -189,7 +189,7 @@ err(6) = 0.5*( rot(2,1) - rot(1,2));
 
 endfunction
 
-// compute the rotation matrix 
+// compute the rotation matrix
 // using yaw pitch roll parametrization
 // Y Roulis : rot(z) phi
 // P Tangage: rot(y) theta
@@ -232,7 +232,7 @@ nz=mrot(3,2);
 az=mrot(3,3);
 
 if ( (sy==0) & (sx==0) ) then
-	
+
 end;
 
 Y = atan(sy,sx);
@@ -244,7 +244,7 @@ L = atan(sphi*ax-cphi*ay,-sphi*nx+cphi*ny);
 
 endfunction;
 
-// compute the rotation matrix 
+// compute the rotation matrix
 // using euler angle parametrization
 // rot(x) phi
 // rot(y) theta
@@ -268,7 +268,7 @@ MROT = [[ cthe*cpsi  cthe*spsi -sthe];
 endfunction;
 
 
-// compute euler angle parametrization 
+// compute euler angle parametrization
 // using the rotation matrix
 // rot(z0) phi
 // rot(x) theta
@@ -283,9 +283,9 @@ function [phi,theta,psi] = euler_rot(mrot)
 
 endfunction;
 
-//           
+//
 // Calcule qd_k+1=qk +pDt*pseudoInv(J(q_k))xdotd;
-//  
+//
 //
 function [qk1] = f_Vel(t,pDt,qk,xdot,funcJac)
 

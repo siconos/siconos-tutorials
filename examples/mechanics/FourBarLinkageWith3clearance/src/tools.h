@@ -51,28 +51,28 @@ constexpr double Jx2 = 0.5 * (0.25 * m2 * l2 * l2 + Ix2);
 constexpr double Jx3 = 0.5 * (0.25 * m3 * l3 * l3 + Ix3);
 constexpr double P1 = 0.5 * m2 * l1 * l2;
 
-double fcnExpression1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double fcnExpression1(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double result1;
   result1 = sqrt(pow((q(3) - 0.5 * l2 * cos(q(1)) - l1 * cos(q(0))), 2) +
                  pow((q(4) - 0.5 * l2 * sin(q(1)) - l1 * sin(q(0))), 2));
   return result1;
 }
 
-double fcnExpression2(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double fcnExpression2(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double result2;
   result2 = sqrt(pow((l0 + q(5) + 0.5 * l3 * cos(q[2]) - 0.5 * l2 * cos(q(1)) - q(3)), 2) +
                  pow((-q(4) + q(6) + 0.5 * l3 * sin(q[2]) - 0.5 * l2 * sin(q(1))), 2));
   return result2;
 }
 
-double fcnExpression3(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double fcnExpression3(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double result3;
   result3 =
       sqrt((pow((q(5) - 0.5 * l3 * cos(q[2])), 2) + pow((q(6) - 0.5 * l3 * sin(q[2])), 2)));
   return result3;
 }
 
-double Fphi(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fphi(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double phi, k1, k2, k3;
   k1 = -2.0 * l1 * l3 * sin(q(0));
   k2 = 2.0 * l3 * (l0 - l1 * cos(q(0)));
@@ -82,7 +82,7 @@ double Fphi(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return phi;
 }
 
-double Falfa(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Falfa(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double alfa;
   double v = Fphi(q);
   alfa = atan2(-l1 * sin(q(0)) + l3 * sin(v), l0 - l1 * cos(q(0)) + l3 * cos(v));
@@ -90,14 +90,14 @@ double Falfa(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return alfa;
 }
 
-double FS1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double FS1(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double s1;
   double v = Fphi(q);
   double v1 = Falfa(q);
   return (l1 * sin(v - q(0))) / (l2 * sin(v1 - v));
 }
 
-double FS2(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double FS2(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double s2;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -105,7 +105,7 @@ double FS2(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return s2;
 }
 
-double Fc1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fc1(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double c1;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -113,7 +113,7 @@ double Fc1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return c1;
 }
 
-double Fdtc1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fdtc1(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double dtc1;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -121,7 +121,7 @@ double Fdtc1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return dtc1;
 }
 
-double Fdac1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fdac1(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double dac1;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -129,7 +129,7 @@ double Fdac1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return dac1;
 }
 
-double Fdtg(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fdtg(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double dtg;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -137,7 +137,7 @@ double Fdtg(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return dtg;
 }
 
-double Fdag(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fdag(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double dag;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -145,7 +145,7 @@ double Fdag(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return dag;
 }
 
-double Fdpg(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fdpg(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double dpg;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -153,7 +153,7 @@ double Fdpg(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return dpg;
 }
 
-double Ft1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ft1(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double t1;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -162,7 +162,7 @@ double Ft1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return t1;
 }
 
-double Fta1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fta1(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ta1;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -170,7 +170,7 @@ double Fta1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ta1;
 }
 
-double Ftp1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ftp1(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double tp1;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -178,7 +178,7 @@ double Ftp1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return tp1;
 }
 
-double Ft2(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ft2(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double t2;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -187,7 +187,7 @@ double Ft2(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return t2;
 }
 
-double Ftt2(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ftt2(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double tt2;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -195,7 +195,7 @@ double Ftt2(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return tt2;
 }
 
-double Fta2(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fta2(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ta2;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -204,7 +204,7 @@ double Fta2(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ta2;
 }
 
-double Ftp2(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ftp2(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double tp2;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -214,7 +214,7 @@ double Ftp2(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return tp2;
 }
 
-double Ft3(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ft3(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double t3;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -223,7 +223,7 @@ double Ft3(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return t3;
 }
 
-double Ftt3(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ftt3(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double tt3;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -231,7 +231,7 @@ double Ftt3(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return tt3;
 }
 
-double Fta3(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fta3(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ta3;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -241,7 +241,7 @@ double Fta3(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ta3;
 }
 
-double Ftp3(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ftp3(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double tp3;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -250,7 +250,7 @@ double Ftp3(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return tp3;
 }
 
-double Ft4(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ft4(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double t4;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -258,7 +258,7 @@ double Ft4(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return t4;
 }
 
-double Ftt4(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ftt4(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double tt4;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -266,7 +266,7 @@ double Ftt4(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return tt4;
 }
 
-double Fta4(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fta4(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ta4;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -275,7 +275,7 @@ double Fta4(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ta4;
 }
 
-double Ftp4(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ftp4(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double tp4;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -283,7 +283,7 @@ double Ftp4(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return tp4;
 }
 
-double Ft5(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ft5(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double t5;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -291,7 +291,7 @@ double Ft5(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return t5;
 }
 
-double Ftt5(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ftt5(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double tt5;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -299,7 +299,7 @@ double Ftt5(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return tt5;
 }
 
-double Fta5(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fta5(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ta5;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -309,7 +309,7 @@ double Fta5(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ta5;
 }
 
-double Ftp5(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ftp5(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double tp5;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -321,7 +321,7 @@ double Ftp5(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return tp5;
 }
 
-double Ft6(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ft6(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double t6;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -329,7 +329,7 @@ double Ft6(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return t6;
 }
 
-double Ftt6(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ftt6(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double tt6;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -337,7 +337,7 @@ double Ftt6(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return tt6;
 }
 
-double Fta6(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fta6(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ta6;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -347,7 +347,7 @@ double Fta6(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ta6;
 }
 
-double Ftp6(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Ftp6(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double tp6;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -356,7 +356,7 @@ double Ftp6(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return tp6;
 }
 
-double Fft9(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fft9(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ft9;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -368,7 +368,7 @@ double Fft9(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ft9;
 }
 
-double Fft10(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fft10(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ft10;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -381,7 +381,7 @@ double Fft10(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ft10;
 }
 
-double Fft11(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fft11(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ft11;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -394,7 +394,7 @@ double Fft11(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ft11;
 }
 
-double Fft12(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fft12(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ft12;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -407,7 +407,7 @@ double Fft12(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ft12;
 }
 
-double Fft13(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fft13(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ft13;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -420,7 +420,7 @@ double Fft13(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ft13;
 }
 
-double Fft14(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fft14(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ft14;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -433,7 +433,7 @@ double Fft14(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ft14;
 }
 
-double Fft15(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fft15(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ft15;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -446,7 +446,7 @@ double Fft15(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ft15;
 }
 
-double Fft16(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fft16(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ft16;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -459,14 +459,14 @@ double Fft16(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ft16;
 }
 
-double Fft17(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fft17(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ft17;
   double v = Fphi(q);
   double v1 = Falfa(q);
   ft17 = -cos(v1 - q(0));
   return ft17;
 }
-double Fft18(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fft18(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ft18;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -474,14 +474,14 @@ double Fft18(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   return ft18;
 }
 
-double Fft19(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fft19(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ft19;
   double v = Fphi(q);
   double v1 = Falfa(q);
   ft19 = cos(v1 - q(0));
   return ft19;
 }
-double Fft20(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double Fft20(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   double ft20;
   double v = Fphi(q);
   double v1 = Falfa(q);
@@ -490,7 +490,7 @@ double Fft20(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
 }
 
 // plugins for smooth equations of motion
-double MASS1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
+double MASS1(const Eigen::Ref<const siconos::algebra::SiconosVector>& q) {
   // columnwise definition of mass matrix
   double mass1;
   double s11 = FS1(q);
@@ -513,8 +513,8 @@ double MASS1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q) {
   // cout << "mass" << mass[0] << endl;
 }
 
-double NonNL1(const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
-              const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity) {
+double NonNL1(const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
+              const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity) {
   // nonlinear inertia terms (negative in h according to LagrangianDS)
   double nonnl1;
   double s11 = FS1(q);

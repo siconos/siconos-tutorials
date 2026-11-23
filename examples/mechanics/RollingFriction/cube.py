@@ -3,19 +3,16 @@
 #
 # Example of one object under gravity with one contactor and a ground
 #
+import siconos.numerics as sn
+import siconos.simulation
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
 from siconos.mechanics.collision.tools import Contactor
 
-
-import siconos.numerics as sn
-import siconos.simulation
-
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a cube as a convex shape
     io.add_convex_shape(
         "Cube",
@@ -100,15 +97,14 @@ run_options["violation_verbose"] = False
 run_options["with_timer"] = False
 
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 run_options["output_frequency"] = None
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

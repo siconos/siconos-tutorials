@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -19,16 +20,15 @@
 # Example of one object under gravity with one contactor and a ground
 #
 
-from siconos.mechanics.collision.tools import Contactor
+import math
+import random
+
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-import siconos.numerics as sn
-
-import math
-
-import random
+from siconos.mechanics.collision.tools import Contactor
 
 diameter = 0.02
 
@@ -42,7 +42,6 @@ margin_ratio = 1e-05
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a sphere
     io.add_primitive_shape(
         "Sphere",
@@ -147,7 +146,6 @@ run_options["output_frequency"] = 10
 run_options["constraint_activation_threshold"] = 1e-8
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

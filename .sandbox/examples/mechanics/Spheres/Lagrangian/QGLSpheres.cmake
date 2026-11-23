@@ -9,4 +9,3 @@ find_package(QGLViewer REQUIRED)
 # See "modern cmake", we have to use target_link_libraries(EXE QGLViewer ...)
 target_link_libraries(QGLSpheres Qt4::QtCore Qt4::QtXml Qt4::QtOpenGL Qt4::QtGui Qt4::QtWidgets)
 target_link_libraries(QGLSpheres QGLViewer)
-

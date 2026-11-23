@@ -13,10 +13,10 @@ coefficient de restitution : 0, 0.5, 1
 
 frequence d'echantillonnage : Fe = 5000 et 10000
 pertes : sigma_i = 0 pour tout i (pas de pertes)
-facteur d'inharmonicite : B = 0 (pas de raideur) mais peu importe, toutes les frequences sont donnees par : 
+facteur d'inharmonicite : B = 0 (pas de raideur) mais peu importe, toutes les frequences sont donnees par :
 frequences propres : vecteur frequs ('pb1_frequs.mat')
 
-conditions initiales : 
+conditions initiales :
 au temps 0 : vecteur des coefficients modaux q2 ('pb1_q2.mat')
 au temps dt : vecteur des coefficients modaux q1 ('pb1_q1.mat')
 
@@ -39,10 +39,10 @@ coefficient de restitution : 0, 0.5, 1
 
 frequence d'echantillonnage : Fe = 2^(i-1)*1960 pour i de 1 à 15
 pertes : vecteur sig0 ('pb2_amortissements.mat') (peu importent les valeurs du modele delta_ve et Q_te, ce vecteur donne les amortissements in fine)
-facteur d'inharmonicite : 3.5e-5 mais peu importe, toutes les frequences sont donnees par : 
+facteur d'inharmonicite : 3.5e-5 mais peu importe, toutes les frequences sont donnees par :
 frequences propres : vecteur frequs ('pb2_frequs.mat')
 
-conditions initiales : 
+conditions initiales :
 au temps 0 : vecteur des coefficients modaux q2 ('pb2_q2.mat')
 au temps dt : vecteur des coefficients modaux q1 ('pb2_q1.mat')
 

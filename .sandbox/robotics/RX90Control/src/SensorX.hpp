@@ -14,7 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 /*! \file SensorX.h
   A specific sensor, to capture q vector ("position") in Lagrangian systems.
@@ -38,10 +38,8 @@ class SiconosVector;
  * Used as an example on how to implement new user-sensors.
  *
  */
-class SensorX : public Sensor
-{
-private:
-
+class SensorX : public Sensor {
+ private:
   /** Default constructor
    */
   SensorX();
@@ -50,8 +48,7 @@ private:
    */
   std::shared_ptr<siconos::algebra::SiconosVector> storedX;
 
-public:
-
+ public:
   /** Constructor with a TimeDiscretisation.
    * \param a string, the type of the Sensor, which corresponds to the class type
    * \param a TimeDiscretisation*, (linked to a model).

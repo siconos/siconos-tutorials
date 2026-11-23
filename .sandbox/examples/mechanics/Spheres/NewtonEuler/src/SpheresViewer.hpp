@@ -14,13 +14,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-#include "Spheres.hpp"
 #include "BodiesViewer.hpp"
+#include "Spheres.hpp"
 
-class SpheresViewer : public BodiesViewer
-{
+class SpheresViewer : public BodiesViewer {
   void init();
   void draw();
 };

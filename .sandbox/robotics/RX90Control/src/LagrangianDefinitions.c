@@ -24,40 +24,36 @@
 // LagrangianModelName, ContactNames and ContactSolids
 //
 
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
-
 #include "LagrangianDefinitions.h"
+
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define NDOF 6
 #define NCONT 2
-#define deg2rad M_PI/180.0
+#define deg2rad M_PI / 180.0
 
-
-//Defintion of Bip joints limits
+// Defintion of Bip joints limits
 
 /**
  * Global variable corresponding to the max joints limit
  *
  * \var MAXQ (double) <em> dim NDOF </em>
  */
-double MAXQ[6] = {167 * deg2rad, 137.5 * deg2rad, 142.5 * deg2rad, 270 * deg2rad, 112.5 * deg2rad, 270 * deg2rad};
+double MAXQ[6] = {167 * deg2rad, 137.5 * deg2rad, 142.5 * deg2rad,
+                  270 * deg2rad, 112.5 * deg2rad, 270 * deg2rad};
 
-void setMaxq(double * maxq)
-{
+void setMaxq(double* maxq) {
   int i;
 
-  for (i = 0; i < NDOF; i++)
-    MAXQ[i] = maxq[i];
+  for (i = 0; i < NDOF; i++) MAXQ[i] = maxq[i];
 }
 
-void getMaxq(double *maxq)
-{
+void getMaxq(double* maxq) {
   int i;
 
-  for (i = 0; i < NDOF; i++)
-    maxq[i] = MAXQ[i];
+  for (i = 0; i < NDOF; i++) maxq[i] = MAXQ[i];
 }
 
 /**
@@ -65,40 +61,35 @@ void getMaxq(double *maxq)
  *
  * \var MINQ (double) <em> dim NDOF </em>
  */
-double MINQ[6] = { -167 * deg2rad, -137.5 * deg2rad, -142.5 * deg2rad, -270 * deg2rad, -112.5 * deg2rad, -270 * deg2rad};
+double MINQ[6] = {-167 * deg2rad, -137.5 * deg2rad, -142.5 * deg2rad,
+                  -270 * deg2rad, -112.5 * deg2rad, -270 * deg2rad};
 
-void setMinq(double * minq)
-{
+void setMinq(double* minq) {
   int i;
 
-  for (i = 0; i < NDOF; i++)
-    MINQ[i] = minq[i];
+  for (i = 0; i < NDOF; i++) MINQ[i] = minq[i];
 }
 
-void getMinq(double *minq)
-{
+void getMinq(double* minq) {
   int i;
 
-  for (i = 0; i < NDOF; i++)
-    minq[i] = MINQ[i];
+  for (i = 0; i < NDOF; i++) minq[i] = MINQ[i];
 }
 
-//Definitions for Lagrangian Model
+// Definitions for Lagrangian Model
 
 /**
  * Global variable storing the name of the lagrangian model
  *
  * \var LARANGIANMODELNAME (string)
  */
-char *LAGRANGIANMODELNAME = "RX90";
+char* LAGRANGIANMODELNAME = "RX90";
 
-void setLagrangianModelName(char* lagrangianModelName)
-{
+void setLagrangianModelName(char* lagrangianModelName) {
   LAGRANGIANMODELNAME = strdup(lagrangianModelName);
 }
 
-void getLagrangianModelName(char *lagrangianModelName)
-{
+void getLagrangianModelName(char* lagrangianModelName) {
   strcpy(lagrangianModelName, LAGRANGIANMODELNAME);
 }
 
@@ -107,16 +98,13 @@ void getLagrangianModelName(char *lagrangianModelName)
  *
  * \var CONTACTNAMES (string) <em> dim NCONT </em>
  */
-char *CONTACTNAMES[2] = {"", ""};
+char* CONTACTNAMES[2] = {"", ""};
 
-void setContactNames(char* contactNames, int *index)
-{
-  CONTACTNAMES[*index]  = strdup(contactNames);
+void setContactNames(char* contactNames, int* index) {
+  CONTACTNAMES[*index] = strdup(contactNames);
 }
 
-
-void getContactNames(char *contactNames, int *index)
-{
+void getContactNames(char* contactNames, int* index) {
   strcpy(contactNames, CONTACTNAMES[*index]);
 }
 
@@ -127,55 +115,46 @@ void getContactNames(char *contactNames, int *index)
  */
 int CONTACTSOLIDS[2] = {1, 2};
 
-void setContactSolids(int* contactSolids)
-{
+void setContactSolids(int* contactSolids) {
   int i;
 
-  for (i = 0; i < 2; i++)
-    CONTACTSOLIDS[i] = contactSolids[i];
+  for (i = 0; i < 2; i++) CONTACTSOLIDS[i] = contactSolids[i];
 }
 
-void getContactSolids(int *contactSolids)
-{
+void getContactSolids(int* contactSolids) {
   int i;
 
-  for (i = 0; i < 1; i++)
-    contactSolids[i] = CONTACTSOLIDS[i];
+  for (i = 0; i < 1; i++) contactSolids[i] = CONTACTSOLIDS[i];
 }
 
-void getNbContactSolids(int *nbSolids)
-{
-  *nbSolids = 1;
-}
+void getNbContactSolids(int* nbSolids) { *nbSolids = 1; }
 
+void SetModelSize(double* subjectSize) {}
 
-void SetModelSize(double *subjectSize) {}
+void GetModelSize(double* subjectSize) {}
 
-void GetModelSize(double *subjectSize) {}
+void SetModelMass(double* subjectMass) {}
 
-void SetModelMass(double *subjectMass) {}
+void GetModelMass(double* subjectMass) {}
 
-void GetModelMass(double *subjectMass) {}
+void SetAnatomicalLengths(double* anatLengths) {}
 
-void SetAnatomicalLengths(double *anatLengths) {}
+void GetAnatomicalLengths(double* anatLengths) {}
 
-void GetAnatomicalLengths(double *anatLengths) {}
+void SetTag2JointLengths(double* tagLengths) {}
 
-void SetTag2JointLengths(double *tagLengths) {}
+void GetTag2JointLengths(double* tagLengths) {}
 
-void GetTag2JointLengths(double *tagLengths) {}
+void Friction(double* F, double* q, double* qdot) {}
 
-void Friction(double *F, double *q, double *qdot) {}
+void TagsH36(double* T, double* q, double* L, double* addl, double mass) {}
 
-void TagsH36(double *T, double *q, double *L, double *addl, double mass) {}
+void InertiaH36(double* M, double* q, double* L, double* addl, double mass) {}
 
-void InertiaH36(double *M, double *q, double *L, double *addl, double mass) {}
+void NLEffectsH36(double* N, double* q, double* qdot, double* L, double* addl, double mass) {}
 
-void NLEffectsH36(double *N, double *q, double *qdot, double *L, double *addl, double mass) {}
+void ContactHessianH36(double* H, double* q, double* qdot, double* L, double* addl) {}
 
-void ContactHessianH36(double *H, double *q, double *qdot, double *L, double *addl) {}
+void ContactJacobianH36(double* CJ, double* q, double* L, double* addl) {}
 
-void ContactJacobianH36(double *CJ, double *q, double *L, double *addl) {}
-
-void ContactH36(double *CC, double *q, double *L, double *addl) {}
-
+void ContactH36(double* CC, double* q, double* L, double* addl) {}

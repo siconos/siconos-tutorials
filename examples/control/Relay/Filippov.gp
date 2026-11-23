@@ -34,4 +34,3 @@ set output "Filippov_3D.tex"
 
 splot\
 "Filippov.dat" u 2:3:1 t "Siconos Platform -- INRIA " w l
-

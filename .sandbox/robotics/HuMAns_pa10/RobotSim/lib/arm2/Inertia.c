@@ -1,8 +1,5 @@
 #include <math.h>
-
-#include <math.h>
-void Inertia(M, q)
-double M[4];
+void Inertia(M, q) double M[4];
 double q[2];
 {
   double t2;
@@ -15,4 +12,3 @@ double q[2];
     return;
   }
 }
-

@@ -27,5 +27,3 @@ oarsub -S "./run_fretless_bis.sh 15680 1" -p "network_address='luke43'"
 # oarsub -S "./run_fretless_bis.sh 62720 4" -p "network_address='luke44'" -t timesharing=perignon,*
 # oarsub -S "./run_fretless_bis.sh 31360 2" -p "network_address='luke44'" -t timesharing=perignon,*
 # oarsub -S "./run_fretless_bis.sh 15680 1" -p "network_address='luke44'" -t timesharing=perignon,*
-
-

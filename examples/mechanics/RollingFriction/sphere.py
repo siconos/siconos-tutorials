@@ -3,25 +3,23 @@
 #
 # Example of one object under gravity with one contactor and a ground
 #
+import siconos.numerics as sn
+import siconos.simulation
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-
 from siconos.mechanics.collision.tools import Contactor
-import siconos.numerics as sn
-import siconos.modeling as smsm
-import siconos.simulation
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a sphere
-    io.add_primitive_shape('Sphere', 'Sphere', (2,),
-                           insideMargin=0.2, outsideMargin=0.0)
+    io.add_primitive_shape(
+        "Sphere", "Sphere", (2,), insideMargin=0.2, outsideMargin=0.0
+    )
 
     # Definition of the ground shape
-    io.add_primitive_shape('Ground', 'Box', (100, 100, .5))
+    io.add_primitive_shape("Ground", "Box", (100, 100, 0.5))
 
     # Definition of a non smooth law. As no group ids are specified it
     # is between contactors of group id 0.
@@ -29,22 +27,27 @@ with MechanicsHdf5Runner() as io:
 
     # Definition of a non smooth law. As no group ids are specified it
     # is between contactors of group id 0.
-    io.add_Newton_impact_rolling_friction_nsl('contact_rolling', e=0.9, mu=0.3, mu_r=.5)
+    io.add_Newton_impact_rolling_friction_nsl(
+        "contact_rolling", e=0.9, mu=0.3, mu_r=0.5
+    )
     # io.add_Newton_impact_friction_nsl('contact', e= 0.9, mu=0.3)
 
     # The cube object made with an unique Contactor : the cube shape.
     # As a mass is given, it is a dynamic system involved in contact
     # detection and in the simulation.  With no group id specified the
     # Contactor belongs to group 0
-    io.add_object('sphere', [Contactor('Sphere')], translation=[0, 0, 3],
-                  velocity=[10, 0, 0, 0, 1, 0],
-                  mass=1)
+    io.add_object(
+        "sphere",
+        [Contactor("Sphere")],
+        translation=[0, 0, 3],
+        velocity=[10, 0, 0, 0, 1, 0],
+        mass=1,
+    )
 
     # the ground object made with the ground shape. As the mass is
     # not given, it is a static object only involved in contact
     # detection.
-    io.add_object('ground', [Contactor('Ground')],
-                  translation=[0, 49, 0])
+    io.add_object("ground", [Contactor("Ground")], translation=[0, 49, 0])
 
 
 # Create solver options
@@ -76,16 +79,15 @@ run_options["verbose"] = True
 run_options["violation_verbose"] = False
 run_options["with_timer"] = False
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 run_options["output_frequency"] = None
 
 # # Run the simulation from the inputs previously defined and add
 # # results to the hdf5 file. The visualisation of the output may be done
 # # with the vview command.
-with MechanicsHdf5Runner(mode='r+') as io:
-
+with MechanicsHdf5Runner(mode="r+") as io:
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

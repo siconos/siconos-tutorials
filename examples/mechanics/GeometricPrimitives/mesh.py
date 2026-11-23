@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -21,17 +22,15 @@
 # using the Siconos proposed mechanics API
 #
 
-from siconos.mechanics.collision.tools import Contactor
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-
-import siconos.numerics as sn
+from siconos.mechanics.collision.tools import Contactor
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Load a mesh.  The example mesh is a low-poly version of the
     # Stanford Bunny by Saf, license: Creative Commons - Attribution.
     # Taken from http://www.thingiverse.com/thing:466857
@@ -54,7 +53,7 @@ with MechanicsHdf5Runner() as io:
     # example.
     for i in range(3):
         io.add_object(
-            "bunny%d" % i,
+            f"bunny{i}",
             [Contactor("Bunny")],
             translation=[0, 0, 3 + i],
             orientation=[1, 0, 0, 0],
@@ -91,7 +90,6 @@ run_options["solver_options"] = options
 run_options["multipoints_iterations"] = True
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     io.run(run_options)

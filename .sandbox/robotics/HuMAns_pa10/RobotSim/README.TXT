@@ -4,7 +4,7 @@ robot = arm2 ou pa10
 
 robotControl.sci = schéma de controle du robot (arm2 ou pa10)
                    même schéma mais différents paramètres
-arm2Control.sxd  = schéma "equivalent" dataflow en open-office 
+arm2Control.sxd  = schéma "equivalent" dataflow en open-office
 robotPlot.sci    = fcts de plot du robot 2D et 3D
 robotLaunch.sce  = Lancement de la simulation (équivalent à un main)
                    on peut lancer sous scilab par 'exec'
@@ -24,7 +24,7 @@ lib/robot (arm2 ou pa10) Modèle dynamique du robot
  ScilabInterface.c et modele.sci font l'interface entre les fcts C et les fcts Scilab
 
 lib/pa10/pa10Jac.sci  = Modele Geométrique et jacobienne du PA10
- 
+
 -----------------------------------------------------------------------
 
 POUR FAIRE TOURNER L'EXEMPLE PA10:
@@ -46,7 +46,3 @@ Par ordre de priorité:
 + Fignoler le code (commentaires, en-tête)
 + Fignoler arm2 (re-génération Tags.c, lien Tags.c, faire tourner)
 + Commande cartésienne arm2
-
-
-
-

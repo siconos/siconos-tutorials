@@ -4,13 +4,12 @@
 # Example of a bouncing ball with OpenCascade contactors and occ distance
 #
 
-from siconos.mechanics.collision.tools import Volume, Contactor
-from siconos.io.mechanics_run import MechanicsHdf5Runner
-import siconos.numerics as sn
 import siconos.io.mechanics_run
+import siconos.numerics as sn
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox, BRepPrimAPI_MakeSphere
 from OCC.Core.gp import gp_Pnt
-
+from siconos.io.mechanics_run import MechanicsHdf5Runner
+from siconos.mechanics.collision.tools import Contactor, Volume
 
 config_occ = siconos.io.mechanics_run.RunnerConfig(backend="occ")
 
@@ -19,7 +18,6 @@ ground = BRepPrimAPI_MakeBox(gp_Pnt(-50, -50, 0), 100.0, 100.0, 0.5).Shape()
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner(config=config_occ) as io:
-
     io.add_occ_shape("Sphere", sphere)
     io.add_occ_shape("Ground", ground)
 
@@ -57,7 +55,6 @@ options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-8
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
 with MechanicsHdf5Runner(config=config_occ, mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

@@ -1,4 +1,4 @@
-#set  term X11 
+#set  term X11
 
 
 toffset = 2.100E-04
@@ -8,7 +8,7 @@ heightoff = 0.2
 winratio = 1.0
 winheight = basheight*winratio
 
-set lmargin 8 
+set lmargin 8
 set bmargin 0
 set tmargin 0
 
@@ -16,7 +16,7 @@ set size 1.0 , 1.0
 
 set xzeroaxis
 set format x ""
- 
+
 set grid xtics
 
 set multiplot
@@ -57,4 +57,3 @@ plot\
   "SMASHN0p25BE1us.dat" u ($1-toffset):5 t      "resistor current , SMASH   BE 1us" w l,\
   "DiodeBridgeBE1us.dat" u 1:($4 + $7) t        "resistor current , SICONOS BE 1us" w l
 set nomultiplot
-

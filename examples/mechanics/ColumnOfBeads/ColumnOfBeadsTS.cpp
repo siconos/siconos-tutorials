@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    int nDof = 3;       // degrees of freedom for the ball
+    int nDof = 3;                // degrees of freedom for the ball
     double t0 = 0;               // initial computation time
     double T = 2.0;              // final computation time
     double h = 0.0005;           // time step
@@ -75,7 +75,8 @@ int main(int argc, char* argv[]) {
 
     std::vector<std::shared_ptr<siconos::modeling::LagrangianLinearTIDS>> beads(nBeads);
     for (unsigned int i = 0; i < nBeads; i++) {
-      beads[i] = std::make_shared<siconos::modeling::LagrangianLinearTIDS>(q0[i], v0[i], mass, siconos::algebra::alias_t);
+      beads[i] = std::make_shared<siconos::modeling::LagrangianLinearTIDS>(
+          q0[i], v0[i], mass, siconos::algebra::alias_t);
       // -- Set external forces (weight) --
       beads[i]->setConstantFext(weight, siconos::algebra::alias_t);
     }
@@ -183,8 +184,7 @@ int main(int argc, char* argv[]) {
         }
 
         // Between two beads
-        if (abs((*(beads[i + 1])->q())(0) - (*((beads[i])->q()))(0) - 2 * R) <
-            alert) {
+        if (abs((*(beads[i + 1])->q())(0) - (*((beads[i])->q()))(0) - 2 * R) < alert) {
           // std::cout << "Alert distance for declaring contact = ";
           // std::cout << (*abs((*(beads[i])->q())-(0)-((beads[i+1])->q()))(0))
           // <<std::endl;

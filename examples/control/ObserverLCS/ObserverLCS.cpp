@@ -83,7 +83,8 @@ int main(int argc, char* argv[]) {
     auto x0 = std::make_shared<Vector>(ndof);
     x0->setZero();
     (*x0)(0) = Vinit;
-    auto process = std::make_shared<siconos::modeling::FirstOrderLinearDS>(*x0, siconos::algebra::alias_t);
+    auto process = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        *x0, siconos::algebra::alias_t);
     process->setConstantA(*A, siconos::algebra::alias_t);
     process->setComputebVectorFunction(
         [](double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {
@@ -114,7 +115,8 @@ int main(int argc, char* argv[]) {
     auto obsX0 = std::make_shared<Vector>(ndof);
     obsX0->setZero();
     auto param = process->x_read();
-    auto observer = std::make_shared<siconos::modeling::FirstOrderLinearDS>(*obsX0, siconos::algebra::alias_t);
+    auto observer = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        *obsX0, siconos::algebra::alias_t);
     observer->setConstantA(*hatA, siconos::algebra::alias_t);
     observer->setComputebVectorFunction(
         [&param](double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {

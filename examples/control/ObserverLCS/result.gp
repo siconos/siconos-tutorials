@@ -9,5 +9,3 @@ plot\
 "ObserverLCS.dat" u 1:5 t "Observer x(2)" w l,\
 "ObserverLCS.dat" u 1:6 t "lambda" w l,\
 "ObserverLCS.dat" u 1:7 t "hatLambda" w l
-
-

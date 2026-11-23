@@ -37,10 +37,10 @@ int main(int argc, char* argv[]) {
     // ================= Creation of the model =======================
 
     // User-defined main parameters
-    int nDof = 6;  // degrees of freedom for robot arm
-    double t0 = 0;          // initial computation time
-    double T = 6.0;         // final computation time
-    double h = 1e-2;        // time step
+    int nDof = 6;     // degrees of freedom for robot arm
+    double t0 = 0;    // initial computation time
+    double T = 6.0;   // final computation time
+    double h = 1e-2;  // time step
     double criterion = 1e-8;
     unsigned int maxIter = 200000;
     double e = 0.0;  // nslaw
@@ -59,9 +59,9 @@ int main(int argc, char* argv[]) {
     siconos::algebra::SiconosVector v0{nDof};
     q0.setZero();
     v0.setZero();
-   q0(1) = PI / 3;
-   q0(2) = -PI / 6;
-   q0(4) = PI / 6;
+    q0(1) = PI / 3;
+    q0(2) = -PI / 6;
+    q0(4) = PI / 6;
     v0(0) = -0.34;
     v0(3) = 0.59;
     v0(5) = -0.34;

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -57,13 +56,13 @@
 # -----------------------------------------------------------------------
 
 
-import siconos.modeling as sm
-import siconos.simulation
-import siconos.integrators
-import siconos.nonsmooth_formulations
 import numpy as np
-from numpy import linalg as LA
+import siconos.integrators
+import siconos.modeling as sm
+import siconos.nonsmooth_formulations
 import siconos.plot_config as sicoplot
+import siconos.simulation
+from numpy import linalg as LA
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)

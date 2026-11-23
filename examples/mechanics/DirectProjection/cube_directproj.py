@@ -5,21 +5,17 @@
 #
 
 
+import siconos.integrators
+import siconos.numerics as sn
+import siconos.simulation
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
 from siconos.mechanics.collision.tools import Contactor
 
-import siconos.numerics as sn
-import siconos.simulation
-import siconos.integrators
-import siconos.nonsmooth_formulations as nsf
-
-
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a cube as a convex shape
     io.add_convex_shape(
         "Cube",
@@ -73,9 +69,9 @@ options.dparam[sn.params.SICONOS_DPARAM_TOL] = 1e-8
 
 run_options = MechanicsHdf5Runner_run_options()
 run_options["t0"] = 0
-run_options["T"] = 10.
+run_options["T"] = 10.0
 run_options["h"] = 0.1
-#run_options["theta"] = 1.0
+# run_options["theta"] = 1.0
 
 
 run_options["solver_options"] = options
@@ -86,7 +82,7 @@ run_options["Newton_max_iter"] = 20
 
 run_options["display_Newton_convergence"] = False
 
-#run_options["osns_assembly_type"] = nsf.REDUCED_DIRECT
+# run_options["osns_assembly_type"] = nsf.REDUCED_DIRECT
 
 run_options["verbose"] = True
 run_options["violation_verbose"] = False
@@ -95,20 +91,19 @@ run_options["with_timer"] = False
 run_options["explode_computeOneStep_in_python"] = False
 run_options["explode_computeOneStepNSProblem_in_python"] = False
 
-run_options['numerics_verbose']=False
-run_options['numerics_verbose_level']=0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 run_options["output_frequency"] = None
 run_options["time_stepping"] = siconos.simulation.TimeSteppingDirectProjection
-run_options["osi"] =siconos.integrators.MoreauJeanDirectProjectionOSI
+run_options["osi"] = siconos.integrators.MoreauJeanDirectProjectionOSI
 
-run_options["projection_itermax"]=5
-run_options["projection_tolerance"]=1e-8
-run_options["projection_tolerance_unilateral"]=1e-8
+run_options["projection_itermax"] = 5
+run_options["projection_tolerance"] = 1e-8
+run_options["projection_tolerance_unilateral"] = 1e-8
 
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

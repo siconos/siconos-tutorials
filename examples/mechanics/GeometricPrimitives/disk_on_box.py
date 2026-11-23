@@ -20,22 +20,21 @@
 # using the Siconos proposed mechanics API
 #
 
-from siconos.mechanics.collision.tools import Contactor
+import math
+
+import siconos.mechanics.collision.bullet as siconos_bullet
+import siconos.numerics as sn
+import siconos.simulation
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-import siconos.mechanics.collision.bullet as siconos_bullet
-import siconos.numerics as sn
-import siconos.simulation
-
-import math
+from siconos.mechanics.collision.tools import Contactor
 
 restart = False
 if not restart:
     # Creation of the hdf5 file for input/output
     with MechanicsHdf5Runner() as io:
-
         # Definition of a sphere
         io.add_primitive_shape(
             "Disk", "Disk", (2,), insideMargin=0.0, outsideMargin=0.0
@@ -140,7 +139,6 @@ run_options["explode_computeOneStepNSProblem_in_python"] = False
 
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # # of the International System of Units.
     io.run(run_options)

@@ -1,6 +1,5 @@
 #include <math.h>
-void Tags(T, q)
-double T[24];
+void Tags(T, q) double T[24];
 double q[7];
 {
   double t1;
@@ -83,4 +82,3 @@ double q[7];
     return;
   }
 }
-

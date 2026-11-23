@@ -1,6 +1,5 @@
 #include <math.h>
-void ContactJacobian(double * CJ, double * q)
-{
+void ContactJacobian(double* CJ, double* q) {
   double t1;
   double t10;
   double t11;
@@ -93,4 +92,3 @@ void ContactJacobian(double * CJ, double * q)
     return;
   }
 }
-

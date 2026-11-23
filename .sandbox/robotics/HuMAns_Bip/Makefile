@@ -14,4 +14,3 @@ all : dummy.so
 dummy.so : $(OBJS)
 	gcc -shared $^ -o $@
 	$(RM) dummy.so
-

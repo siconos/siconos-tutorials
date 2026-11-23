@@ -18,26 +18,19 @@
 #
 
 import numpy as np
-
+from siconos.integrators import MoreauJeanOSI
 from siconos.modeling import (
-    LagrangianLinearTIDS,
-    LagrangianDS,
     BoundaryCondition,
-    NewtonImpactNSL,
-    LagrangianLinearTIR,
     Interaction,
+    LagrangianDS,
+    LagrangianLinearTIDS,
+    LagrangianLinearTIR,
+    NewtonImpactNSL,
     NonSmoothDynamicalSystem,
-    alias_t)
-
-from siconos.integrators import (
-    MoreauJeanOSI)
-from siconos.simulation import (
-    TimeDiscretisation,
-    TimeStepping)
-
-
-from siconos.nonsmooth_formulations import    LCP
-
+    alias_t,
+)
+from siconos.nonsmooth_formulations import LCP
+from siconos.simulation import TimeDiscretisation, TimeStepping
 
 # ==========================================================
 # Parameters
@@ -82,7 +75,7 @@ ball = LagrangianLinearTIDS(q0, v0, M, alias_t)
 weight = np.zeros(nDof, dtype=np.float64)
 weight[0] = -m * g
 
-ball.setConstantFext(weight, alias_t )
+ball.setConstantFext(weight, alias_t)
 
 # ==========================================================
 # Moving plane
@@ -102,11 +95,10 @@ movingplane.setConstantFext(weight, alias_t)
 # Boundary condition
 # ==========================================================
 
+
 def prescribed_velocity(time, result):
-    result[:]=  np.array(
-        [2.0 + np.cos(0.5 * np.pi * time)]
-    )
-    
+    result[:] = np.array([2.0 + np.cos(0.5 * np.pi * time)])
+
 
 bc = BoundaryCondition([0])
 
@@ -116,8 +108,6 @@ bc.computePrescribedVelocity(2.0)
 
 print(bc.prescribedVelocity)
 movingplane.setBoundaryConditions(bc)
-
-
 
 
 # ==========================================================
@@ -164,7 +154,7 @@ simu = TimeStepping(nsds, td, osi, osnspb)
 
 N = int(np.ceil((T - t0) / h))
 
-data = np.zeros((N , 12))
+data = np.zeros((N, 12))
 
 q = ball.q()
 v = ball.velocity()
@@ -190,7 +180,7 @@ k += 1
 # ==========================================================
 
 while simu.hasNextEvent() and k < N:
-    if k%100 == 0 :
+    if k % 100 == 0:
         print("step:", k)
     simu.computeOneStep()
 
@@ -217,27 +207,26 @@ np.savetxt("BallOnMovingPlane_py.dat", data[:k])
 
 import matplotlib.pyplot as plt
 
-#
 plt.subplot(411)
 plt.title("position")
-plt.plot(data[:, 0], data[:, 1], label='position ball')
-plt.plot(data[:, 0], data[:, 7], label='position plane')
+plt.plot(data[:, 0], data[:, 1], label="position ball")
+plt.plot(data[:, 0], data[:, 7], label="position plane")
 plt.legend()
 plt.grid()
 plt.subplot(412)
 plt.title("velocity")
-plt.plot(data[:, 0], data[:, 2], label='velocity ball')
-plt.plot(data[:, 0], data[:, 8], label='velocity plane')
+plt.plot(data[:, 0], data[:, 2], label="velocity ball")
+plt.plot(data[:, 0], data[:, 8], label="velocity plane")
 plt.grid()
 plt.legend()
 plt.subplot(413)
 plt.title("lambda")
-plt.plot(data[:, 0], data[:, 4], label='lambda')
+plt.plot(data[:, 0], data[:, 4], label="lambda")
 plt.grid()
 plt.legend()
 plt.subplot(414)
 plt.title("reaction to boundary conditions")
-plt.plot(data[:, 0], data[:, 11], label='reaction to boundary conditions')
+plt.plot(data[:, 0], data[:, 11], label="reaction to boundary conditions")
 plt.grid()
 plt.legend()
 plt.show()

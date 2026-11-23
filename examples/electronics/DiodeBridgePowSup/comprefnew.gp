@@ -1,14 +1,14 @@
 #----------------------------------------------------------------------------------
 # File enabling the comparison in gnuplot between :
 #    - reference results from SICONOS "DiodeBridgePowSupTRAP1us.dat".
-#      
-#    - recent results from SICONOS  "DiodeBridgePowSup.dat" 
+#
+#    - recent results from SICONOS  "DiodeBridgePowSup.dat"
 #      obtained with a new version of SICONOS and the DiodeBridgePowSup.cpp
 #      sample with theta = 0.5 (trapezoidal integration) and a
 #      time step of 1 us.
 #
 # Displayed results are :
-#    - the supply voltage 
+#    - the supply voltage
 #    - the current through two diodes of the bridge
 #    - the voltage across the resistor
 #
@@ -22,7 +22,7 @@ heightoff = 0.2
 winratio = 1.0
 winheight = basheight*winratio
 
-set lmargin 8 
+set lmargin 8
 set bmargin 0
 set tmargin 0
 
@@ -32,7 +32,7 @@ set xzeroaxis
 set format x ""
 set xrange[3e-6:1.5e-3]
 
-set mxtics 
+set mxtics
 set grid xtics
 set grid mxtics
 
@@ -68,4 +68,3 @@ plot\
   "DiodeBridgePowSup.dat"        u 1:(-($5 + $6)) t    "resistor voltage , SICONOS new TRAP 1us" w l
 
 set nomultiplot
-

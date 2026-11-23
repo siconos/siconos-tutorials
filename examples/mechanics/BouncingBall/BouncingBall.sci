@@ -14,7 +14,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//	
+//
 
 exec '../../Front-End/scilab/loaderSiconos.sce';
 
@@ -40,7 +40,7 @@ errcatch(998,'continue');
 sicLoadModel('./BouncingBall_TIDS_sci.xml');
 sicInitSimulation();
 
-k = sicTimeGetK(); 
+k = sicTimeGetK();
 N = sicTimeGetN();
 
 arc=InitDrawBall(1,1,0.1);
@@ -49,15 +49,15 @@ winId=waitbar('Siconos Computation');
 
 dixpc=0;
 
-while k < N do 
+while k < N do
 
   // transfer of state i+1 into state i and time incrementation
   sicSTNextStep();
-  
+
   // get current time step
   k = sicTimeGetK();
 
-  // solve ... 
+  // solve ...
   sicSTComputeFreeState();
   sicSTcomputePb();
 
@@ -70,16 +70,12 @@ while k < N do
    waitbar(k/N,winId);
    dixpc=0;
  end
- 
+
   Qx(1,k+1)=sicModelgetQ(0,0);
   Qy(1,k+1)=0;
   Time(k+1)=k*sicTimeGetH();
   DrawBall(arc,1,Qx(1,k+1),Qy(1,k+1));
-  
-end   
+
+end
 
 endfunction
-
-
-
-

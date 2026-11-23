@@ -18,4 +18,3 @@ getri() function.
 
 Otherwise the command line is still :
 siconos --plugin_dir RX90Plugin RX90CircleED.cpp
-

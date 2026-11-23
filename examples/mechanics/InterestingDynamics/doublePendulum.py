@@ -3,14 +3,13 @@
 #
 # Example of a double pendulum
 #
+from math import pi
+
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
 from siconos.mechanics.collision.tools import Contactor
-
-
-from math import pi
 
 # length of first branch
 l1 = 30
@@ -31,7 +30,7 @@ r1 = 1
 r2 = 1
 
 # gap between ball branch to avoid friction
-gap = 0.
+gap = 0.0
 
 # gap between ground
 hgap = 0.1
@@ -43,75 +42,99 @@ bz = 2
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
-    #
-    io.add_primitive_shape('Arm1', 'Cylinder', (.3, l1))
-    io.add_primitive_shape('Arm2', 'Cylinder', (.3, l2))
-    io.add_primitive_shape('Mass1', 'Sphere', (r1,))
-    io.add_primitive_shape('Mass2', 'Sphere', (r2,))
+    io.add_primitive_shape("Arm1", "Cylinder", (0.3, l1))
+    io.add_primitive_shape("Arm2", "Cylinder", (0.3, l2))
+    io.add_primitive_shape("Mass1", "Sphere", (r1,))
+    io.add_primitive_shape("Mass2", "Sphere", (r2,))
 
     # Definition of the ground shape
-    io.add_primitive_shape('Ground', 'Box', (100, 100, .5))
+    io.add_primitive_shape("Ground", "Box", (100, 100, 0.5))
 
     # the brick shape
-    io.add_primitive_shape('Brick', 'Box', (bx, by, bz))
+    io.add_primitive_shape("Brick", "Box", (bx, by, bz))
 
     # Definition of a non smooth law. As no group ids are specified it
     # is between contactors of group id 0.
-    io.add_Newton_impact_friction_nsl('contact', mu=0.1)
+    io.add_Newton_impact_friction_nsl("contact", mu=0.1)
 
     # first branch + first mass the center of gravity is at the center of the
     # Mass1
-    io.add_object('arm1', [Contactor('Mass1'),
-                           Contactor('Arm1',
-                                     relative_translation=[0, r1 + l1 / 2., 0])],
-                  translation=[0, 0, r2 + gap + r2 + l2 + r1 + hgap],
-                  orientation=((1, 0, 0), pi / 2),
-                  mass=m1)
+    io.add_object(
+        "arm1",
+        [
+            Contactor("Mass1"),
+            Contactor("Arm1", relative_translation=[0, r1 + l1 / 2.0, 0]),
+        ],
+        translation=[0, 0, r2 + gap + r2 + l2 + r1 + hgap],
+        orientation=((1, 0, 0), pi / 2),
+        mass=m1,
+    )
 
     # second branch + second mass
-    io.add_object('arm2', [Contactor('Mass2'),
-                           Contactor('Arm2',
-                                     relative_translation=[0, r2 + l2 / 2., 0])],
-                  translation=[0, 0, r2 + gap],
-                  orientation=((1, 0, 0), pi / 2),
-                  velocity=[0, 20, 0, 0, 0, 0],
-                  mass=m2)
+    io.add_object(
+        "arm2",
+        [
+            Contactor("Mass2"),
+            Contactor("Arm2", relative_translation=[0, r2 + l2 / 2.0, 0]),
+        ],
+        translation=[0, 0, r2 + gap],
+        orientation=((1, 0, 0), pi / 2),
+        velocity=[0, 20, 0, 0, 0, 0],
+        mass=m2,
+    )
 
-    io.add_joint('joint1', 'arm1', 'arm2',
-                 points=[[0, 0, -r1]],
-                 axes=[[1, 0, 0]],
-                 joint_class='PivotJointR', absolute=False)
+    io.add_joint(
+        "joint1",
+        "arm1",
+        "arm2",
+        points=[[0, 0, -r1]],
+        axes=[[1, 0, 0]],
+        joint_class="PivotJointR",
+        absolute=False,
+    )
 
-    io.add_joint('joint2', 'arm1',
-                 points=[[0, r2 + gap + r2 + l2 + r1 + hgap + l1, 0]],
-                 axes=[[1, 0, 0]],
-                 joint_class='PivotJointR', absolute=False)
+    io.add_joint(
+        "joint2",
+        "arm1",
+        points=[[0, r2 + gap + r2 + l2 + r1 + hgap + l1, 0]],
+        axes=[[1, 0, 0]],
+        joint_class="PivotJointR",
+        absolute=False,
+    )
 
     # a brick wall
-    H = 3   # height
-    L = 2   # length
-    for k in range(0, H - 1):
-        for n in range(0, L):
-            io.add_object('brick{0}'.format(k + n * H),
-                          [Contactor('Brick')],
-                          translation=[n * bx - L * bx / 2. + (k % 2) * bx / 2.,
-                                       -5,
-                                       k * bz + bz / 2.], mass=2)
+    H = 3  # height
+    L = 2  # length
+    for k in range(H - 1):
+        for n in range(L):
+            io.add_object(
+                f"brick{k + n * H}",
+                [Contactor("Brick")],
+                translation=[
+                    n * bx - L * bx / 2.0 + (k % 2) * bx / 2.0,
+                    -5,
+                    k * bz + bz / 2.0,
+                ],
+                mass=2,
+            )
 
     k = H - 1
     for n in range(1, L):
-        io.add_object('brick{0}'.format(k + n * H),
-                      [Contactor('Brick')],
-                      translation=[n * bx - L * bx / 2. + (k % 2) * bx / 2.,
-                                   -5,
-                                   k * bz + bz / 2.], mass=2)
+        io.add_object(
+            f"brick{k + n * H}",
+            [Contactor("Brick")],
+            translation=[
+                n * bx - L * bx / 2.0 + (k % 2) * bx / 2.0,
+                -5,
+                k * bz + bz / 2.0,
+            ],
+            mass=2,
+        )
 
     # the ground object made with the ground shape. As the mass is
     # not given, it is a static object only involved in contact
     # detection.
-    io.add_object('ground', [Contactor('Ground')],
-                  translation=[0, 0, -.25])
+    io.add_object("ground", [Contactor("Ground")], translation=[0, 0, -0.25])
 
 test = True
 if test == True:
@@ -130,5 +153,5 @@ run_options["h"] = hstep
 # Run the simulation from the inputs previously defined and add
 # results to the hdf5 file. The visualisation of the output may be done
 # with the vview command.
-with MechanicsHdf5Runner(mode='r+') as io:
+with MechanicsHdf5Runner(mode="r+") as io:
     io.run(run_options)

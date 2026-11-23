@@ -30,7 +30,7 @@ the directory 'plugins'.
 Usage :
 
 
-siconos SimpleExampleRelay_with_plugin.py 
+siconos SimpleExampleRelay_with_plugin.py
 
 --> compile all C files in plugins dir and creates a library plugins.so
 
@@ -38,12 +38,13 @@ siconos SimpleExampleRelay_with_plugin.py
 """
 
 import sys
+
 import numpy as np
-import siconos.modeling as sm
 import siconos.integrators
+import siconos.modeling as sm
 import siconos.nonsmooth_formulations
-import siconos.simulation
 import siconos.plot_config as sicoplot
+import siconos.simulation
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)

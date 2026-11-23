@@ -1,13 +1,10 @@
 import numpy as np
-from mesh import *
-
 import siconos.plot_config as sicoplot
+from mesh import *
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)
-import matplotlib.animation as animation
 import matplotlib.tri as mtri
-from matplotlib import colors
 
 # print('coord', coord)
 # print('triangle', triangle)

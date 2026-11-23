@@ -25,18 +25,16 @@
 **
 */
 
-
-#include "stack-c.h"
 #include <string.h>
+
+#include "../LagrangianModel.h"
 #include "machine.h"
 #include "os_specific/link.h"
-#include "../LagrangianModel.h"
-
+#include "stack-c.h"
 
 #ifdef WINDOWS
-#define extern __declspec (dllexport)
+#define extern __declspec(dllexport)
 #endif
-
 
 /***************************************************
  * Declarations for Lagrangian gateway             *
@@ -48,16 +46,13 @@ extern int C2F(LagrangianGateway)();
  * Declarations for Lagrangian Model               *
  ***************************************************/
 
-extern int TagsInterface(char *fname);
-
+extern int TagsInterface(char* fname);
 
 /***************************************************
  * interfaces for Lagrangian Model
  ***************************************************/
 
-
-int TagsInterface(char *fname)
-{
+int TagsInterface(char* fname) {
   static int three = 3, ntags = NTAGS;
   static int n, nbis;
   static int q, T;
@@ -66,12 +61,11 @@ int TagsInterface(char *fname)
   static int minlhs = 1, minrhs = 1, maxlhs = 1, maxrhs = 1;
 
   /*   Check rhs and lhs   */
-  CheckRhs(minrhs, maxrhs) ;
-  CheckLhs(minlhs, maxlhs) ;
+  CheckRhs(minrhs, maxrhs);
+  CheckLhs(minlhs, maxlhs);
 
   GetRhsVar(1, "d", &n, &nbis, &q);
-  if (n * nbis != NDOF)
-  {
+  if (n * nbis != NDOF) {
     sciprint("Wrong size!\r\n");
     Error(999);
     return 0;
@@ -85,24 +79,19 @@ int TagsInterface(char *fname)
   return 0;
 }
 
-
 /***************************************************
  * Gateways for Scilab
  ***************************************************/
 
-typedef int (*gate_function)(char *);
+typedef int (*gate_function)(char*);
 
-extern int sci_gateway(char *name, gate_function f);
+extern int sci_gateway(char* name, gate_function f);
 
-int C2F(LagrangianGateway)()
-{
-  gate_function function[] = {TagsInterface
-                             };
-  char *name[] = {"Tags"
-                 };
+int C2F(LagrangianGateway)() {
+  gate_function function[] = {TagsInterface};
+  char* name[] = {"Tags"};
 
   Rhs = Max(0, Rhs);
   sci_gateway(name[Fin - 1], function[Fin - 1]);
   return 0;
 }
-

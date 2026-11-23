@@ -27,7 +27,7 @@
 #define __ActuationModel_SomeDefinitions_hpp
 
 #ifdef WINDOWS
-#define extern __declspec (dllexport)
+#define extern __declspec(dllexport)
 #endif
 
 /**
@@ -37,9 +37,9 @@
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void setTrajectoryName(char *trajectoryName);
+    void setTrajectoryName(char* trajectoryName);
 
 /**
  * set the name defining which contacts are desired during the trajectory
@@ -48,9 +48,9 @@ void setTrajectoryName(char *trajectoryName);
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void setTrajectoryContacts(char *trajectoryContacts);
+    void setTrajectoryContacts(char* trajectoryContacts);
 
 /**
  * set the key positions of the desired trajectory
@@ -61,10 +61,9 @@ void setTrajectoryContacts(char *trajectoryContacts);
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void setTrajectoryKeyPosition(double * trajectoryKeyPositions, int * size1, int * size2);
-
+    void setTrajectoryKeyPosition(double* trajectoryKeyPositions, int* size1, int* size2);
 
 /**
  * get the name of the trajectory
@@ -73,9 +72,9 @@ void setTrajectoryKeyPosition(double * trajectoryKeyPositions, int * size1, int 
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void getTrajectoryName(char *trajectoryName);
+    void getTrajectoryName(char* trajectoryName);
 
 /**
  * get the name defining which contacts are desired during the trajectory
@@ -84,9 +83,9 @@ void getTrajectoryName(char *trajectoryName);
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void getTrajectoryContacts(char *trajectoryContacts);
+    void getTrajectoryContacts(char* trajectoryContacts);
 
 /**
  * get the number of degrees of freedom
@@ -95,9 +94,9 @@ void getTrajectoryContacts(char *trajectoryContacts);
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void getNDOF(int *size);
+    void getNDOF(int* size);
 
 /**
  * get the number of key positions
@@ -106,9 +105,9 @@ void getNDOF(int *size);
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void getNumberOfKeyPositions(int *size);
+    void getNumberOfKeyPositions(int* size);
 
 /**
  * get the key positions of the desired trajectory
@@ -117,8 +116,8 @@ void getNumberOfKeyPositions(int *size);
  */
 extern
 #ifdef __cplusplus
-"C"
+    "C"
 #endif
-void getTrajectoryKeyPosition(double *trajectoryKeyPositions);
+    void getTrajectoryKeyPosition(double* trajectoryKeyPositions);
 
 #endif /* __ActuationModel_SomeDefinitions_hpp */

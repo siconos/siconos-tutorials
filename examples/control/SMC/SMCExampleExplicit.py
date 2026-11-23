@@ -17,20 +17,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from siconos.kernel import FirstOrderLinearDS
-from siconos.control.simulation import ControlZOHSimulation
-from siconos.control.sensor import LinearSensor
-from siconos.control.controller import ExplicitLinearSMC
-from numpy import eye, zeros, savetxt
-from math import ceil
-from matplotlib import rc
-import scipy
-from scipy import arange
-
 import distutils.spawn
+from math import ceil
+
+import scipy
+from matplotlib import rc
+from numpy import eye, savetxt, zeros
+from scipy import arange
+from siconos.control.controller import ExplicitLinearSMC
+from siconos.control.sensor import LinearSensor
+from siconos.control.simulation import ControlZOHSimulation
+from siconos.kernel import FirstOrderLinearDS
 
 if distutils.spawn.find_executable("latex"):
     rc("text", usetex=True)
+import sys
+
 import siconos.plot_config as sicoplot
 
 # Turn off interactive backend by default
@@ -44,7 +46,7 @@ h = 1.0e-4  # time step for simulation
 hControl = 1.0e-2  # time step for control
 Xinit = 1.0  # initial position
 theta = 0.5
-N = 2 * int(ceil((T - t0) / h))  # number of time steps
+N = 2 * ceil((T - t0) / h)  # number of time steps
 outputSize = 5  # number of variable to store at each time step
 
 # Matrix declaration
@@ -57,7 +59,7 @@ Brel = [[0], [2]]
 # Simple check
 if h > hControl:
     print("hControl must be bigger than h")
-    exit(1)
+    sys.exit(1)
 
 # Declaration of the Dynamical System
 processDS = FirstOrderLinearDS(x0, A)

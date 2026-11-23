@@ -27,19 +27,20 @@
 //
 // Modifications:
 //
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
 #include <iostream>
 
 extern "C" {
 #include "NoDynamics.h"
 }
 
-SICONOS_EXPORT void actuationDynamics(double *t, double *q, double *qdot, double *z, double *state, int *NDOF, int *NCONT, int *z_size, double *zdot, double *torques)
-{
+SICONOS_EXPORT void actuationDynamics(double* t, double* q, double* qdot, double* z,
+                                      double* state, int* NDOF, int* NCONT, int* z_size,
+                                      double* zdot, double* torques) {
   controlLaw(t, q, qdot, NDOF, NCONT, torques);
   zdot = 0;
 }

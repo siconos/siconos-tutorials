@@ -17,15 +17,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from siconos.kernel import FirstOrderLinearDS, getMatrix, SiconosMatrix
-from siconos.control.simulation import ControlZOHSimulation
-from siconos.control.sensor import LinearSensor
-from siconos.control.controller import LinearSMCOT2
-
-from numpy import eye, zeros, savetxt
-from numpy.linalg import norm
+import sys
 from math import ceil
+
 import siconos.plot_config as sicoplot
+from numpy import eye, savetxt, zeros
+from numpy.linalg import norm
+from siconos.control.controller import LinearSMCOT2
+from siconos.control.sensor import LinearSensor
+from siconos.control.simulation import ControlZOHSimulation
+from siconos.kernel import FirstOrderLinearDS, SiconosMatrix, getMatrix
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)
@@ -38,7 +39,7 @@ h = 1.0e-4  # time step for simulation
 hControl = 1.0e-2  # time step for control
 Xinit = 1.0  # initial position
 theta = 0.5
-N = 2 * int(ceil((T - t0) / h))  # number of time steps
+N = 2 * ceil((T - t0) / h)  # number of time steps
 outputSize = 5  # number of variable to store at each time step
 
 # Matrix declaration
@@ -51,7 +52,7 @@ Brel = [[0], [2]]
 # Simple check
 if h > hControl:
     print("hControl must be bigger than h")
-    exit(1)
+    sys.exit(1)
 
 # Declaration of the Dynamical System
 processDS = FirstOrderLinearDS(x0, A)
@@ -96,7 +97,7 @@ plt.savefig("ismcOT2_x_u")
 
 plt.subplot(211)
 p1 = plt.plot(dataPlot[:, 0], dataPlot[:, 2])
-plt.ylabel("$\sigma$")
+plt.ylabel(r"$\sigma$")
 plt.xlabel("t")
 plt.grid()
 plt.subplot(212)

@@ -15,13 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import meshio
+import argparse
 import os
 import os.path
-import numpy as np
-import argparse
-from pathlib import Path
 from importlib import util
+from pathlib import Path
+
+import meshio
+import numpy as np
 
 parser = argparse.ArgumentParser(
     description="Postprocess siconos simulation results to generate vtk files"
@@ -53,63 +54,57 @@ def print_meshio_prepost(*args, **kwargs):
 
 def create_Meshcpp_for_siconos(mesh, filename):
 
-    f = open(os.path.splitext(filename)[0] + ".cpp", "w")
+    with open(os.path.splitext(filename)[0] + ".cpp", "w") as f:
+        f.write("#include <Mesh.hpp>\n")
 
-    f.write("#include <Mesh.hpp>\n")
+        f.write("static Mesh * createMesh()\n{\n")
 
-    f.write("static Mesh * createMesh()\n{\n")
+        p_cnt = 0
+        f.write("std::vector<MeshVertex *> vertices;\n")
 
-    p_cnt = 0
-    f.write("std::vector<MeshVertex *> vertices;\n")
-
-    for p in mesh.points:
-        f.write(
-            "vertices.push_back(new MeshVertex({0}, {1}, {2}, {3}));\n".format(
-                p_cnt, p[0], p[1], p[2]
-            )
-        )
-        p_cnt = p_cnt + 1
-
-    f.write("std::vector<MeshElement *> elements;\n")
-    e_cnt = 0
-    dim = 0
-    for mc in mesh.cells:
-        # print("mc.type", mc.type)
-        for me in mc[1]:
-            # print("me nodes:" ,me)
-            str_v = "{"
-            for p in me:
-                str_v += "vertices[{0}],".format(p)
-
-                p_cnt = p_cnt + 1
-            str_v += "}"
-            # print(str_v)
-            f.write("std::vector<MeshVertex *> vertices{0} = {1};\n".format(e_cnt, str_v))
-
-            if mc.type == "triangle":
-                type = 2
-                dim = max(dim, 2)
-            elif mc.type == "line":
-                type = 1
-                dim = max(dim, 1)
-            elif mc.type == "vertex":
-                type = 15
-                dim = max(dim, 0)
-            elif mc.type == "tetra":
-                type = 4
-                dim = max(dim, 3)
+        for p in mesh.points:
             f.write(
-                "elements.push_back(new MeshElement({0}, {1}, vertices{2}));\t".format(
-                    e_cnt, type, e_cnt
-                )
+                f"vertices.push_back(new MeshVertex({p_cnt}, {p[0]}, {p[1]}, {p[2]}));\n"
             )
+            p_cnt = p_cnt + 1
 
-            e_cnt = e_cnt + 1
+        f.write("std::vector<MeshElement *> elements;\n")
+        e_cnt = 0
+        dim = 0
+        for mc in mesh.cells:
+            # print("mc.type", mc.type)
+            for me in mc[1]:
+                # print("me nodes:" ,me)
+                str_v = "{"
+                for p in me:
+                    str_v += f"vertices[{p}],"
 
-    f.write("Mesh * m =    new Mesh({0}, vertices, elements);\n".format(dim))
+                    p_cnt = p_cnt + 1
+                str_v += "}"
+                # print(str_v)
+                f.write(f"std::vector<MeshVertex *> vertices{e_cnt} = {str_v};\n")
 
-    f.write("return m;\n }; \n ")
-    f.close()
+                if mc.type == "triangle":
+                    type = 2
+                    dim = max(dim, 2)
+                elif mc.type == "line":
+                    type = 1
+                    dim = max(dim, 1)
+                elif mc.type == "vertex":
+                    type = 15
+                    dim = max(dim, 0)
+                elif mc.type == "tetra":
+                    type = 4
+                    dim = max(dim, 3)
+                f.write(
+                    f"elements.push_back(new MeshElement({e_cnt}, {type}, vertices{e_cnt}));\t"
+                )
+
+                e_cnt = e_cnt + 1
+
+        f.write(f"Mesh * m =    new Mesh({dim}, vertices, elements);\n")
+
+        f.write("return m;\n }; \n ")
 
 
 mesh = meshio.read(
@@ -177,7 +172,7 @@ for i in range(n_samples):
 
     # print('point_data[u]', point_data['u'])
 
-    foutput = "./vtk/" + "{0}_{1:03d}.vtk".format(args.simulation_name, i)
+    foutput = "./vtk/" + f"{args.simulation_name}_{i:03d}.vtk"
     print_meshio_prepost("output displacement in vtk format in ", foutput)
     meshio.write_points_cells(
         foutput,
@@ -188,4 +183,3 @@ for i in range(n_samples):
         # cell_data=cell_data,
         # field_data=field_data
     )
-

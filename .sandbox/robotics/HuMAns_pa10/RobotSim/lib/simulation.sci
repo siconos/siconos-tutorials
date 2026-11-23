@@ -1,5 +1,5 @@
 function[reached,vL]=robotLimits(v,vmax)
- 
+
  ndof=pa10Ndof();
  vmin=-vmax;
  [vL,zmax] = min(v,vmax);
@@ -8,10 +8,10 @@ function[reached,vL]=robotLimits(v,vmax)
  limits=sum(zmax)+sum(zmin);
  if (limits==2*ndof) then
 	reached=%F;
-else	
+else
 	reached=%T;
 end
-	
+
 endfunction
 
 //
@@ -52,9 +52,7 @@ end;
 
 // Time incrementation,
  t=t+GLOBAL_DT;
- 
+
 end; // while
 
 endfunction
-
-

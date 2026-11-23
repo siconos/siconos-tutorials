@@ -17,11 +17,10 @@
 #
 
 import numpy as np
-
-from siconos.mechanics.collision.tools import Contactor
-from siconos.io.mechanics_run import MechanicsHdf5Runner
 import siconos.modeling as sm
 import siconos.numerics as sn
+from siconos.io.mechanics_run import MechanicsHdf5Runner
+from siconos.mechanics.collision.tools import Contactor
 
 np.set_printoptions(precision=3)
 
@@ -39,7 +38,6 @@ np.set_printoptions(precision=3)
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of two bars connected by a prismatic joint
     io.add_primitive_shape("Bar", "Box", (1, 0.1, 0.1))
     io.add_object(
@@ -64,7 +62,7 @@ with MechanicsHdf5Runner() as io:
     io.add_object("ground", [Contactor("Ground")], [0, 0, -0.05])
 
 
-class Ctrl(object):
+class Ctrl:
     def initialize(self, io):
         self.count = 0
         self.topo = io._nsds.topology()

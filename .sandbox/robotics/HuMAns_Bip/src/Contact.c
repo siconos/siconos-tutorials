@@ -1,7 +1,7 @@
-#include "LagrangianModel.h"
 #include <math.h>
-void Contact(CC, q)
-double CC[69];
+
+#include "LagrangianModel.h"
+void Contact(CC, q) double CC[69];
 double q[21];
 {
   double t1;
@@ -685,4 +685,3 @@ double q[21];
     return;
   }
 }
-

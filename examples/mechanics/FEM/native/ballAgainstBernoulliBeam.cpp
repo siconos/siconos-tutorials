@@ -115,7 +115,8 @@ int main(int argc, char* argv[]) {
     initialGap(0) = 0;
     initialGap(1) = -4.0;
     initialGap(0) = 0;
-    auto relation_bb = std::make_shared<siconos::modeling::LagrangianLinearTIR>(H_bb, initialGap);
+    auto relation_bb =
+        std::make_shared<siconos::modeling::LagrangianLinearTIR>(H_bb, initialGap);
     auto inter_bb = std::make_shared<siconos::modeling::Interaction>(nslaw, relation_bb);
 
     // ------- NSDS -------
@@ -162,13 +163,12 @@ int main(int argc, char* argv[]) {
 
     auto start = std::chrono::system_clock::now();
 
-    siconos::mechanics::fem::prepareWriteBeamPositionforSOFA(SOFAfilename+ ".state");
+    siconos::mechanics::fem::prepareWriteBeamPositionforSOFA(SOFAfilename + ".state");
 
-    siconos::mechanics::fem::writeBeamPositionforSOFA(*mesh, *beam->FEModel(), q, SOFAfilename+ ".state",
-                                                      0);
+    siconos::mechanics::fem::writeBeamPositionforSOFA(*mesh, *beam->FEModel(), q,
+                                                      SOFAfilename + ".state", 0);
     siconos::mechanics::fem::prepareWriteBlockPositionforSOFA(SOFAfilename + "_block.state");
     siconos::mechanics::fem::writeBlockPositionforSOFA(q0, SOFAfilename + "_block.state", 0);
-
 
     siconos::algebra::SiconosDenseMatrix pos{N + 1, 10};
     int vcnt = 0;
@@ -192,7 +192,7 @@ int main(int argc, char* argv[]) {
       siconos::algebra::print(q);
       siconos::algebra::print(qball);
       siconos::mechanics::fem::writeBeamPositionforSOFA(*mesh, *beam->FEModel(), q,
-                                                        SOFAfilename+ ".state", k * 0.01);
+                                                        SOFAfilename + ".state", k * 0.01);
       siconos::mechanics::fem::writeBlockPositionforSOFA(qball, SOFAfilename + "_block.state",
                                                          k * 0.01);
       s->nextStep();
@@ -210,8 +210,8 @@ int main(int argc, char* argv[]) {
                                 siconos::algebra::io::WriteType::nodim);
 
     double error = 0.0, eps = 1e-10;
-    if ((error = siconos::algebra::io::compareRefFile(
-             dataPlot, "ballAgainstBernoulliBeam.ref", eps)) >= eps)
+    if ((error = siconos::algebra::io::compareRefFile(dataPlot, "ballAgainstBernoulliBeam.ref",
+                                                      eps)) >= eps)
       return 1;
 
     return 0;

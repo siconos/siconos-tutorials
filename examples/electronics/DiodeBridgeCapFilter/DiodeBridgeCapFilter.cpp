@@ -76,8 +76,8 @@ int main(int argc, char* argv[]) {
     Vector init_stateLS1{2};
     init_stateLS1 << VinitLS1, 0.;
 
-    auto LS1DiodeBridgeCapFilter =
-        std::make_shared<siconos::modeling::FirstOrderLinearDS>(init_stateLS1, siconos::algebra::alias_t);
+    auto LS1DiodeBridgeCapFilter = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        init_stateLS1, siconos::algebra::alias_t);
     Matrix LS1_A{2, 2};
     LS1_A.setZero();
     LS1_A(0, 1) = -1.0 / Cvalue;
@@ -89,8 +89,8 @@ int main(int argc, char* argv[]) {
     // --- Linear system 2 (load and filter) specification ---
     Vector init_stateLS2{1};
     init_stateLS2 << VinitLS2;
-    auto LS2DiodeBridgeCapFilter =
-        std::make_shared<siconos::modeling::FirstOrderLinearDS>(init_stateLS2, siconos::algebra::alias_t);
+    auto LS2DiodeBridgeCapFilter = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        init_stateLS2, siconos::algebra::alias_t);
     Matrix LS2_A{1, 1};
     LS2_A(0, 0) = -1.0 / (Rvalue * Cfilt);
     LS2DiodeBridgeCapFilter->setConstantA(LS2_A, siconos::algebra::alias_t);

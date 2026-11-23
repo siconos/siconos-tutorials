@@ -35,16 +35,15 @@ except ImportError:
     sys.exit(0)
 
 # Other import
-from siconos.kernel import FirstOrderLinearDS, getMatrix
-from siconos.control.simulation import ControlZOHSimulation
-from siconos.control.sensor import LinearSensor
-from siconos.control.controller import LinearSMCOT2
-
-from numpy import array, eye, zeros, savetxt
 from math import ceil
-from numpy.linalg import norm
 
 import siconos.plot_config as sicoplot
+from numpy import array, eye, savetxt, zeros
+from numpy.linalg import norm
+from siconos.control.controller import LinearSMCOT2
+from siconos.control.sensor import LinearSensor
+from siconos.control.simulation import ControlZOHSimulation
+from siconos.kernel import FirstOrderLinearDS, getMatrix
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)
@@ -90,7 +89,7 @@ Csurface = [[0, 1.0]]
 # Simple check
 if h > hControl:
     print("hControl must be bigger than h")
-    exit(1)
+    sys.exit(1)
 
 # Declaration of the Dynamical System
 processDS = MyFOLDS(x0, A)
@@ -136,7 +135,7 @@ plt.savefig("ismcOT2_x_u.png")
 
 # compare with the reference
 ref = getMatrix(SiconosMatrix("SMCExampleImplicitOT2-py.ref"))
-print("%19e" % norm(dataPlot - ref))
+print(f"{norm(dataPlot - ref):19e}")
 if norm(dataPlot - ref) > 1e-12:
     print(dataPlot - ref)
     print("Warning. The result is rather different from the reference file.")

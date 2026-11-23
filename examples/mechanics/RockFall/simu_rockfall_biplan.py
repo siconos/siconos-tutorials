@@ -16,24 +16,23 @@
 # limitations under the License.
 #
 #
-import numpy as np
+import argparse
+import random
 from pathlib import Path
 
-# siconos
-from siconos.mechanics.collision.tools import Contactor
-
+import siconos.integrators
 import siconos.io.rocks_generator as rg
-
-# from convexhull_modif import ConvexHull
-from siconos.mechanics.collision.bullet import SiconosBulletOptions
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-import siconos.numerics as sn
-import siconos.integrators
-import random
-import argparse
+
+# from convexhull_modif import ConvexHull
+from siconos.mechanics.collision.bullet import SiconosBulletOptions
+
+# siconos
+from siconos.mechanics.collision.tools import Contactor
 
 random.seed(42)
 ###############################################################################
@@ -42,9 +41,10 @@ random.seed(42)
 
 # Simu parameters---------------------------------------------------------------
 import os
+
 # time
 short_run = "SICONOS_EXAMPLES_SHORT_RUN" in os.environ
-time= 1.0 if short_run else 20.0
+time = 1.0 if short_run else 20.0
 
 
 # Soil param -------------------------------------------------------------------
@@ -123,16 +123,12 @@ class deleterock:
 
     def initialize(self, io):
         self._io = io
-        pass
 
     def call(self, step):
         print("call death hook at step", step)
-        positions = self._io._io.positions(self._io._nsds)
-        velocities = self._io._io.velocities(self._io._nsds)
         # list contact points
         contact_points = self._io._io.contactPoints(self._io._nsds, 1)
         if contact_points is not None:
-
             for cp in contact_points:
                 # print("cp", cp)
                 inter_id = int(cp[22])
@@ -140,26 +136,6 @@ class deleterock:
                 ds1_id = int(cp[23])
                 ds2_id = int(cp[24])
                 print("ds id :", ds1_id, ds2_id)
-                contact_normal = np.array([cp[7], cp[8], cp[9]])
-                contact_force = np.array([cp[10], cp[11], cp[12]])
-                fn = np.dot(contact_normal, contact_force)
-                ft = np.linalg.norm(
-                    contact_force
-                    - np.dot(contact_normal, contact_force) * contact_normal
-                )
-                # print("positions", positions)
-                # print("velocities", velocities)
-
-                # print("contact_normal", contact_normal)
-                # print("contact_force", contact_force)
-                # print("fn", fn)
-                # print("ft", ft)
-
-                # if np.linalg.norm(fn) > 0:
-                #     print("ft/fn", ft / fn)
-                # if np.isnan(velocities).any():
-                #     print("velocities", np.array(velocities)[:, ds1_id])
-                #     input()
 
                 """
                 if ds1_id == ds2_id:
@@ -229,25 +205,24 @@ class deleterock:
 ###############################################################################
 
 with MechanicsHdf5Runner(io_filename=args.output) as io:
-
     # soil ---------------------------------------------------------------------
     print("Resample Soil mask... \n")
-    for i in range(0, nb_zones):
+    for i in range(nb_zones):
         dem_file = mnt_file_prefix + str(zone_id[i]) + ".stl"
         # if i==1:
         # dem_file='mnt_2m_PR_simple_'+str(i)+'_mod.stl'
         # else:
         # dem_file='mnt_2m_PR_simple_'+str(i)+'.stl'
         mesh1 = io.add_mesh_from_file(
-            "dem_TIN_shape%d" % i,
+            f"dem_TIN_shape{i}",
             dem_file,
             scale=1,
             insideMargin=0.0,
             outsideMargin=0.0,
         )
         io.add_object(
-            "dem_TIN%d" % i,
-            [Contactor("dem_TIN_shape%d" % i, collision_group=i)],
+            f"dem_TIN{i}",
+            [Contactor(f"dem_TIN_shape{i}", collision_group=i)],
             translation=[0.0, 0.0, 0.0],
         )
 
@@ -255,9 +230,9 @@ with MechanicsHdf5Runner(io_filename=args.output) as io:
     rg.generate_random_blocks(io, drop_config, rock_config)
 
     # contact laws
-    for i in range(0, nb_zones):
+    for i in range(nb_zones):
         io.add_Newton_impact_rolling_friction_nsl(
-            "contact_soil_%d" % int(i),
+            f"contact_soil_{int(i)}",
             e=e_c[i - 1],
             mu=mu_c[i - 1],
             mu_r=mu_r_c[i - 1],
@@ -316,7 +291,6 @@ dr = deleterock()
 run_options["end_run_iteration_hook"] = dr
 
 with MechanicsHdf5Runner(mode="r+", io_filename=args.output) as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
 

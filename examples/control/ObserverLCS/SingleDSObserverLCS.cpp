@@ -118,7 +118,8 @@ int main(int argc, char* argv[]) {
     auto x0 = std::make_shared<Vector>(ndof);
     x0->setZero();
     (*x0)(0) = Vinit;
-    auto processObserver = std::make_shared<siconos::modeling::FirstOrderLinearDS>(*x0, siconos::algebra::alias_t);
+    auto processObserver = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        *x0, siconos::algebra::alias_t);
     processObserver->setConstantA(TildeA, siconos::algebra::alias_t);
     processObserver->setComputebVectorFunction(
         [](double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {

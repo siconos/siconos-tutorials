@@ -1,7 +1,7 @@
-#include "TaskFunctionDefinition.h"
 #include <math.h>
-void TaskFunction(T, q)
-double T[6];
+
+#include "TaskFunctionDefinition.h"
+void TaskFunction(T, q) double T[6];
 double q[6];
 {
   double t1;
@@ -57,10 +57,11 @@ double q[6];
     t46 = sin(t45);
     t48 = cos(t45);
     t50 = t21 * t26 * t46 + t38 * t48;
-    T[4] = 0.15 * t36 - 0.15 * t40 + 0.5E-1 * t2 * (t4 * (t10 * t50 - t6 * t24 * t46) + t9 * (-t6 * t50 - t10
-           * t24 * t46)) + 0.5E-1 * t18 * (-t38 * t26 * t46 + t21 * t48);
+    T[4] = 0.15 * t36 - 0.15 * t40 +
+           0.5E-1 * t2 *
+               (t4 * (t10 * t50 - t6 * t24 * t46) + t9 * (-t6 * t50 - t10 * t24 * t46)) +
+           0.5E-1 * t18 * (-t38 * t26 * t46 + t21 * t48);
     T[5] = -0.1 * t18 * t35 - 0.1 * t2 * t38 * t24;
     return;
   }
 }
-

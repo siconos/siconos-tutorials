@@ -22,32 +22,30 @@
 //
 // @brief Compute the voltage required to follow the reference trajectory
 //
-#ifdef _WIN32 
-#define SICONOS_EXPORT extern "C" __declspec(dllexport) 
-#else 
-#define SICONOS_EXPORT extern "C" 
-#endif  
+#ifdef _WIN32
+#define SICONOS_EXPORT extern "C" __declspec(dllexport)
+#else
+#define SICONOS_EXPORT extern "C"
+#endif
+#include <boost/numeric/bindings/atlas/clapack.hpp>
+#include <boost/numeric/ublas/io.hpp>
 #include <iostream>
 #include <string>
 
-#include <boost/numeric/bindings/atlas/clapack.hpp>
-#include <boost/numeric/ublas/io.hpp>
-
 extern "C" {
-#include "Trajectory.h"
-#include "TaskFunctionDefinition.h"
-
 #include "LagrangianModel.h"
 #include "SomeDefinitions.h"
+#include "TaskFunctionDefinition.h"
+#include "Trajectory.h"
 }
 
 #include "KernelSomeDefinitions.hpp"
 #include "Utils.hpp"
 
-//#include "../../../LagrangianDynamics/Complete/util.hpp" //a mettre ailleurs un jour
+// #include "../../../LagrangianDynamics/Complete/util.hpp" //a mettre ailleurs un jour
 
-SICONOS_EXPORT void controlLaw(double * t, double * q, double * qdot, int * NDOF, int * NCONT, double * torques)
-{
+SICONOS_EXPORT void controlLaw(double* t, double* q, double* qdot, int* NDOF, int* NCONT,
+                               double* torques) {
   int ndof;
   int contacts;
   char lagrangianModelName[20] = "";
@@ -64,12 +62,10 @@ SICONOS_EXPORT void controlLaw(double * t, double * q, double * qdot, int * NDOF
   // Computation of the Lagrangian model
   ///////////////////////////////////////////
 
-
   matrix<double, column_major> M(*NDOF, *NDOF);
   vector<double> N(*NDOF);
 
-  if (strcmp(lagrangianModelName, "Human36") == 0)
-  {
+  if (strcmp(lagrangianModelName, "Human36") == 0) {
     double L[31];
     double addl[84];
     double mass;
@@ -78,15 +74,13 @@ SICONOS_EXPORT void controlLaw(double * t, double * q, double * qdot, int * NDOF
     GetTag2JointLengths(addl);
     InertiaH36(&(M(0, 0)), q, L, addl, mass);
     NLEffectsH36(&(N[0]), q, qdot, L, addl, mass);
-  }
-  else
-  {
+  } else {
     Inertia(&(M(0, 0)), q);
     NLEffects(&(N[0]), q, qdot);
   }
 
   //////////////////////////////////////////////////
-  //Additionnal forces
+  // Additionnal forces
   /////////////////////////////////////////////////
 
   vector<double> fAdditionnal(*NDOF);
@@ -114,7 +108,7 @@ SICONOS_EXPORT void controlLaw(double * t, double * q, double * qdot, int * NDOF
 
   trajectory(t, &(sDesired[0]), &(sdotDesired[0]), &(sddotDesired[0]), &contacts);
 
-  //v = Kp*(s_desiree-TaskFunction(q))+Kv*(sdot_desiree-H*qdot)-h+sddot_desiree;
+  // v = Kp*(s_desiree-TaskFunction(q))+Kv*(sdot_desiree-H*qdot)-h+sddot_desiree;
   vector<double> TF(*NDOF);
   vector<double> h(*NDOF);
   matrix<double, column_major> H(*NDOF, *NDOF);
@@ -125,29 +119,27 @@ SICONOS_EXPORT void controlLaw(double * t, double * q, double * qdot, int * NDOF
 
   double Kp = 100.0;
   double Kv = 30.0;
-  vector<double, array_adaptor<double> > tmp_cast(*NDOF, array_adaptor<double> (*NDOF, qdot));
+  vector<double, array_adaptor<double> > tmp_cast(*NDOF, array_adaptor<double>(*NDOF, qdot));
   sddotDesired += Kp * (sDesired - TF) + Kv * (sdotDesired - prod(H, tmp_cast)) - h;
 
   /////////////////////////////////////////////////////////////
   // Generalized Torques to make the realisation of the command
   /////////////////////////////////////////////////////////////
 
-  //qddot = inv(H)*v;
+  // qddot = inv(H)*v;
   vector<int> ipiv(*NDOF);
   boost::numeric::bindings::atlas::getrf(H, ipiv);
   boost::numeric::bindings::atlas::getri(H, ipiv);
   sddotDesired = prod(H, sddotDesired);
 
-  //D = M*qddot(ActiveDOF) + N + FAdditionnal;
+  // D = M*qddot(ActiveDOF) + N + FAdditionnal;
   sddotDesired = reduceVector(sddotDesired, activeDOF);
 
   N += prod(M, sddotDesired) + fAdditionnal;
 
-  //nmot = sum(ActiveDOF<=size(q, 1)); en fait ici nmot = ndof
-  //Torques = zeros(q);
-  //Torques(ActiveDOF(1:nmot)) = D(1:nmot);
-  for (int i = 0; i < *NDOF; i++)
-    torques[i] = 0;
+  // nmot = sum(ActiveDOF<=size(q, 1)); en fait ici nmot = ndof
+  // Torques = zeros(q);
+  // Torques(ActiveDOF(1:nmot)) = D(1:nmot);
+  for (int i = 0; i < *NDOF; i++) torques[i] = 0;
   expandVector(torques, N, activeDOF);
-
 }

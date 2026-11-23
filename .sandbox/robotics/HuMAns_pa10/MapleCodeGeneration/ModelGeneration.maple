@@ -1,30 +1,30 @@
 # Copyright (C) INRIA 1999-2005
-# 
+#
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 2 as published
 # by the Free Software Foundation.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
 # Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-# 
+#
 # Author(s): Pierre-Brice Wieber
 # Affiliation(s): INRIA, team BIPOP
 # Email(s): Pierre-Brice.Wieber@inria.fr
-# 
+#
 # Description:
-# 
+#
 # Modifications:
 # $Log: ModelGeneration.maple,v $
 # Revision 3.0.0.1  2005/02/08 13:06:01  rpissard
 # version start HuMAnS
 #
-# 
+#
 
 printf("        -------------------------------------------\n");
 printf("                        HuMAnS-1.0\n");
@@ -103,7 +103,7 @@ end:
 
 JacobianNLEffectsMatrix := proc()
 local nleffects, y;
-	
+
 	print(`NLEffects Jacobian`);
 	nleffects := NLEffectsVector():
 	y := convert(nleffects, matrix):
@@ -113,7 +113,7 @@ end:
 
 JacobianVelocityNLEffectsMatrix := proc()
 local nleffects, y;
-	
+
 	print(`NLEffects Velocity Jacobian`);
 	nleffects := NLEffectsVector():
 	y := convert(nleffects, matrix):
@@ -310,19 +310,19 @@ global q, qdot;
 	print(`Writing file "NLEffects.c"`):
 	NLEffects := makeproc(N, [N, q::array(1..vectdim(q)), qdot::array(1..vectdim(qdot))]):
 	C(NLEffects, optimized, filename="NLEffects.c"):
-	
+
 	NJ := JacobianNLEffectsMatrix():
 	print(`Writing file "JacobianNLEffects.c"`):
 	NJ := convert(transpose(NJ), vector):
 	JacobianQNLEffects := makeproc(NJ, [NJ, q::array(1..vectdim(q)), qdot::array(1..vectdim(qdot))]):
 	C(JacobianQNLEffects, optimized, filename="JacobianQNLEffects.c"):
-	
+
 	NVJ := JacobianVelocityNLEffectsMatrix():
 	print(`Writing file "JacobianVNLEffects.c"`):
 	NVJ := convert(transpose(NVJ), vector):
 	JacobianVNLEffects := makeproc(NVJ, [NVJ, q::array(1..vectdim(q)), qdot::array(1..vectdim(qdot))]):
 	C(JacobianVNLEffects, optimized, filename="JacobianVNLEffects.c"):
-	
+
 
 	CC := ContactVector():
 	print(`Writing file "Contact.c"`):
@@ -342,4 +342,3 @@ global q, qdot;
 	ContactJacobian := makeproc(CJ, [CJ, q::array(1..vectdim(q))]):
 	C(ContactJacobian, optimized, filename="ContactJacobian.c"):
 end:
-

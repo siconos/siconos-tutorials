@@ -71,7 +71,7 @@ static float circcoords[Ne][2];
 void BodiesViewer::initUCircle() {
   int i;
 
-  GLUquadricObj *q = gluNewQuadric();
+  GLUquadricObj* q = gluNewQuadric();
   gluQuadricNormals(q, GLU_TRUE);
   gluQuadricTexture(q, GLU_TRUE);
 
@@ -241,7 +241,7 @@ void BodiesViewer::drawCircleTicks(float x, float y, float a, float r) {
   glPopMatrix();
 }
 
-void BodiesViewer::drawDiskTicks(float x, float y, float a, float r, float *c) {
+void BodiesViewer::drawDiskTicks(float x, float y, float a, float r, float* c) {
   float cl[3];
   cl[0] = c[0] * .4;
   cl[1] = c[0] * .4;
@@ -264,7 +264,7 @@ void BodiesViewer::drawSimpleCircle(float x, float y, float r) {
   glPopMatrix();
 }
 
-void BodiesViewer::drawCircle(float x, float y, float a, float r, float *c) {
+void BodiesViewer::drawCircle(float x, float y, float a, float r, float* c) {
   glPushMatrix();
   glColor3f(0., 0., 0.);
   drawCircleTicks(x, y, a, r);
@@ -277,7 +277,7 @@ void BodiesViewer::drawCircle(float x, float y, float a, float r, float *c) {
   glPopMatrix();
 }
 
-void BodiesViewer::drawDisk(float x, float y, float a, float r, float *c) {
+void BodiesViewer::drawDisk(float x, float y, float a, float r, float* c) {
   float cl[3];
 
   glColor3fv(c);
@@ -317,21 +317,21 @@ void BodiesViewer::rotate(const float R[12]) {
 }
 
 void BodiesViewer::drawSphere(float x, float y, float z, float theta, float phi, float psi,
-                              float r, float *c) {
+                              float r, float* c) {
   float cl[3] = {0, 0, 0};
 
   float clg1[3] = {1, 0, 0};
   float clg2[3] = {0, 1, 0};
   float clg3[3] = {1, 1, 1};
 
-  GLUquadricObj *Disk1 = gluNewQuadric();
-  GLUquadricObj *Disk2 = gluNewQuadric();
+  GLUquadricObj* Disk1 = gluNewQuadric();
+  GLUquadricObj* Disk2 = gluNewQuadric();
 
-  GLUquadricObj *Diskphi = gluNewQuadric();
-  GLUquadricObj *Disktheta = gluNewQuadric();
-  GLUquadricObj *Diskpsi = gluNewQuadric();
+  GLUquadricObj* Diskphi = gluNewQuadric();
+  GLUquadricObj* Disktheta = gluNewQuadric();
+  GLUquadricObj* Diskpsi = gluNewQuadric();
 
-  GLUquadricObj *Sphere = gluNewQuadric();
+  GLUquadricObj* Sphere = gluNewQuadric();
 
   GLint slices = 10;  // number of slices around z-axis
   GLint stacks = 10;  // number of stacks along z-axis
@@ -384,9 +384,9 @@ void BodiesViewer::drawSphere(float x, float y, float z, float theta, float phi,
 }
 
 void BodiesViewer::drawSphere(float x, float y, float z, float a, float b, float c, float d,
-                              float r, float *color) {
-  GLUquadricObj *Sphere = gluNewQuadric();
-  GLUquadricObj *Disk1 = gluNewQuadric();
+                              float r, float* color) {
+  GLUquadricObj* Sphere = gluNewQuadric();
+  GLUquadricObj* Disk1 = gluNewQuadric();
 
   GLint slices = 10;  // number of slices around z-axis
   GLint stacks = 10;  // number of stacks along z-axis
@@ -418,12 +418,12 @@ void BodiesViewer::drawSphere(float x, float y, float z, float a, float b, float
   glPopMatrix();
 }
 
-void BodiesViewer::drawPolyg(unsigned int nvertices, double *coor, float *c) {
+void BodiesViewer::drawPolyg(unsigned int nvertices, double* coor, float* c) {
   float cl[3];
   cl[0] = c[0] * 1.5;
   cl[1] = c[0];
   cl[2] = c[0];
-  double *pcoor = coor;
+  double* pcoor = coor;
 
   glPushMatrix();
 
@@ -454,7 +454,7 @@ void BodiesViewer::drawPolyg(unsigned int nvertices, double *coor, float *c) {
   glPopMatrix();
 }
 
-void BodiesViewer::print(float x, float y, const char *s, int size) {
+void BodiesViewer::print(float x, float y, const char* s, int size) {
   qreal coor[3];
   int i, j, ps1, ps2;
   coor[0] = x;
@@ -483,7 +483,7 @@ void BodiesViewer::drawWithNames() {
   }
 }
 
-void BodiesViewer::postSelection(const QPoint &point) {
+void BodiesViewer::postSelection(const QPoint& point) {
   if (selectedName() == -1) {
     setManipulatedFrame(camera()->frame());
   } else {
@@ -492,8 +492,8 @@ void BodiesViewer::postSelection(const QPoint &point) {
   }
 }
 
-void BodiesViewer::drawQGLShape(const QGLShape &fig) {
-  DynamicalSystem *ds = fig.DS().get();
+void BodiesViewer::drawQGLShape(const QGLShape& fig) {
+  DynamicalSystem* ds = fig.DS().get();
   float c[3];
 
   switch (fig.shape()) {
@@ -537,8 +537,8 @@ void BodiesViewer::drawQGLShape(const QGLShape &fig) {
   };
 };
 
-void BodiesViewer::drawSelectedQGLShape(const QGLShape &fig) {
-  DynamicalSystem *ds = fig.DS().get();
+void BodiesViewer::drawSelectedQGLShape(const QGLShape& fig) {
+  DynamicalSystem* ds = fig.DS().get();
 
   float c[3], dFe, Cal;
 
@@ -609,7 +609,7 @@ void BodiesViewer::insertQGLShape(SHAPE f, auto ds) {
   shapes_.push_back(fig);
 }
 
-void BodiesViewer::mouseMoveEvent(QMouseEvent *e) {
+void BodiesViewer::mouseMoveEvent(QMouseEvent* e) {
   if (myMouseBehavior_) {
     qglviewer::Vec cpos = camera()->position();
 
@@ -667,7 +667,7 @@ void BodiesViewer::mouseMoveEvent(QMouseEvent *e) {
   }
 }
 
-void BodiesViewer::mousePressEvent(QMouseEvent *e) {
+void BodiesViewer::mousePressEvent(QMouseEvent* e) {
   if ((e->button() == Qt::LeftButton) && (e->modifiers() == Qt::NoButton))
     myMouseBehavior_ = true;
   else {
@@ -676,7 +676,7 @@ void BodiesViewer::mousePressEvent(QMouseEvent *e) {
   }
 }
 
-void BodiesViewer::mouseReleaseEvent(QMouseEvent *e) {
+void BodiesViewer::mouseReleaseEvent(QMouseEvent* e) {
   if (myMouseBehavior_) {
     myMouseBehavior_ = false;
 
@@ -692,7 +692,7 @@ void BodiesViewer::mouseReleaseEvent(QMouseEvent *e) {
   }
 }
 
-void BodiesViewer::keyPressEvent(QKeyEvent *e) {
+void BodiesViewer::keyPressEvent(QKeyEvent* e) {
   if ((e->key() == Qt::Key_T) && (e->modifiers() == Qt::NoButton)) {
     _transparency -= .01;
     _transparency = fmax(0., _transparency);
@@ -762,5 +762,5 @@ QString BodiesViewer::helpString() const {
 }
 
 #ifdef QT_INTERFACE
-BodiesViewer::BodiesViewer(QWidget *parent) : QGLViewer(parent) {};
+BodiesViewer::BodiesViewer(QWidget* parent) : QGLViewer(parent) {};
 #endif

@@ -25,7 +25,6 @@
 #include <SiconosMatrix.hpp>
 #include <SiconosVector.hpp>
 #include <StorageTools.hpp>
-#include <SiconosFEM.h>
 // #include <StressLinearTIR.hpp>
 #include <chrono>
 #include <cmath>  // for fabs
@@ -75,7 +74,7 @@ int main(int argc, char* argv[]) {
 
     // ------- Now the block -------
 
-    double R = 3;      // Ball radius
+    double R = 3;     // Ball radius
     double m1 = 300;  // Ball mass
     siconos::algebra::SiconosSparseMatrix mass{3, 3};
     mass.insert(0, 0) = m1;
@@ -115,11 +114,12 @@ int main(int argc, char* argv[]) {
     initialGap(0) = 0;
     initialGap(1) = -4.0;
     initialGap(0) = 0;
-    auto relation_bb = std::make_shared<siconos::modeling::LagrangianLinearTIR>(H_bb, initialGap);
+    auto relation_bb =
+        std::make_shared<siconos::modeling::LagrangianLinearTIR>(H_bb, initialGap);
     auto inter_bb = std::make_shared<siconos::modeling::Interaction>(nslaw, relation_bb);
 
     // ------- NSDS -------
-    double t0 = 0;     // initial computation time
+    double t0 = 0;       // initial computation time
     double T = 1.5e-02;  // final computation time
     auto beamNSDS = std::make_shared<siconos::modeling::NonSmoothDynamicalSystem>(t0, T);
     beamNSDS->insertDynamicalSystem(beam);
@@ -133,38 +133,36 @@ int main(int argc, char* argv[]) {
     // --- Plasticity Interaction ---
     // ------------------------------
 
-    double c = 8.0e7;  // Used only to specify elastic bounds
+    double c = 8.0e7;       // Used only to specify elastic bounds
     double phi = M_PI / 4;  // Not used at the moment
 
     auto nslawPlasticity =
         std::make_shared<siconos::modeling::MohrCoulombPlasticityNSL>(c, phi, nslawdimension);
 
-    siconos::algebra::SiconosDenseMatrix H{nslawdimension,beam->stressDimension()};
-    siconos::algebra::SiconosDenseMatrix Hminus{nslawdimension,beam->stressDimension()};
-    siconos::algebra::SiconosDenseMatrix H2{nslawdimension,beam->stressDimension()};
-    siconos::algebra::SiconosDenseMatrix Hminus2{nslawdimension,beam->stressDimension()};
+    siconos::algebra::SiconosDenseMatrix H{nslawdimension, beam->stressDimension()};
+    siconos::algebra::SiconosDenseMatrix Hminus{nslawdimension, beam->stressDimension()};
+    siconos::algebra::SiconosDenseMatrix H2{nslawdimension, beam->stressDimension()};
+    siconos::algebra::SiconosDenseMatrix Hminus2{nslawdimension, beam->stressDimension()};
 
     H.setZero();
     Hminus.setZero();
     int dimStressPerElement = 6;
     for (int elNum = 2; elNum < 3; elNum++) {
       H(0, elNum * dimStressPerElement + 5) = 1.0;
-      H(1, elNum * dimStressPerElement ) = 1.0;
+      H(1, elNum * dimStressPerElement) = 1.0;
       H(2, elNum * dimStressPerElement + 1) = 1.0;
       Hminus(0, elNum * dimStressPerElement + 5) = -1.0;
-      Hminus(1, elNum * dimStressPerElement ) = -1.0;
+      Hminus(1, elNum * dimStressPerElement) = -1.0;
       Hminus(2, elNum * dimStressPerElement + 1) = -1.0;
 
       auto relation = std::make_shared<siconos::mechanics::fem::StressLinearTIR>(H);
       auto inter = std::make_shared<siconos::modeling::Interaction>(nslawPlasticity, relation);
-      auto relationMinus =
-          std::make_shared<siconos::mechanics::fem::StressLinearTIR>(Hminus);
+      auto relationMinus = std::make_shared<siconos::mechanics::fem::StressLinearTIR>(Hminus);
       auto interMinus =
           std::make_shared<siconos::modeling::Interaction>(nslawPlasticity, relationMinus);
 
       beamNSDS->link(inter, beam);
       beamNSDS->link(interMinus, beam);
-
     }
 
     // ---------------------------

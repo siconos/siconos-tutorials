@@ -24,17 +24,16 @@
 // TrajectoryKeyPositions,
 //
 
-#include <iostream>
-#include <vector>
-#include <string>
-
 #include "ActuationModelSomeDefinitions.hpp"
+
+#include <iostream>
+#include <string>
+#include <vector>
 
 #ifdef boost_compil
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #endif
-
 
 /**
  * Global variable storing the number of actuators
@@ -57,7 +56,6 @@ std::string TRAJECTORYNAME;
  */
 std::string TRAJECTORYCONTACTS;
 
-
 /**
  * Global variable storing the desired key positions defining the trajectory
  *
@@ -66,35 +64,27 @@ std::string TRAJECTORYCONTACTS;
 #ifdef boost_compil
 boost::numeric::ublas::matrix<double> TRAJECTORYKEYPOSITIONS(0, 0);
 #else
-std::vector< std::vector<double> > TRAJECTORYKEYPOSITIONS(0);
+std::vector<std::vector<double> > TRAJECTORYKEYPOSITIONS(0);
 #endif
-
 
 /***********************************************
  *                 Setters                     *
  ***********************************************/
 
-void setNbActuators(int *nbActuators)
-{
-  NB_ACTUATORS = *nbActuators;
-}
+void setNbActuators(int* nbActuators) { NB_ACTUATORS = *nbActuators; }
 
-void setTrajectoryName(char * trajectoryName)
-{
-  if (!TRAJECTORYNAME.empty())
-  {
-    std::cout << "You are reinitializing TrajectoryName...\n" ;
+void setTrajectoryName(char* trajectoryName) {
+  if (!TRAJECTORYNAME.empty()) {
+    std::cout << "You are reinitializing TrajectoryName...\n";
     TRAJECTORYNAME.resize(strlen(trajectoryName));
   }
 
   TRAJECTORYNAME.replace(0, TRAJECTORYNAME.length(), trajectoryName);
 }
 
-void setTrajectoryContacts(char * trajectoryContacts)
-{
-  if (!TRAJECTORYCONTACTS.empty())
-  {
-    std::cout << "You are reinitializing TrajectoryContacts...\n" ;
+void setTrajectoryContacts(char* trajectoryContacts) {
+  if (!TRAJECTORYCONTACTS.empty()) {
+    std::cout << "You are reinitializing TrajectoryContacts...\n";
     TRAJECTORYCONTACTS.resize(strlen(trajectoryContacts));
   }
 
@@ -102,11 +92,9 @@ void setTrajectoryContacts(char * trajectoryContacts)
 }
 
 #ifdef boost_compil
-void setTrajectoryKeyPosition(double * trajectoryKeyPositions, int * size1, int * size2)
-{
-  if (TRAJECTORYKEYPOSITIONS.size1()*TRAJECTORYKEYPOSITIONS.size2() != 0)
-  {
-    std::cout << "You are reinitializing TrajectoryKeyPositions...\n" ;
+void setTrajectoryKeyPosition(double* trajectoryKeyPositions, int* size1, int* size2) {
+  if (TRAJECTORYKEYPOSITIONS.size1() * TRAJECTORYKEYPOSITIONS.size2() != 0) {
+    std::cout << "You are reinitializing TrajectoryKeyPositions...\n";
     TRAJECTORYKEYPOSITIONS.resize(0, 0);
   }
 
@@ -115,19 +103,16 @@ void setTrajectoryKeyPosition(double * trajectoryKeyPositions, int * size1, int 
     TRAJECTORYKEYPOSITIONS(i % (*size1), i / (*size1)) = trajectoryKeyPositions[i];
 }
 #else
-void setTrajectoryKeyPosition(double * trajectoryKeyPositions, int * size1, int * size2)
-{
-  if (TRAJECTORYKEYPOSITIONS.size() != 0)
-  {
-    std::cout << "You are reinitializing TrajectoryKeyPositions...\n" ;
+void setTrajectoryKeyPosition(double* trajectoryKeyPositions, int* size1, int* size2) {
+  if (TRAJECTORYKEYPOSITIONS.size() != 0) {
+    std::cout << "You are reinitializing TrajectoryKeyPositions...\n";
     for (unsigned int i = 0; i < TRAJECTORYKEYPOSITIONS.size(); i++)
       TRAJECTORYKEYPOSITIONS[i].resize(0);
     TRAJECTORYKEYPOSITIONS.resize(0);
   }
 
   TRAJECTORYKEYPOSITIONS.resize(*size1);
-  for (int i = 0; i < *size1; i++)
-  {
+  for (int i = 0; i < *size1; i++) {
     TRAJECTORYKEYPOSITIONS[i].resize(*size2);
     for (int j = 0; j < *size2; j++)
       TRAJECTORYKEYPOSITIONS[i][j] = trajectoryKeyPositions[i * (*size2) + j];
@@ -135,58 +120,40 @@ void setTrajectoryKeyPosition(double * trajectoryKeyPositions, int * size1, int 
 }
 #endif
 
-
 /***********************************************
  *                 Getters                     *
  ***********************************************/
 
-void getNbActuators(int *nbActuators)
-{
-  *nbActuators = NB_ACTUATORS ;
-}
+void getNbActuators(int* nbActuators) { *nbActuators = NB_ACTUATORS; }
 
-void getTrajectoryName(char * trajectoryName)
-{
+void getTrajectoryName(char* trajectoryName) {
   TRAJECTORYNAME.copy(trajectoryName, TRAJECTORYNAME.length());
 }
 
-void getTrajectoryContacts(char * trajectoryContacts)
-{
+void getTrajectoryContacts(char* trajectoryContacts) {
   TRAJECTORYCONTACTS.copy(trajectoryContacts, TRAJECTORYCONTACTS.length());
 }
 
 #ifdef boost_compil
-void getNDOF(int *size)
-{
-  *size = TRAJECTORYKEYPOSITIONS.size1();
-}
+void getNDOF(int* size) { *size = TRAJECTORYKEYPOSITIONS.size1(); }
 
-void getNumberOfKeyPositions(int * size)
-{
-  *size = TRAJECTORYKEYPOSITIONS.size2();
-}
+void getNumberOfKeyPositions(int* size) { *size = TRAJECTORYKEYPOSITIONS.size2(); }
 
-void getTrajectoryKeyPosition(double * trajectoryKeyPositions)
-{
-  for (unsigned int i = 0; i < TRAJECTORYKEYPOSITIONS.size1()*TRAJECTORYKEYPOSITIONS.size2(); i++)
-    trajectoryKeyPositions[i] = TRAJECTORYKEYPOSITIONS(i % (TRAJECTORYKEYPOSITIONS.size1()), i / (TRAJECTORYKEYPOSITIONS.size1()));
+void getTrajectoryKeyPosition(double* trajectoryKeyPositions) {
+  for (unsigned int i = 0; i < TRAJECTORYKEYPOSITIONS.size1() * TRAJECTORYKEYPOSITIONS.size2();
+       i++)
+    trajectoryKeyPositions[i] = TRAJECTORYKEYPOSITIONS(i % (TRAJECTORYKEYPOSITIONS.size1()),
+                                                       i / (TRAJECTORYKEYPOSITIONS.size1()));
 }
 #else
-void getNDOF(int *size)
-{
-  *size = TRAJECTORYKEYPOSITIONS.size();
-}
+void getNDOF(int* size) { *size = TRAJECTORYKEYPOSITIONS.size(); }
 
-void getNumberOfKeyPositions(int * size)
-{
-  *size = TRAJECTORYKEYPOSITIONS[0].size();
-}
+void getNumberOfKeyPositions(int* size) { *size = TRAJECTORYKEYPOSITIONS[0].size(); }
 
-void getTrajectoryKeyPosition(double * trajectoryKeyPositions)
-{
+void getTrajectoryKeyPosition(double* trajectoryKeyPositions) {
   for (unsigned int i = 0; i < TRAJECTORYKEYPOSITIONS.size(); i++)
     for (unsigned int j = 0; j < TRAJECTORYKEYPOSITIONS[0].size(); j++)
-      trajectoryKeyPositions[i * TRAJECTORYKEYPOSITIONS[0].size() + j] = TRAJECTORYKEYPOSITIONS[i][j];
+      trajectoryKeyPositions[i * TRAJECTORYKEYPOSITIONS[0].size() + j] =
+          TRAJECTORYKEYPOSITIONS[i][j];
 }
 #endif
-

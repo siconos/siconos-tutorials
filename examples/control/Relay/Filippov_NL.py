@@ -20,20 +20,20 @@
 #
 
 import sys
-from numpy import array, eye, empty, zeros, savetxt, loadtxt, linalg
-from siconos.kernel import (
-    FirstOrderLinearDS,
-    RelayNSL,
-    NonSmoothDynamicalSystem,
-    TimeDiscretisation,
-    TimeStepping,
-    EulerMoreauOSI,
-    Interaction,
-    Relay,
-)
 
 import MyNonLinearR
 import siconos.plot_config as sicoplot
+from numpy import array, empty, eye, linalg, loadtxt, savetxt, zeros
+from siconos.kernel import (
+    EulerMoreauOSI,
+    FirstOrderLinearDS,
+    Interaction,
+    NonSmoothDynamicalSystem,
+    Relay,
+    RelayNSL,
+    TimeDiscretisation,
+    TimeStepping,
+)
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)

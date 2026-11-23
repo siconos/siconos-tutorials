@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = 
+CFLAGS =
 LD = ld
 LDFLAGS = -i
 
@@ -15,7 +15,7 @@ all : ${LIB}
 
 ${LIB} : ${LIB_SRC}
 	${CC} -c ${CFLAGS} ${LIB_SRC} ${INCLUDES}
-	${LD} ${LDFLAGS} ${LIB_SRC:.c=.o} -o $@ 
+	${LD} ${LDFLAGS} ${LIB_SRC:.c=.o} -o $@
 
 clean :
 	rm -f ${LIB} ${LIB_SRC:.c=.o} *~

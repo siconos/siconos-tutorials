@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -15,18 +16,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import siconos.numerics as sn
-import siconos.nonsmooth_formulations
-import siconos.mechanics.collision.tools
 import siconos.io.mechanics_run
 import siconos.mechanics.collision.bullet
+import siconos.mechanics.collision.tools
+import siconos.nonsmooth_formulations
+import siconos.numerics as sn
 
 # A collection of box stacks for stress-testing Siconos solver with
 # chains of contacts.
 
 # Creation of the hdf5 file for input/output
 with siconos.io.mechanics_run.MechanicsHdf5Runner() as io:
-
     width, depth, height = 1, 1, 1
     io.add_primitive_shape("Box", "Box", [width, depth, height])
 
@@ -42,7 +42,7 @@ with siconos.io.mechanics_run.MechanicsHdf5Runner() as io:
                     x = (i - N / 2.0) * (width + sep) + X
                     y = (j - M / 2.0) * (depth + sep) + Y
                     io.add_object(
-                        "box%03d" % k,
+                        f"box{k:03d}",
                         [siconos.mechanics.collision.tools.Contactor("Box")],
                         translation=[x, y, z],
                         mass=1.0,

@@ -1,14 +1,14 @@
 // Copyright (C) INRIA 1999-2005
-// 
+//
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License version 2 as published
 // by the Free Software Foundation.
-// 
+//
 // This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
 // Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License along
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -19,12 +19,12 @@
 // Affiliation(s): INRIA, team BIPOP
 //
 // Email(s): Pierre-Brice.Wieber@inria.fr
-// 
+//
 // @brief Draw the visualisation 3D
-// 
- 
+//
+
 // Description:
-// 
+//
 // Modifications:
 // $Log: Visu.sci,v $
 // Revision 1.5  2005/05/04 13:13:15  billet
@@ -42,7 +42,7 @@
 // Revision 3.0.0.1  2005/02/08 13:08:22  rpissard
 // version start HuMAnS
 //
-// 
+//
 
 //%
 // Draw the visualisation 3D of a position or a trajectory with contact forces if they exist.
@@ -87,7 +87,7 @@ function [] = Visu(Q,Q1, LAMBDA, POV, Message)
   xtape('clear', 2000);
   xset('wdim', 600, 600);
   xsetech(frect = [-1, 1, -1, 1]);
-	
+
   xset('pixmap', 1);
   //f = gcf();
   //f.pixmap = 'on';
@@ -152,12 +152,12 @@ function [] = Visu(Q,Q1, LAMBDA, POV, Message)
 
 		x = [tag(1,1), tag(3,1), tag(5,1)];
 		z = [tag(1,3), tag(3,3), tag(5,3)];
-		
+
 		plot2d(x, z, rect = [-1, -1, 1, 1]);
 
 		x1 = [tag1(1,1), tag1(3,1), tag1(5,1)];
 		z1= [tag1(1,3), tag1(3,3), tag1(5,3)];
-		
+
 		plot2d(x1, z1, rect = [-1, -1, 1, 1], style=3);
 
 

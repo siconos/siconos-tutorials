@@ -9,7 +9,7 @@ heightoff = 0.05
 winratio = 0.95
 winheight = basheight*winratio
 
-set lmargin 8 
+set lmargin 8
 set bmargin 0
 set tmargin 0
 
@@ -17,7 +17,7 @@ set size 1.0 , 1.0
 
 set xzeroaxis
 set format x ""
- 
+
 set grid xtics
 
 set multiplot
@@ -34,7 +34,7 @@ resultfile u 1:2 t "Ball position" w l,\
 resultfile u 1:17 t "Plane position " w l
 
 set origin 0.0,winheight*1.0+heightoff
-set ylabel "m/s" 
+set ylabel "m/s"
 plot \
 resultfile u 1:3 t "Ball Velocity" w l,\
 resultfile u 1:18 t "Plane Velocity" w l
@@ -44,13 +44,12 @@ set format
 set xtics axis
 set xlabel "time in s"
 set origin 0.0,0.0+heightoff
-set ylabel "A" 
+set ylabel "A"
 
-set ylabel "N s " 
+set ylabel "N s "
 plot \
 resultfile u 1:4 t "contact impulse" w l,\
 resultfile u 1:19 t "reaction impulse on plane" w l
 
 
 set nomultiplot
-

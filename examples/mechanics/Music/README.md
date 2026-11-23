@@ -15,7 +15,7 @@
 
 * with default setup:
 
-siconos run.py 
+siconos run.py
 
 (default setup : bass guitar, fs= 15680)
 

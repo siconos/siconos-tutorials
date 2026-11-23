@@ -14,11 +14,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 #include "DelayedSampledActuator.hpp"
-#include "DynamicalSystem.hpp"
-#include "ActuatorFactory.hpp"
 
+#include "ActuatorFactory.hpp"
+#include "DynamicalSystem.hpp"
 #include "Model.hpp"
 #include "NonSmoothDynamicalSystem.hpp"
 #include "SensorX.hpp"
@@ -30,51 +30,47 @@ extern "C" {
 using namespace std;
 using namespace ActuatorFactory;
 
+DelayedSampledActuator::DelayedSampledActuator() : Actuator() {}
 
-DelayedSampledActuator::DelayedSampledActuator(): Actuator()
-{}
+DelayedSampledActuator::DelayedSampledActuator(
+    int type, std::shared_ptr<siconos::simulation::TimeDiscretisation> t)
+    : Actuator(type, t) {}
 
-DelayedSampledActuator::DelayedSampledActuator(int type, std::shared_ptr<siconos::simulation::TimeDiscretisation> t): Actuator(type, t)
-{}
+DelayedSampledActuator::~DelayedSampledActuator() {}
 
-DelayedSampledActuator::~DelayedSampledActuator()
-{}
-
-void DelayedSampledActuator::initialize()
-{
+void DelayedSampledActuator::initialize() {
   // Call initialize of base class
   Actuator::initialize();
 
-  //ajout du system dynamique dans les attributs de notre objet
+  // ajout du system dynamique dans les attributs de notre objet
   this->addDynamicalSystemPtr(model()->nonSmoothDynamicalSystem()->dynamicalSystem(0));
 }
 
-void DelayedSampledActuator::actuate()
-{
+void DelayedSampledActuator::actuate() {
   DSIterator itDS;
   SensorsIterator itS;
   int nDof = model()->nonSmoothDynamicalSystem()->dynamicalSystem(0)->dimension();
   int ncont = 0;
   double t = model()->currentTime();
-  SiconosVector * myZ(new SiconosVector(nDof));
-  SiconosVector * state(new SiconosVector(2 * nDof));
+  SiconosVector* myZ(new SiconosVector(nDof));
+  SiconosVector* state(new SiconosVector(2 * nDof));
 
   // ici récupération de la valeur du Sensor
   itS = getSensors()->begin();
   //  EventsContainer capteurEvents = (*itS)->getEvents();
   //  DataSet data;
-  auto event  = (*itS)->event();
+  auto event = (*itS)->event();
   //  Event * event = *(capteurEvents.begin());
-  DataSet * data(new DataSet((*itS)->getData()));
+  DataSet* data(new DataSet((*itS)->getData()));
   *state = *(((*data)[event])["StoredX"]);
-  //for(unsigned int i=0; i<nDof; i++)
-  //cout << (*state)(i) <<" ";
-  //cout << endl;
+  // for(unsigned int i=0; i<nDof; i++)
+  // cout << (*state)(i) <<" ";
+  // cout << endl;
 
   // et là calcul des couples correspondant
   controlLaw(&t, &((*state)(0)), &((*state)(0)) + nDof, &nDof, &ncont, &((*myZ)(0)));
 
-  //mises à jour de la variable gardant les couples pour le systeme dynamique: Z
+  // mises à jour de la variable gardant les couples pour le systeme dynamique: Z
   itDS = dynamicalSystems()->begin();
   (*itDS)->setz(*myZ);
 
@@ -82,12 +78,9 @@ void DelayedSampledActuator::actuate()
   delete state;
 }
 
-DelayedSampledActuator* DelayedSampledActuator::convert(Actuator* s)
-{
+DelayedSampledActuator* DelayedSampledActuator::convert(Actuator* s) {
   DelayedSampledActuator* sp = dynamic_cast<DelayedSampledActuator*>(s);
   return sp;
 }
 
 AUTO_REGISTER_ACTUATOR(2, DelayedSampledActuator);
-
-

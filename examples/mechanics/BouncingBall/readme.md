@@ -17,15 +17,12 @@ to provide users with models/templates
 - ...
 
 
-Usage 
+Usage
 
 ```bash
-siconos BouncingBallTS.cpp 
+siconos BouncingBallTS.cpp
 ```
 
 ```bash
 siconos BouncingBallTS.py
 ```
-
-
-

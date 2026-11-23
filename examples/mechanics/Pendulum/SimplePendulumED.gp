@@ -4,8 +4,8 @@ set autoscale
 aqua=1
 X11=0
 
-set xlabel 'time (s)' 
-set grid 
+set xlabel 'time (s)'
+set grid
 
 data = 'result.dat'
 dataref = 'result_AlphaScheme.ref'
@@ -17,14 +17,14 @@ method = "result"
 #set terminal pdf
 #set output "figure1.pdf"
 
-set term X11 0 
+set term X11 0
 set multiplot layout 2,2
-set ylabel '$x$' 
+set ylabel '$x$'
 
 plot \
      data using 1:2 t method w lines lc rgb color,\
      dataref every ::2 using 1:2 t 'ref' w lines lc rgb colorref
-     
+
 
 set ylabel '$y$'
 plot data using 1:3 t method w lines lc rgb color,\
@@ -44,7 +44,7 @@ unset multiplot
 #set terminal pdf
 #set output "figure2.pdf"
 
-if (X11==1)set term X11 1 
+if (X11==1)set term X11 1
 if (aqua==1) set term aqua 1
 
 set multiplot layout 2,2

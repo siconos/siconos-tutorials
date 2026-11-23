@@ -34,7 +34,3 @@ and to plot the results, you can use for example:
     gnuplot -p result.gp
 
 This must lead to Fig 11 (d) of the paper
-
-
-
-

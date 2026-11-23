@@ -26,6 +26,3 @@ plot\
 "fichier.dat" u 1:2 t "Controle" w l
 
 set nomultiplot
-
-
-

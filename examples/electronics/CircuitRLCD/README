@@ -27,5 +27,3 @@ Output: CircuitRLC.dat
 Post-treatment: gnuplot -> load 'result.gp'
 
 => compare results with those of smash
-
-

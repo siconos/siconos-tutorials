@@ -1,8 +1,8 @@
 #include <math.h>
+
 #include "LagrangianModel.h"
 
-void Inertia(M, q)
-double M[441];
+void Inertia(M, q) double M[441];
 double q[21];
 {
   double C0 = cos(q[0]);
@@ -834,7 +834,8 @@ double q[21];
   double t274 = 184 * S14;
   double t277 = -t230 + t231 - t238 * t232 * (t229 * C14 + t274);
   double t285 = -t252 + t231 - t259 * t253 * (t251 * C14 + t274);
-  double t288 = tmp432 + 0.4500000000e-5 * t245 * t28 * t277 + 0.4500000000e-5 * t266 * t28 * t285;
+  double t288 =
+      tmp432 + 0.4500000000e-5 * t245 * t28 * t277 + 0.4500000000e-5 * t266 * t28 * t285;
   double t289 = t277 * t277;
   double t292 = t285 * t285;
   M[0] = 0.1e-1 + 0.8750000000e-5 * t27 * t28 + 0.8750000000e-5 * t49 * t28;

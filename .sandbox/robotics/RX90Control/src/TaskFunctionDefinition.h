@@ -27,10 +27,8 @@
 #define __taskfunctiondefinition_h
 
 #ifdef WINDOWS
-#define extern __declspec (dllexport)
+#define extern __declspec(dllexport)
 #endif
-
-
 
 /**
  * Compute the vector s(q) matching to the task function for a given bipede state q
@@ -38,7 +36,7 @@
  * @param[out] T vector matching to the output function <em> dim NDOF </em>
  * @param[in] q Joint State Vector <em> dim NDOF </em>
  */
-SICONOS_EXPORT void TaskFunction(double *T, double *q);
+SICONOS_EXPORT void TaskFunction(double* T, double* q);
 
 /**
  * Compute the jacobian matrix of the task function for a given bipede state q
@@ -58,4 +56,3 @@ SICONOS_EXPORT void TaskJacobian(double J[441], double q[21]);
  */
 SICONOS_EXPORT void TaskNLEffects(double H[21], double q[21], double qdot[21]);
 #endif
-

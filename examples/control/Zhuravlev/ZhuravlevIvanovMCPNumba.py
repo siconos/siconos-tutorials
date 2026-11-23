@@ -1,12 +1,11 @@
-import siconos.numerics as SN
-
 import numpy as np
+import siconos.numerics as SN
 
 # import ctypes
 
 try:
-    from numba import jit
-except:
+    import numba  # noqa: F401 (availability check)
+except ImportError:
     import sys
 
     print("numba not found, exiting")
@@ -64,7 +63,6 @@ def mcp_function(n, z, F):
     F[3] = 1.0 - z[2]
     #    print("F --------------------------------------")
     #    print(F)
-    pass
 
 
 # @jit("void(i8,i8,double[:],double[:,:])",nopython=True)
@@ -78,7 +76,6 @@ def mcp_Nablafunction(n, z, nabla_Fmcp):
     l1 = 2 * z[2] - 1.0
     # xk1 = z[5]
     # h = z[6]
-    xk0 = xk[0]
     xk1 = xk[1]
     h = hh
     r1 = _g * l0 / (1.0 - _kappa * l0 * l1)
@@ -105,11 +102,9 @@ def mcp_Nablafunction(n, z, nabla_Fmcp):
     nabla_Fmcp[3, 1] = 0.0
     nabla_Fmcp[3, 2] = -1.0
     nabla_Fmcp[3, 3] = 0.0
-    pass
 
 
 if __name__ == "__main__":
-
     print("This is an experimental file !")
     xk[0] = 1.0
     xk[1] = 10.0
@@ -170,7 +165,7 @@ if __name__ == "__main__":
             info = SN.mcp_newton_minFBLSA(mcp, z, w, SO)
             # print('iter {:} ; solver iter = {:} ; prec = {:}'.format(k, SO.iparam[1], SO.dparam[1]))
             if info > 0:
-                print("MCP solver failed ! info = {:}".format(info))
+                print(f"MCP solver failed ! info = {info}")
                 print(z[4:6])
                 print(z)
                 print(w)

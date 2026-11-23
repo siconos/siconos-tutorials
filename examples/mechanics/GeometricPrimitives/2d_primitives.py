@@ -19,18 +19,17 @@
 # Example of one object under gravity with one contactor and a ground
 # using the Siconos proposed mechanics API
 #
+import math
+
+import numpy as np
+import siconos.mechanics.collision.bullet
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
 from siconos.mechanics.collision.convexhull import ConvexHull2d
 from siconos.mechanics.collision.tools import Contactor
-
-import siconos.mechanics.collision.bullet
-import siconos.numerics as sn
-import numpy as np
-import math
-
 
 density = 1000.0
 
@@ -42,7 +41,6 @@ box_width = 1.0
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a sphere
     io.add_primitive_shape(
         "Disk", "Disk", (disk_radius,), insideMargin=0.0, outsideMargin=0.0
@@ -190,11 +188,10 @@ run_options["output_frequency"] = 1
 run_options["with_timer"] = False
 # run_options["violation_verbose"] = True
 
-run_options['numerics_verbose'] = False
-run_options['numerics_verbose_level'] = 0
+run_options["numerics_verbose"] = False
+run_options["numerics_verbose_level"] = 0
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     io.run(run_options)

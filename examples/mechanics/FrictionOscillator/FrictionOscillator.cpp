@@ -99,7 +99,8 @@ int main(int argc, char* argv[]) {
     (*x0)(0) = xinit;
     (*x0)(1) = vinit;
 
-    auto process = std::make_shared<siconos::modeling::FirstOrderLinearDS>(*x0, siconos::algebra::alias_t);
+    auto process = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        *x0, siconos::algebra::alias_t);
     process->setConstantA(*A, siconos::algebra::alias_t);
 
     // --------------------

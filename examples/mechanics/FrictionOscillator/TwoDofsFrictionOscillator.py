@@ -20,19 +20,17 @@
 #
 
 
-""" siconos -v TwoDofsFrictionOscillator.py"""
-
+"""siconos -v TwoDofsFrictionOscillator.py"""
 
 import numpy as np
+import siconos.integrators
+import siconos.modeling as sm
+import siconos.nonsmooth_formulations
 
 # from numpy import linalg as LA
 import siconos.numerics as sn
-import siconos.modeling as sm
-import siconos.simulation
-import siconos.nonsmooth_formulations
-import siconos.integrators
-
 import siconos.plot_config as sicoplot
+import siconos.simulation
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)
@@ -43,7 +41,7 @@ Equations of motion
 
 m1 x1" + d1*x1' + (k1+k2) x1 - k2 x2 = f1*cos(ωt)
 m2 x2" + d2*x2' + k2 x2 - k2 x1 = f2*cos(ωt)+r(t)
-Coulomb(x2'(t),r(t))=0 
+Coulomb(x2'(t),r(t))=0
 
 With Coulomb(x2',r) = max(μ*N,|r-ρ*x2'|)*r-μ*N*(r-ρ*x2').
 

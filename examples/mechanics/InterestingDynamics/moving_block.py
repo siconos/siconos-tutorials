@@ -5,9 +5,10 @@
 #
 
 
-from siconos.mechanics.collision.tools import Contactor
+from math import cos, pi, sin
+
 from siconos.io.mechanics_run import MechanicsHdf5Runner
-from math import pi, sin, cos
+from siconos.mechanics.collision.tools import Contactor
 
 # length of first branch
 l1 = 60
@@ -29,56 +30,72 @@ r2 = 1
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
-    #
-    io.add_primitive_shape('Arm1', 'Cylinder', (.3, l1))
-    io.add_primitive_shape('Arm2', 'Cylinder', (.3, l2))
-    io.add_primitive_shape('Mass1', 'Sphere', (r1,))
-    io.add_primitive_shape('Mass2', 'Sphere', (r2,))
+    io.add_primitive_shape("Arm1", "Cylinder", (0.3, l1))
+    io.add_primitive_shape("Arm2", "Cylinder", (0.3, l2))
+    io.add_primitive_shape("Mass1", "Sphere", (r1,))
+    io.add_primitive_shape("Mass2", "Sphere", (r2,))
 
     # Definition of the ground shape
     ground_slope = 0.29
-    ground_size = (100., 400, 2.)
-    io.add_primitive_shape('Ground', 'Box', ground_size)
-    io.add_primitive_shape('Ground2', 'Box', ground_size)
-    block_size = (50., 20., 20.)
-    io.add_primitive_shape('Block', 'Box', block_size)
+    ground_size = (100.0, 400, 2.0)
+    io.add_primitive_shape("Ground", "Box", ground_size)
+    io.add_primitive_shape("Ground2", "Box", ground_size)
+    block_size = (50.0, 20.0, 20.0)
+    io.add_primitive_shape("Block", "Box", block_size)
 
     # Definition of a non smooth law. As no group ids are specified it
     # is between contactors of group id 0.
-    io.add_Newton_impact_friction_nsl('contact', mu=0.3)
+    io.add_Newton_impact_friction_nsl("contact", mu=0.3)
 
     # first branch + first mass the center of gravity is at the center of the
     # Mass1
-    ppos = [0, -10., 15]
+    ppos = [0, -10.0, 15]
     io.add_object(
-        'arm1', [Contactor('Mass1'),
-                 Contactor('Arm1', relative_translation=[0, r1 + l1 / 2., 0])],
+        "arm1",
+        [
+            Contactor("Mass1"),
+            Contactor("Arm1", relative_translation=[0, r1 + l1 / 2.0, 0]),
+        ],
         translation=ppos,
         orientation=((1, 0, 0), pi / 2),
         velocity=[0, -5, 0, 0, 0, 0],
-        mass=m1)
+        mass=m1,
+    )
 
-    io.add_joint('joint2', 'arm1',
-                 points=[[ppos[0], ppos[1], ppos[2] + l1]],
-                 axes=[[1, 0, 0]],
-                 joint_class='PivotJointR')
+    io.add_joint(
+        "joint2",
+        "arm1",
+        points=[[ppos[0], ppos[1], ppos[2] + l1]],
+        axes=[[1, 0, 0]],
+        joint_class="PivotJointR",
+    )
 
     # the ground object made with the ground shape. As the mass is
     # not given, it is a static object only involved in contact
     # detection.
     shift = -0.5 * ground_size[2] - sin(ground_slope) * ground_size[1] * 0.5
-    io.add_object('ground', [Contactor('Ground')],
-                  translation=[0, ground_size[1] * 0.3, shift])
-    io.add_object('ground2', [Contactor('Ground2')],
-                  translation=[0, 0, 0.],
-                  orientation=((1, 0, 0), -ground_slope))
-    translat = [0., block_size[2] * 0.5 * sin(ground_slope),
-                block_size[2] * 0.5 * cos(ground_slope)]
-    io.add_object('block', [Contactor('Block')],
-                  translation=translat,
-                  orientation=((1, 0, 0), -ground_slope),
-                  velocity=[0, 0, 0., 0, 0, 0], mass=m2,)
+    io.add_object(
+        "ground", [Contactor("Ground")], translation=[0, ground_size[1] * 0.3, shift]
+    )
+    io.add_object(
+        "ground2",
+        [Contactor("Ground2")],
+        translation=[0, 0, 0.0],
+        orientation=((1, 0, 0), -ground_slope),
+    )
+    translat = [
+        0.0,
+        block_size[2] * 0.5 * sin(ground_slope),
+        block_size[2] * 0.5 * cos(ground_slope),
+    ]
+    io.add_object(
+        "block",
+        [Contactor("Block")],
+        translation=translat,
+        orientation=((1, 0, 0), -ground_slope),
+        velocity=[0, 0, 0.0, 0, 0, 0],
+        mass=m2,
+    )
     # io.add_object('blockref', [Contactor('Block')],
     #              translation=[0., 0., 0.],
     #              orientation=((1, 0, 0), -ground_slope), mass=m2)
@@ -89,12 +106,11 @@ with MechanicsHdf5Runner() as io:
 # with the vview command.
 test = True
 if test:
-    T = 1.
+    T = 1.0
 else:
-    T = 30.
+    T = 30.0
 
-with MechanicsHdf5Runner(mode='r+') as io:
-
+with MechanicsHdf5Runner(mode="r+") as io:
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

@@ -230,9 +230,9 @@ int main() {
       std::cout << "\n";
     }
 
-    (*fout) << cmp << " " << (*x)(0) << " " << (*lambda)(0) << " "
-            << (*lambda)(1) << " " << (*lambda)(2) << " " << (*lambda)(3)
-            << " " << (*lambda)(4) << " " << (*lambda)(5) << "\n";
+    (*fout) << cmp << " " << (*x)(0) << " " << (*lambda)(0) << " " << (*lambda)(1) << " "
+            << (*lambda)(2) << " " << (*lambda)(3) << " " << (*lambda)(4) << " "
+            << (*lambda)(5) << "\n";
     int cmpR;
     double xR;
     string sz;
@@ -249,8 +249,8 @@ int main() {
       return 1;
     }
 #else
-    (*fout) << cmp << " " << (*x)(0) << " " << (*lambda)(0) << " "
-            << (*lambda)(3) + sR1 << "\n";
+    (*fout) << cmp << " " << (*x)(0) << " " << (*lambda)(0) << " " << (*lambda)(3) + sR1
+            << "\n";
 #endif
   }
   delete fout;

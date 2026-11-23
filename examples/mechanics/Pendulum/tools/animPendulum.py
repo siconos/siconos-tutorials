@@ -6,7 +6,7 @@ import siconos.plot_config as sicoplot
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)
-import matplotlib.animation as animation
+from matplotlib import animation
 
 L1 = 1.0
 L2 = 1.0

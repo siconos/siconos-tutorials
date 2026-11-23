@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Siconos is a program dedicated to modeling, simulation and control
 # of non smooth dynamical systems.
 #
@@ -19,16 +20,16 @@
 # Example of one object under gravity with one contactor and a ground
 #
 
-from siconos.mechanics.collision.tools import Contactor
+import math
+import random
+
+import siconos.integrators
+import siconos.numerics as sn
 from siconos.io.mechanics_run import (
     MechanicsHdf5Runner,
     MechanicsHdf5Runner_run_options,
 )
-import siconos.numerics as sn
-import siconos.integrators
-import math
-
-import random
+from siconos.mechanics.collision.tools import Contactor
 
 diameter = 0.02
 
@@ -42,7 +43,6 @@ margin_ratio = 1e-05
 
 # Creation of the hdf5 file for input/output
 with MechanicsHdf5Runner() as io:
-
     # Definition of a sphere
     io.add_primitive_shape(
         "Sphere",
@@ -127,9 +127,7 @@ with MechanicsHdf5Runner() as io:
     # io.add_Newton_impact_friction_nsl('contact', e= 0.0, mu=0.3)
 
 # Create solver options
-options = sn.SolverOptions(
-    sn.solver_ids.SICONOS_GLOBAL_ROLLING_FRICTION_3D_NSGS_WR
-)
+options = sn.SolverOptions(sn.solver_ids.SICONOS_GLOBAL_ROLLING_FRICTION_3D_NSGS_WR)
 # options = sn.SolverOptions(sn.solver_ids.SICONOS_GLOBAL_FRICTION_3D_ADMM)
 # options = sn.SolverOptions(sn.solver_ids.SICONOS_GLOBAL_FRICTION_3D_NSGS_WR)
 options.iparam[sn.params.SICONOS_IPARAM_MAX_ITER] = 10000
@@ -152,7 +150,6 @@ run_options["constraint_activation_threshold"] = 1e-8
 run_options["osi"] = siconos.integrators.MoreauJeanGOSI
 
 with MechanicsHdf5Runner(mode="r+") as io:
-
     # By default earth gravity is applied and the units are those
     # of the International System of Units.
     # Because of fixed collision margins used in the collision detection,

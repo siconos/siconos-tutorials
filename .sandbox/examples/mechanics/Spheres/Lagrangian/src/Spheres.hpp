@@ -14,8 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
-
+ */
 
 #ifndef Spheres_h
 #define Spheres_h
@@ -24,10 +23,8 @@
 
 #define NDOF 6
 
-class Spheres : public SiconosBodies
-{
+class Spheres : public SiconosBodies {
   void init();
 };
 
-
-#endif //Spheres_h
+#endif  // Spheres_h

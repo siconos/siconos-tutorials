@@ -36,6 +36,3 @@ plot \
 resultfile every ::2 u 10:12 t "Ball position u_t vs r_t " w l 0
 
 unset multiplot
-     
-
-

@@ -23,7 +23,7 @@
 # to the ideal diode behavior currently (12/09/2005) modeled in the Siconos sample.
 #----------------------------------------------------------------------------------
 
-#set  term X11 
+#set  term X11
 
 
 toffset = 2.170E-04
@@ -33,7 +33,7 @@ heightoff = 0.2
 winratio = 1.0
 winheight = basheight*winratio
 
-set lmargin 8 
+set lmargin 8
 set bmargin 0
 set tmargin 0
 
@@ -41,7 +41,7 @@ set size 1.0 , 1.0
 
 set xzeroaxis
 set format x ""
- 
+
 set grid xtics
 
 set multiplot
@@ -52,7 +52,7 @@ set origin 0.0,winheight*3.0+heightoff
 set ylabel "V" 1
 plot\
   "SMASHN0p25TRAP1us.dat" u ($1-toffset):2 t "capacitor voltage , SMASH   TRAP 1us" w l,\
-  "CircuitRLCDTRAP1us.dat" u 1:2 t      "capacitor voltage , SICONOS TRAP 1us" w l 
+  "CircuitRLCDTRAP1us.dat" u 1:2 t      "capacitor voltage , SICONOS TRAP 1us" w l
 set origin 0.0,winheight*2.0+heightoff
 set ylabel "A" 1
 plot\
@@ -74,4 +74,3 @@ plot\
   "SMASHN0p25TRAP1us.dat" u ($1-toffset):5 t "diode current , SMASH   TRAP 1us" w l,\
   "CircuitRLCDTRAP1us.dat" u 1:5 t      "diode current , SICONOS TRAP 1us" w l
 set nomultiplot
-

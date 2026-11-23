@@ -67,7 +67,8 @@ int main(int argc, char* argv[]) {
     // --- Dynamical system specification ---
     Vector init_state{2};
     init_state << Vinit, 0.;
-    auto LSDiodeBridge = std::make_shared<siconos::modeling::FirstOrderLinearDS>(init_state, siconos::algebra::alias_t);
+    auto LSDiodeBridge = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        init_state, siconos::algebra::alias_t);
 
     Matrix LS_A{2, 2};
     LS_A.setValue(0, 1, -1.0 / Cvalue);

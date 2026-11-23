@@ -19,18 +19,18 @@
 #
 #
 
-from numpy import eye, empty, zeros, savetxt
-from siconos.modeling import (
-    FirstOrderNonLinearDS,
-    FirstOrderLinearTIR,
-    RelayNSL,
-    NonSmoothDynamicalSystem,
-    Interaction,
-)
-import siconos.simulation
 import siconos.integrators
 import siconos.nonsmooth_formulations
 import siconos.plot_config as sicoplot
+import siconos.simulation
+from numpy import empty, eye, savetxt, zeros
+from siconos.modeling import (
+    FirstOrderLinearTIR,
+    FirstOrderNonLinearDS,
+    Interaction,
+    NonSmoothDynamicalSystem,
+    RelayNSL,
+)
 
 # Turn off interactive backend by default
 plt, enable_plot = sicoplot.choose_backend(False)

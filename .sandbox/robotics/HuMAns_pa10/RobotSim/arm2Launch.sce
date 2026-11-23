@@ -23,7 +23,7 @@ q0=zeros(1,arm2Ndof());
 T=5.0;
 
 simulationLoop(q0,T,arm2JointControl, arm2Model,arm2Ndof());
- 
+
 //simulationPlot2D(1,1);
 
 //simulationPlot2D(1,2);

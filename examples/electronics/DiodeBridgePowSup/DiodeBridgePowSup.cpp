@@ -68,8 +68,8 @@ int main(int argc, char* argv[]) {
     // --- Dynamical system specification ---
     Vector init_stateLS{1};
     init_stateLS << VinitLS;
-    auto LSDiodeBridgePowSup =
-        std::make_shared<siconos::modeling::FirstOrderLinearDS>(init_stateLS, siconos::algebra::alias_t);
+    auto LSDiodeBridgePowSup = std::make_shared<siconos::modeling::FirstOrderLinearDS>(
+        init_stateLS, siconos::algebra::alias_t);
 
     Matrix LS_A{1, 1};
     LS_A(0, 0) = -1.0 / (Rvalue * Cfilt);
@@ -284,8 +284,9 @@ int main(int argc, char* argv[]) {
                                 siconos::algebra::io::WriteType::nodim);
 
     double error = 0.0, eps = 1e-12;
-    if ((error = siconos::algebra::io::compareRefFile(dataPlot, "DiodeBridgePowSup.ref", eps)) > eps)
-       return 1;
+    if ((error = siconos::algebra::io::compareRefFile(dataPlot, "DiodeBridgePowSup.ref",
+                                                      eps)) > eps)
+      return 1;
   }
   // --- Exceptions handling ---
   catch (...) {

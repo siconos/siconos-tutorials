@@ -49,8 +49,8 @@ double J2 = 0.1;
 const int nDof = 4;  // degrees of freedom for robot arm
 inline std::vector<double> param(nDof * 6 + 1, 0.);
 
-inline auto u_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-                        const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+inline auto u_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+                        const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
                         double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {
   double m11 =
       m1 * l1 * l1 / 4 + I1 + I2 + m2 * (l1 * l1 + (l2 * l2 / 4) + l1 * l2 * cos(q(1)));
@@ -585,8 +585,8 @@ inline auto u_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> 
   param[24] = qr22;
 };
 
-inline auto u1_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-                         const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+inline auto u1_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+                         const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
                          double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {
   double m11 =
       m1 * (l1 * l1 / 4) + I1 + I2 + m2 * (l1 * l1 + (l2 * l2 / 4) + l1 * l2 * cos(q(1)));
@@ -1247,8 +1247,8 @@ inline auto u1_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>
   param[24] = qr22;
 };
 
-inline auto u2_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-                         const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+inline auto u2_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+                         const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
                          double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {
   double m11 =
       m1 * (l1 * l1 / 4) + I1 + I2 + m2 * (l1 * l1 + (l2 * l2 / 4) + l1 * l2 * cos(q(1)));
@@ -1754,8 +1754,8 @@ inline auto u2_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>
   param[23] = qr21;
   param[24] = qr22;
 };
-inline auto u3_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-                         const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+inline auto u3_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+                         const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
                          double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {
   double m11 =
       m1 * l1 * l1 / 4 + I1 + I2 + m2 * (l1 * l1 + (l2 * l2 / 4) + l1 * l2 * cos(q(1)));
@@ -2328,8 +2328,8 @@ inline auto u3_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>
   param[23] = qr21;
   param[24] = qr22;
 };
-inline auto u4_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-                         const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+inline auto u4_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+                         const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
                          double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {
   double m11 =
       m1 * (l1 * l1 / 4) + I1 + I2 + m2 * (l1 * l1 + (l2 * l2 / 4) + l1 * l2 * cos(q(1)));
@@ -2849,8 +2849,8 @@ inline auto u4_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>
   param[23] = qr21;
   param[24] = qr22;
 };
-inline auto u5_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-                         const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+inline auto u5_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+                         const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
                          double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {
   double m11 =
       m1 * l1 * l1 / 4 + I1 + I2 + m2 * (l1 * l1 + (l2 * l2 / 4) + l1 * l2 * cos(q(1)));
@@ -3410,8 +3410,8 @@ inline auto u5_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>
   param[23] = qr21;
   param[24] = qr22;
 };
-inline auto u6_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector> &velocity,
-                         const Eigen::Ref<const siconos::algebra::SiconosVector> &q,
+inline auto u6_func = [](const Eigen::Ref<const siconos::algebra::SiconosVector>& velocity,
+                         const Eigen::Ref<const siconos::algebra::SiconosVector>& q,
                          double time, Eigen::Ref<siconos::algebra::MapVectorType> result) {
   double m11 =
       m1 * l1 * l1 / 4 + I1 + I2 + m2 * (l1 * l1 + (l2 * l2 / 4) + l1 * l2 * cos(q(1)));
