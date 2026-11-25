@@ -23,6 +23,41 @@ before it.
 
 
 --------------------------------------------------------------------------------
+  v 2026.11
+--------------------------------------------------------------------------------
+
+This version complies with the siconos version 2026.11 (details in
+RELEASE_NOTES.md).
+
+Main Changes:
+	* [examples] port to the siconos 2026.11 API: C++20 and namespaces,
+	  Eigen algebra (SiconosMatrix), pybind11 python bindings (copy_t/alias_t),
+	  lambdas instead of plugins loaded by name, renamed Lagrangian and
+	  Newton-Euler relations, new numerics solver names
+	* [examples/mechanics] mechanics_run with run_options (former keyword
+	  arguments removed), energy and work outputs, restart
+	* [examples/mechanics] new rock fall examples (digital elevation model,
+	  height map, forest, propagation, rolling, Fremond law)
+	* [examples/mechanics] new FEM examples (native T3/TH4, collision
+	  detection, Hertz, Euler-Bernoulli beam, sparse impacting bar, footing)
+	* [examples/mechanics] boundary conditions (BallOnMovingPlane), transport
+	  cable, Fremond law examples, vkernel bouncing balls
+	* [examples] both projection updates (RockingBlock) and impact rules
+	  (SliderCrankD1MinusLinear), references checked after the scheme fixes
+	* [tests] one ctest per example, short runs (SICONOS_EXAMPLES_SHORT_RUN),
+	  relative comparisons with the references, Ubuntu 26.04 fixes
+	* [examples] cppimport removed; FEM plasticity examples removed for this
+	  release (plasticBernoulliBeam, ballAgainstPlasticBernoulliBeam)
+
+Known issues:
+	* python control examples (examples/control/*/*.py) not updated, and no
+	  control example is run by the tests (only the top of examples/control
+	  is scanned); old references of TwoLinkManipulator_* C++ examples
+	* jupyter notebooks (siconos-notebooks, examples/**/*.ipynb) not updated
+	* Mechanisms examples (no python bindings), OCC examples using C plugins
+
+
+--------------------------------------------------------------------------------
   v 4.4.0
 --------------------------------------------------------------------------------
 
