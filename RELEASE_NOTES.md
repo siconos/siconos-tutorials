@@ -1,7 +1,8 @@
-# siconos-tutorials 2026.11 Release Notes
+# siconos-tutorials 2026-11 Release Notes
 
 **Release Date:** November 2026
-**Siconos version:** 2026.11 (use the same version of siconos and siconos-tutorials)
+**Siconos version:** 2026-11 (version number 2026.11; use the same version of siconos and
+siconos-tutorials)
 **Previous Release:** 4.4.0 (September 2021)
 **Commits:** about 270 since 4.4.0
 
@@ -9,18 +10,19 @@
 
 ## Overview
 
-This release follows the modernization of Siconos between 4.4.0 and 2026.11: C++20 and the
+This release follows the modernization of Siconos between 4.4.0 and 2026-11: C++20 and the
 `siconos::` namespaces, Eigen-based algebra, pybind11 Python bindings (SWIG removed), user
 functions given as C++ lambdas or Python callables instead of plugins loaded by name, and the
 renaming of the Lagrangian and Newton-Euler relations. All the C++ and Python examples run by
 the tests were ported to this API, their references checked, and the tests made independent of
 the platform (macOS arm64, Linux x86_64).
 
-The notes of Siconos itself are in `docs/devel/RELEASE_2026.11.md` of the siconos repository.
+The notes of Siconos itself are in `RELEASE_NOTES.md` of the siconos repository. There was no
+release candidate of siconos-tutorials: this release follows 4.4.0 directly.
 
 ---
 
-## Porting to the Siconos 2026.11 API
+## Porting to the Siconos 2026-11 API
 
 - **C++**: namespaces (`siconos::modeling`, `siconos::simulation`, ...), `std::shared_ptr`
   instead of `SP::`, `SiconosMatrix`/`SiconosVector` (Eigen) instead of `SimpleMatrix`,
@@ -77,7 +79,7 @@ The notes of Siconos itself are in `docs/devel/RELEASE_2026.11.md` of the sicono
   references for the chaotic cases (`BulletBouncingBox`).
 - Ubuntu 26.04 (GCC 15, Python 3.14, numpy 2.5) fixes; formatting and lint with pre-commit
   hooks (clang-format, ruff, shellcheck); CI on the `main` branch.
-- Status with Siconos 2026.11 on macOS arm64: the 332 tests pass. On Ubuntu 26.04 x86_64 they
+- Status with Siconos 2026-11 on macOS arm64: the 332 tests pass. On Ubuntu 26.04 x86_64 they
   passed before the last fixes; under x86_64 emulation, `mechanics/FEM/native/T3-GOSI` may
   time out.
 
@@ -133,9 +135,9 @@ Vincent Acary, Franck Pérignon, Olivier Goury, Samuel Heidmann, Maurice Brémon
 ```bash
 git clone https://gricad-gitlab.univ-grenoble-alpes.fr/nonsmooth/siconos-tutorials.git
 cd siconos-tutorials
-git checkout 2026.11
+git checkout 2026-11
 
-# with siconos 2026.11 installed
+# with siconos 2026-11 installed
 cmake -S examples -B build
 ctest --test-dir build
 ```

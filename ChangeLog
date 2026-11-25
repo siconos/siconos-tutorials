@@ -23,14 +23,14 @@ before it.
 
 
 --------------------------------------------------------------------------------
-  v 2026.11
+  v 2026-11
 --------------------------------------------------------------------------------
 
-This version complies with the siconos version 2026.11 (details in
+This version complies with the siconos version 2026-11 (details in
 RELEASE_NOTES.md).
 
 Main Changes:
-	* [examples] port to the siconos 2026.11 API: C++20 and namespaces,
+	* [examples] port to the siconos 2026-11 API: C++20 and namespaces,
 	  Eigen algebra (SiconosMatrix), pybind11 python bindings (copy_t/alias_t),
 	  lambdas instead of plugins loaded by name, renamed Lagrangian and
 	  Newton-Euler relations, new numerics solver names
