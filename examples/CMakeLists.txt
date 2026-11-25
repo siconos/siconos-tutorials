@@ -96,7 +96,11 @@ if(${kernel_installed} GREATER -1)
     mechanics/ChainsOfBalls
     mechanics/ColumnOfBeads
     mechanics/FEM/ImpactingBar
-    mechanics/FEM/native
+    mechanics/FEM/native/BernoulliBeam
+    mechanics/FEM/native/Hertz
+    mechanics/FEM/native/PlasticBernoulliBeam
+    mechanics/FEM/native/T3_square
+    mechanics/FEM/native/TH4
     mechanics/FourBarLinkageWith3clearance
     mechanics/FrictionOscillator
     mechanics/Masonry
