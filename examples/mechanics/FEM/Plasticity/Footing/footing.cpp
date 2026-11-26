@@ -50,8 +50,10 @@
    - for the visualization (footing_viz.py, pyvista): footing_nodes.dat (x, y, dof of u_x,
      dof of u_y), footing_triangles.dat (node indices) and the histories, one line per step
      (initial state included): footing_u.dat (displacements, dof order), footing_sigma.dat
-     and footing_eps_p.dat (physical stresses and plastic strains, 3 per element, Voigt
-     order).
+     and footing_eps_p.dat (physical stresses and plastic strains, 3 per element).
+   Stresses and strains are in Mandel notation, (sxx, syy, sqrt2 sxy) and
+   (exx, eyy, sqrt2 exy), as the unknowns of SolidLinearTIDS: the Euclidean norm is the
+   tensor norm.
 */
 
 #include <SiconosFEM.h>
@@ -74,13 +76,6 @@
 #include <unordered_map>
 
 namespace fem = siconos::mechanics::fem;
-
-// norm of a strain tensor given in Voigt notation (exx, eyy, gamma_xy = 2 exy):
-// sqrt(exx^2 + eyy^2 + 2 exy^2)
-template <typename V>
-double tensor_norm(const V& e) {
-  return std::sqrt(e(0) * e(0) + e(1) * e(1) + 0.5 * e(2) * e(2));
-}
 
 int main(int argc, char* argv[]) {
   try {
@@ -220,13 +215,13 @@ int main(int argc, char* argv[]) {
       int n_plastic = 0;
       for (size_t e = 0; e < nel; e++) {
         auto i = static_cast<siconos::algebra::Index>(3 * e);
-        Eigen::Vector3d se = sigma.segment<3>(i) / scaling[e];  // physical
+        Eigen::Vector3d se = sigma.segment<3>(i) / scaling[e];  // physical, Mandel
         double p = 0.5 * (se(0) + se(1));
-        double radius = std::hypot(0.5 * (se(0) - se(1)), se(2));
+        double radius = std::hypot(0.5 * (se(0) - se(1)), se(2) / std::numbers::sqrt2);
         double f = (radius + p * std::sin(phi) - c_cos_phi) / c_cos_phi;
         max_f = std::max(max_f, f);
         if (f > -1e-6) n_plastic++;
-        max_eps_p = std::max(max_eps_p, tensor_norm(epsilon_p.segment<3>(i)) / scaling[e]);
+        max_eps_p = std::max(max_eps_p, epsilon_p.segment<3>(i).norm() / scaling[e]);
       }
       dataPlot(k, 0) = s->nextTime();
       dataPlot(k, 1) = q(footing_dof);

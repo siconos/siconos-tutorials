@@ -37,12 +37,15 @@
    - strip_with_hole.dat (t, u_top, R_top, max sigma_vm / sigma_y, number of plastic
      elements, max tensor norm of the plastic strain), compared with strip_with_hole.ref;
    - strip_with_hole_elements.dat (final state per element: x, y of the centroid, sigma_xx,
-     sigma_yy, sigma_xy, sigma_vm, plastic strain (3));
+     sigma_yy, sqrt2 sigma_xy, sigma_vm, plastic strain (3));
    - for the visualization (strip_with_hole_viz.py, pyvista): strip_with_hole_nodes.dat
      (x, y, dof of u_x, dof of u_y), strip_with_hole_triangles.dat (node indices) and the
      histories, one line per step (initial state included): strip_with_hole_u.dat
      (displacements, dof order), strip_with_hole_sigma.dat and strip_with_hole_eps_p.dat
-     (physical stresses and plastic strains, 3 per element, Voigt order).
+     (physical stresses and plastic strains, 3 per element).
+   Stresses and strains are in Mandel notation, (sxx, syy, sqrt2 sxy) and
+   (exx, eyy, sqrt2 exy), as the unknowns of SolidLinearTIDS: the Euclidean norm is the
+   tensor norm.
 */
 
 #include <SiconosFEM.h>
@@ -65,15 +68,9 @@
 
 namespace fem = siconos::mechanics::fem;
 
-static double von_mises(double sxx, double syy, double sxy) {
-  return std::sqrt(sxx * sxx + syy * syy - sxx * syy + 3. * sxy * sxy);
-}
-
-// norm of a strain tensor given in Voigt notation (exx, eyy, gamma_xy = 2 exy):
-// sqrt(exx^2 + eyy^2 + 2 exy^2)
-template <typename V>
-double tensor_norm(const V& e) {
-  return std::sqrt(e(0) * e(0) + e(1) * e(1) + 0.5 * e(2) * e(2));
+// von Mises stress (plane stress) of a stress in Mandel notation (sxx, syy, sqrt2 sxy)
+static double von_mises(double sxx, double syy, double sxy_m) {
+  return std::sqrt(sxx * sxx + syy * syy - sxx * syy + 1.5 * sxy_m * sxy_m);
 }
 
 int main(int argc, char* argv[]) {
@@ -209,7 +206,7 @@ int main(int argc, char* argv[]) {
         double vm = von_mises(sigma(i), sigma(i + 1), sigma(i + 2)) / scaling[e];  // physical
         max_vm = std::max(max_vm, vm / sigma_y);
         if (vm >= sigma_y * (1. - 1e-6)) n_plastic++;
-        max_eps_p = std::max(max_eps_p, tensor_norm(epsilon_p.segment<3>(i)) / scaling[e]);
+        max_eps_p = std::max(max_eps_p, epsilon_p.segment<3>(i).norm() / scaling[e]);
       }
       dataPlot(k, 0) = s->nextTime();
       dataPlot(k, 1) = q(top_dof);

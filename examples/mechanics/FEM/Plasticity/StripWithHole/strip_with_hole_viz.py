@@ -48,8 +48,8 @@ if not os.path.exists(prefix + "_u.dat"):
 nodes = np.loadtxt(prefix + "_nodes.dat", ndmin=2)  # x, y, dof x, dof y
 triangles = np.loadtxt(prefix + "_triangles.dat", dtype=int, ndmin=2)
 u_hist = np.loadtxt(prefix + "_u.dat", ndmin=2)  # steps x ndof
-sigma_hist = np.loadtxt(prefix + "_sigma.dat", ndmin=2)  # steps x 3 nel
-eps_hist = np.loadtxt(prefix + "_eps_p.dat", ndmin=2)  # steps x 3 nel
+sigma_hist = np.loadtxt(prefix + "_sigma.dat", ndmin=2)  # steps x 3 nel, Mandel
+eps_hist = np.loadtxt(prefix + "_eps_p.dat", ndmin=2)  # steps x 3 nel, Mandel
 t = (
     np.loadtxt(prefix + ".dat", ndmin=2)[:, 0]
     if os.path.exists(prefix + ".dat")
@@ -64,10 +64,9 @@ grid = pv.UnstructuredGrid(cells, np.full(len(triangles), pv.CellType.TRIANGLE),
 
 
 def tensor_norm(eps):
-    """norm of the strain tensors given in Voigt notation (exx, eyy, gamma_xy = 2 exy), one
-    per element: sqrt(exx^2 + eyy^2 + 2 exy^2)"""
-    e = eps.reshape(-1, 3)
-    return np.sqrt(e[:, 0] ** 2 + e[:, 1] ** 2 + 0.5 * e[:, 2] ** 2)
+    """norm of the strain tensors given in Mandel notation (exx, eyy, sqrt2 exy), one per
+    element: the Euclidean norm, sqrt(exx^2 + eyy^2 + 2 exy^2)"""
+    return np.linalg.norm(eps.reshape(-1, 3), axis=1)
 
 
 def load(k):
@@ -78,7 +77,7 @@ def load(k):
     mesh.point_data["u_norm"] = np.linalg.norm(u, axis=1)
     s = sigma_hist[k].reshape(-1, 3)
     mesh.cell_data["sigma_vm"] = np.sqrt(
-        s[:, 0] ** 2 + s[:, 1] ** 2 - s[:, 0] * s[:, 1] + 3 * s[:, 2] ** 2
+        s[:, 0] ** 2 + s[:, 1] ** 2 - s[:, 0] * s[:, 1] + 1.5 * s[:, 2] ** 2  # Mandel
     )
     mesh.cell_data["eps_p_norm"] = tensor_norm(eps_hist[k])
     return mesh.warp_by_vector("u", factor=args.warp)

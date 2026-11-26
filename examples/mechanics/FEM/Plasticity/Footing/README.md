@@ -90,11 +90,12 @@ default case only).
 - for the visualization: `footing_nodes.dat` (x, y, dofs of u_x and u_y),
   `footing_triangles.dat` (node indices) and the histories, one line per step from the
   initial state: `footing_u.dat` (displacements, dof order), `footing_sigma.dat`,
-  `footing_eps_p.dat` (physical stresses and plastic strains, 3 per element, Voigt order).
+  `footing_eps_p.dat` (physical stresses and plastic strains, 3 per element, Mandel notation).
 
-Stresses and strains are in Voigt notation: σ = (σxx, σyy, σxy), ε = (εxx, εyy, γxy) with
-the engineering shear strain γxy = 2 εxy (σ·ε is the work). The plastic strain norm is the
-norm of the tensor, ‖ε_p‖ = √(εxx² + εyy² + 2 εxy²) = √(εxx² + εyy² + γxy²/2).
+Stresses and strains are in Mandel notation, as the unknowns of `SolidLinearTIDS`:
+σ = (σxx, σyy, √2 σxy), ε = (εxx, εyy, √2 εxy). The basis is orthonormal: σ·ε is the work
+and the Euclidean norm is the tensor norm, ‖ε_p‖ = √(εxx² + εyy² + 2 εxy²). Divide the third
+component by √2 to get σxy (εxy).
 
 ## Visualization (pyvista)
 

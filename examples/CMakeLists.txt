@@ -96,6 +96,7 @@ if(${kernel_installed} GREATER -1)
     mechanics/ChainsOfBalls
     mechanics/ColumnOfBeads
     mechanics/FEM/ImpactingBar
+    mechanics/FEM/Plasticity/Footing
     mechanics/FEM/Plasticity/StripWithHole
     mechanics/FEM/native/BernoulliBeam
     mechanics/FEM/native/Hertz
@@ -170,7 +171,8 @@ if(${mechanics_installed} GREATER -1)
   list(APPEND EXAMPLES_DIRECTORIES ${mechanics_examples})
   include(FindPythonModule)
 
-  list(APPEND EXCLUDE_PATTERN_FROM_TESTS meshio_prepost matplotlib_post_2d strip_with_hole_viz)
+  list(APPEND EXCLUDE_PATTERN_FROM_TESTS meshio_prepost matplotlib_post_2d strip_with_hole_viz
+    footing_viz)
 
   if(SICONOS_HAS_BULLET)
     message(STATUS "add examples requiring bullet")
