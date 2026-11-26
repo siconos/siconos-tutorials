@@ -14,6 +14,12 @@ The reaction of the top edge grows linearly, then saturates (56.51 at the end, a
 net-section limit load σ_y · 0.25 = 52.5, overestimated by the coarse mesh); the plastic zone
 starts at the root of the hole (step 4) and spreads across the ligament.
 
+![Strip with a hole, step 100 (default mesh)](strip_with_hole_100.png)
+
+*Default mesh, end of the loading (step 100, displacements ×10): von Mises stress, plastic
+strain norm and displacement magnitude; `python3 strip_with_hole_viz.py` in the directory of
+the outputs.*
+
 ## Meshes
 
 - `mesh_data/strip_with_circular_hole_72.msh` (default, used by the test): 60 T3, from
@@ -74,8 +80,8 @@ the semi-smooth Newton 1 iteration per elastic step and 5–13 per plastic step.
 ## Outputs
 
 - `strip_with_hole.dat`, one line per step: t, u_y of the top edge, reaction of the top
-  edge, max σ_vm/σ_y, number of plastic elements, max norm of the plastic strain (compared
-  with `strip_with_hole.ref`);
+  edge, max σ_vm/σ_y, number of plastic elements, max tensor norm ‖ε_p‖ of the plastic
+  strain (compared with `strip_with_hole.ref`);
 - `strip_with_hole_elements.dat`, final state per element: centroid (x, y), σxx, σyy, σxy,
   σ_vm, plastic strain (εxx, εyy, γxy);
 - for the visualization: `strip_with_hole_nodes.dat` (x, y, dofs of u_x and u_y),
@@ -84,10 +90,14 @@ the semi-smooth Newton 1 iteration per elastic step and 5–13 per plastic step.
   `strip_with_hole_sigma.dat`, `strip_with_hole_eps_p.dat` (physical stresses and plastic
   strains, 3 per element, Voigt order).
 
+Stresses and strains are in Voigt notation: σ = (σxx, σyy, σxy), ε = (εxx, εyy, γxy) with
+the engineering shear strain γxy = 2 εxy (σ·ε is the work). The plastic strain norm is the
+norm of the tensor, ‖ε_p‖ = √(εxx² + εyy² + 2 εxy²) = √(εxx² + εyy² + γxy²/2).
+
 ## Visualization (pyvista)
 
 `strip_with_hole_viz.py` (adapted from `viz_pyvista.py` of pytripopfem) shows, on the
-deformed mesh, the von Mises stress, the norm of the plastic strain and the displacement
+deformed mesh, the von Mises stress, the tensor norm of the plastic strain and the displacement
 magnitude, with colour scales fixed over the whole history. Run it in the directory of the
 simulation outputs (or give it with `--dir`):
 

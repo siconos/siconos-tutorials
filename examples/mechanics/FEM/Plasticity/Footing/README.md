@@ -19,6 +19,44 @@ half footing: the constant-strain T3 elements (stiff in plane strain plasticity)
 domain overestimate it. The plastic zone starts under the footing (step 1) and spreads to the
 whole domain, with a heave next to the footing.
 
+![Footing, step 40 (default mesh)](footing_040.png)
+
+*Default mesh, end of the loading (step 40, displacements ×10): Mohr–Coulomb yield function
+(0 on the yield surface), plastic strain tensor norm (log scale) and displacement magnitude;
+`python3 footing_viz.py` in the directory of the outputs.*
+
+## Meshes
+
+- `mesh_data/half_footing_2x2_b02_size01.msh` (default, used by the test and the comparison
+  with pytripopfem): 639 T3, 6 element edges under the footing;
+- `mesh_data/half_footing_graded.msh`: 441 T3, graded towards the edge of the footing (stress
+  singularity) and along it, generated with gmsh 4.14 from `half_footing_graded.geo`
+  (parameters `h_min` = 0.02 at the edge of the footing, `h_max` = 0.25, domain size
+  `L` = 2, footing half-width `b` = 0.2):
+
+  ```bash
+  gmsh -2 -format msh22 half_footing_graded.geo -o half_footing_graded.msh
+  gmsh -2 -format msh22 -setnumber h_min 0.01 -setnumber L 4 half_footing_graded.geo -o finer.msh
+  ```
+
+The mesh is the first argument of the example, e.g. `./footing
+mesh_data/half_footing_graded.msh`. Footing reaction at the end of the loading (step 40,
+settlement 0.02), macOS arm64:
+
+| mesh | T3 | edges under the footing | reaction | time (40 steps) |
+|---|---|---|---|---|
+| default (uniform) | 639 | 6 | −11 897 | 13 s |
+| graded, h_min = 0.04 | 305 | 4 | −12 955 | 3.8 s |
+| graded, h_min = 0.02 (bundled) | 441 | 7 | −11 326 | 9.0 s |
+| graded, h_min = 0.01 | 739 | 13 | −10 646 | 39 s |
+| graded, h_min = 0.02, L = 4 | 1529 | 7 | −10 493 | 114 s |
+
+The reaction decreases with the refinement and with the size of the domain, towards Prandtl's
+−8 288 but slowly: the constant-strain T3 elements are too stiff for the plastic flow in plane
+strain (higher-order or mixed elements would be needed to approach the collapse load), and the
+reaction still grows by ~1 % between steps 30 and 40. The cost grows faster than the number of
+elements (dense matrices of the kernel, see `docs/devel/FEM_PLASTICITY_SCHEME.md`).
+
 ## Model
 
 - `SolidLinearTIDS` (unknowns v and the element stresses, `MassType::lumped`,
@@ -48,17 +86,23 @@ default case only).
 
 - `footing.dat`, one line per step: t, u_y of the footing, footing reaction, max of the
   yield function f / (c cos φ) (f = R + p sin φ − c cos φ ≤ 0), number of plastic elements,
-  max norm of the plastic strain (compared with `footing.ref`);
+  max tensor norm ‖ε_p‖ of the plastic strain (compared with `footing.ref`);
 - for the visualization: `footing_nodes.dat` (x, y, dofs of u_x and u_y),
   `footing_triangles.dat` (node indices) and the histories, one line per step from the
   initial state: `footing_u.dat` (displacements, dof order), `footing_sigma.dat`,
   `footing_eps_p.dat` (physical stresses and plastic strains, 3 per element, Voigt order).
 
+Stresses and strains are in Voigt notation: σ = (σxx, σyy, σxy), ε = (εxx, εyy, γxy) with
+the engineering shear strain γxy = 2 εxy (σ·ε is the work). The plastic strain norm is the
+norm of the tensor, ‖ε_p‖ = √(εxx² + εyy² + 2 εxy²) = √(εxx² + εyy² + γxy²/2).
+
 ## Visualization (pyvista)
 
 `footing_viz.py` shows, on the deformed mesh, the yield function f / (c cos φ) (−1 for a
-stress-free element, 0 on the yield surface), the norm of the plastic strain and the
-displacement magnitude, with colour scales fixed over the whole history. Run it in the
+stress-free element, 0 on the yield surface), the tensor norm of the plastic strain (log scale over
+`--eps-decades` decades, default 3, below the 98th percentile of the last step or
+`--eps-max`: the strain is concentrated at the edge of the footing) and the displacement
+magnitude, with colour scales fixed over the whole history. Run it in the
 directory of the simulation outputs (or give it with `--dir`):
 
 ```bash

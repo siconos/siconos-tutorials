@@ -4,7 +4,7 @@ Reads the outputs of the simulation (in --dir, the directory where strip_with_ho
 the mesh (strip_with_hole_nodes.dat, strip_with_hole_triangles.dat) and the histories
 (strip_with_hole_u.dat, strip_with_hole_sigma.dat, strip_with_hole_eps_p.dat,
 strip_with_hole.dat for the time), and shows, on the deformed mesh, the von Mises stress,
-the norm of the plastic strain and the displacement magnitude.
+the tensor norm of the plastic strain and the displacement magnitude.
 
 Adapted from viz_pyvista.py of pytripopfem (examples/Strip_with_hole).
 
@@ -63,6 +63,13 @@ cells = np.column_stack([np.full(len(triangles), 3), triangles]).ravel()
 grid = pv.UnstructuredGrid(cells, np.full(len(triangles), pv.CellType.TRIANGLE), points)
 
 
+def tensor_norm(eps):
+    """norm of the strain tensors given in Voigt notation (exx, eyy, gamma_xy = 2 exy), one
+    per element: sqrt(exx^2 + eyy^2 + 2 exy^2)"""
+    e = eps.reshape(-1, 3)
+    return np.sqrt(e[:, 0] ** 2 + e[:, 1] ** 2 + 0.5 * e[:, 2] ** 2)
+
+
 def load(k):
     """mesh of step k with its fields, deformed by warp * u"""
     mesh = grid.copy()
@@ -73,7 +80,7 @@ def load(k):
     mesh.cell_data["sigma_vm"] = np.sqrt(
         s[:, 0] ** 2 + s[:, 1] ** 2 - s[:, 0] * s[:, 1] + 3 * s[:, 2] ** 2
     )
-    mesh.cell_data["eps_p_norm"] = np.linalg.norm(eps_hist[k].reshape(-1, 3), axis=1)
+    mesh.cell_data["eps_p_norm"] = tensor_norm(eps_hist[k])
     return mesh.warp_by_vector("u", factor=args.warp)
 
 
@@ -83,7 +90,7 @@ panels = [
     ("sigma_vm", "von Mises stress", "viridis", [0.0, args.sigma_y], "%.0f"),
     (
         "eps_p_norm",
-        "plastic strain norm",
+        "plastic strain tensor norm",
         "magma",
         [0.0, max(float(last["eps_p_norm"].max()), 1e-12)],
         "%.1e",

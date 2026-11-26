@@ -39,12 +39,14 @@
 
    Usage: footing [mesh [dilatancy angle in degrees]] (default: mesh_data/
    half_footing_2x2_b02_size01.msh, psi = phi; the reference comparison is done for the
-   default case only).
+   default case only). mesh_data/half_footing_graded.msh (gmsh, from
+   half_footing_graded.geo) is refined at the edge of the footing: closer to the collapse
+   load for fewer elements, see README.md.
 
    Outputs:
    - footing.dat (t, u_y of the footing, reaction of the footing, max of the yield function
-     f / (c cos phi) (<= 0, 0 on the yield surface), number of plastic elements, max plastic
-     strain), compared with footing.ref;
+     f / (c cos phi) (<= 0, 0 on the yield surface), number of plastic elements, max tensor
+     norm of the plastic strain), compared with footing.ref;
    - for the visualization (footing_viz.py, pyvista): footing_nodes.dat (x, y, dof of u_x,
      dof of u_y), footing_triangles.dat (node indices) and the histories, one line per step
      (initial state included): footing_u.dat (displacements, dof order), footing_sigma.dat
@@ -72,6 +74,13 @@
 #include <unordered_map>
 
 namespace fem = siconos::mechanics::fem;
+
+// norm of a strain tensor given in Voigt notation (exx, eyy, gamma_xy = 2 exy):
+// sqrt(exx^2 + eyy^2 + 2 exy^2)
+template <typename V>
+double tensor_norm(const V& e) {
+  return std::sqrt(e(0) * e(0) + e(1) * e(1) + 0.5 * e(2) * e(2));
+}
 
 int main(int argc, char* argv[]) {
   try {
@@ -142,8 +151,10 @@ int main(int argc, char* argv[]) {
     femodel->computeMassMatrix(M, materials, fem::MassType::lumped);
     std::vector<siconos::algebra::Index> footing_dofs;
     siconos::algebra::Index footing_dof = 0;
+    double y_top = -INFINITY;  // top edge of the soil
+    for (auto& node : femodel->nodes()) y_top = std::max(y_top, node->y());
     for (auto& node : femodel->nodes())
-      if (std::abs(node->y() - 2.0) < 1e-12 && node->x() <= 0.2 + 1e-12)
+      if (std::abs(node->y() - y_top) < 1e-12 && node->x() <= 0.2 + 1e-12)
         footing_dofs.push_back(node->global_dof_index()[1]);
     footing_dof = footing_dofs.front();
     std::vector<double> scaling(nel);
@@ -215,7 +226,7 @@ int main(int argc, char* argv[]) {
         double f = (radius + p * std::sin(phi) - c_cos_phi) / c_cos_phi;
         max_f = std::max(max_f, f);
         if (f > -1e-6) n_plastic++;
-        max_eps_p = std::max(max_eps_p, epsilon_p.segment<3>(i).norm() / scaling[e]);
+        max_eps_p = std::max(max_eps_p, tensor_norm(epsilon_p.segment<3>(i)) / scaling[e]);
       }
       dataPlot(k, 0) = s->nextTime();
       dataPlot(k, 1) = q(footing_dof);

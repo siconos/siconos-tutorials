@@ -4,7 +4,7 @@ Reads the outputs of the simulation (in --dir, the directory where footing was r
 mesh (footing_nodes.dat, footing_triangles.dat) and the histories (footing_u.dat,
 footing_sigma.dat, footing_eps_p.dat, footing.dat for the time), and shows, on the deformed
 mesh, the Mohr-Coulomb yield function f / (c cos phi) (f = R + p sin(phi) - c cos(phi):
--1 for a stress-free element, 0 on the yield surface), the norm of the plastic strain and
+-1 for a stress-free element, 0 on the yield surface), the tensor norm of the plastic strain and
 the displacement magnitude.
 
 Adapted from viz_pyvista.py of pytripopfem (examples/Strip_with_hole).
@@ -32,6 +32,19 @@ parser.add_argument(
 )
 parser.add_argument("--cohesion", type=float, default=2e3, help="cohesion c")
 parser.add_argument("--phi", type=float, default=25.0, help="friction angle (degrees)")
+parser.add_argument(
+    "--eps-max",
+    type=float,
+    default=None,
+    help="upper bound of the plastic strain colour scale (default: 98th percentile of the "
+    "last step; the singular element at the edge of the footing would hide the rest)",
+)
+parser.add_argument(
+    "--eps-decades",
+    type=float,
+    default=3.0,
+    help="the plastic strain is shown with a log scale over this number of decades",
+)
 parser.add_argument(
     "--gif", action="store_true", help="write an animation of all steps"
 )
@@ -62,6 +75,13 @@ cells = np.column_stack([np.full(len(triangles), 3), triangles]).ravel()
 grid = pv.UnstructuredGrid(cells, np.full(len(triangles), pv.CellType.TRIANGLE), points)
 
 
+def tensor_norm(eps):
+    """norm of the strain tensors given in Voigt notation (exx, eyy, gamma_xy = 2 exy), one
+    per element: sqrt(exx^2 + eyy^2 + 2 exy^2)"""
+    e = eps.reshape(-1, 3)
+    return np.sqrt(e[:, 0] ** 2 + e[:, 1] ** 2 + 0.5 * e[:, 2] ** 2)
+
+
 def load(k):
     """mesh of step k with its fields, deformed by warp * u"""
     mesh = grid.copy()
@@ -74,20 +94,27 @@ def load(k):
     mesh.cell_data["yield_function"] = (
         radius + p * np.sin(phi) - c_cos_phi
     ) / c_cos_phi
-    mesh.cell_data["eps_p_norm"] = np.linalg.norm(eps_hist[k].reshape(-1, 3), axis=1)
+    mesh.cell_data["eps_p_norm"] = tensor_norm(eps_hist[k])
+    # log scale: values below the scale (elastic elements) are shown at its lower bound
+    mesh.cell_data["eps_p_log"] = np.maximum(mesh.cell_data["eps_p_norm"], eps_floor)
     return mesh.warp_by_vector("u", factor=args.warp)
 
 
 # colour ranges fixed over the whole history so that an animation is readable
+eps_last = tensor_norm(eps_hist[-1])
+eps_top = (
+    args.eps_max if args.eps_max else max(float(np.percentile(eps_last, 98)), 1e-12)
+)
+eps_floor = eps_top * 10.0 ** (-args.eps_decades)
 last = load(n_steps - 1)
 panels = [
     ("yield_function", "Mohr-Coulomb f / (c cos phi)", "viridis", [-1.0, 0.0], "%.1f"),
     (
-        "eps_p_norm",
-        "plastic strain norm",
+        "eps_p_log",
+        "plastic strain tensor norm (log scale)",
         "magma",
-        [0.0, max(float(last["eps_p_norm"].max()), 1e-12)],
-        "%.1e",
+        [eps_floor, eps_top],
+        "%.0e",
     ),
     (
         "u_norm",
@@ -117,6 +144,7 @@ def update(k):
             scalars=field,
             cmap=cmap,
             clim=clim,
+            log_scale=(field == "eps_p_log"),
             show_edges=True,
             edge_color="grey",
             name="field",
