@@ -14,6 +14,44 @@ The reaction of the top edge grows linearly, then saturates (56.51 at the end, a
 net-section limit load σ_y · 0.25 = 52.5, overestimated by the coarse mesh); the plastic zone
 starts at the root of the hole (step 4) and spreads across the ligament.
 
+## Meshes
+
+- `mesh_data/strip_with_circular_hole_72.msh` (default, used by the test): 60 T3, from
+  pytripopfem (`strip_with_circular_hole.geo`).
+- `mesh_data/strip_with_circular_hole_graded.msh`: 374 T3, graded towards the hole and the
+  ligament where the plastic zone develops, generated with gmsh 4.14 from
+  `strip_with_circular_hole_graded.geo` (parameters `h_min`, default 0.025, and `h_max`,
+  default 0.1):
+
+  ```bash
+  gmsh -2 -format msh22 -setnumber h_min 0.025 strip_with_circular_hole_graded.geo \
+       -o strip_with_circular_hole_graded.msh
+  ```
+
+The mesh is the optional argument of the example (the comparison with the reference is done
+for the default mesh only):
+
+```bash
+./strip_with_hole mesh_data/strip_with_circular_hole_graded.msh
+```
+
+Reaction at the end of the loading (limit load σ_y · 0.25 = 52.5; the remaining excess is the
+stiffness of the constant-strain T3 elements), macOS arm64:
+
+| mesh | T3 | final reaction | error | time (100 steps) |
+|---|---|---|---|---|
+| default | 60 | 56.51 | 7.6 % | 0.4 s |
+| graded, h_min = 0.04 | 250 | 53.79 | 2.5 % | 4.3 s |
+| graded, h_min = 0.025 | 374 | 53.36 | 1.6 % | 9.1 s |
+| uniform (pytripopfem `_684`) | 636 | 53.33 | 1.6 % | 24 s |
+| graded, h_min = 0.015 | 760 | 53.23 | 1.4 % | 49 s |
+| uniform (pytripopfem `_fine_1490`) | 1446 | 52.94 | 0.8 % | 167 s |
+
+On the graded mesh the plastic zone appears as an inclined band from the root of the hole to
+the outer edge. The cost grows faster than the number of elements: the kernel stores dense
+matrices (iteration matrix of the solid, one row block per element in the relations), see
+`docs/devel/FEM_PLASTICITY_SCHEME.md`.
+
 ## Model
 
 - `SolidLinearTIDS` (unknowns v and the element stresses, `MassType::lumped`,

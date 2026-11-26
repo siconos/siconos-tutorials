@@ -60,6 +60,7 @@
 #include <cmath>
 #include <fstream>
 #include <iomanip>
+#include <string>
 #include <unordered_map>
 
 namespace fem = siconos::mechanics::fem;
@@ -84,7 +85,12 @@ int main(int argc, char* argv[]) {
     const double T = n_steps * h;
 
     // ------- Dynamical system -------
-    auto mesh = fem::createMeshFromGMSH2("mesh_data/strip_with_circular_hole_72.msh");
+    // optional argument: another mesh of the same geometry and tags (gmsh format 2.2), e.g.
+    // mesh_data/strip_with_circular_hole_graded.msh; the reference comparison is done only
+    // with the default mesh
+    const std::string default_mesh = "mesh_data/strip_with_circular_hole_72.msh";
+    const std::string mesh_file = argc > 1 ? argv[1] : default_mesh;
+    auto mesh = fem::createMeshFromGMSH2(mesh_file);
     std::map<int, const fem::Material> materials = {
         {bulk_tag, fem::Material(rho, E, nu, fem::AnalysisType2D::plane_stress)}};
     auto solid =
@@ -94,8 +100,8 @@ int main(int argc, char* argv[]) {
     solid->applyDirichletBoundaryConditions(prescribed_tag, {1}, v_top);
     auto femodel = solid->FEModel();
     auto nel = femodel->elements().size();
-    std::cout << "Strip with a hole: " << femodel->nodes().size() << " nodes, " << nel
-              << " T3 elements, " << n_steps << " steps" << std::endl;
+    std::cout << "Strip with a hole (" << mesh_file << "): " << femodel->nodes().size()
+              << " nodes, " << nel << " T3 elements, " << n_steps << " steps" << std::endl;
 
     auto nsds = std::make_shared<siconos::modeling::NonSmoothDynamicalSystem>(t0, T);
     nsds->insertDynamicalSystem(solid);
@@ -246,6 +252,7 @@ int main(int argc, char* argv[]) {
     // number of plastic elements (threshold 1 - 1e-6 on sigma_vm / sigma_y) within one
     // element, since an element entering the plastic zone may cross the threshold
     // differently on another platform.
+    if (mesh_file != default_mesh) return 0;
     std::string ref = "strip_with_hole.ref";
     struct Group {
       std::vector<int> columns;
