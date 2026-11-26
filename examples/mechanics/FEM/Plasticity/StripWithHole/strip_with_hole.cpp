@@ -27,14 +27,22 @@
    - one StressLinearTIR per element (output: the physical stress of the element) with a
      VonMisesPlasticityNSL;
    - fem::integrators::MoreauJeanGOSI (theta = 1) and the condensed one-step problem
-     fem::nonsmooth_formulations::Plasticity (numerics PlasticityProblem, NSGS).
+     fem::nonsmooth_formulations::Plasticity (numerics PlasticityProblem, global
+     semi-smooth Newton PLASTICITY_2D_NSN).
 
    Same data as the "Strip_with_hole" example of pytripopfem (native T3 backend); see
    docs/devel/FEM_PLASTICITY_SCHEME.md in siconos for the scheme and the comparison.
 
-   Outputs: strip_with_hole.dat (t, u_top, R_top, max sigma_vm / sigma_y, number of plastic
-   elements, max plastic strain) and strip_with_hole_elements.dat (final state per element:
-   x, y of the centroid, sigma_xx, sigma_yy, sigma_xy, sigma_vm, plastic strain (3)).
+   Outputs:
+   - strip_with_hole.dat (t, u_top, R_top, max sigma_vm / sigma_y, number of plastic
+     elements, max plastic strain), compared with strip_with_hole.ref;
+   - strip_with_hole_elements.dat (final state per element: x, y of the centroid, sigma_xx,
+     sigma_yy, sigma_xy, sigma_vm, plastic strain (3));
+   - for the visualization (strip_with_hole_viz.py, pyvista): strip_with_hole_nodes.dat
+     (x, y, dof of u_x, dof of u_y), strip_with_hole_triangles.dat (node indices) and the
+     histories, one line per step (initial state included): strip_with_hole_u.dat
+     (displacements, dof order), strip_with_hole_sigma.dat and strip_with_hole_eps_p.dat
+     (physical stresses and plastic strains, 3 per element, Voigt order).
 */
 
 #include <SiconosFEM.h>
@@ -50,9 +58,9 @@
 #include <VonMisesPlasticityNSL.hpp>
 #include <chrono>
 #include <cmath>
-#include <cstdlib>
 #include <fstream>
 #include <iomanip>
+#include <unordered_map>
 
 namespace fem = siconos::mechanics::fem;
 
@@ -62,10 +70,6 @@ static double von_mises(double sxx, double syy, double sxy) {
 
 int main(int argc, char* argv[]) {
   try {
-    // ctest sets SICONOS_EXAMPLES_SHORT_RUN: 20 steps (elastic phase, onset of yield and
-    // beginning of the plastic plateau) compared with strip_with_hole-short.ref
-    const bool short_run = std::getenv("SICONOS_EXAMPLES_SHORT_RUN") != nullptr;
-
     // gmsh physical tags of mesh_data/strip_with_circular_hole_72.msh
     const int prescribed_tag = 1;  // top edge
     const int bottom_tag = 2;      // symmetry, v_y = 0
@@ -76,7 +80,7 @@ int main(int argc, char* argv[]) {
     const double E = 210e3, nu = 0.3, rho = 7.8e-9, sigma_y = 210.;
     const double v_top = 1e2;  // prescribed velocity of the top edge
     const double h = 1e-6, t0 = 0.;
-    const int n_steps = short_run ? 20 : 100;
+    const int n_steps = 100;
     const double T = n_steps * h;
 
     // ------- Dynamical system -------
@@ -110,12 +114,12 @@ int main(int argc, char* argv[]) {
     // ------- Simulation -------
     auto osi = std::make_shared<fem::integrators::MoreauJeanGOSI>(1.0);
     auto td = std::make_shared<siconos::simulation::TimeDiscretisation>(t0, h);
-    auto osnspb =
-        std::make_shared<fem::nonsmooth_formulations::Plasticity>(PLASTICITY_2D_NSGS);
-    // quasi-static regime: the condensed matrix is ill-conditioned and NSGS needs many
-    // sweeps (see FEM_PLASTICITY_SCHEME.md); 1e-8 is enough for the results below
-    osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-8;
-    osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 100000;
+    // global semi-smooth Newton: 1 iteration per elastic step, 10-30 per plastic step (the
+    // condensed matrix is ill-conditioned in this quasi-static regime: NSGS would need
+    // 1e4-1e5 sweeps per step, see FEM_PLASTICITY_SCHEME.md)
+    auto osnspb = std::make_shared<fem::nonsmooth_formulations::Plasticity>(PLASTICITY_2D_NSN);
+    osnspb->numericsSolverOptions()->dparam[SICONOS_DPARAM_TOL] = 1e-10;
+    osnspb->numericsSolverOptions()->iparam[SICONOS_IPARAM_MAX_ITER] = 200;
     auto s = std::make_shared<siconos::simulation::TimeStepping>(nsds, td, osi, osnspb);
 
     // ------- Outputs -------
@@ -136,6 +140,41 @@ int main(int argc, char* argv[]) {
     auto sigma = solid->stress_read();
     auto epsilon_p = solid->plasticDeformation_read();
     Eigen::VectorXd v_old = v;
+
+    // mesh and histories for the visualization
+    {
+      std::ofstream fn("strip_with_hole_nodes.dat"), ft("strip_with_hole_triangles.dat");
+      fn << std::setprecision(17);
+      std::unordered_map<const fem::FENode*, size_t> node_index;
+      size_t n = 0;
+      for (auto& node : femodel->nodes()) {
+        node_index[node.get()] = n++;
+        fn << node->x() << " " << node->y() << " " << node->global_dof_index()[0] << " "
+           << node->global_dof_index()[1] << "\n";
+      }
+      for (auto& element : femodel->elements()) {
+        const auto& nodes = element->nodes();
+        ft << node_index.at(nodes[0].get()) << " " << node_index.at(nodes[1].get()) << " "
+           << node_index.at(nodes[2].get()) << "\n";
+      }
+    }
+    std::ofstream fu("strip_with_hole_u.dat"), fs("strip_with_hole_sigma.dat"),
+        fp("strip_with_hole_eps_p.dat");
+    fu << std::setprecision(10);
+    fs << std::setprecision(10);
+    fp << std::setprecision(10);
+    auto write_history = [&]() {
+      for (Eigen::Index i = 0; i < q.size(); i++)
+        fu << q(i) << (i + 1 < q.size() ? " " : "\n");
+      for (size_t e = 0; e < nel; e++)
+        for (int c = 0; c < 3; c++) {
+          auto i = static_cast<siconos::algebra::Index>(3 * e + c);
+          const char* sep = (e + 1 < nel || c < 2) ? " " : "\n";
+          fs << sigma(i) / scaling[e] << sep;
+          fp << epsilon_p(i) / scaling[e] << sep;
+        }
+    };
+    write_history();
 
     const siconos::algebra::Index output_size = 6;
     siconos::algebra::SiconosDenseMatrix dataPlot{n_steps + 1, output_size};
@@ -165,6 +204,7 @@ int main(int argc, char* argv[]) {
       dataPlot(k, 3) = max_vm;
       dataPlot(k, 4) = n_plastic;
       dataPlot(k, 5) = max_eps_p;
+      write_history();
       v_old = v;
       s->nextStep();
       siconos::tools::progressBar((double)k / n_steps);
@@ -202,21 +242,21 @@ int main(int argc, char* argv[]) {
 
     // ------- Comparison with the reference (relative tolerances per column) -------
     // u_top is prescribed; R_top and the plastic strain depend on the solver tolerance
-    // (1e-8 relative on the stresses); max sigma_vm / sigma_y <= 1 is compared tightly; the
+    // (1e-10); max sigma_vm / sigma_y <= 1 is compared tightly; the
     // number of plastic elements (threshold 1 - 1e-6 on sigma_vm / sigma_y) within one
     // element, since an element entering the plastic zone may cross the threshold
     // differently on another platform.
-    std::string ref = short_run ? "strip_with_hole-short.ref" : "strip_with_hole.ref";
+    std::string ref = "strip_with_hole.ref";
     struct Group {
       std::vector<int> columns;
       double eps;
     };
     const std::vector<Group> groups = {
         {{0, 1}, 1e-12 * std::max(T, std::abs(dataPlot(k, 1)))},
-        {{2}, 1e-5 * dataPlot.col(2).cwiseAbs().maxCoeff()},
+        {{2}, 1e-6 * dataPlot.col(2).cwiseAbs().maxCoeff()},
         {{3}, 1e-8},
         {{4}, 1.5},
-        {{5}, 1e-4 * std::max(1e-12, dataPlot.col(5).cwiseAbs().maxCoeff())}};
+        {{5}, 1e-5 * std::max(1e-12, dataPlot.col(5).cwiseAbs().maxCoeff())}};
     bool failed = false;
     for (const auto& g : groups) {
       double error = siconos::algebra::io::compareRefFile(dataPlot, ref, g.eps, g.columns);
