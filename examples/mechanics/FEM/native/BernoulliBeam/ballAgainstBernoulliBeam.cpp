@@ -209,10 +209,14 @@ int main(int argc, char* argv[]) {
                                 siconos::algebra::io::ASCII_OUT,
                                 siconos::algebra::io::WriteType::nodim);
 
-    double error = 0.0, eps = 1e-10;
-    if ((error = siconos::algebra::io::compareRefFile(dataPlot, "ballAgainstBernoulliBeam.ref",
-                                                      eps)) >= eps)
-      return 1;
+    // columns 0-4 are of order 1, column 5 of order 1e5: relative tolerances
+    double eps = 1e-10;
+    double eps_5 = eps * std::max(1.0, dataPlot.col(5).cwiseAbs().maxCoeff());
+    double error = siconos::algebra::io::compareRefFile(
+        dataPlot, "ballAgainstBernoulliBeam.ref", eps, {0, 1, 2, 3, 4});
+    double error_5 = siconos::algebra::io::compareRefFile(
+        dataPlot, "ballAgainstBernoulliBeam.ref", eps_5, {5});
+    if (error < 0. || error >= eps || error_5 < 0. || error_5 >= eps_5) return 1;
 
     return 0;
   } catch (...) {
