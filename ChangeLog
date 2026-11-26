@@ -39,15 +39,20 @@ Main Changes:
 	* [examples/mechanics] new rock fall examples (digital elevation model,
 	  height map, forest, propagation, rolling, Fremond law)
 	* [examples/mechanics] new FEM examples (native T3/TH4, collision
-	  detection, Hertz, Euler-Bernoulli beam, sparse impacting bar, footing)
+	  detection, Hertz, Euler-Bernoulli beam, plastic beam, sparse impacting
+	  bar), FEM/native reorganized (one directory per example)
+	* [examples/mechanics] FEM plasticity: StripWithHole (Von Mises, plane
+	  stress) and Footing (Mohr-Coulomb, plane strain), compared with
+	  pytripopfem, Mandel notation in the outputs
 	* [examples/mechanics] boundary conditions (BallOnMovingPlane), transport
 	  cable, Fremond law examples, vkernel bouncing balls
 	* [examples] both projection updates (RockingBlock) and impact rules
 	  (SliderCrankD1MinusLinear), references checked after the scheme fixes
 	* [tests] one ctest per example, short runs (SICONOS_EXAMPLES_SHORT_RUN),
 	  relative comparisons with the references, Ubuntu 26.04 fixes
-	* [examples] cppimport removed; FEM plasticity examples removed for this
-	  release (plasticBernoulliBeam, ballAgainstPlasticBernoulliBeam)
+	* [examples] cppimport removed; former FEM plasticity examples
+	  (T3-Footing, T3-GOSI-Plasticity) replaced by Plasticity/Footing and
+	  Plasticity/StripWithHole
 
 Known issues:
 	* python control examples (examples/control/*/*.py) not updated, and no

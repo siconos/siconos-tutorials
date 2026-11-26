@@ -4,7 +4,7 @@
 **Siconos version:** 2026-11 (version number 2026.11; use the same version of siconos and
 siconos-tutorials)
 **Previous Release:** 4.4.0 (September 2021)
-**Commits:** about 270 since 4.4.0
+**Commits:** about 280 since 4.4.0
 
 ---
 
@@ -47,10 +47,16 @@ release candidate of siconos-tutorials: this release follows 4.4.0 directly.
 - **Rock fall** (`mechanics/RockFall`): rock fall from a digital elevation model (raster file,
   with the Frémond law), on a height map, on a forest, rock fall propagation with restart,
   rolling example, chute with a choice of rock shape.
-- **FEM** (`mechanics/FEM`): native T3 and TH4 elements, T3 with collision detection (with and
-  without friction), Hertz contact, T3 with `MoreauJeanGOSI`, Euler-Bernoulli beam and ball
-  against a beam, impacting bar with sparse matrices (C++ and Python), plastic footing
-  (`FEM/Plasticity/T3-Footing`).
+- **FEM** (`mechanics/FEM/native`, one directory per example): native T3 and TH4 elements,
+  T3 with collision detection (with and without friction), Hertz contact, T3 with
+  `MoreauJeanGOSI`, Euler-Bernoulli beam and ball against a beam (elastic and plastic),
+  impacting bar with sparse matrices (C++ and Python, `mechanics/FEM/ImpactingBar`).
+- **FEM plasticity** (`mechanics/FEM/Plasticity`, with README, gmsh meshes and visualization
+  scripts), both compared with pytripopfem:
+  - `StripWithHole`: strip with a circular hole pulled in tension, Von Mises, plane stress;
+  - `Footing`: strip footing on a Mohr-Coulomb soil (Drucker-Prager in the plane), plane
+    strain, associated or non-associated flow.
+  The outputs use the Mandel notation of the stresses and strains.
 - **Frémond impact law**: `BouncingBallTS-FremondNSL`, `box_stacks_FremondNSL.py`,
   `rockfall_from_dem_FremondNSL.py`, rock protection wall with energy outputs.
 - **Boundary conditions**: `mechanics/BallOnMovingPlane` (C++ and Python), reactions of the
@@ -79,8 +85,8 @@ release candidate of siconos-tutorials: this release follows 4.4.0 directly.
   references for the chaotic cases (`BulletBouncingBox`).
 - Ubuntu 26.04 (GCC 15, Python 3.14, numpy 2.5) fixes; formatting and lint with pre-commit
   hooks (clang-format, ruff, shellcheck); CI on the `main` branch.
-- Status with Siconos 2026-11 on macOS arm64: the 332 tests pass. On Ubuntu 26.04 x86_64 they
-  passed before the last fixes; under x86_64 emulation, `mechanics/FEM/native/T3-GOSI` may
+- Status with Siconos 2026-11 on macOS arm64: the 340 tests pass. On Ubuntu 26.04 x86_64 they
+  passed before the last fixes; under x86_64 emulation, `mechanics/FEM/native/T3_square/T3-GOSI` may
   time out.
 
 ---
@@ -89,9 +95,8 @@ release candidate of siconos-tutorials: this release follows 4.4.0 directly.
 
 - `cppimport` (replaced by the addons of the `siconos` script).
 - `mechanics/NewtonEuler/BouncingBallNETS.py`.
-- FEM plasticity examples `plasticBernoulliBeam` and `ballAgainstPlasticBernoulliBeam`
-  (`mechanics/FEM/native`), removed for this release while the FEM plasticity formulation of
-  Siconos is reviewed.
+- Former FEM plasticity examples `FEM/Plasticity/T3-Footing` and `T3-GOSI-Plasticity`
+  (former API), replaced by `Plasticity/Footing` and `Plasticity/StripWithHole`.
 
 ---
 
